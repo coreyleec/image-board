@@ -1,5 +1,5 @@
 {
-  "name": "react-responsive-mosaic",
+  "name": "image-board",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -24,7 +24,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
-  "homepage": "https://viniciusgerevini.github.io/react-responsive-mosaic",
+  
   "eslintConfig": {
     "extends": "react-app"
   },

@@ -1,20 +1,16 @@
-import  React from 'react';
-import { useEffect, useState} from 'react';
+import React from "react";
+import { useEffect, useState } from "react";
 // import "..components/ToggleSwitch.css"
 
 // import Switch from "react-switch"
 
-
 const AsideRight = (props) => {
+  // const [isToggled, setIsToggled] = useState(false);
+  // const onToggle = () => setIsToggled(!isToggled);
 
-    
-        // const [isToggled, setIsToggled] = useState(false);
-        // const onToggle = () => setIsToggled(!isToggled);
-
-
-    return (
-        <aside>
-            {/* {props.currentUser.id != null && 
+  return (
+    <aside>
+      {/* {props.currentUser.id != null && 
             <div>
             <label className="switch-container">
              <label className="toggle-switch">
@@ -27,11 +23,8 @@ const AsideRight = (props) => {
             </div>
         
         } */}
-        <button onClick={() => props.reorderSubmit()} >submit reorder</button>
-        </aside>
-    )
-
-    
-
-    }
-export default AsideRight
+      <button onClick={() => props.reorderSubmit()}>submit reorder</button>
+    </aside>
+  );
+};
+export default AsideRight;

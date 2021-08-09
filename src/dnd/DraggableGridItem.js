@@ -1,27 +1,25 @@
-import React, { useRef } from 'react';
-import { useDragAndDrop } from './useDragAndDrop';
-import styled from 'styled-components';
+import React, { useRef } from "react";
+import { useDragAndDrop } from "./useDragAndDrop";
+import styled from "styled-components";
 
 export default function DraggableGridItem(props) {
   const { photo, onDrop, children, ...p } = props;
-  
+
   // console.log(children)
   const ref = useRef(null);
   // console.log("draggable", photo)
   const { isDragging } = useDragAndDrop(ref, {
     ...photo,
-    hover: createDragHoverCallback(ref, photo, onDrop)
+    hover: createDragHoverCallback(ref, photo, onDrop),
   });
   const opacity = isDragging ? 0 : 1;
 
-
-  return <GridItemWrapper 
-  {...p} ref={ref} style={{ opacity }}>
-   
-    {children}
-  
+  return (
+    <GridItemWrapper {...p} ref={ref} style={{ opacity }}>
+      {children}
     </GridItemWrapper>
-};
+  );
+}
 
 // This was copied and adapted from react-dnd sortable example: https://react-dnd.github.io/react-dnd/examples/sortable/simple
 // Even though we are working with a grid, I decided to keep the items sorted as a list,
@@ -47,23 +45,30 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
 
     // Only perform the move when the mouse has crossed half of the items height or width
     // When dragging downwards or right to left, only move when the cursor is below 50%
-    if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY && hoverClientX < hoverMiddleX) {
-      return
+    if (
+      dragIndex < hoverIndex &&
+      hoverClientY < hoverMiddleY &&
+      hoverClientX < hoverMiddleX
+    ) {
+      return;
     }
 
     // When dragging upwards or left to right, only move when the cursor is above 50%
-    if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY && hoverClientX > hoverMiddleX) {
-      return
+    if (
+      dragIndex > hoverIndex &&
+      hoverClientY > hoverMiddleY &&
+      hoverClientX > hoverMiddleX
+    ) {
+      return;
     }
 
     // Time to actually perform the action
     // this is where you would want to reorder your list
     // In case you wan't to use the whole object, don't forget to
     // make a deep copy, because we are mutating the object on the last line
-      
-    
+
     // fetch(`http://localhost:3000/photos/${currentPhoto.id}`, {
-    //       method: "PATCH", 
+    //       method: "PATCH",
     //       headers: {
     //       "Content-Type": "application/json"
     //       },
@@ -72,52 +77,47 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
     //     })
     //   })
 
+    //   .then(res => res.json())
+    //   .then(photoObj => {
+    //     console.log(photoObj)
+    //     setPhotos( photos.map(photo => {
+    //       if(photo.id === photoObj.id) return photoObj
+    //       else return photo
+    //     })
+    //   )
+    // }
 
-  //   .then(res => res.json())
-  //   .then(photoObj => {
-  //     console.log(photoObj)
-  //     setPhotos( photos.map(photo => {
-  //       if(photo.id === photoObj.id) return photoObj
-  //       else return photo
-  //     })
-  //   )
-  // }
-    
-  // fetch(`http://localhost:3000/photos/${otherPhoto.id}`, {
-  //       method: "PATCH", 
-  //       headers: {
-  //       "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify({
-  //         index:currentPhoto.index,
-  //     })
-  //   })
+    // fetch(`http://localhost:3000/photos/${otherPhoto.id}`, {
+    //       method: "PATCH",
+    //       headers: {
+    //       "Content-Type": "application/json"
+    //       },
+    //       body: JSON.stringify({
+    //         index:currentPhoto.index,
+    //     })
+    //   })
 
-
-  //   .then(res => res.json())
-  //   .then(photoObj => {
-  //     console.log(photoObj)
-  //     setPhotos( photos.map(photo => {
-  //       if(photo.id === photoObj.id) return photoObj
-  //       else return photo
-  //     })
-  //   )
-  // }
+    //   .then(res => res.json())
+    //   .then(photoObj => {
+    //     console.log(photoObj)
+    //     setPhotos( photos.map(photo => {
+    //       if(photo.id === photoObj.id) return photoObj
+    //       else return photo
+    //     })
+    //   )
+    // }
     onDrop(otherPhoto.id, currentPhoto.id);
-console.log("otherPhoto", otherPhoto)
-console.log("currentPhoto", currentPhoto)
+    console.log("otherPhoto", otherPhoto);
+    console.log("currentPhoto", currentPhoto);
     // Note: we're mutating the monitor item here!
     // Generally it's better to avoid mutations,
     // but it's good here for the sake of performance
     // to avoid expensive index searches.
     otherPhoto.index = currentPhoto.index;
-    
- 
-  }
-}
+  };
+};
 
-
-const GridItemWrapper = styled.div `
+const GridItemWrapper = styled.div`
   
   width: 100px;
   // min-width: 240px;

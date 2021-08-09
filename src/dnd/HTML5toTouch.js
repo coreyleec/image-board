@@ -1,6 +1,6 @@
-import HTML5Backend from 'react-dnd-html5-backend';
-import TouchBackend from 'react-dnd-touch-backend';
-import { TouchTransition, MouseTransition } from 'react-dnd-multi-backend';
+import HTML5Backend from "react-dnd-html5-backend";
+import TouchBackend from "react-dnd-touch-backend";
+import { TouchTransition, MouseTransition } from "react-dnd-multi-backend";
 
 // HTML5 backend does not work on mobile/touch enabled devices,
 // and Touch backend is a little buggy in general.
@@ -13,7 +13,7 @@ export default {
     },
     {
       backend: TouchBackend,
-      options: {enableMouseEvents: true},
+      options: { enableMouseEvents: true },
       preview: true,
       transition: TouchTransition,
     },
