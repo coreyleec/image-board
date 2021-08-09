@@ -1,0 +1,143 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+
+.cont {
+  display:grid;
+  height: 100vh;
+  grid-template-columns:  0.25fr 1fr 0.25fr;
+  grid-template-rows: 0.5fr 1.5fr 0.4fr;
+  grid-template-areas: 
+  "leftbar header header"
+  "leftbar main rightbar"
+  "leftbar footer rightbar";
+
+}
+
+header {
+  /* background-color: gray; */
+  grid-area: header;
+  min-height: 150px;
+  background-color: coral;
+}
+
+main {
+  background-color: gainsboro;
+  /* max-height:inherit; */
+  /* grid-area: main; */
+
+}
+
+aside:nth-child(1) {
+  /* background-color: lightgray; */
+  padding-top: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+  grid-area: leftbar;
+  background-color: coral;
+}
+aside:nth-child(1) input {
+font-size: 2rem;
+    text-align: left;
+    font-family: Helvetica, sans-serif;
+    width: 240px;
+    color: #212529;
+}
+
+aside:nth-child(3) {
+  /* background-color: lightgray; */
+  grid-area: rightbar;
+  background-color: coral;
+}
+
+footer {
+  background-color: lightgrey;
+  grid-area: footer;
+  min-height: 100px;
+}
+
+article {
+  /* flex: 1 0 auto; */
+  padding-top: 75px;
+  padding-inline: 75px;
+
+}
+
+
+
+  
+.picture {
+  width: 100px; 
+  flex: 0 0 100px;  
+  
+  height: auto;
+
+}
+.picture .photo{
+border-radius: 13px;
+padding: 0px;
+}
+.picture .photo:hover{
+border-radius: 13px;
+
+}
+
+.picture :hover {
+  /* transform: scale(1.5); */
+  height: auto;
+  /* width:145px; */
+  /* transform: scale(2,2); */
+  box-shadow: -3px 3px 5px 2px #aaaaaa,
+}
+.emptyBox {
+  color: gainsboro;
+  flex: 0 0 100px;
+  width: 100px; 
+  padding: 0px;
+  margin: 0px; 
+  /* overflow: hidden; */
+  height: auto;
+
+}
+
+
+.emptyBox .photo {
+  border-radius: 13px;
+  /* box-shadow: -6px 4px 18px 3px #aaaaaa, 0 0 13px -1px #aaaaaa inset; */
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
+  top: 0;
+  transition: top ease 0.5s;
+  transition: transform 0.3s ease;
+  transform: translateX(0px);
+  transform: translateY(0px);
+}
+
+.emptyBox .photo:hover {
+  border-radius: 13px;
+  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+  transform: translateX(2px), translateY(2px);
+}
+
+
+img {
+  width: 100%; 
+  align-items: center;
+}
+
+/* .thumbnail{
+  overflow: hidden;
+  height: 157px;
+} */
+
+
