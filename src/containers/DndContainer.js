@@ -28,55 +28,16 @@ const DndContainer = (props) => {
   const gridRef = useRef(null);
   const { children } = props;
 
-  const [domElements, setDomElements] = useState(props.children);
+  
   const [areImagesLoaded, setImagesLoaded] = useState(false);
-  useLayoutEffect(() => {
+  const handleLoad = () => {
     const grid = gridRef.current;
-    imagesLoaded(grid, () => {
-      adjustGridItemsHeight(grid);
-      setImagesLoaded(true);
-    });
-    // imagesLoaded(grid).then(() => adjustGridItemsHeight(grid))
-
-    // expression that returns a Promise
-    // (PromiseExpression).then((value) => {
-    // after the promise is resolved
-    // uses value
-    //})
-    // const value = await (PromiseExpression)
-    // after the promise is resolved
-
-    // setTimeout(() => , 2000)
-    // console.log(grid)
-  });
-
-  // const handleLoad = () => {
-  //     const grid = gridRef.current;
-  //     adjustGridItemsHeight(grid)
-  //     // console.log("hi")
-  //   }
-  // const resizeGridItem = (photo) => {
-  //     const grid = gridRef.current
-  //       let rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
-  //       let rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-row-gap'));
-  //       let rowSpan = Math.ceil((grid.firstChild.getBoundingClientRect().height+rowGap)/(rowHeight+rowGap));
-  //       photo.style.gridRowEnd = "span "+rowSpan;
-  //     }
-
-  //     function resizeAllGridItems(){
-  //       const grid = gridRef.current
-  //       const photos = grid.children
-  //       for(let x = 0; x < photos.length; x++){
-  //          resizeGridItem(photos[x])
-  //       }
-  //     }
-  //   useEffect(() => {
-  //     const grid = gridRef.current;
-  //     const photos = grid.children
-  //     for(let x = 0; x < photos.length; x++){
-  //         resizeGridItem(photos[x])
-  //     // resizeAllGridItems()
-  //      }});
+    adjustGridItemsHeight(grid);
+    setImagesLoaded(true);
+  };
+  
+  
+  
 
   return (
     <DndProvider backend={MultiBackend} options={HTML5toTouch}>
@@ -96,10 +57,10 @@ const DndContainer = (props) => {
                   >
                     <img
                       className="photo"
-                      //   onLoad={handleLoad()}
+                      onLoad={() => handleLoad()}
                       onClick={() => props.handleClick(photo)}
                       src={photo.url}
-                      loading="lazy"
+                      // loading="lazy"
                       src={
                         photo.url != null
                           ? photo.url
@@ -175,3 +136,38 @@ const GridWrapper = styled.div`
 const Grid = (props) => {
   return <div>{/* {children} */}</div>;
 };
+
+
+
+// const [domElements, setDomElements] = useState(props.children);
+
+  // useEffect(() => {
+    //   const grid = gridRef.current;
+    //   adjustGridItemsHeight(grid);
+    // });
+  
+  // useEffect(() => {
+  //   const grid = gridRef.current;
+  //   imagesLoaded(grid, () => {
+  //     adjustGridItemsHeight(grid);
+  //   });
+  // });
+
+  // setImagesLoaded(true);
+  // imagesLoaded(grid).then(() => adjustGridItemsHeight(grid))
+
+  // expression that returns a Promise
+  // (PromiseExpression).then((value) => {
+  // after the promise is resolved
+  // uses value
+  //})
+  // const value = await (PromiseExpression)
+  // after the promise is resolved
+
+  // setTimeout(() => adjustGridItemsHeight(grid), 2000)
+  // useEffect(() => {
+  //   const grid = gridRef.current;
+  //   setTimeout(() => adjustGridItemsHeight(grid), 2000)
+  //     setImagesLoaded(true);
+  //   });
+  // console.log(grid)

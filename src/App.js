@@ -34,9 +34,7 @@ export default function App() {
   // console.log("photos after function",photos)
 
   const reorderSubmit = () => {
-    // console.log(photos)
     // for each photo save that photos's index
-
     photos != undefined &&
       photos.forEach((photo) =>
         fetch(`http://localhost:3000/photos/${photo.id}`, {

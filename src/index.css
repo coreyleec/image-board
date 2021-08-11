@@ -24,7 +24,9 @@ code {
   "leftbar footer rightbar";
 
 }
-
+.grid {
+  justify-content: center;
+}
 header {
   /* background-color: gray; */
   grid-area: header;
