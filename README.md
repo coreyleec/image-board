@@ -1,6 +1,7 @@
 # Image Board
 
-Image Board is a visual tool for image layout but may also act as a digital portfolio, or an extension for pre-existing portfolios. I chose to take what I learned from my first attempt an rebuild the project piece by piece, while keeping a reference to all of the original code as I rebuild. 
+Image Board is a visual tool for image layout but may also act as a digital portfolio, or an extension for pre-existing portfolios. 
+Prior to Image Board the project was called Memphis. Rather than continue to work on the original, I chose to take what I learned an rebuild the project piece by piece, while keeping a reference to all of the original code as I rebuild. Here are links to verion 1 [frontend](https://github.com/coreyleec/memphis) and [backend](https://github.com/coreyleec/memphis_backend).
 
 ![](demo.gif)
 

@@ -135,39 +135,4 @@ const GridWrapper = styled.div`
 
 const Grid = (props) => {
   return <div>{/* {children} */}</div>;
-};
-
-
-
-// const [domElements, setDomElements] = useState(props.children);
-
-  // useEffect(() => {
-    //   const grid = gridRef.current;
-    //   adjustGridItemsHeight(grid);
-    // });
-  
-  // useEffect(() => {
-  //   const grid = gridRef.current;
-  //   imagesLoaded(grid, () => {
-  //     adjustGridItemsHeight(grid);
-  //   });
-  // });
-
-  // setImagesLoaded(true);
-  // imagesLoaded(grid).then(() => adjustGridItemsHeight(grid))
-
-  // expression that returns a Promise
-  // (PromiseExpression).then((value) => {
-  // after the promise is resolved
-  // uses value
-  //})
-  // const value = await (PromiseExpression)
-  // after the promise is resolved
-
-  // setTimeout(() => adjustGridItemsHeight(grid), 2000)
-  // useEffect(() => {
-  //   const grid = gridRef.current;
-  //   setTimeout(() => adjustGridItemsHeight(grid), 2000)
-  //     setImagesLoaded(true);
-  //   });
-  // console.log(grid)
+}
