@@ -37,7 +37,38 @@ const DndContainer = (props) => {
   };
   
   
+  // const [domElements, setDomElements] = useState(props.children);
+
+  // useEffect(() => {
+    //   const grid = gridRef.current;
+    //   adjustGridItemsHeight(grid);
+    // });
   
+  // useEffect(() => {
+  //   const grid = gridRef.current;
+  //   imagesLoaded(grid, () => {
+  //     adjustGridItemsHeight(grid);
+  //   });
+  // });
+
+  // setImagesLoaded(true);
+  // imagesLoaded(grid).then(() => adjustGridItemsHeight(grid))
+
+  // expression that returns a Promise
+  // (PromiseExpression).then((value) => {
+  // after the promise is resolved
+  // uses value
+  //})
+  // const value = await (PromiseExpression)
+  // after the promise is resolved
+
+  // setTimeout(() => adjustGridItemsHeight(grid), 2000)
+  // useEffect(() => {
+  //   const grid = gridRef.current;
+  //   setTimeout(() => adjustGridItemsHeight(grid), 2000)
+  //     setImagesLoaded(true);
+  //   });
+  // console.log(grid)
 
   return (
     <DndProvider backend={MultiBackend} options={HTML5toTouch}>
@@ -90,11 +121,11 @@ const AppWrapper = styled.div`
   }
 `;
 
-const Image = styled.img`
-  width: 100%; /* or any custom size */
-  height: 100%;
-  object-fit: cover;
-`;
+// const Image = styled.img`
+//   width: 100%; /* or any custom size */
+//   height: 100%;
+//   object-fit: cover;
+// `;
 
 const adjustGridItemsHeight = (grid) => {
   const photos = grid.children;
@@ -121,12 +152,11 @@ const adjustGridItemsHeight = (grid) => {
 const GridWrapper = styled.div`
   display: grid;
   // justify-content: center;
-
   align-items: center;
 
   grid-gap: 10px;
 
-  grid-template-columns: repeat(7, minmax(130px, 1fr));
+  grid-template-columns: repeat(7, minmax(100px, 1fr));
   // grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
 
   grid-auto-rows: 120px;
@@ -135,4 +165,4 @@ const GridWrapper = styled.div`
 
 const Grid = (props) => {
   return <div>{/* {children} */}</div>;
-}
+};

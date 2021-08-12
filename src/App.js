@@ -147,7 +147,7 @@ export default function App() {
 
   return (
     <Router>
-      <div className={"cont"}>
+      <div className="cont">
         <SideBar
         // edit={edit}
         // sayHello={sayHello}

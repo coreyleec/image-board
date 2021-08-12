@@ -95,12 +95,12 @@ console.log("currentPhoto", currentPhoto)
 
 const GridItemWrapper = styled.div `
   
-  width: 100px;
+  // width: auto;
   // min-width: 240px;
   // background-color: #fff;
   padding: 0px;
   // padding-bottom: 10px;
-  // padding-right: 10px;
+  padding-right: 10px;
   // border-radius: 5px;
   // border: 1px solid #e0e0e0;
   // line-height: 1.2em;
