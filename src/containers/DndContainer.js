@@ -116,9 +116,9 @@ const sortPhotos = (a, b) => a.index - b.index;
 const AppWrapper = styled.div`
   // padding: 10px 150px;
 
-  @media (max-width: 400px) {
-    padding: 10px;
-  }
+  // @media (max-width: 400px) {
+  //   padding: 10px;
+  // }
 `;
 
 // const Image = styled.img`
@@ -151,18 +151,20 @@ const adjustGridItemsHeight = (grid) => {
 
 const GridWrapper = styled.div`
   display: grid;
-  // justify-content: center;
-  align-items: center;
+  justify-content: center;
+  // align-items: center;
 
-  grid-gap: 10px;
-
-  grid-template-columns: repeat(7, minmax(100px, 1fr));
+  grid-gap: 26px;
+  // margin-inline: 5px;
+  grid-template-columns: repeat(7, auto);
   // grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
-
-  grid-auto-rows: 120px;
+  // grid-auto-columns: 100px;
+  grid-auto-rows: 0px;
   // grid-auto-rows: 180px;
-`;
+  background: transparent;
+  `;
 
 const Grid = (props) => {
   return <div>{/* {children} */}</div>;
 };
+

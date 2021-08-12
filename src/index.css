@@ -73,29 +73,48 @@ footer {
 
 article {
   /* flex: 1 0 auto; */
-  padding-top: 75px;
-  padding-inline: 75px;
+  padding-top: 80px;
+  padding-inline: 80px;
 
 }
 
 
   
 .picture {
-  width: 100px; 
+  height: 100;
+  width: 100; 
   flex: 0 0 100px;  
-  
-  height: auto;
+    /* padding-inline: 7px; */
+    /* position: relative;
+    float: center; */
 
 }
 .picture .photo{
 border-radius: 13px;
 padding: 0px;
+min-height: 100px;
+/* max-height: 200px; */
+overflow: hidden;
+/* transition: all .4s ease; */
 }
 .picture .photo:hover{
 border-radius: 13px;
-
 }
 
+.grid:hover .picture:not(:hover) .photo {
+  /* height:50%;
+  width: 50%;
+  transition: all .5s ease; */
+}
+
+img {
+  position: relative;
+  /* max-width: 200px;
+  max-height: 50px */
+  /* margin-inline: 10px; */
+  width: 100%; 
+  align-items: center;
+}
 .picture :hover {
   /* transform: scale(1.5); */
   height: auto;
@@ -133,10 +152,7 @@ border-radius: 13px;
 }
 
 
-img {
-  width: 100%; 
-  align-items: center;
-}
+
 
 /* .thumbnail{
   overflow: hidden;
