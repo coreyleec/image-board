@@ -81,10 +81,12 @@ article {
 
   
 .picture {
-  height: 100;
-  width: 100; 
+  /* height: 100; */
+  width: 150px; 
   flex: 0 0 100px;  
-    /* padding-inline: 7px; */
+  /* margin: 12px;  */
+  padding: 12px;
+  /* padding-inline: 12px; */
     /* position: relative;
     float: center; */
 
@@ -93,6 +95,7 @@ article {
 border-radius: 13px;
 padding: 0px;
 min-height: 100px;
+width: 150px;
 /* max-height: 200px; */
 overflow: hidden;
 /* transition: all .4s ease; */
@@ -112,8 +115,15 @@ img {
   /* max-width: 200px;
   max-height: 50px */
   /* margin-inline: 10px; */
+    /* margin: 12px;  */
+
   width: 100%; 
   align-items: center;
+  /* -webkit-user-drag: none; 
+  -khtml-user-drag: none; 
+  -moz-user-drag: none; 
+  -o-user-drag: none; 
+  user-drag: none;  */
 }
 .picture :hover {
   /* transform: scale(1.5); */
@@ -125,9 +135,10 @@ img {
 .emptyBox {
   color: gainsboro;
   flex: 0 0 100px;
-  width: 100px; 
-  padding: 0px;
-  margin: 0px; 
+  width: 150px; 
+  /* height:min-content; */
+  padding: 12px;
+  /* padding-inline: 12px; */
   /* overflow: hidden; */
   height: auto;
 
@@ -137,26 +148,22 @@ img {
 .emptyBox .photo {
   border-radius: 13px;
   /* box-shadow: -6px 4px 18px 3px #aaaaaa, 0 0 13px -1px #aaaaaa inset; */
+  width: 150px; 
+  height: 112px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
-  top: 0;
+  /* top: 0;
   transition: top ease 0.5s;
   transition: transform 0.3s ease;
   transform: translateX(0px);
-  transform: translateY(0px);
+  transform: translateY(0px); */
 }
 
 .emptyBox .photo:hover {
   border-radius: 13px;
   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-  transform: translateX(2px), translateY(2px);
+  /* transform: translateX(2px), translateY(2px); */
 }
 
 
-
-
-/* .thumbnail{
-  overflow: hidden;
-  height: 157px;
-} */
 
 

@@ -3,12 +3,12 @@ import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import styled from "styled-components";
 import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
-
 import { DndProvider } from "react-dnd";
 import DraggableGridItem from "../dnd/DraggableGridItem";
 // import Grid from 'react';
-import imagesLoaded from "imagesloaded";
-
+// import imagesLoaded from "imagesloaded";
+import PhotoModal from "../components/PhotoModal";
+import ModalForm from "../components/ModalForm"
 const DndContainer = (props) => {
   const photos = props.photos;
 
@@ -36,41 +36,27 @@ const DndContainer = (props) => {
     setImagesLoaded(true);
   };
   
+  // const [openModalForm, setOpenModalForm] = useState(false);
+  // const [openPhoto, setOpenPhoto] = useState(false);
+  const [photo, setPhoto] = useState();
+  const [openModal, setOpenModal] = useState()
+
+  const modalToggle = (photo) => {
+    //function fires depending on whether picture frames that are empty
+    setPhoto(photo);
+    console.log(photo);
+    setOpenModal(!openModal)
+    // !edit &&
+    //   photo != undefined &&
+    // ? setOpenPhoto(!openPhoto)
+    // : setOpenModalForm(!openModalForm)
+  };
   
-  // const [domElements, setDomElements] = useState(props.children);
-
-  // useEffect(() => {
-    //   const grid = gridRef.current;
-    //   adjustGridItemsHeight(grid);
-    // });
-  
-  // useEffect(() => {
-  //   const grid = gridRef.current;
-  //   imagesLoaded(grid, () => {
-  //     adjustGridItemsHeight(grid);
-  //   });
-  // });
-
-  // setImagesLoaded(true);
-  // imagesLoaded(grid).then(() => adjustGridItemsHeight(grid))
-
-  // expression that returns a Promise
-  // (PromiseExpression).then((value) => {
-  // after the promise is resolved
-  // uses value
-  //})
-  // const value = await (PromiseExpression)
-  // after the promise is resolved
-
-  // setTimeout(() => adjustGridItemsHeight(grid), 2000)
-  // useEffect(() => {
-  //   const grid = gridRef.current;
-  //   setTimeout(() => adjustGridItemsHeight(grid), 2000)
-  //     setImagesLoaded(true);
-  //   });
-  // console.log(grid)
 
   return (
+    <>
+    <PhotoModal photo={photo} openModal={openModal} modalToggle={modalToggle} />
+    
     <DndProvider backend={MultiBackend} options={HTML5toTouch}>
       <AppWrapper>
         <div className="grid">
@@ -89,7 +75,7 @@ const DndContainer = (props) => {
                     <img
                       className="photo"
                       onLoad={() => handleLoad()}
-                      onClick={() => props.handleClick(photo)}
+                      onClick={() => modalToggle(photo)}
                       src={photo.url}
                       // loading="lazy"
                       src={
@@ -107,6 +93,9 @@ const DndContainer = (props) => {
         </div>
       </AppWrapper>
     </DndProvider>
+    
+    {/* <ModalPhoto photo={photo}  modalToggle={modalToggle}/> */}
+    </>
   );
 };
 export default DndContainer;
@@ -154,17 +143,61 @@ const GridWrapper = styled.div`
   justify-content: center;
   // align-items: center;
 
-  grid-gap: 26px;
-  // margin-inline: 5px;
+  grid-gap: 2px;
+
   grid-template-columns: repeat(7, auto);
+  grid-auto-rows: 1px;
+
   // grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
   // grid-auto-columns: 100px;
-  grid-auto-rows: 0px;
   // grid-auto-rows: 180px;
-  background: transparent;
+  // &:hover {
+  //   transform: scale(2,2);  
+  // }
   `;
 
 const Grid = (props) => {
   return <div>{/* {children} */}</div>;
 };
 
+
+
+
+
+
+
+
+
+
+// const [domElements, setDomElements] = useState(props.children);
+
+  // useEffect(() => {
+    //   const grid = gridRef.current;
+    //   adjustGridItemsHeight(grid);
+    // });
+  
+  // useEffect(() => {
+  //   const grid = gridRef.current;
+  //   imagesLoaded(grid, () => {
+  //     adjustGridItemsHeight(grid);
+  //   });
+  // });
+
+  // setImagesLoaded(true);
+  // imagesLoaded(grid).then(() => adjustGridItemsHeight(grid))
+
+  // expression that returns a Promise
+  // (PromiseExpression).then((value) => {
+  // after the promise is resolved
+  // uses value
+  //})
+  // const value = await (PromiseExpression)
+  // after the promise is resolved
+
+  // setTimeout(() => adjustGridItemsHeight(grid), 2000)
+  // useEffect(() => {
+  //   const grid = gridRef.current;
+  //   setTimeout(() => adjustGridItemsHeight(grid), 2000)
+  //     setImagesLoaded(true);
+  //   });
+  // console.log(grid)

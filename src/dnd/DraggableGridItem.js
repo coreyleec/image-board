@@ -95,19 +95,22 @@ console.log("currentPhoto", currentPhoto)
 
 const GridItemWrapper = styled.div `
   
-  width: 100px;
+  width: 174px;
+  justify-content: center;
+  
   // min-width: 240px;
-  // background-color: #fff;
+  // background-color: #fff, 0;
   // padding: 0px;
   // opacity: 0;
+  
   // padding-bottom: 10px;
   // padding-right: 10px;
   // border-radius: 5px;
   // border: 1px solid #e0e0e0;
   // line-height: 1.2em;
-  word-wrap: break-word;
+  // word-wrap: break-word;
   // user-select: none;
-  box-sizing: border-box;
+  // box-sizing: border-box;
   // padding-inline: 5px;
   // boxes-per-row: 7;
   // &:hover {

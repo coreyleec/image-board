@@ -121,21 +121,7 @@ export default function App() {
 
   /// MODAL
 
-  const [openModalForm, setOpenModalForm] = useState(false);
-  const [openPhoto, setOpenPhoto] = useState(false);
-  const [photo, setPhoto] = useState();
-  const modalToggle = (photo) => {
-    //function fires depending on whether picture frames that are empty
-    setPhoto(photo);
-    console.log(photo);
-    // !edit &&
-    //   photo != undefined &&
-    //   photo.url != null
-    // ?
-    setOpenPhoto(!openPhoto);
-    // :
-    // setOpenModalForm(!openModalForm)
-  };
+  
   const handleClick = (photo) => {
     // setPhoto(photo)
     console.log(photo);
@@ -185,70 +171,8 @@ export default function App() {
                 handleClick={handleClick}
                 reorderSubmit={reorderSubmit}
               />
-              {openModalForm ? (
-                <Modal
-                  key="key"
-                  // animation={false}
-                  show={openModalForm}
-                  onHide={modalToggle}
-                  data-backdrop="static"
-                >
-                  <Modal.Header>
-                    <button
-                      className="modalBtn"
-                      onClick={() => setOpenModalForm(!openModalForm)}
-                    >
-                      X
-                    </button>
-                    {/* FORM START */}
-                  </Modal.Header>
-                  <form
-                    onSubmit={(e) =>
-                      addPhoto(e, photo, setOpenModalForm(!openModalForm))
-                    }
-                  >
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="name"
-                      // onChange={(e) => setName(e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      name="details"
-                      placeholder="details"
-                      // onChange={(e) => setDetails(e.target.value)}
-                    />
-                    <input
-                      type="text"
-                      name="image"
-                      placeholder="url"
-                      // onChange={(e) => setUrl(e.target.value)}
-                    />
-                    <button type="submit">ENTER</button>
-                  </form>
-                  <p></p>
-                </Modal>
-              ) : null}
-              {/* PHOTO MODAL */}
-              {/* {openPhoto ? 
-            <Modal className="modal"
-            show={openPhoto}  
-            onHide={modalToggle}
-            data-toggle="modal" data-backdrop="static" data-keyboard="false"
-        >
-            <Modal.Header>
-                <button  className="modalBtn"  
-                onClick={() => setOpenPhoto(!openPhoto)}
-                >X</button>
-                </Modal.Header> 
-                <p>{photo.name}</p>
-                <p>{photo.details}</p>
-                <img 
-                
-                src={photo.url}></img>
-                </Modal> 
-                : null} */}
+              
+              
             </div>
           </article>
           {/* : <article>
