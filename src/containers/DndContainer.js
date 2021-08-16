@@ -9,6 +9,8 @@ import DraggableGridItem from "../dnd/DraggableGridItem";
 // import imagesLoaded from "imagesloaded";
 import PhotoModal from "../components/PhotoModal";
 import ModalForm from "../components/ModalForm"
+
+
 const DndContainer = (props) => {
   const photos = props.photos;
 
@@ -35,11 +37,10 @@ const DndContainer = (props) => {
     adjustGridItemsHeight(grid);
     setImagesLoaded(true);
   };
-  
   // const [openModalForm, setOpenModalForm] = useState(false);
   // const [openPhoto, setOpenPhoto] = useState(false);
   const [photo, setPhoto] = useState();
-  const [openModal, setOpenModal] = useState()
+  const [openModal, setOpenModal] = useState(false)
 
   const modalToggle = (photo) => {
     //function fires depending on whether picture frames that are empty
@@ -52,11 +53,31 @@ const DndContainer = (props) => {
     // : setOpenModalForm(!openModalForm)
   };
   
+  // const nextPhoto = (initialPhoto) => {
+  //   let newPhoto = photos.filter(photo => photo.url != null && photo.index === initialPhoto + 1)
+  //   setPhoto(newPhoto)
+  // }
+  // const previousPhoto = (initialPhoto) => {
+  //   let newPhoto = photos.find(photo => photo.url != null && photo.index === initialPhoto - 1)
+  //   setPhoto(newPhoto)
+  // }
+
+  const nextPhoto = (initialPhoto) => {
+    let newPhoto = photos.find(photo => photo.index === initialPhoto + 1)
+    setPhoto(newPhoto)
+  }
+  const previousPhoto = (initialPhoto) => {
+    let newPhoto = photos.find(photo => photo.index === initialPhoto - 1)
+    setPhoto(newPhoto)
+  }
+
 
   return (
     <>
-    <PhotoModal photo={photo} openModal={openModal} modalToggle={modalToggle} />
-    
+    {openModal && 
+    <ModalForm photo={photo} setOpenModal={setOpenModal} openModal={openModal} modalToggle={modalToggle} previousPhoto={previousPhoto} nextPhoto={nextPhoto}/>
+    }  
+
     <DndProvider backend={MultiBackend} options={HTML5toTouch}>
       <AppWrapper>
         <div className="grid">
@@ -142,10 +163,10 @@ const GridWrapper = styled.div`
   display: grid;
   justify-content: center;
   // align-items: center;
-
+  /* z-index: -1; */
   grid-gap: 2px;
 
-  grid-template-columns: repeat(7, auto);
+  grid-template-columns: repeat(5, auto);
   grid-auto-rows: 1px;
 
   // grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
@@ -156,9 +177,7 @@ const GridWrapper = styled.div`
   // }
   `;
 
-const Grid = (props) => {
-  return <div>{/* {children} */}</div>;
-};
+
 
 
 

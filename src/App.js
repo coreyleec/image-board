@@ -15,6 +15,8 @@ import { DndProvider } from "react-dnd";
 import DraggableGridItem from "./dnd/DraggableGridItem";
 import Grid from "./grid/Grid";
 
+import PhotoModal from "./components/PhotoModal";
+
 export default function App() {
   require("events").EventEmitter.defaultMaxListeners = 20;
 
@@ -121,6 +123,21 @@ export default function App() {
 
   /// MODAL
 
+  // const [openModalForm, setOpenModalForm] = useState(false);
+  // const [openPhoto, setOpenPhoto] = useState(false);
+  const [photo, setPhoto] = useState();
+  const [openModal, setOpenModal] = useState()
+
+  const modalToggle = (photo) => {
+    //function fires depending on whether picture frames that are empty
+    setPhoto(photo);
+    console.log(photo);
+    setOpenModal(!openModal)
+    // !edit &&
+    //   photo != undefined &&
+    // ? setOpenPhoto(!openPhoto)
+    // : setOpenModalForm(!openModalForm)
+  };
   
   const handleClick = (photo) => {
     // setPhoto(photo)
@@ -131,8 +148,11 @@ export default function App() {
     setPhotos(photos);
   };
 
+
+
   return (
     <Router>
+      {/* {openModal && <PhotoModal photo={photo} openModal={openModal} modalToggle={modalToggle} />} */}
       <div className="cont">
         <SideBar
         // edit={edit}
@@ -167,6 +187,7 @@ export default function App() {
             <div>
               <DndContainer
                 photos={photos}
+                modalToggle={modalToggle}
                 handlePhotos={handlePhotos}
                 handleClick={handleClick}
                 reorderSubmit={reorderSubmit}
