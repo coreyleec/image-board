@@ -44,13 +44,13 @@ const ModalForm = (props) => {
           {photo != undefined && photo.url != null ? (
           <ModelContent>
             <div className="modal-name-cont">
-              <h1>{photo.name}</h1>
             </div>
             <div className="modal-img-cont">
+              <h1>{photo.name}</h1>
               <img src={photo.url}></img>
+              <p>{photo.content}</p>
             </div>
             <div className="modal-details-cont">
-              <p>{photo.content}</p>
             </div>
           </ModelContent>
 
@@ -80,6 +80,7 @@ const ModalForm = (props) => {
             />
             {/* <button type="submit">ENTER</button> */}
           </form>
+
           )}
           </Modal>
     </div>
@@ -89,11 +90,29 @@ const ModalForm = (props) => {
 export default ModalForm;
 
 const ModelContent = styled.div`
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    /* line-height: 1.8; */
     color: #141414;
-    h1 { margin-bottom: 1rem; color: white; font-size: 40px; padding: 100px; text-align: left; font-weight: normal;}
-    p { margin-bottom: 1rem; color: white; font-size: 20px; padding: 100px; text-align: left; }
-    }`;
+    /* position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+        display: flex;
+        justify-content: space-between; */
+        /* flex-direction: row; */
+
+    .modal-img-cont {
+      width: auto;
+      position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) !important;
+        display: flex;
+      flex-direction: row;
+    }
+    .modal-details-cont {
+      
+    }
+    }
+    h1 {color: white; padding-top: 100px; font-size: 40px; text-align: left; font-weight: normal;}
+    p { color: white; padding-top: 100px; font-size: 20px; text-align: left; }
+    img { padding: auto; max-width: 800px; max-height: 750px; padding-inline: 50px;}
+    `;

@@ -26,7 +26,7 @@ const DndContainer = (props) => {
     props.handlePhotos(newPhotos);
   };
 
-  console.log(props);
+  // console.log(props);
   const gridRef = useRef(null);
   const { children } = props;
 
@@ -63,19 +63,27 @@ const DndContainer = (props) => {
   // }
 
   const nextPhoto = (initialPhoto) => {
-    let newPhoto = photos.find(photo => photo.index === initialPhoto + 1)
-    setPhoto(newPhoto)
+    let lastPhoto = photos[photos.length - 1]
+    let nextPhoto = photos.filter(photo => photo.index === initialPhoto.index + 1)[0]
+    console.log("nextPhoto", nextPhoto)
+    initialPhoto === lastPhoto 
+    ? setPhoto(photos[0])
+    : setPhoto(nextPhoto)
   }
+  
   const previousPhoto = (initialPhoto) => {
-    let newPhoto = photos.find(photo => photo.index === initialPhoto - 1)
-    setPhoto(newPhoto)
+    let firstPhoto = photos[0]
+    let previousPhoto = photos.filter(photo => photo.index === initialPhoto.index - 1)[0]
+    initialPhoto === firstPhoto
+    ? setPhoto(photos[photos.length - 1])
+    : setPhoto(previousPhoto)
   }
 
 
   return (
     <>
     {openModal && 
-    <ModalForm photo={photo} setOpenModal={setOpenModal} openModal={openModal} modalToggle={modalToggle} previousPhoto={previousPhoto} nextPhoto={nextPhoto}/>
+    <ModalForm photo={photo} photos={props.photos} setOpenModal={setOpenModal} openModal={openModal} modalToggle={modalToggle} previousPhoto={previousPhoto} nextPhoto={nextPhoto}/>
     }  
 
     <DndProvider backend={MultiBackend} options={HTML5toTouch}>
@@ -139,7 +147,7 @@ const AppWrapper = styled.div`
 
 const adjustGridItemsHeight = (grid) => {
   const photos = grid.children;
-  console.log("photos grid children", photos);
+  // console.log("photos grid children", photos);
 
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i];
@@ -153,7 +161,7 @@ const adjustGridItemsHeight = (grid) => {
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)
     );
-    console.log("rowspan", rowSpan);
+    // console.log("rowspan", rowSpan);
     photo.style.gridRowEnd = "span " + rowSpan;
     // console.log("rowSpan", rowSpan)
   }

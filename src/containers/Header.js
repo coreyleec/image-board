@@ -1,5 +1,7 @@
 import { useState } from 'react'
 import React from 'react';
+import styled from "styled-components";
+
 
 const Header = (props) => {
 
@@ -9,7 +11,7 @@ const Header = (props) => {
 
         return (
             <header>
-            {/* <h1 >{props.currentUser ? props.userName : "Memphis Project"}</h1>             */}
+            {/* <TitleHeader >{props.currentUser ? props.userName : "Memphis Project"}</TitleHeader>             */}
             {/* props.currentUser != null && props.userName != null */}
                  {props.edit  
                 ?  <form 
@@ -24,7 +26,7 @@ const Header = (props) => {
                             onChange={(e) => changeName(e.target.value)}
                         ></input>
                 </form>
-                : <h1 >{props.currentUser ? props.userName : "Image Board"}</h1> 
+                : <TitleHeader >{props.currentUser ? props.userName : "Image Board"}</TitleHeader> 
                     }
             </header>
         )
@@ -32,3 +34,10 @@ const Header = (props) => {
 }
 
 export default Header
+
+const TitleHeader = styled.h1`
+    font-size:3.5rem;
+    text-align: right;
+    font-family: Helvetica, sans-serif;
+    padding-right: 20px;
+`

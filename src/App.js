@@ -148,6 +148,17 @@ export default function App() {
     setPhotos(photos);
   };
 
+  // EDIT
+
+  const [edit, setEdit] = useState(false);
+  const [buttonToggle, setButtonToggle] = useState(false)
+  const editToggle = () => {
+    edit === false
+    ? setEdit(!edit)
+    : reorderSubmit()
+      setEdit(!edit) 
+      
+  };
 
 
   return (
@@ -175,7 +186,7 @@ export default function App() {
         // edit={!edit} nameSubmit={nameSubmit}
         />
         <AsideRight
-          // editToggle={editToggle}
+          editToggle={editToggle}
           // currentUser={currentUser} edit={edit}
           reorderSubmit={reorderSubmit}
         />
