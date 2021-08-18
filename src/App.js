@@ -33,7 +33,20 @@ export default function App() {
       });
   }, []);
 
-  // console.log("photos after function",photos)
+
+  // const sortPhotosOnly = () => {
+  //   const photosOnly = (photos != undefined) && photos.filter(photo => photo.url != null)
+  //   const sortedPhotosOnly = photosOnly.sort((a, b) => { return a.photo - b.photo })
+  //   setPhotos(sortedPhotosOnly)
+  // }
+
+// edit === 
+
+// useEffect(() => {
+
+
+// }, [])
+
 
   const reorderSubmit = () => {
     // for each photo save that photos's index
@@ -197,6 +210,7 @@ export default function App() {
           <article>
             <div>
               <DndContainer
+                edit={edit}
                 photos={photos}
                 modalToggle={modalToggle}
                 handlePhotos={handlePhotos}

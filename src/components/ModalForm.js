@@ -10,15 +10,9 @@ const ModalForm = (props) => {
   return (
     <div>
         <Modal
-      
-          // className="modal"
-          // size="lg"
-          // style={{ "overlay": {zIndex: 1000}}}
           show={props.openModal}
           onHide={props.modalToggle}
           data-toggle="modal"
-          // aria-labelledby="example-modal-sizes-title-sm"
-
           // data-backdrop="static"
           // data-keyboard="false"
         >

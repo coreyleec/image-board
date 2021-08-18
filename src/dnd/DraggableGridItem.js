@@ -95,7 +95,7 @@ console.log("currentPhoto", currentPhoto)
 
 const GridItemWrapper = styled.div `
   
-  width: 174px;
+  width: 165px;
   justify-content: center;
   
   // min-width: 240px;

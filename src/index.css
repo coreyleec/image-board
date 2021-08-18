@@ -78,18 +78,23 @@ article {
 
 }
 
-
+.grid:hover .picture:not(:hover) .photo {
+  /* height:50%;
+  width: 50%;
+  transition: all .5s ease; */
+}
   
 .picture {
-  width: 150px; 
-  flex: 0 0 100px;  
-  padding: 12px;
+  width: 165px; 
+  /* flex: 0 0 100px;   */
+  padding: 15px;
 }
 .picture .photo{
 border-radius: 13px;
 padding: 0px;
 min-height: 100px;
-width: 150px;
+max-height: 255.990px;
+width: 135px;
 
 overflow: hidden;
 /* transition: all .4s ease; */
@@ -97,53 +102,66 @@ overflow: hidden;
 .picture .photo:hover{
 border-radius: 13px;
 }
-
-.grid:hover .picture:not(:hover) .photo {
-  /* height:50%;
-  width: 50%;
-  transition: all .5s ease; */
-}
-
 .photo {
-  /* position: relative;
+  position: relative;
   width: 100%; 
-  align-items: center; */
+  align-items: center;
 }
 .picture :hover {
-  /* transform: scale(1.5); */
   height: auto;
-  /* width:145px; */
-  /* transform: scale(2,2); */
   box-shadow: -3px 3px 5px 2px #aaaaaa,
 }
+/* transform: scale(1.5); */
+/* width:145px; */
+/* transform: scale(2,2); */
 .emptyBox {
   color: gainsboro;
+  /* z-index: -1; */
   flex: 0 0 100px;
   width: 150px; 
-  padding: 12px;
+  padding: 15px;
   height: auto;
+  /* z-index: -1; */
 }
-
-
 .emptyBox .photo {
   border-radius: 13px;
-  /* z-index: -1; */
-  /* box-shadow: -6px 4px 18px 3px #aaaaaa, 0 0 13px -1px #aaaaaa inset; */
-  width: 150px; 
-  height: 112px;
+  width: 135px; 
+  height: 100px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
-  /* top: 0;
-  transition: top ease 0.5s;
-  transition: transform 0.3s ease;
-  transform: translateX(0px);
-  transform: translateY(0px); */
 }
-
 .emptyBox .photo:hover {
   border-radius: 13px;
   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
   /* transform: translateX(2px), translateY(2px); */
 }
+/* z-index: -1; */
+/* box-shadow: -6px 4px 18px 3px #aaaaaa, 0 0 13px -1px #aaaaaa inset; */
+/* top: 0;
+transition: top ease 0.5s;
+transition: transform 0.3s ease;
+transform: translateX(0px);
+transform: translateY(0px); */
+
+.edit-picture {
+  color: gainsboro;
+  flex: 0 0 100px;
+  width: 150px; 
+  padding: 12px;
+  height: auto;
+  /* z-index: -1; */
+}
+
+.edit-picture .photo {
+  z-index: -1;
+  border-radius: 13px;
+  width: 150px; 
+  height: 112px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
+}
+
+
+
+
 
 
 * {

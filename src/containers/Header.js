@@ -26,7 +26,7 @@ const Header = (props) => {
                             onChange={(e) => changeName(e.target.value)}
                         ></input>
                 </form>
-                : <TitleHeader >{props.currentUser ? props.userName : "Image Board"}</TitleHeader> 
+                : <TitleHeader >{props.currentUser ? props.userName : "ImageBoard"}</TitleHeader> 
                     }
             </header>
         )
