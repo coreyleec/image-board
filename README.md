@@ -5,6 +5,7 @@ Prior to Image Board the project was called Memphis. Rather than continue to wor
 For a more in depth look at what's to come, please refer to verion 1 [frontend](https://github.com/coreyleec/memphis) and [backend](https://github.com/coreyleec/memphis_backend).
 
 UPDATE 08.16.21
+
 ![](demo-2.gif)
 
 Just a brief update as I get closer to refining the backend. I decided to continue with react bootstrap modal after trying to code it myself led to some issues with indexing (i.e., images tiles were appearing above the modal). I chose to shelve that issue since I had more success Bootstrap Modal.
