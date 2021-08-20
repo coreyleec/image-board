@@ -16,7 +16,7 @@ Additionally, I gave img tags with null img src's an additional CSS state, setti
 
 And lastly, I got rid of the "Reorder Submit" button, and set the edit switch to call the function when it's initial state was true and set to false. 
 
-I'm still debating on the size of the image tiles, and thier on hover functionality. I am curious to try to set horizontal photo heights to be half as tall and portrait photos to make the grid function a little better. I'm having some issue swith my JSON server saving the reordered array, but I won't worry about that unless the problems continues once I've reincorperated Rails/PostreSQL. 
+I'm still debating on the size of the image tiles, and thier on hover functionality. I am curious to try to set landscape photo heights to be half as tall and portrait photos to make the grid function a little better. I'm having an issue swith my JSON server saving the reordered array exacly as it is, but I won't worry about that unless the problems continues once I've reincorperated Rails/PostreSQL. 
 
 Centering the modal image has been a bit tricky due to some of Bootsrap Modals default style settings being set to display block, but I plan to nest a container with an absolute position in center, and then styling within that. For more details, and code examples please see my [blog](https://medium.com/@CoreyLee) where I document my process. 
 
