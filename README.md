@@ -8,17 +8,15 @@ UPDATE 08.16.21
 
 ![](demo-2.gif)
 
-Just a brief update as I get closer to refining the backend. I decided to continue with react bootstrap modal after trying to code it myself led to some issues with indexing (i.e., images tiles were appearing above the modal). I chose to shelve that issue since I had more success Bootstrap Modal.
-
-To switch between photos within the modal, I originally relied upon each object assigned index value, but since I would allow the user to interact with two versions of the array, in edit mode and non-edit mode, I chose to set the value of the array conditionally based on whether the edit condition was met. In edit mode, img tags without photos appear as forms for which the user can link an image. When user is not in edit mode, the next and previous buttons will skip to the next img take with a src value. 
+I chose to continue with React Bootstrap Modal rather than  code the Modal from scratch after some issues with indexing (i.e., image tiles were appearing above the non-Bootstrap modal). I'll return to this at a later time, but right now I feel that there's more important things I can focus on.
 
 Additionally, I gave img tags with null img src's an additional CSS state, setting them to the back using their Z Index, and I also disabled the DnD feature, when the edit condition was not met. 
 
-And lastly, I got rid of the "Reorder Submit" button, and set the edit switch to call the function when it's initial state was true and set to false. 
+And lastly, I got rid of the "Reorder Submit" button, and set the edit switch to call the function when its initial state was true and set to false.
 
-I'm still debating on the size of the image tiles, and thier on hover functionality. I am curious to try to set landscape photo heights to be half as tall and portrait photos to make the grid function a little better. I'm having an issue swith my JSON server saving the reordered array exacly as it is, but I won't worry about that unless the problems continues once I've reincorperated Rails/PostreSQL. 
+I'm still debating on the size of the image tiles, and their on hover functionality. I am curious to try to set landscape photo heights to be half as tall and portrait photos to make the grid function a little better. I'm having an issue with my JSON server saving the reordered array exactly as it is, but I won't worry about that unless the problems continues once I've reincorporated Rails/PostgreSQL.
 
-Centering the modal image has been a bit tricky due to some of Bootsrap Modals default style settings being set to display block, but I plan to nest a container with an absolute position in center, and then styling within that. For more details, and code examples please see my [blog](https://medium.com/@CoreyLee) where I document my process. 
+Centering the modal image has been a bit tricky due to some of Bootsrap Modals default style settings being set to display block, but I plan to nest a container with an absolute position in center, and then styling within that. For more details, and code examples please see my blog where I document my process.
 
 
 ![](demo.gif)
