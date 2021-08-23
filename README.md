@@ -4,6 +4,21 @@ Image Board is a visual tool for image layout but may also act as a digital port
 Prior to Image Board the project was called Memphis. Rather than continue to work on the original, I chose to take what I learned an rebuild the project piece by piece, while keeping a reference to all of the original code as I rebuild. 
 For a more in depth look at what's to come, please refer to verion 1 [frontend](https://github.com/coreyleec/memphis) and [backend](https://github.com/coreyleec/memphis_backend).
 
+UPDATE 08.16.21
+
+![](demo-2.gif)
+
+I chose to continue with React Bootstrap Modal rather than  code the Modal from scratch after some issues with indexing (i.e., image tiles were appearing above the non-Bootstrap modal). I'll return to this at a later time, but right now I feel that there's more important things I can focus on.
+
+Additionally, I gave img tags with null img src's an additional CSS state, setting them to the back using their Z Index, and I also disabled the DnD feature, when the edit condition was not met. 
+
+And lastly, I got rid of the "Reorder Submit" button, and set the edit switch to call the function when its initial state was true and set to false.
+
+I'm still debating on the size of the image tiles, and their on hover functionality. I am curious to try to set landscape photo heights to be half as tall and portrait photos to make the grid function a little better. I'm having an issue with my JSON server saving the reordered array exactly as it is, but I won't worry about that unless the problems continues once I've reincorporated Rails/PostgreSQL.
+
+Centering the modal image has been a bit tricky due to some of Bootsrap Modals default style settings being set to display block, but I plan to nest a container with an absolute position in center, and then styling within that. For more details, and code examples please see my blog where I document my process.
+
+
 ![](demo.gif)
 
 Changes in this iteration:
@@ -22,13 +37,13 @@ And upcoming changes include:
     Aesthetics and functionality
         - clean up sidebar navigation
         - incorperate "settings" in right panel
-        - left and right panel scrolls with window
-        - edit toggle turns off DnD functionality
+        X left and right panel scrolls with window
+        X edit toggle turns off DnD functionality
         - refine css transitions
-        - drag and drop transfer from grid photo to folder in sidebar 
+in progress - drag and drop transfer from grid photo to folder in sidebar 
     Code
-        - clean up my code
-        - break app into smaller more specific componenents
+in progress - clean up my code
+in progress - break app into smaller more specific componenents
     Misc
         - Present other code related projects as I build out the portfolio aspect
 
