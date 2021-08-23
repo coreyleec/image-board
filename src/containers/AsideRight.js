@@ -26,7 +26,7 @@ const AsideRight = (props) => {
             </div>
         
          {/* } */}
-      <SideBarButton style={{"margin":"10px", "padding": "4px"}} onClick={() => props.reorderSubmit()}>submit reorder</SideBarButton>
+      {/* <SideBarButton style={{"margin":"10px", "padding": "4px"}} onClick={() => props.reorderSubmit()}>submit reorder</SideBarButton> */}
     </aside>
   );
 };

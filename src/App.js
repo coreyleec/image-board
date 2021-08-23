@@ -162,15 +162,14 @@ export default function App() {
   };
 
   // EDIT
+  const [buttonToggle, setButtonToggle] = useState(false)
 
   const [edit, setEdit] = useState(false);
-  const [buttonToggle, setButtonToggle] = useState(false)
   const editToggle = () => {
     edit === false
     ? setEdit(!edit)
     : reorderSubmit()
       setEdit(!edit) 
-      
   };
 
 

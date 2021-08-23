@@ -178,7 +178,6 @@ transform: translateY(0px); */
   .modal {
     padding:100px;
     position: fixed;
-    z-index:9999;
     top :0;
     left:0;
     right:0;
@@ -187,7 +186,7 @@ transform: translateY(0px); */
     color: white;
     outline: none;
     padding: 3.2rem;
-    /* text-align: center; */
+
     padding: 100px;
     
   }

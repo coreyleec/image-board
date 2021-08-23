@@ -17,9 +17,9 @@ const DndContainer = (props) => {
     // edit === true &&
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
-    console.log("firstPhoto", firstPhoto);
+    // console.log("firstPhoto", firstPhoto);
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
-    console.log("secondPhoto", secondPhoto);
+    // console.log("secondPhoto", secondPhoto);
     const firstIndex = firstPhoto.index; // declares variable value of first photo index
     firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
     secondPhoto.index = firstIndex; // then sets the second photo to the
@@ -32,7 +32,8 @@ const DndContainer = (props) => {
 
   let onDropVariable = props.edit ? onDrop : disableOnDrop;
 
-  // console.log(props);
+
+
   const gridRef = useRef(null);
   const { children } = props;
 
@@ -206,11 +207,11 @@ const AppWrapper = styled.div`
 // `;
 
 const adjustGridItemsHeight = (grid) => {
-  const photos = grid.children;
+  const photos = grid.children; // set all grid photo to vairable "photos"
   // console.log("photos grid children", photos);
 
   for (let i = 0; i < photos.length; i++) {
-    let photo = photos[i];
+    let photo = photos[i]; // each square is "photo"
     let rowHeight = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-auto-rows")
     );
@@ -221,9 +222,9 @@ const adjustGridItemsHeight = (grid) => {
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)
     );
-    console.log("rowspan", rowSpan);
+    // console.log("rowspan", rowSpan);
     photo.style.gridRowEnd = "span " + rowSpan;
-    console.log("rowSpan", rowSpan);
+    // console.log("rowSpan", rowSpan);
   }
 };
 
