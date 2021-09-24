@@ -1,9 +1,6 @@
 import React from "react";
 import { useEffect, useState } from "react";
 import styled from "styled-components";
-// import "..components/ToggleSwitch.css"
-
-// import Switch from "react-switch"
 
 const AsideRight = (props) => {
   const [isToggled, setIsToggled] = useState(false);
@@ -11,8 +8,8 @@ const AsideRight = (props) => {
 
   return (
     <aside>
-      {/* {props.currentUser.id != null &&  */}
-            <div>
+      {props.currentUser.id != null && 
+            <Sticky>
             <Switch>
              <label className="toggle-switch">
             <input type="checkbox" checked={props.edit}
@@ -23,25 +20,30 @@ const AsideRight = (props) => {
             </label>
             <p>edit</p>
             </Switch>
-            </div>
-        
-         {/* } */}
-      {/* <SideBarButton style={{"margin":"10px", "padding": "4px"}} onClick={() => props.reorderSubmit()}>submit reorder</SideBarButton> */}
+            
+            {props.edit === true 
+            ? <Switch>
+             <label className="toggle-switch">
+            <input type="checkbox" 
+            checked={props.enableDelete}
+             onChange={props.deleteToggle}
+             />
+            <span className="switch" />
+            </label>
+            <p>enable delete</p> 
+            </Switch>
+            : null }
+            </Sticky>} 
     </aside>
   );
 };
 export default AsideRight;
 
-const SideBarButton = styled.button`
-    margin: 10px;
-    padding: 4px;
-    /* border-style: none; */
-    border-top: 1px;
-    border-right: 1px;
-    background-color: #ccc;
 
+const Sticky = styled.div`
+position: sticky;
+  top: 0;
 `
-
 
 const Switch = styled.label`
   display:flex;

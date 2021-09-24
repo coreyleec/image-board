@@ -1,3 +1,96 @@
+import { useRef } from 'react';
+import { useDrag, useDrop } from 'react-dnd';
+import { ItemTypes } from './ItemTypes';
+const style = {
+    border: '1px dashed gray',
+    padding: '0.5rem 1rem',
+    marginBottom: '.5rem',
+    backgroundColor: 'white',
+    cursor: 'move',
+};
+export const Card = ({ id, text, index, moveCard }) => {
+    const ref = useRef(null);
+
+    const [{ handlerId }, drop] = useDrop({
+        accept: ItemTypes.CARD,
+        collect(monitor) {
+            return {
+                handlerId: monitor.getHandlerId(),
+            };
+        },
+        hover(item, monitor) {
+            if (!ref.current) {
+                return;
+            }
+
+            const dragIndex = item.index;
+            const hoverIndex = index;
+            // Don't replace items with themselves
+            if (dragIndex === hoverIndex) {
+                return;
+            }
+            // Determine rectangle on screen
+            const hoverBoundingRect = ref.current?.getBoundingClientRect();
+            // Get vertical middle
+            const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+            // Determine mouse position
+            const clientOffset = monitor.getClientOffset();
+            // Get pixels to the top
+            const hoverClientY = clientOffset.y - hoverBoundingRect.top;
+            // Only perform the move when the mouse has crossed half of the items height
+            // When dragging downwards, only move when the cursor is below 50%
+            // When dragging upwards, only move when the cursor is above 50%
+            // Dragging downwards
+            if (dragIndex < hoverIndex && hoverClientY < hoverMiddleY) {
+                return;
+            }
+            // Dragging upwards
+            if (dragIndex > hoverIndex && hoverClientY > hoverMiddleY) {
+                return;
+            }
+            // Time to actually perform the action
+            moveCard(dragIndex, hoverIndex);
+            // Note: we're mutating the monitor item here!
+            // Generally it's better to avoid mutations,
+            // but it's good here for the sake of performance
+            // to avoid expensive index searches.
+            item.index = hoverIndex;
+        },
+    });
+
+
+    
+    const [{ isDragging }, drag] = useDrag({
+        type: ItemTypes.CARD,
+        item: () => {
+            return { id, index };
+        },
+        collect: (monitor) => ({
+            isDragging: monitor.isDragging(),
+        }),
+    });
+    const opacity = isDragging ? 0 : 1;
+
+    drag(drop(ref));
+    return (
+    <div ref={ref} style={{ ...style, opacity }} data-handler-id={handlerId}>
+			{text}
+		</div>);
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 import React from "react";
 import { useEffect, useState, useRef, useLayoutEffect } from "react";
 import styled from "styled-components";
@@ -11,11 +104,10 @@ const DndContainer = (props) => {
   const photos = props.photos;
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
-    console.log("firstPhoto");
-    console.log(firstPhotoId, secondPhotoId)
+    // edit === true &&
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
-    console.log("firstPhoto", firstPhoto);
+    // console.log("firstPhoto", firstPhoto);
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
     // console.log("secondPhoto", secondPhoto);
     const firstIndex = firstPhoto.index; // declares variable value of first photo index
@@ -38,13 +130,13 @@ const DndContainer = (props) => {
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const handleLoad = () => {
-    // console.log("handleload")
     const grid = gridRef.current;
     const image = imgRef.current
     adjustGridItemsHeight(grid, image);
     setImagesLoaded(true);
   };
-
+  // const [openModalForm, setOpenModalForm] = useState(false);
+  // const [openPhoto, setOpenPhoto] = useState(false);
   const [photo, setPhoto] = useState();
   const [openModal, setOpenModal] = useState(false);
 
@@ -128,6 +220,7 @@ const DndContainer = (props) => {
                   >
                     {/* {console.log(DraggableGridItem)} */}
                     <div
+                      // className={photo.url != null ? "picture" : "emptyBox"}
                       className={
                         !props.edit
                           ? photo.url != null
@@ -138,9 +231,6 @@ const DndContainer = (props) => {
                           : "emptyBox"
                       }
                     >
-                      {props.enableDelete && 
-                        <button className="delete-photo" onClick={props.deletePhoto(photo)} >+</button>
-                        }
                       <img
                         className="photo"
                         ref={imgRef}
@@ -181,9 +271,8 @@ const adjustGridItemsHeight = (grid, image) => {
   // const image = image.children
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
-    // console.log(image, photo.firstChild.getBoundingClientRect())
-    // console.log("adjust items")
-    
+    console.log(image, photo.firstChild.getBoundingClientRect())
+    // console.log("photo", photo)
     let rowHeight = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-auto-rows")
     );
@@ -194,12 +283,16 @@ const adjustGridItemsHeight = (grid, image) => {
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)
     );
-   
-    let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? photo.
-    style.height = "240px" : photo.style.height = "112px"
-    
-    photo.style.gridRowEnd = "span " + rowSpan;
+      // console.log("rowSpan", rowSpan)
+      //  rowSpan > 15
+    let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? photo.style.height = "240px" : photo.style.height = "112px"
 
+// photo.firstChild.firstChild.style.height = height
+// console.log("photo second child height", photo.firstChild.firstChild.height)
+    // console.log("first child height", photo.firstChild.getBoundingClientRect().height, "and width", photo.firstChild.getBoundingClientRect().width)
+    // console.log("rowspan", rowSpan);
+    photo.style.gridRowEnd = "span " + rowSpan;
+    // console.log("rowSpan", rowSpan);
   } return 
 };
 //nodeValue
@@ -208,7 +301,7 @@ const adjustGridItemsHeight = (grid, image) => {
 const GridWrapper = styled.div`
   display: grid;
   justify-content: center;
-  grid-gap: 2px;
+  grid-gap: 1px;
 
   grid-template-columns: repeat(6, 150px);
   grid-auto-rows: 1px;
@@ -313,3 +406,273 @@ const GridWrapper = styled.div`
 //   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
 
 // }`
+
+
+
+
+
+
+
+
+
+body {
+    /* width: 100vw; */
+    margin: 0;
+    font-family: "HelveticaNeue";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+      monospace;
+  }
+  
+  
+  .cont {
+    display:grid;
+    height: 100vh;
+    grid-template-columns:  0.25fr 1fr 0.25fr;
+    grid-template-rows: auto 1.5fr auto;
+    grid-template-areas: 
+    "leftbar header header"
+    "leftbar main rightbar"
+    "leftbar footer rightbar";
+    
+  
+  }
+  .grid {
+    justify-content: center;
+  }
+  header {
+    grid-area: header;
+    min-height: 150px;
+    background-color: coral;
+  }
+  
+  main {
+    background-color: gainsboro;
+    max-height:inherit;
+    /* max-width: inherit; */
+    grid-area: main;
+  
+  }
+  
+  aside:nth-child(1) {
+    padding-top: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
+    grid-area: leftbar;
+    background-color: coral;
+  }
+  aside:nth-child(1) input {
+  font-size: 2rem;
+      text-align: left;
+      font-family: Helvetica, sans-serif;
+      width: 240px;
+      color: #212529;
+  }
+  
+  aside:nth-child(3) {
+    grid-area: rightbar;
+    background-color: coral;
+  }
+  
+  footer {
+    background-color: lightgrey;
+    grid-area: footer;
+    min-height: 100px;
+  }
+  
+  article {
+    /* flex: 1 0 auto; */
+    padding-top: 80px;
+    /* padding-inline: 80px; */
+  
+  }
+  
+  .grid:hover .picture:not(:hover) .photo {
+    /* height:50%;
+    width: 50%;
+    transition: all .5s ease; */
+  }
+    
+  .picture {
+    max-width: 150px; 
+    /* flex: 0 0 100px;   */
+    padding: 15px;
+    overflow: hidden;
+    align-items: center;
+    justify-content: center;
+    border-radius: 13px;
+  }
+  .picture .photo{
+    overflow: hidden;
+    position: relative;
+    max-width: 150px; 
+  
+  /* padding: 0px; */
+  /* min-height: 100px; */
+  max-height: 240px;  
+  /* width: 135px; */
+  
+  
+  
+  /* transition: all .4s ease; */
+  }
+  /* .picture .photo:hover{
+  border-radius: 13px;
+  } */
+  .photo {
+    position: relative;
+    /* width: 100%; */
+    overflow: hidden;
+    min-width: 150px;
+    max-width: 220px;
+    min-height: 112px;
+    align-items: center;
+  }
+  /* .picture :hover {
+    height: auto;
+    box-shadow: -3px 3px 5px 2px #aaaaaa,
+  } */
+  /* transform: scale(1.5); */
+  /* width:145px; */
+  /* transform: scale(2,2); */
+  .emptyBox {
+    color: gainsboro;
+    flex: 0 0 100px;
+    width: 150px; 
+    height: 112px;
+    padding: 15px;
+    height: auto;
+  }
+  .emptyBox .photo {
+    border-radius: 13px;
+    width: 135px; 
+    height: 100px;
+    box-shadow: -3px 3px 5px 2px #aaaaaa;
+  }
+  .emptyBox .photo:hover {
+    border-radius: 13px;
+    box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+    /* transform: translateX(2px), translateY(2px); */
+  }
+  /* z-index: -1; */
+  /* box-shadow: -6px 4px 18px 3px #aaaaaa, 0 0 13px -1px #aaaaaa inset; */
+  /* top: 0;
+  transition: top ease 0.5s;
+  transition: transform 0.3s ease;
+  transform: translateX(0px);
+  transform: translateY(0px); */
+  
+  .missing-box {
+    color: gainsboro;
+    flex: 0 0 100px;
+    width: 150px; 
+    padding: 12px;
+    height: auto;
+    /* z-index: -1; */
+  }
+  
+  .missing-box .photo {
+    z-index: -1;
+    border-radius: 13px;
+    width: 150px; 
+    height: 112px;
+    box-shadow: -3px 3px 5px 2px #aaaaaa;
+  }
+  
+  
+  
+  
+  
+  
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    /* padding: 0; */
+  }
+  
+  
+  
+  
+  
+  
+    .modal {
+      padding:100px;
+      position: fixed;
+      top :0;
+      left:0;
+      right:0;
+      bottom:0;
+      background: rgba(0, 0, 0, 0.8);
+      color: white;
+      outline: none;
+      padding: 3.2rem;
+  
+      padding: 100px;
+      
+    }
+    
+  
+  
+    div.modal-content form {
+      padding:5px;
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%) !important;
+    }
+    div.modal-content form input {
+      width: 500px;
+      margin: 10px;
+      font-size: 20px;
+      background-color: none;
+    }
+  
+    .next-button-right {
+      cursor: pointer;
+      position: absolute;
+      right: 0;
+      top: 50%;
+    }
+    .next-button-left {
+      cursor: pointer;
+      position: absolute;
+      left: 0;
+      top: 50%;
+    }
+    .next-button-left, .next-button-right {
+      padding: 10px 24px;
+      background:none;
+      color: #fff;
+      border: none;
+      /* cursor: pointer; */
+      /* position: absolute; */
+      font-size: 20px;  display:inline-block;
+  
+    }
+  
+  .exit-modal-button {
+      padding: 10px 24px;
+      background:none;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      position: absolute;
+      right: 0;
+      top: 0;
+      font-size: 20px;
+  
+  }
+    
+  
+  
+  
+  
+  
+  
+  

@@ -11,20 +11,18 @@ const Header = (props) => {
 
         return (
             <header>
-            {/* <TitleHeader >{props.currentUser ? props.userName : "Memphis Project"}</TitleHeader>             */}
-            {/* props.currentUser != null && props.userName != null */}
                  {props.edit  
                 ?  <form 
                     name={props.currentUser.name} 
                     key={props.currentUser.id} 
                     onSubmit={(e) => props.nameSubmit(e, newUserName, props.currentUser.id)}>
-                        <input  
+                        <NameInput
                         type="text" 
                         defaultValue={props.currentUser.name} 
                         className="name-form" 
                             // value={currentUser.name}
                             onChange={(e) => changeName(e.target.value)}
-                        ></input>
+                        ></NameInput>
                 </form>
                 : <TitleHeader >{props.currentUser ? props.userName : "ImageBoard"}</TitleHeader> 
                     }
@@ -34,10 +32,23 @@ const Header = (props) => {
 }
 
 export default Header
-
+const NameInput = styled.input`
+  text-align: right; 
+  font-size: 2.5rem;
+  float: right;
+  margin-top: .001rem;
+  font-weight: 500;
+  line-height: 1;
+  box-sizing: border-box;
+  display: block;
+  color: black;
+  margin-block-end: 1em;
+  margin-inline-end: 18px;
+`
 const TitleHeader = styled.h1`
     font-size:3.5rem;
     text-align: right;
-    font-family: Helvetica, sans-serif;
+    font-family: "HelveticaNeue-Light";
+    font-weight: normal;
     padding-right: 20px;
 `

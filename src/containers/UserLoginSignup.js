@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import React from "react";
 import { useHistory } from "react-router-dom";
+import styled from "styled-components";
 
 const UserLoginSignup = (props) => {
   const [userLogin, setUserLogin] = useState(false);
@@ -20,10 +21,10 @@ const UserLoginSignup = (props) => {
 
   return (
     <div>
-      <div classname="button-flex">
+      <ButtonFlex>
         <button onClick={() => signup()}>sign up</button>
         <button onClick={() => login()}>login</button>
-      </div>
+      </ButtonFlex>
       {userLogin ? (
         <form onSubmit={props.loginSubmit}>
           {/* <button onClick={() => setUserLogin(!userLogin)} className="closeSidebar">X</button> */}
@@ -67,3 +68,12 @@ const UserLoginSignup = (props) => {
   );
 };
 export default UserLoginSignup;
+
+
+const ButtonFlex = styled.div `
+  margin: 0;  
+  width: 14%;
+  padding-bottom: 5px;
+  display:flex;
+  justify-content: space-between;  
+`

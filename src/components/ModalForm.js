@@ -53,20 +53,31 @@ document.addEventListener('keydown', function(event) {
             {"<"}{" "}
           </button>
         </div>
-        {photo != undefined && photo.url != null ? (
-          <ModelContent>
+        {props.edit 
+        ? photo != undefined && photo.url != null ? (
+<ModelContent>
             <div className="modal-cont">
               <div className="modal-name-cont">
-                <h1>{photo.name}</h1>
+              <input type="text" name="name" placeholder="photo.name"
+                          // onChange={(e) => setName(e.target.value)}
+                        />
               </div>
               <div className="modal-img-cont">
                 <img src={photo.url}></img>
+                <input type="text" name="image" placeholder={photo.url}
+              // onChange={(e) => setUrl(e.target.value)}
+            />
               </div>
               <div className="modal-details-cont">
                 <p>{photo.content}</p>
+                <input type="text" name="details" placeholder={photo.details}
+              // onChange={(e) => setDetails(e.target.value)}
+            />
               </div>
-            </div>
-          </ModelContent>
+  
+</div>
+</ModelContent>
+        
         ) : (
           <form
           // onSubmit={(e) =>
@@ -93,7 +104,22 @@ document.addEventListener('keydown', function(event) {
             />
             {/* <button type="submit">ENTER</button> */}
           </form>
-        )}
+        )
+      : 
+      <ModelContent>
+        <div className="modal-cont">
+          <div className="modal-name-cont">
+            <h1>{photo.name}</h1>
+          </div>
+          <div className="modal-img-cont">
+          <img src={photo.url}></img>
+        </div>
+        <div className="modal-details-cont">
+          <p>{photo.content}</p>
+        </div>
+        </div>
+      </ModelContent>
+      }
       </Modal>
     </div>
   );

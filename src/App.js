@@ -1,7 +1,6 @@
-import React, { useState, useEffect, prevState, useLayoutEffect } from "react";
+import React, { useState, useEffect, useLayoutEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
-import { Modal } from "react-bootstrap";
 import Header from "./containers/Header";
 import SideBar from "./containers/SideBar";
 import AsideRight from "./containers/AsideRight";
@@ -11,27 +10,430 @@ import DndContainer from "./containers/DndContainer";
 import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "./dnd/HTML5toTouch";
 
-import { DndProvider } from "react-dnd";
-import DraggableGridItem from "./dnd/DraggableGridItem";
-import Grid from "./grid/Grid";
 
-import PhotoModal from "./components/PhotoModal";
+
 
 export default function App() {
   require("events").EventEmitter.defaultMaxListeners = 20;
+ 
+  // OPEN LOGIN
+ const [userProfile, setUserProfile] = useState(true);
+ 
+ // LOGIN
+ const [userId, setUserId] = useState();
+ const [name, setName] = useState();
+ const [email, setEmail] = useState();
+ const [password, setPassword] = useState();
 
-  const [photos, setPhotos] = useState();
-  useLayoutEffect(() => {
-    fetch(`http://localhost:3000/photos`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" },
+ // TRANSITIONS FROM LOGIN TO USER PHOTOS
+ const [currentUser, setCurrentUser] = useState("");
+ const [users, setUsers] = useState([]);
+ const [userPhotos, setUserPhotos] = useState([]);
+ const [userComments, setUserComments] = useState(null);
+
+// FOLDERS //
+const [folderDetais, setFolderDetails] = useState();
+const [folderLink, setFolderLink] = useState();
+const [folderNames, setFolderNames] = useState();
+const [folderIds, setFolderIds] = useState();
+
+const [userFolders, setUserFolders] = useState([1]);
+const [folderToggle, setFolderToggle] = useState(false);
+const [folderShown, setFolderShown] = useState(0);
+
+const [chosenFolder, setChosenFolder] = useState(0)
+
+// LINKS //
+const [linkDetais, setLinkDetails] = useState();
+const [userLinks, setUserLinks] = useState([]);
+
+// EDIT USER INFO
+const [userEmail, setUserEmail] = useState("");
+const [userName, setUserName] = useState("");
+const [userAboutMe, setUserAboutMe] = useState("");
+
+// EDIT HOOK
+const [edit, setEdit] = useState(false);
+const [enableDelete , setEnableDelete] = useState(false)
+// ADD PHOTO
+const [photos, setPhotos] = useState();
+const [url, setUrl] = useState();
+const [details, setDetails] = useState();
+
+// EDIT TOGGLE
+// const editToggle = () => {
+//   setEdit(!edit);
+// };
+const deleteToggle = () => {
+  setEnableDelete(!enableDelete)
+}
+const editToggle = () => {
+  edit === false
+  ? setEdit(!edit)
+  : reorderSubmit()
+    setEdit(!edit) 
+};
+// LOGIN FUNCTIONS
+ const useTemplate = () => {
+   setUserProfile(!userProfile);
+ };
+ const handleName = (name) => {
+  setName(name);
+};
+const handleEmail = (email) => {
+  setEmail(email);
+};
+const handlePassword = (password) => {
+  setPassword(password);
+};
+// SET USER AND TRANSITION TO USER PHOTO GRID
+  const handleCurrentUser = (user) => {
+    setCurrentUser(user);
+    user != null && setUserProfile(!userProfile);
+  };
+
+// USER LOGIN
+  const loginSubmit = (e) => {
+    e.preventDefault();
+    // console.log(data)
+    fetch(`http://localhost:3000/api/v1/login`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name,
+        password: password,
+      }),
     })
-      .then((r) => r.json())
-      .then((photos) => {
-        setPhotos(photos);
-        // console.log("photos", photos)
+      .then((res) => res.json())
+      .then((user) => {
+        console.log(user);
+
+        setUserProfile(!userProfile);
+        localStorage.token = user.token;
+        setUserId(user.id);
+        setCurrentUser(user.user);
+        setUserName(user.user.name);
+        setUserEmail(user.user.email);
+        setUserAboutMe(user.user.details);
+        setUserLinks(user.links);
+        setUserFolders(user.folders);
+        setPhotos(user.photos);
+        setUserComments(user.comments);
+        setFolderShown(user.folders.reverse()[0].id)
+        console.log(folderShown)
+// console.log(user.folders.reverse())
+        // setFolderIds(user.folders.map(folder => folder.id))
+        // history.push("/userprofile")
+        // console.log(folderIds[0])
       });
-  }, []);
+  };
+
+// USER SIGNUP
+  const signupSubmit = (e) => {
+    e.preventDefault();
+    // console.log(data)
+    fetch(`http://localhost:3000/api/v1/users/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: name,
+        email: email,
+        password: password,
+      }),
+    })
+      .then((res) => res.json())
+      .then((user) => {
+        console.log(user);
+        localStorage.token = user.token;
+        setCurrentUser(user.user);
+        setUserLinks(user.links);
+        setUserFolders(user.folders);
+        setPhotos(user.photos);
+        setUserComments(user.comments);
+        setUserProfile(!userProfile);
+        // history.push("/userprofile")
+      });
+  };
+
+
+  // FOLDER FUNCTIONS
+
+  const updateFolder = (e, folderName, folder) => {
+    e.preventDefault();
+    console.log(e);
+    console.log(folder);
+    console.log(folder.id);
+    console.log(folderName);
+    fetch(`http://localhost:3000/api/v1/folders/${folder.id}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: folderName,
+        // details: folderDetais,
+        // link: folderLink,
+        // user_id: currentUser.id
+      }),
+    })
+      .then((res) => res.json())
+      .then((folderObj) => {
+        console.log(folderObj);
+        setUserFolders(
+          userFolders.map((folder) => {
+            if (folder.id === folderObj.id) return folderObj;
+            else return folder;
+          })
+        );
+      });
+  };
+
+  const addFolder = (e, folderName) => {
+    e.preventDefault();
+    console.log(e);
+    // console.log(folder)
+    // console.log(folder.id)
+    console.log(folderName);
+    fetch(`http://localhost:3000/api/v1/folders/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: folderName,
+        details: "add a description",
+        link: folderLink,
+        user_id: currentUser.id,
+      }),
+    })
+      .then((res) => res.json())
+      .then((folderObj) => {
+        console.log(folderObj);
+        setUserFolders([...userFolders, folderObj]);
+      });
+  };
+
+// LINK FUNCTIONS
+
+const addLink = (e, linkName, linkUrl) => {
+  e.preventDefault();
+  console.log("hello");
+  console.log(e)
+  console.log(linkName)
+  console.log(linkUrl)
+
+  fetch(`http://localhost:3000/api/v1/links/`, {
+      method: 'POST'
+      , headers: {
+          Authorization: `Bearer ${localStorage.token}`,
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        name: linkName,
+        details: "add a description" ,
+        url: linkUrl ,
+        user_id: currentUser.id
+    })
+  })
+  .then(res => res.json())
+  .then(linkObj => {
+    console.log(linkObj)
+    setUserLinks([...userLinks, linkObj])
+    }
+  )
+};
+
+  const deleteLink = (e, linkObj) => {
+      e.preventDefault()
+    let updatedLinksArr = userLinks.filter((link) => link.id !== linkObj.id);
+    setUserLinks(updatedLinksArr)
+    
+    fetch(`http://localhost:3000/api/v1/links/${linkObj.id}/`, { method: "DELETE" })
+      .then((resp) => resp.json())
+      .then(() => console.log("updatedLinksArr", updatedLinksArr, "linkObj", linkObj))
+    };
+
+// FOLDER FUNCTIONS
+
+const chooseFolder = (folderId) => {
+  setFolderShown(folderId)
+  fetch(`http://localhost:3000/api/v1/folders/${folderId}/`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((r) => r.json())
+    .then((folder) => {
+      console.log("folder", folder);
+      setPhotos(folder.photos);
+      setFolderToggle(true);
+    });
+};
+
+  const deleteFolder = (folderObj) => {
+    let updatedFoldersArr = userFolders.filter((folder) => folder.id !== folderObj.id);
+    setUserFolders(updatedFoldersArr)
+    fetch(`http://localhost:3000/api/v1/folders/${folderObj.id}/`, {method: "DELETE"})
+      .then((res) => res.json())
+      .then(() => console.log("folderObj", folderObj, "updatedFoldersArr", updatedFoldersArr))};
+
+      const updateLink = (e, linkName, linkUrl, link) => {
+        e.preventDefault();
+        console.log(e);
+        console.log(linkUrl);
+        console.log(link.id);
+        console.log(linkName);
+        fetch(`http://localhost:3000/api/v1/links/${link.id}`, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${localStorage.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: linkName,
+            // details: linkDetais,
+            url: linkUrl,
+            // user_id: currentUser.id
+          }),
+        })
+          .then((res) => res.json())
+          .then((linkObj) => {
+            console.log(linkObj);
+            setUserLinks(
+              userLinks.map((link) => {
+                if (link.id === linkObj.id) return linkObj;
+                else return link;
+              })
+            );
+          });
+      };
+
+// USER DETAILS
+
+const updateUserAboutMe = (e, aboutMe) => {
+  e.preventDefault();
+  fetch(`http://localhost:3000/api/v1/users/${currentUser.id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      details: aboutMe,
+    }),
+  })
+    .then((res) => res.json())
+    .then((userObj) => {
+      console.log(userObj.details);
+      setUserAboutMe(userObj.details);
+    });
+};
+
+const nameSubmit = (e, newName) => {
+  e.preventDefault();
+  console.log(e, newName, userId);
+  fetch(`http://localhost:3000/api/v1/users/${currentUser.id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: newName,
+      // user_id: userId,
+    }),
+  })
+    .then((res) => res.json())
+    .then((userObj) => {
+      console.log(userObj);
+      setUserName(userObj.name);
+    });
+};
+
+      
+// PHOTO FUNCTIONS
+
+const handlePhotos = (photos) => {
+  setPhotos(photos);
+};
+
+
+const addPhoto = (e, photo) => {
+
+  e.preventDefault();
+  console.log(e);
+  console.log(photo);
+  fetch(`http://localhost:3000/api/v1/photos/${photo.id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: name,
+      url: url,
+      details: details,
+      user_id: photo.user_id,
+    }),
+  })
+    .then((res) => res.json())
+    .then((photoObj) => {
+      console.log(photoObj);
+      setPhotos(
+        photos.map((photo) => {
+          if (photo.id === photoObj.id) return photoObj;
+          else return photo;
+        })
+      );
+    });
+};
+
+
+const deletePhoto = (photo) => {
+
+  console.log(photo);
+  // fetch(`http://localhost:3000/api/v1/photos/${photo.id}`, {
+  //   method: "PATCH",
+  //   headers: {
+  //     Authorization: `Bearer ${localStorage.token}`,
+  //     "Content-Type": "application/json",
+  //   },
+  //   body: JSON.stringify({
+  //     name: null,
+  //     url: null,
+  //     details: null,
+  //   }),
+  // })
+  //   .then((res) => res.json())
+  //   .then((photoObj) => {
+  //     console.log(photoObj);
+  //     setPhotos(
+  //       photos.map((photo) => {
+  //         if (photo.id === photoObj.id) return photoObj;
+  //         else return photo;
+  //       })
+  //     );
+  //   });
+};
+
+  // useLayoutEffect(() => {
+  //   fetch(`http://localhost:3000/photos`, {
+  //     method: "GET",
+  //     headers: { "Content-Type": "application/json" },
+  //   })
+  //     .then((r) => r.json())
+  //     .then((photos) => {
+  //       setPhotos(photos);
+  //       // console.log("photos", photos)
+  //     });
+  // }, []);
 
 
   // const sortPhotosOnly = () => {
@@ -52,7 +454,7 @@ export default function App() {
     // for each photo save that photos's index
     photos != undefined &&
       photos.forEach((photo) =>
-        fetch(`http://localhost:3000/photos/${photo.id}`, {
+        fetch(`http://localhost:3000/api/v1/photos/${photo.id}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -60,78 +462,6 @@ export default function App() {
           }),
         })
       );
-  };
-
-  //  const reorderSubmit = () => {
-
-  //   let photoData = photos.map(photo => {
-  //     return {
-  //       id: photo.id,
-  //       index: photo.index
-  //     }
-  //   }
-  //   )
-  //   console.log("photoData", photoData)
-  //   fetch(`http://localhost:3000/photos`, {
-  //     // method: "PATCH",
-  //     method: "POST",
-  //     headers: {"Content-Type": "application/json"},
-  //     body: JSON.stringify(
-  //         photoData
-  //         )
-  //       })
-
-  //        }
-
-  // ADD PHOTO
-  // const [photos, setPhotos] = useState()
-
-  const [url, setUrl] = useState();
-  const [details, setDetails] = useState();
-  // const [name, setName] = useState()
-
-  // const handleName = (data) => {setName(data)}
-  // const handleUrl = (data) => {setUrl(data)}
-  // const handleDetails = (data) => {setDetails(data)}
-
-  // const newPets = this.state.pets.map((soloPet) => soloPet.id === id ? {...soloPet, isAdopted: !soloPet.isAdopted} : soloPet)
-  const addPhoto = (e, photo) => {
-    // updatePhoto = (e, photoObj) => {
-    // e.preventDefault()
-    // const oldPhoto = photos.find(photo => photo.id)
-
-    // const oldIndex = photos.indexOf(oldPhoto)
-
-    // const updatePhoto = {...oldPhoto, name: newPhoto.name, url:newPhoto.url, details: newPhoto.details}
-    //   console.log(updateLikes)
-    // }
-
-    e.preventDefault();
-    console.log(e);
-    console.log(photo);
-    fetch(`http://localhost:3000/api/v1/photos/${photo.id}`, {
-      method: "PATCH",
-      headers: {
-        Authorization: `Bearer ${localStorage.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        // name: name,
-        url: url,
-        details: details,
-        user_id: photo.user_id,
-      }),
-    })
-      .then((res) => res.json())
-      .then((photoObj) => {
-        console.log(photoObj);
-        setPhotos(
-          photos.map((photo) => {
-            if (photo.id === photoObj.id) return photoObj;
-            else return photo;
-          })
-        );
-      });
   };
 
   /// MODAL
@@ -152,96 +482,83 @@ export default function App() {
     // : setOpenModalForm(!openModalForm)
   };
   
-  const handleClick = (photo) => {
-    // setPhoto(photo)
-    console.log(photo);
-  };
-
-  const handlePhotos = (photos) => {
-    setPhotos(photos);
-  };
-
-  // EDIT
-  const [buttonToggle, setButtonToggle] = useState(false)
-
-  const [edit, setEdit] = useState(false);
-  const editToggle = () => {
-    edit === false
-    ? setEdit(!edit)
-    : reorderSubmit()
-      setEdit(!edit) 
-  };
 
 
+  
+  
+
+  const sortPhotos = (a, b) => a.index - b.index;
   return (
     <Router>
       {/* {openModal && <PhotoModal photo={photo} openModal={openModal} modalToggle={modalToggle} />} */}
       <div className="cont">
         <SideBar
-        // edit={edit}
-        // sayHello={sayHello}
-        // userFolders={userFolders}
-        // addFolder={addFolder}
-        // chooseFolder={chooseFolder}
-        // updateFolder={updateFolder}
-        // addLink={addLink}
-        // userLinks={userLinks}
-        // clickLink={clickLink}
-        // updateLink={updateLink}
-        // currentUser={currentUser}
-        // updateUserAboutMe={updateUserAboutMe}
-        // userAboutMe={userAboutMe}
-        // useTemplate={useTemplate}
+       folderShown={folderShown}
+       edit={edit}
+       enableDelete={enableDelete}
+       deleteLink={deleteLink}
+       deleteFolder={deleteFolder}
+       userFolders={userFolders}
+       addFolder={addFolder}
+       chooseFolder={chooseFolder}
+       updateFolder={updateFolder}
+       addLink={addLink}
+       userLinks={userLinks}
+       updateLink={updateLink}
+       currentUser={currentUser}
+       updateUserAboutMe={updateUserAboutMe}
+       userAboutMe={userAboutMe}
+       useTemplate={useTemplate}
         />
         <Header
-        // currentUser={currentUser} userName={userName}
-        // edit={!edit} nameSubmit={nameSubmit}
+          currentUser={currentUser}
+          userName={userName}
+          edit={!edit}
+          nameSubmit={nameSubmit}
         />
         <AsideRight
+          deleteToggle={deleteToggle}
+          enableDelete={enableDelete}
           editToggle={editToggle}
-          // currentUser={currentUser} edit={edit}
+          currentUser={currentUser} edit={edit}
           reorderSubmit={reorderSubmit}
         />
         <main>
           {/* GRID STARTS HERE */}
-          {/* {userProfile
-          ? */}
+          {userProfile
+          ?
           <article>
             <div>
               <DndContainer
+                deletePhoto={deletePhoto}
+                enableDelete={enableDelete}
                 edit={edit}
                 photos={photos}
                 modalToggle={modalToggle}
                 handlePhotos={handlePhotos}
-                handleClick={handleClick}
                 reorderSubmit={reorderSubmit}
               />
               
               
             </div>
           </article>
-          {/* : <article>
+          : <article>
               <div className="container" >
             <UserLoginSignup 
-             
-                // signupSubmit={signupSubmit}
-                // loginSubmit={loginSubmit}
-                // setUserProfile={setUserProfile} 
-                // useTemplate={useTemplate} 
-                // handleCurrentUser={handleCurrentUser} 
-                // handleUserLinks={handleUserLinks}
-                // handleUserFolders={handleUserFolders}
-            // handleUserPhotos={handleUserPhotos}
-                // handleUserComments={handleUserComments}
-                // handleEmail={handleEmail}
-                // handleName={handleName}
-                // handlePassword={handlePassword}
-                // currentUser={currentUser} 
-                // useTemplate={useTemplate} 
+                signupSubmit={signupSubmit}
+                loginSubmit={loginSubmit}
+                setUserProfile={setUserProfile} 
+                useTemplate={useTemplate} 
+                handleCurrentUser={handleCurrentUser} 
+                handleEmail={handleEmail}
+                handleName={handleName}
+                handlePassword={handlePassword}
+                currentUser={currentUser} 
+                useTemplate={useTemplate} 
             />
             </div>
             </article>
-            } */}
+            }
         </main>
 
         <footer></footer>
@@ -249,75 +566,3 @@ export default function App() {
     </Router>
   );
 }
-
-// const  [photos, setPhotos] = useState()
-//     useEffect(() => {
-//     fetch(`http://localhost:3000/photos`, {
-//         method: "GET",
-//         headers: { "Content-Type": "application/json" },
-//         })
-//         .then((r) => r.json())
-//         .then((photos) => {
-//           setPhotos(photos)
-//           console.log("photos", photos)
-//         })
-//       }, []);
-
-//       const gridRef = useRef(null);
-//       // const { children } = props;
-//       useEffect(() => {
-//         const grid = gridRef.current;
-//         adjustGridItemsHeight(grid);
-//       });
-
-//   return (
-//     <DndProvider backend={MultiBackend} options={HTML5toTouch}>
-//       <AppWrapper>
-//         <h1>Responsive Drag-and-Drop Grid</h1>
-//         <Grid>
-//           { list.sort(sortPhotos).map(item =>
-//             <DraggableGridItem
-//               key={item.id}
-//               item={item}
-//               onDrop={onDrop}
-//             >
-//             <GridWrapper ref={gridRef}>
-//             {/* {children} */}
-
-//               {item.content}
-//           </GridWrapper>
-//             </DraggableGridItem>
-//           )}
-//         </Grid>
-//       </AppWrapper>
-//     </DndProvider>
-//   );
-// }
-
-// const sortPhotos = (a, b) => a.index - b.index;
-
-// const AppWrapper = styled.div `
-//   padding: 10px 200px;
-//   @media (max-width: 800px) {
-//     padding: 10px;
-//   }
-// `;
-
-// const adjustGridItemsHeight = (grid) => {
-//   const items = grid.children;
-//   // const items = grid.item;
-//   for (let i = 0; i < items.length; i++) {
-//     let item = items[i];
-//     let rowHeight = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-auto-rows'));
-//     let rowGap = parseInt(window.getComputedStyle(grid).getPropertyValue('grid-row-gap'));
-//     let rowSpan = Math.ceil((item.firstChild.getBoundingClientRect().height+rowGap)/(rowHeight+rowGap));
-//     item.style.gridRowEnd = "span "+rowSpan;
-//   }
-// }
-
-// const GridWrapper = styled.div `
-//   display: grid;
-//   grid-gap: 15px;
-//   grid-template-columns: repeat(auto-fill, minmax(240px,1fr));
-//   grid-auto-rows: 180px;
-// `;
