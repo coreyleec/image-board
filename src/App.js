@@ -64,6 +64,7 @@ const [details, setDetails] = useState();
 // const editToggle = () => {
 //   setEdit(!edit);
 // };
+
 const deleteToggle = () => {
   setEnableDelete(!enableDelete)
 }
@@ -72,6 +73,7 @@ const editToggle = () => {
   ? setEdit(!edit)
   : reorderSubmit()
     setEdit(!edit) 
+    enableDelete === true && setEnableDelete(!enableDelete)
 };
 // LOGIN FUNCTIONS
  const useTemplate = () => {
@@ -365,12 +367,12 @@ const handlePhotos = (photos) => {
 };
 
 
-const addPhoto = (e, photo) => {
+const addPhoto = (e, photo, name, details, url) => {
 
   e.preventDefault();
   console.log(e);
-  console.log(photo);
-  fetch(`http://localhost:3000/api/v1/photos/${photo.id}`, {
+  console.log(e, photo, name, details, url);
+  fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -378,9 +380,8 @@ const addPhoto = (e, photo) => {
     },
     body: JSON.stringify({
       name: name,
-      url: url,
       details: details,
-      user_id: photo.user_id,
+      url: url,
     }),
   })
     .then((res) => res.json())
@@ -399,28 +400,28 @@ const addPhoto = (e, photo) => {
 const deletePhoto = (photo) => {
 
   console.log(photo);
-  // fetch(`http://localhost:3000/api/v1/photos/${photo.id}`, {
-  //   method: "PATCH",
-  //   headers: {
-  //     Authorization: `Bearer ${localStorage.token}`,
-  //     "Content-Type": "application/json",
-  //   },
-  //   body: JSON.stringify({
-  //     name: null,
-  //     url: null,
-  //     details: null,
-  //   }),
-  // })
-  //   .then((res) => res.json())
-  //   .then((photoObj) => {
-  //     console.log(photoObj);
-  //     setPhotos(
-  //       photos.map((photo) => {
-  //         if (photo.id === photoObj.id) return photoObj;
-  //         else return photo;
-  //       })
-  //     );
-  //   });
+  fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: null,
+      url: null,
+      details: null,
+    }),
+  })
+    .then((res) => res.json())
+    .then((photoObj) => {
+      console.log(photoObj);
+      setPhotos(
+        photos.map((photo) => {
+          if (photo.id === photoObj.id) return photoObj;
+          else return photo;
+        })
+      );
+    });
 };
 
   // useLayoutEffect(() => {
@@ -445,7 +446,7 @@ const deletePhoto = (photo) => {
 // edit === 
 
 // useEffect(() => {
-
+  
 
 // }, [])
 
@@ -454,7 +455,7 @@ const deletePhoto = (photo) => {
     // for each photo save that photos's index
     photos != undefined &&
       photos.forEach((photo) =>
-        fetch(`http://localhost:3000/api/v1/photos/${photo.id}`, {
+        fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -466,10 +467,9 @@ const deletePhoto = (photo) => {
 
   /// MODAL
 
-  // const [openModalForm, setOpenModalForm] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   // const [openPhoto, setOpenPhoto] = useState(false);
   const [photo, setPhoto] = useState();
-  const [openModal, setOpenModal] = useState()
 
   const modalToggle = (photo) => {
     //function fires depending on whether picture frames that are empty
@@ -530,6 +530,9 @@ const deletePhoto = (photo) => {
           <article>
             <div>
               <DndContainer
+              addPhoto={addPhoto}
+              openModal={openModal}
+              setOpenModal={setOpenModal}
                 deletePhoto={deletePhoto}
                 enableDelete={enableDelete}
                 edit={edit}

@@ -98,18 +98,23 @@ button {
   line-height: 0px;
 }
 .delete-photo {
+  cursor: pointer;
   background-color: transparent;
   color: red;
   transform: rotate(-45deg);
   border: none;
   font-size: 2rem;
   line-height: 0px;
-  /* z-index: 2; */
+  z-index: 1;
   position: relative;
   float: right;
-  top: -1px;
-  right: -32px;
+  top: 11px;
+  right: -1px;
 }
+.sidebar-break {
+  width: 100%;
+}
+
 input:-webkit-autofill {
   background-color: transparent !important;
   -webkit-box-shadow: 0 0 0 50px gainsboro inset;
@@ -147,6 +152,7 @@ input:-webkit-autofill {
 .scrollable {    
     height: 700px;
     overflow-y: scroll;
+    display: block;
   }
 .scrollable::-webkit-scrollbar {
     width: 3px;

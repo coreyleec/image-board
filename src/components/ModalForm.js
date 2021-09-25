@@ -6,6 +6,9 @@ const ModalForm = (props) => {
   let openModal = props.openModal;
   let photo = props.photo;
   let modalToggle = props.modalToggle;
+  const [url, setUrl] = useState();
+  const [details, setDetails] = useState();
+  const [name, setName] = useState()
 
   const handleLeftKey = (e) => {
     if (e.key === "ArrowLeft") {
@@ -58,7 +61,7 @@ document.addEventListener('keydown', function(event) {
 <ModelContent>
             <div className="modal-cont">
               <div className="modal-name-cont">
-              <input type="text" name="name" placeholder="photo.name"
+              <input type="text" name="name" placeholder={photo.name}
                           // onChange={(e) => setName(e.target.value)}
                         />
               </div>
@@ -80,29 +83,29 @@ document.addEventListener('keydown', function(event) {
         
         ) : (
           <form
-          // onSubmit={(e) =>
-          //   addPhoto(e, photo, setOpenModalForm(!openModalForm))
-          // }
+          onSubmit={(e) =>
+            props.addPhoto(e, props.photo, name, details, url, props.setOpenModal(!props.openModal))
+          }
           >
             <input
               type="text"
               name="name"
               placeholder="name"
-              // onChange={(e) => setName(e.target.value)}
+              onChange={(e) => setName(e.target.value)}
             />
             <input
               type="text"
               name="details"
               placeholder="details"
-              // onChange={(e) => setDetails(e.target.value)}
+              onChange={(e) => setDetails(e.target.value)}
             />
             <input
               type="text"
               name="image"
               placeholder="url"
-              // onChange={(e) => setUrl(e.target.value)}
+              onChange={(e) => setUrl(e.target.value)}
             />
-            {/* <button type="submit">ENTER</button> */}
+            <button type="submit">ENTER</button>
           </form>
         )
       : 

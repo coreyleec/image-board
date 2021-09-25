@@ -73,6 +73,7 @@ const underlineFolder = (folder) => {
                         // onMouseOver={underlineFolder(folder.id)}
                          onClick={(event) => {props.chooseFolder(folder.id); underlineFolder(folder.id)}} >{folder.name}</StyledP>)
                         }
+                        <div className="sidebar-break"></div>
         </div>
     )
 }
@@ -95,8 +96,9 @@ padding: 0px;
 float: left;
 line-height: 1.5;
       text-align: left;
-      width: 85%;
+      width: 100%;
       color: #757575;
+      
 `
 const StyledP = styled.p`
 

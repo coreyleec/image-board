@@ -96,10 +96,14 @@ const DndContainer = (props) => {
 
   const sortPhotos = (a, b) => a.index - b.index;
   const opacity = imagesLoaded ? 1 : 0
+  const display = openModal ? "none" : "fixed"
   return (
     <>
       {openModal && (
         <ModalForm
+        addPhoto={props.addPhoto}
+        setOpenModal={props.setOpenModal}
+        openModalForm={props.openModalForm}
           edit={props.edit}
           photo={photo}
           photos={props.photos}
@@ -138,8 +142,12 @@ const DndContainer = (props) => {
                           : "emptyBox"
                       }
                     >
-                      {props.enableDelete && 
-                        <button className="delete-photo" onClick={props.deletePhoto(photo)} >+</button>
+{/* DELETE PHOTO */}
+{/* props.openModal === true && */}
+                      { props.enableDelete && photo.url != null && 
+                        <button
+                         style={{display}} 
+                         className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
                         }
                       <img
                         className="photo"
@@ -210,7 +218,7 @@ const GridWrapper = styled.div`
   justify-content: center;
   grid-gap: 2px;
 
-  grid-template-columns: repeat(6, 150px);
+  grid-template-columns: repeat(6, 160px);
   grid-auto-rows: 1px;
 
   // grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
