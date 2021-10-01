@@ -5,7 +5,7 @@ import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
 import { DndProvider } from "react-dnd";
 import DraggableGridItem from "../dnd/DraggableGridItem";
-import ModalForm from "../components/ModalForm";
+import ImageModal from "../components/ImageModal";
 
 const DndContainer = (props) => {
   const photos = props.photos;
@@ -37,10 +37,13 @@ const DndContainer = (props) => {
   const { children } = props;
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const handleLoad = () => {
-    // console.log("handleload")
+  const handleLoad = (photo) => {
     const grid = gridRef.current;
     const image = imgRef.current
+    let imageHeight = image.naturalHeight
+    let imageWidth = image.naturalHeight
+    console.log(imageWidth + 'x' + imageHeight)
+    
     adjustGridItemsHeight(grid, image);
     setImagesLoaded(true);
   };
@@ -56,7 +59,7 @@ const DndContainer = (props) => {
     // !edit &&
     //   photo != undefined &&
     // ? setOpenPhoto(!openPhoto)
-    // : setOpenModalForm(!openModalForm)
+    // : ImagesetOpenModal(!ImageopenModal)
   };
 
   const nextPhoto = (initialPhoto) => {
@@ -100,10 +103,10 @@ const DndContainer = (props) => {
   return (
     <>
       {openModal && (
-        <ModalForm
+        <ImageModal
         addPhoto={props.addPhoto}
         setOpenModal={props.setOpenModal}
-        openModalForm={props.openModalForm}
+        ImageopenModal={props.ImageopenModal}
           edit={props.edit}
           photo={photo}
           photos={props.photos}
@@ -130,7 +133,7 @@ const DndContainer = (props) => {
                     photo={photo}
                     onDrop={onDropVariable}
                   >
-                    {/* {console.log(DraggableGridItem)} */}
+                    
                     <div
                       className={
                         !props.edit
@@ -152,16 +155,16 @@ const DndContainer = (props) => {
                       <img
                         className="photo"
                         ref={imgRef}
-                        onLoad={() => handleLoad()}
+                        onLoad={() => handleLoad(photo.url)}
                         onClick={() => modalToggle(photo)}
                         src={photo.url}
                         // loading="lazy"
                         // style={{ height }}
-                        src={
-                          photo.url != null
-                            ? photo.url
-                            : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-                        }
+                        // src={
+                        //   photo.url != null
+                        //     ? photo.url
+                        //     : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                        // }
                       />
                     </div>
                   </DraggableGridItem>
@@ -184,13 +187,16 @@ const AppWrapper = styled.div`
 
 const adjustGridItemsHeight = (grid, image) => {
   // set all grid photos to vairable "photos"
+  // console.log(image, photo.firstChild.getBoundingClientRect())
   const photos = grid.children; 
-  // console.log("photos grid children", photos[0]);
+  // console.log("photos grid children", photos);
   // const image = image.children
+  
+  
+  
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
-    // console.log(image, photo.firstChild.getBoundingClientRect())
-    // console.log("adjust items")
+    console.log(image)
     
     let rowHeight = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-auto-rows")
@@ -198,13 +204,18 @@ const adjustGridItemsHeight = (grid, image) => {
     let rowGap = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-row-gap")
     );
+    // let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? photo.
+    // style.height = "240px" : photo.style.height = "112px"
+    
     let rowSpan = Math.ceil(
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)
     );
-   
-    let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? photo.
-    style.height = "240px" : photo.style.height = "112px"
+    let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? image.
+    style.height = "240px" : image.style.height = "112px"
+    
+    
+    image.style.height = height
     
     photo.style.gridRowEnd = "span " + rowSpan;
 
@@ -218,9 +229,9 @@ const GridWrapper = styled.div`
   justify-content: center;
   grid-gap: 2px;
 
-  grid-template-columns: repeat(6, 160px);
+  /* grid-template-columns: repeat(6, 160px); */
   grid-auto-rows: 1px;
-
+  grid-template-columns: repeat(6, minmax(0, 1.5fr) );
   // grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
   // grid-auto-columns: 100px;
   // grid-auto-rows: 180px;

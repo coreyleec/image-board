@@ -11,20 +11,19 @@ const Header = (props) => {
 
         return (
             <header>
-                 {props.edit  
+                 {!props.edit  
                 ?  <form 
-                    name={props.currentUser.name} 
-                    key={props.currentUser.id} 
-                    onSubmit={(e) => props.nameSubmit(e, newUserName, props.currentUser.id)}>
+                    // name={props.userName} 
+                    onSubmit={(e) => props.nameSubmit(e, newUserName)}>
                         <NameInput
                         type="text" 
-                        defaultValue={props.currentUser.name} 
+                        defaultValue={props.userName} 
                         className="name-form" 
                             // value={currentUser.name}
-                            onChange={(e) => changeName(e.target.value)}
+                            onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader >{props.currentUser ? props.userName : "ImageBoard"}</TitleHeader> 
+                : <TitleHeader >{props.userName === "" ? "ImageBoard" : props.userName }</TitleHeader> 
                     }
             </header>
         )
@@ -33,17 +32,16 @@ const Header = (props) => {
 
 export default Header
 const NameInput = styled.input`
-  text-align: right; 
-  font-size: 2.5rem;
-  float: right;
-  margin-top: .001rem;
-  font-weight: 500;
-  line-height: 1;
-  box-sizing: border-box;
-  display: block;
-  color: black;
-  margin-block-end: 1em;
-  margin-inline-end: 18px;
+    font-size: 3.5rem;
+    font-family: "HelveticaNeue-Light";
+    padding-right: 20px;
+    padding-top: 0;
+    text-align: right;
+    float: right;
+    margin-top: .001rem;
+    line-height: 1;
+    display: block;
+    color: #757575;
 `
 const TitleHeader = styled.h1`
     font-size:3.5rem;

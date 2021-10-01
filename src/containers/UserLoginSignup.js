@@ -72,7 +72,7 @@ export default UserLoginSignup;
 
 const ButtonFlex = styled.div `
   margin: 0;  
-  width: 14%;
+  width: 20%;
   padding-bottom: 5px;
   display:flex;
   justify-content: space-between;  

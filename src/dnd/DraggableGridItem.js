@@ -103,24 +103,24 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
     // In case you wan't to use the whole object, don't forget to
     // make a deep copy, because we are mutating the object on the last line
 
-  // fetch(`http://localhost:3000/photos/${currentPhoto.id}`, {
-  //       method: "PATCH", 
-  //       headers: {
-  //       "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify({
-  //         index:otherPhoto.index,
-  //     })
-  //   })
-  // fetch(`http://localhost:3000/photos/${otherPhoto.id}`, {
-  //       method: "PATCH", 
-  //       headers: {
-  //       "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify({
-  //         index:currentPhoto.index,
-  //     })
-  //   })
+  fetch(`http://localhost:3000/api/v1/photos/${currentPhoto.id}`, {
+        method: "PATCH", 
+        headers: {
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          index:otherPhoto.index,
+      })
+    })
+  fetch(`http://localhost:3000/api/v1/photos/${otherPhoto.id}`, {
+        method: "PATCH", 
+        headers: {
+        "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          index:currentPhoto.index,
+      })
+    })
   console.log("otherPhoto", otherPhoto)
   console.log("currentPhoto", currentPhoto)
     onDrop(otherPhoto.id, currentPhoto.id);

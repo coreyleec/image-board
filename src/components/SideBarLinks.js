@@ -14,36 +14,41 @@ const SideBarLinks = (props) => {
   };
   const [linkUrl, setLinkUrl] = useState();
 
-
   const submitLink = (e) => {
-    if (e.key == 'Enter' && e.shiftKey == false) {props.addLink(e, linkName, linkUrl)}
-    
-  }
+    if (e.key == "Enter" && e.shiftKey == false) {
+      props.addLink(e, linkName, linkUrl);
+    }
+  };
 
   const submitUpdatedLink = (e, linkName, linkUrl, link) => {
-    if (e.key == 'Enter' && e.shiftKey == false) 
-    {props.updateLink(e, linkName, linkUrl, link)}
-    
-  }
-const submitLinkCloseForm = (e) => {
-    props.addLink(e, linkName, linkUrl)
-    setNewLink(!newLink)
-}
+    if (e.key == "Enter" && e.shiftKey == false) {
+      props.updateLink(e, linkName, linkUrl, link);
+    }
+  };
+  const submitLinkCloseForm = (e) => {
+    props.addLink(e, linkName, linkUrl);
+    setNewLink(!newLink);
+  };
 
   return (
     <>
       {/* LINK FORM TOGGLE */}
       <div className="add-item">
-        <p 
-        // style={{"fontStyle": "italic"}} 
-        className="nav-bar-header">links</p>
+        <p
+          // style={{"fontStyle": "italic"}}
+          className="nav-bar-header"
+        >
+          links
+        </p>
         {props.edit && (
           <button
             className="side-bar-add-button"
             onClick={() => {
               setNewLink(!newLink);
             }}
-          >+</button>
+          >
+            +
+          </button>
         )}
       </div>
       {/* NEW LINK FORM */}
@@ -51,7 +56,7 @@ const submitLinkCloseForm = (e) => {
         <form
           type="submit"
           onSubmit={(e) => submitLinkCloseForm(e)}
-        //   onKeyDown={(e) => submitLink(e)}
+          //   onKeyDown={(e) => submitLink(e)}
         >
           <StyledInput
             type="text"
@@ -73,26 +78,27 @@ const submitLinkCloseForm = (e) => {
       {/* EDIT LINK */}
       {props.userLinks != undefined && props.userLinks != null && props.edit ? (
         props.userLinks.map((link) => (
-          <form 
-          
+          <form
             link={link}
             key={link.id}
             onKeyDown={(e) => submitUpdatedLink(e, linkName, linkUrl, link)}
             // onSubmit={(e) => props.updateLink(e, linkName, linkUrl)}
           >
-              <div className="subtract-item">
-{/* LINK NAME INPUT*/}
-            <StyledInput
-              type="text"
-              defaultValue={link.name}
-              onChange={(e) => changeLinkName(e.target.value)}
-            ></StyledInput>
+            <div className="subtract-item">
+              {/* LINK NAME INPUT*/}
+              <StyledInput
+                type="text"
+                defaultValue={link.name}
+                onChange={(e) => changeLinkName(e.target.value)}
+              ></StyledInput>
 
-            <SubtractButton 
-            onClick={(e) => props.deleteLink(e, link)} >-</SubtractButton>
-
+              {props.enableDelete === true && (
+                <SubtractButton onClick={(e) => props.deleteLink(e, link)}>
+                  -
+                </SubtractButton>
+              )}
             </div>
-{/* LINK URL INPUT */}
+            {/* LINK URL INPUT */}
             <StyledUrl
               type="text"
               defaultValue={link.url}
@@ -118,14 +124,14 @@ const submitLinkCloseForm = (e) => {
 export default SideBarLinks;
 
 const SubtractButton = styled.button`
-background-color: transparent;
+  background-color: transparent;
   border: none;
   font-size: 2rem;
   color: red;
   line-height: 0px;
   padding: 0;
   transform: scale(2, 1);
-`
+`;
 const StyledInput = styled.input`
   font-size: 2rem;
   padding: 0px;
@@ -147,11 +153,15 @@ const StyledUrl = styled.textarea`
   width: 100%;
   color: #757575;
   ::-webkit-scrollbar {
-  display: unset;
+    display: unset;
   }
-  :hover{
-      display: show;
-    ::-webkit-scrollbar{width: 2px;}
-    ::-webkit-scrollbar-thumb{border: 1px solid black;}
+  :hover {
+    display: show;
+    ::-webkit-scrollbar {
+      width: 2px;
+    }
+    ::-webkit-scrollbar-thumb {
+      border: 1px solid black;
+    }
   }
 `;

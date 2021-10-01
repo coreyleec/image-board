@@ -8,7 +8,7 @@ const AsideRight = (props) => {
 
   return (
     <aside>
-      {props.currentUser.id != null && 
+      {props.currentUser != undefined && props.currentUser.id != null && 
             <Sticky>
             <Switch>
              <label className="toggle-switch">

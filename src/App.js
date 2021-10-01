@@ -71,7 +71,8 @@ const deleteToggle = () => {
 const editToggle = () => {
   edit === false
   ? setEdit(!edit)
-  : reorderSubmit()
+  : 
+  // reorderSubmit()
     setEdit(!edit) 
     enableDelete === true && setEnableDelete(!enableDelete)
 };
@@ -122,16 +123,17 @@ const handlePassword = (password) => {
         setUserAboutMe(user.user.details);
         setUserLinks(user.links);
         setUserFolders(user.folders);
+        console.log("user folders", user.folders)
         setPhotos(user.photos);
         setUserComments(user.comments);
-        setFolderShown(user.folders.reverse()[0].id)
-        console.log(folderShown)
-// console.log(user.folders.reverse())
+        setFolderShown(user.folders[0].id)
+        // console.log(user.folders.reverse())
         // setFolderIds(user.folders.map(folder => folder.id))
         // history.push("/userprofile")
         // console.log(folderIds[0])
       });
-  };
+    };
+    console.log(folderShown)
 
 // USER SIGNUP
   const signupSubmit = (e) => {
@@ -340,7 +342,7 @@ const updateUserAboutMe = (e, aboutMe) => {
 
 const nameSubmit = (e, newName) => {
   e.preventDefault();
-  console.log(e, newName, userId);
+  // console.log(e, newName);
   fetch(`http://localhost:3000/api/v1/users/${currentUser.id}`, {
     method: "PATCH",
     headers: {
@@ -450,20 +452,50 @@ const deletePhoto = (photo) => {
 
 // }, [])
 
+const [previousPhotoArray, setPreviousPhotoArray] = useState()
+// SUBMIT ENTIRE ARRAY REORDERED
 
   const reorderSubmit = () => {
-    // for each photo save that photos's index
-    photos != undefined &&
-      photos.forEach((photo) =>
-        fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            index: photo.index,
-          }),
-        })
-      );
+  // FOR EACH PHOTO UPDATE THE INDEX VALUE
+// photos != undefined &&
+    // differenceArray.forEach((photo) =>
+    //     fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
+    //       method: "PATCH",
+    //       headers: { "Content-Type": "application/json" },
+    //       body: JSON.stringify({
+    //         index: photo.index,
+    //       }),
+    //     })
+    //   );
+// INCOMPLETE ALTERNATIVE APROACH: FETCH PREVIOUS ARRAY, AND COMPARE TO CURRENT ARRAY THEN UPDATE THE IMAGES THAT WERE DIFFERENT. BOTH FETCHED ARRAY AND PHOTOS STATE REPRESENT CORRECT VALUE BUT COMPARISON IS RETURNING ENTIRE ARRAY INSTEAD OF THE DIFFERENCE
+  let previousPhotoArray = fetch(`http://localhost:3000/api/v1/folders/${folderShown}/`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((r) => r.json())
+    .then((previousPhotoArray) => {
+      // let difference = previousPhotoArray.photos.filter((photo) => !photos.includes(photo));
+      console.log("previousPhotoArray", previousPhotoArray.photos); 
+      console.log("photos", photos)
+      console.log(previousPhotoArray.photos.filter(photo => !photos.includes(photo)))
+      const difference = previousPhotoArray.photos.filter(({ index: id1 }) => !photos.some(({ index: id2 }) => id2 === id1));
+      
+      console.log("difference", difference)
+      return previousPhotoArray;
+    })
+
+
+    
   };
+
+  // previousPhotoArray != undefined && previousPhotoArray.filter(photo => !photos.includes(photo)).forEach((photo) =>
+  // fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
+  //   method: "PATCH",
+  //   headers: { "Content-Type": "application/json" },
+  //   body: JSON.stringify({
+  //     index: photo.index,
+  //   }),
+  // })
 
   /// MODAL
 
@@ -511,7 +543,7 @@ const deletePhoto = (photo) => {
        useTemplate={useTemplate}
         />
         <Header
-          currentUser={currentUser}
+          // currentUser={currentUser}
           userName={userName}
           edit={!edit}
           nameSubmit={nameSubmit}
