@@ -40,7 +40,7 @@ const underlineFolder = (folder) => {
                         <form onSubmit={(e) => submitCloseForm(e)}
                         
                         > 
-                        <StyledInput type="text" placeholder="folder name" 
+                        <StyledInput autoFocus="autofocus" type="text" placeholder="folder name" 
                         onChange={(e) => setFolderName(e.target.value)}></StyledInput> </form>}
 </div>
 
@@ -71,7 +71,7 @@ const underlineFolder = (folder) => {
                     style={ props.folderShown != undefined && folder.id === props.folderShown ? {textDecoration: "underline"} : null} 
 
 
-                         onClick={(event) => {props.chooseFolder(folder.id); underlineFolder(folder.id)}} >{folder.name}</StyledP>)
+                         onClick={(event) => {props.chooseFolder(folder); underlineFolder(folder.id)}} >{folder.name}</StyledP>)
                         }
                         <div className="sidebar-break"></div>
         </div>

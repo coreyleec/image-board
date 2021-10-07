@@ -61,7 +61,8 @@ const DndContainer = (props) => {
     // ? setOpenPhoto(!openPhoto)
     // : ImagesetOpenModal(!ImageopenModal)
   };
-
+  const sortPhotos = (a, b) => a.index - b.index;
+  
   const nextPhoto = (initialPhoto) => {
     const photosOnly =
       props.photos != undefined &&
@@ -97,7 +98,7 @@ const DndContainer = (props) => {
   // const landscape = 
   // const height = photoHeight > photoWidth ? 230 : 100
 
-  const sortPhotos = (a, b) => a.index - b.index;
+  
   const opacity = imagesLoaded ? 1 : 0
   const display = openModal ? "none" : "fixed"
   return (
@@ -145,6 +146,8 @@ const DndContainer = (props) => {
                           : "emptyBox"
                       }
                     >
+                      <div style={{"position": "absolute"}} >
+
 {/* DELETE PHOTO */}
 {/* props.openModal === true && */}
                       { props.enableDelete && photo.url != null && 
@@ -152,6 +155,7 @@ const DndContainer = (props) => {
                          style={{display}} 
                          className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
                         }
+                      </div>
                       <img
                         className="photo"
                         ref={imgRef}
@@ -160,11 +164,11 @@ const DndContainer = (props) => {
                         src={photo.url}
                         // loading="lazy"
                         // style={{ height }}
-                        // src={
-                        //   photo.url != null
-                        //     ? photo.url
-                        //     : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
-                        // }
+                        src={
+                          photo.url != null
+                            ? photo.url
+                            : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                        }
                       />
                     </div>
                   </DraggableGridItem>
@@ -196,7 +200,7 @@ const adjustGridItemsHeight = (grid, image) => {
   
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
-    console.log(image)
+    // console.log(image)
     
     let rowHeight = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-auto-rows")

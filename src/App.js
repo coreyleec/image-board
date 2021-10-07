@@ -122,7 +122,7 @@ const handlePassword = (password) => {
         setUserEmail(user.user.email);
         setUserAboutMe(user.user.details);
         setUserLinks(user.links);
-        setUserFolders(user.folders);
+        setUserFolders(user.folders.reverse());
         console.log("user folders", user.folders)
         setPhotos(user.photos);
         setUserComments(user.comments);
@@ -225,6 +225,42 @@ const handlePassword = (password) => {
       });
   };
 
+  const chooseFolder = (folder) => {
+    setFolderShown(folder.id)
+    fetch(`http://localhost:3000/api/v1/folders/${folder.id}/`, {
+      method: "GET",
+      headers: { "Content-Type": "application/json" },
+    })
+      .then((r) => r.json())
+      .then((folder) => {
+        console.log("folder", folder);
+        setPhotos(folder.photos);
+        setFolderToggle(true);
+      });
+  };
+  
+    const deleteFolder = (folderObj) => {
+       // GETS INDEX OF DELETED FOLDER
+      const folderIndex = userFolders.findIndex(
+        (folder) => folder.id === folderObj.id);
+      // GETS INDEX OF FOLDER BEFORE DELETED FOLDER
+      const previousFolder = userFolders[folderIndex - 1]
+      // IF VIEWED FOLDER IS DELETED, SHOW PREVIOUS FOLDER
+        folderShown === folderObj.id && chooseFolder(previousFolder)
+        // UPDATE FOLDERS ARRAY
+      const updatedFoldersArr = userFolders.filter((folder) => folder.id !== folderObj.id);
+      setUserFolders(updatedFoldersArr)
+      // CONSOLE LOG VALUES
+        console.log("folderIndex", folderIndex)
+        console.log("userFolders", userFolders)
+        console.log("previous folder", previousFolder.id)
+        // THERE'S AN ISSUE WITH THE FETCH. RECIEVING ERROR: Uncaught (in promise) SyntaxError: Unexpected end of JSON input
+        // SO FUNCTION IS OPTIMISTIC UNTIL RESOLVED
+      fetch(`http://localhost:3000/api/v1/folders/${folderObj.id}/`, {method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
+    })};
+
 // LINK FUNCTIONS
 
 const addLink = (e, linkName, linkUrl) => {
@@ -265,28 +301,6 @@ const addLink = (e, linkName, linkUrl) => {
       .then(() => console.log("updatedLinksArr", updatedLinksArr, "linkObj", linkObj))
     };
 
-// FOLDER FUNCTIONS
-
-const chooseFolder = (folderId) => {
-  setFolderShown(folderId)
-  fetch(`http://localhost:3000/api/v1/folders/${folderId}/`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  })
-    .then((r) => r.json())
-    .then((folder) => {
-      console.log("folder", folder);
-      setPhotos(folder.photos);
-      setFolderToggle(true);
-    });
-};
-
-  const deleteFolder = (folderObj) => {
-    let updatedFoldersArr = userFolders.filter((folder) => folder.id !== folderObj.id);
-    setUserFolders(updatedFoldersArr)
-    fetch(`http://localhost:3000/api/v1/folders/${folderObj.id}/`, {method: "DELETE"})
-      .then((res) => res.json())
-      .then(() => console.log("folderObj", folderObj, "updatedFoldersArr", updatedFoldersArr))};
 
       const updateLink = (e, linkName, linkUrl, link) => {
         e.preventDefault();
@@ -372,6 +386,17 @@ const handlePhotos = (photos) => {
 const addPhoto = (e, photo, name, details, url) => {
 
   e.preventDefault();
+
+  let img = new Image()
+  img.src = url
+  img.onload = () => {
+    
+  }
+  
+  // let prePictures = photos.filter(photo => photo.url !== null)
+  //   let preEmptyBoxs = photos.filter(photo => photo.url === null)
+  //   console.log(`${preEmptyBoxs.length}/ ${prePictures.length}`, preEmptyBoxs.length/prePictures.length)
+
   console.log(e);
   console.log(e, photo, name, details, url);
   fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
@@ -388,16 +413,51 @@ const addPhoto = (e, photo, name, details, url) => {
   })
     .then((res) => res.json())
     .then((photoObj) => {
-      console.log(photoObj);
+      // console.log(photoObj);
       setPhotos(
         photos.map((photo) => {
           if (photo.id === photoObj.id) return photoObj;
           else return photo;
         })
-      );
+        );
+        
+      });
+    };
+useEffect(() => {
+  let pictures = photos!== undefined && photos.filter(photo => photo.url !== null)
+  let emptyBoxs = photos!== undefined && photos.filter(photo => photo.url === null)
+  console.log(photos!== undefined && `${emptyBoxs.length}/ ${pictures.length}`, photos!== undefined && emptyBoxs.length/pictures.length)
+// return photos
+photos!== undefined && pictures.length/photos.length >= .80 && 
+fetch(`http://localhost:3000/api/v1/folders/${folderShown}/`, {
+    method: "GET",
+    headers: { "Content-Type": "application/json" },
+  })
+    .then((r) => r.json())
+    .then((folder) => {
+      // console.log("folder", folder);
+      setPhotos(folder.photos);
     });
-};
+    
+}, [])
 
+
+    //  > 8/10 
+    // &&
+    // fetch(`http://localhost:3000/api/v1/folders/${folderShown}/`, {
+    //   method: "GET",
+    //   headers: { "Content-Type": "application/json" },
+    // })
+    //   .then((r) => r.json())
+    //   .then((folder) => {
+    //     // console.log("folder", folder);
+    //     setPhotos(folder.photos);
+    //   });
+
+
+let pictures = photos !== undefined && photos.filter(photo => photo.url !== null)
+        let emptyBoxs = photos!== undefined && photos.filter(photo => photo.url === null)
+        console.log(photos !== undefined && `${pictures.length}/ ${photos.length}`, photos !== undefined && pictures.length/photos.length)
 
 const deletePhoto = (photo) => {
 
@@ -505,6 +565,7 @@ const [previousPhotoArray, setPreviousPhotoArray] = useState()
 
   const modalToggle = (photo) => {
     //function fires depending on whether picture frames that are empty
+    // update: no longer needs to be double coded. the code works the same for both scenarios
     setPhoto(photo);
     console.log(photo);
     setOpenModal(!openModal)
@@ -522,7 +583,6 @@ const [previousPhotoArray, setPreviousPhotoArray] = useState()
   const sortPhotos = (a, b) => a.index - b.index;
   return (
     <Router>
-      {/* {openModal && <PhotoModal photo={photo} openModal={openModal} modalToggle={modalToggle} />} */}
       <div className="cont">
         <SideBar
        folderShown={folderShown}

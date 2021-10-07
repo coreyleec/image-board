@@ -61,6 +61,7 @@ const SideBarLinks = (props) => {
           <StyledInput
             type="text"
             placeholder="link name"
+            autoFocus="autofocus"
             onChange={(e) => setLinkName(e.target.value)}
           ></StyledInput>
           <StyledInput

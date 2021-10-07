@@ -35,7 +35,8 @@ const ImageModal = (props) => {
         data-toggle="modal"
         // data-backdrop="static"
         // data-keyboard="false"
-      >
+        >
+        {/* CONTROL BUTTONS */}
         <button
           //  style={{display}}
           className="close-modal-button"
@@ -81,6 +82,7 @@ const ImageModal = (props) => {
               <div className="modal-img-cont">
                 <img src={photo.url}></img>
                 {props.edit && <input
+                placeholderTextColor={'gainsboro'}
                     type="text"
                     name="image"
                     placeholder={photo.url}
@@ -162,6 +164,7 @@ const ModelContent = styled.div`
       width:40%;
     }
     .modal-img-cont {
+      display: block;
       text-align:center
     }
     }

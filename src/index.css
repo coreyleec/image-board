@@ -1,9 +1,15 @@
 * {
   font-family: Helvetica, sans-serif; 
 }
-
+html {
+  height: 100%;
+}
+#root {
+  min-height: 100%;
+}
 body {
   /* width: 100vw; */
+ 
   margin: 0;
   /* font-family: "HelveticaNeue"; */
   -webkit-font-smoothing: antialiased;
@@ -110,7 +116,10 @@ button {
     right: 2px;
     top:11px;
 }
+
 .delete-photo {
+  padding-top: 0px;
+  height: 0px;
   cursor: pointer;
   background-color: transparent;
   color: red;
@@ -120,9 +129,9 @@ button {
   line-height: 0px;
   z-index: 1;
   position: relative;
-  float: right;
-  top: 11px;
-  right: -1px;
+  /* float: right; */
+  top: 8px;
+  right: -108px;
 }
 .sidebar-break {
   width: 100%;
