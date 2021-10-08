@@ -48,7 +48,9 @@ const DraggableGridItem = ({ photo, onDrop, children, ...p }) => {
   const opacity = isDragging ? 0 : 1;
 
   return <GridItemWrapper 
-  {...p} ref={ref} style={{ opacity }}>
+  {...p} ref={ref} style={{ opacity }}
+  
+  >
    
     {children}
   
@@ -136,13 +138,13 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
 
 
 const GridItemWrapper = styled.div `
-   width: minmax(165px, 240px);
+   /* width: minmax(165px, 240px); */
   /* width: 165px; */
   justify-content: center;
-  
+  /* background-size: contain; */
   // min-width: 240px;
   // background-color: #fff, 0;
-  // padding: 0px;
+/* padding: 10px; */
   // opacity: 0;
   
   // padding-bottom: 10px;

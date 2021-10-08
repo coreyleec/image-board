@@ -79,7 +79,7 @@ footer {
 article {
   /* flex: 1 0 auto; */
   padding-top: 80px;
-  padding-inline: 10%;
+  padding-inline: 8%;
 }
 
 button {
@@ -244,22 +244,22 @@ input:-webkit-autofill {
   flex-direction: column; 
 } */
 .picture {
-  max-width: 150px; 
+  max-height: 220px; 
   /* flex: 0 0 100px;   */
-  margin: 7px;
+  margin: 10px;
   overflow: hidden;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center; */
+  /* justify-content: center; */
   border-radius: 13px;
+  width: 135px; 
+  /* padding: 10px; */
 }
 .picture .photo{
   overflow: hidden;
   position: relative;
-  max-width: 150px; 
 
-/* padding: 0px; */
 /* min-height: 100px; */
-max-height: 240px;  
+/* max-height: 240px;   */
 /* width: 135px; */
 
 
@@ -271,11 +271,7 @@ border-radius: 13px;
 } */
 .photo {
   position: relative;
-  /* width: 100%; */
   overflow: hidden;
-  min-width: 150px;
-  max-width: 220px;
-  min-height: 112px;
   align-items: center;
 }
 /* .picture :hover {
@@ -291,7 +287,8 @@ border-radius: 13px;
   width: 130px; 
   height: 100px;
   margin: 7px;
-  height: auto;
+  /* height: auto; */
+  justify-content: center;
 }
 .emptyBox .photo {
   border-radius: 13px;
@@ -380,9 +377,9 @@ transform: translateY(0px); */
     color: gainsboro;
     
   }
-  /* div.modal-content form input::placeholder {
+  div.modal-content form input::placeholder {
     color: gainsboro;
-} */
+}
 
   .next-button-right {
     cursor: pointer;

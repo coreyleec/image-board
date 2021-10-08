@@ -155,9 +155,12 @@ const ModelContent = styled.div`
         display : flex;
         justify-content : space-between; 
     }
-    .modal-cont form input {
+    /* .modal-cont form input {
       color: gainsboro;
     }
+    div.modal-content form input::placeholder {
+    color: gainsboro; */
+}
     .modal-name-cont, .modal-details-cont {
       flex-grow: 1;
       flex-basis: 0;

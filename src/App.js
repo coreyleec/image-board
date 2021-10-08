@@ -222,6 +222,7 @@ const handlePassword = (password) => {
       .then((folderObj) => {
         console.log(folderObj);
         setUserFolders([...userFolders, folderObj]);
+        chooseFolder(folderObj)
       });
   };
 
@@ -238,28 +239,33 @@ const handlePassword = (password) => {
         setFolderToggle(true);
       });
   };
-  
+
     const deleteFolder = (folderObj) => {
        // GETS INDEX OF DELETED FOLDER
+      //  console.log(folderObj)
       const folderIndex = userFolders.findIndex(
         (folder) => folder.id === folderObj.id);
-      // GETS INDEX OF FOLDER BEFORE DELETED FOLDER
-      const previousFolder = userFolders[folderIndex - 1]
-      // IF VIEWED FOLDER IS DELETED, SHOW PREVIOUS FOLDER
+        // console.log("folderIndex", folderIndex)
+      // GETS INDEX OF FOLDER NEXT TO DELETED FOLDER
+       const previousFolder = (folderShown === userFolders[0].id )
+       ? userFolders[1] 
+       : userFolders[folderIndex - 1]
+      // IF VIEWED FOLDER IS DELETED, SHOW PREVIOUS FOLDER. IF THIS FOLDER IS THE FIRST IN THE ARRAY, THEN SELECT THE NEXT FOLDER IN ARRAY
         folderShown === folderObj.id && chooseFolder(previousFolder)
         // UPDATE FOLDERS ARRAY
       const updatedFoldersArr = userFolders.filter((folder) => folder.id !== folderObj.id);
       setUserFolders(updatedFoldersArr)
       // CONSOLE LOG VALUES
-        console.log("folderIndex", folderIndex)
-        console.log("userFolders", userFolders)
-        console.log("previous folder", previousFolder.id)
+        // console.log("folderIndex", folderIndex)
+        // console.log("userFolders", userFolders)
+        // console.log("previous folder", previousFolder)
         // THERE'S AN ISSUE WITH THE FETCH. RECIEVING ERROR: Uncaught (in promise) SyntaxError: Unexpected end of JSON input
         // SO FUNCTION IS OPTIMISTIC UNTIL RESOLVED
       fetch(`http://localhost:3000/api/v1/folders/${folderObj.id}/`, {method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
-    })};
+    })
+  };
 
 // LINK FUNCTIONS
 
@@ -389,15 +395,13 @@ const addPhoto = (e, photo, name, details, url) => {
 
   let img = new Image()
   img.src = url
-  img.onload = () => {
-    
-  }
-  
-  // let prePictures = photos.filter(photo => photo.url !== null)
-  //   let preEmptyBoxs = photos.filter(photo => photo.url === null)
-  //   console.log(`${preEmptyBoxs.length}/ ${prePictures.length}`, preEmptyBoxs.length/prePictures.length)
-
-  console.log(e);
+  let height = img.onload = () => {
+    // console.log("width " + img.width + "px." + "height" + img.height);
+    const height = img.width !== null && img.width > img.height ? "100px" : "135px"
+    // return 
+    // console.log("height", height)
+    // return height
+    console.log(e);
   console.log(e, photo, name, details, url);
   fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
     method: "PATCH",
@@ -407,7 +411,7 @@ const addPhoto = (e, photo, name, details, url) => {
     },
     body: JSON.stringify({
       name: name,
-      details: details,
+      details: height,
       url: url,
     }),
   })
@@ -422,6 +426,14 @@ const addPhoto = (e, photo, name, details, url) => {
         );
         
       });
+  } 
+  let variable = height()
+  console.log(variable)
+  // let prePictures = photos.filter(photo => photo.url !== null)
+  //   let preEmptyBoxs = photos.filter(photo => photo.url === null)
+  //   console.log(`${preEmptyBoxs.length}/ ${prePictures.length}`, preEmptyBoxs.length/prePictures.length)
+
+  
     };
 useEffect(() => {
   let pictures = photos!== undefined && photos.filter(photo => photo.url !== null)
@@ -471,7 +483,7 @@ const deletePhoto = (photo) => {
     body: JSON.stringify({
       name: null,
       url: null,
-      details: null,
+      details: "100px",
     }),
   })
     .then((res) => res.json())
@@ -661,3 +673,11 @@ const [previousPhotoArray, setPreviousPhotoArray] = useState()
     </Router>
   );
 }
+
+
+
+// useEffect(()=> {
+//   const grid = gridRef.current;
+//   const image = imgRef.current
+//   adjustGridItemsHeight(grid, image);
+// }, [props.photos])

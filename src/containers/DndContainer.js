@@ -30,7 +30,11 @@ const DndContainer = (props) => {
 
   let onDropVariable = props.edit ? onDrop : disableOnDrop;
 
-
+// useEffect(()=> {
+//   const grid = gridRef.current;
+//   const image = imgRef.current
+//   adjustGridItemsHeight(grid, image);
+// }, [props.photos])
 
   const gridRef = useRef(null);
   const imgRef = useRef(null)
@@ -100,7 +104,7 @@ const DndContainer = (props) => {
 
   
   const opacity = imagesLoaded ? 1 : 0
-  const display = openModal ? "none" : "fixed"
+  const display = openModal ? "none" : "inline"
   return (
     <>
       {openModal && (
@@ -146,7 +150,9 @@ const DndContainer = (props) => {
                           : "emptyBox"
                       }
                     >
-                      <div style={{"position": "absolute"}} >
+                      <div 
+                      // style={{"position": "absolute"}} 
+                      >
 
 {/* DELETE PHOTO */}
 {/* props.openModal === true && */}
@@ -155,13 +161,16 @@ const DndContainer = (props) => {
                          style={{display}} 
                          className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
                         }
-                      </div>
+                      
                       <img
                         className="photo"
                         ref={imgRef}
                         onLoad={() => handleLoad(photo.url)}
                         onClick={() => modalToggle(photo)}
                         src={photo.url}
+                        style={ photo.details === "100px"   
+                        ? {height: `${photo.details}`} 
+                        : {width: `${photo.details}`} }
                         // loading="lazy"
                         // style={{ height }}
                         src={
@@ -170,6 +179,7 @@ const DndContainer = (props) => {
                             : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                         }
                       />
+                      </div>
                     </div>
                   </DraggableGridItem>
                 ))}
@@ -192,16 +202,11 @@ const AppWrapper = styled.div`
 const adjustGridItemsHeight = (grid, image) => {
   // set all grid photos to vairable "photos"
   // console.log(image, photo.firstChild.getBoundingClientRect())
-  const photos = grid.children; 
+  const photos = grid.children; // set all grid photo to vairable "photos"
   // console.log("photos grid children", photos);
-  // const image = image.children
-  
-  
-  
+
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
-    // console.log(image)
-    
     let rowHeight = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-auto-rows")
     );
@@ -210,21 +215,19 @@ const adjustGridItemsHeight = (grid, image) => {
     );
     // let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? photo.
     // style.height = "240px" : photo.style.height = "112px"
-    
     let rowSpan = Math.ceil(
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)
     );
-    let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? image.
-    style.height = "240px" : image.style.height = "112px"
-    
-    
-    image.style.height = height
-    
+    // let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? image.
+    // style.height = "240px" : image.style.height = "112px"
+    // console.log("rowspan", rowSpan);
     photo.style.gridRowEnd = "span " + rowSpan;
 
   } return 
 };
+
+
 //nodeValue
 
 
@@ -232,7 +235,7 @@ const GridWrapper = styled.div`
   display: grid;
   justify-content: center;
   grid-gap: 2px;
-
+  /* background-size: contain; */
   /* grid-template-columns: repeat(6, 160px); */
   grid-auto-rows: 1px;
   grid-template-columns: repeat(6, minmax(0, 1.5fr) );
