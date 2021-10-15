@@ -122,7 +122,7 @@ const handlePassword = (password) => {
         setUserEmail(user.user.email);
         setUserAboutMe(user.user.details);
         setUserLinks(user.links);
-        setUserFolders(user.folders.reverse());
+        setUserFolders(user.folders);
         console.log("user folders", user.folders)
         setPhotos(user.photos);
         setUserComments(user.comments);

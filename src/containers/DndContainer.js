@@ -20,7 +20,7 @@ const DndContainer = (props) => {
     // console.log("secondPhoto", secondPhoto);
     const firstIndex = firstPhoto.index; // declares variable value of first photo index
     firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
-    secondPhoto.index = firstIndex; // then sets the second photo to the
+    secondPhoto.index = firstIndex; // then sets the second photo index to the first index
     props.handlePhotos(newPhotos);
   };
 
@@ -41,6 +41,7 @@ const DndContainer = (props) => {
   const { children } = props;
 
   const [imagesLoaded, setImagesLoaded] = useState(false);
+
   const handleLoad = (photo) => {
     const grid = gridRef.current;
     const image = imgRef.current
@@ -48,7 +49,7 @@ const DndContainer = (props) => {
     let imageWidth = image.naturalHeight
     console.log(imageWidth + 'x' + imageHeight)
     
-    adjustGridItemsHeight(grid, image);
+    adjustGridItemsHeight(grid, photo);
     setImagesLoaded(true);
   };
 
@@ -137,6 +138,9 @@ const DndContainer = (props) => {
                     key={photo.id}
                     photo={photo}
                     onDrop={onDropVariable}
+                    // style={ photo.details === "100px"   
+                    //     ? {gridRowEnd : "span 40"} 
+                    //     : {gridRowEnd : "span 80" }}
                   >
                     
                     <div
@@ -150,9 +154,9 @@ const DndContainer = (props) => {
                           : "emptyBox"
                       }
                     >
-                      <div 
-                      // style={{"position": "absolute"}} 
-                      >
+                      {/* <div 
+                      style={{"position": "absolute"}} 
+                      > */}
 
 {/* DELETE PHOTO */}
 {/* props.openModal === true && */}
@@ -179,7 +183,7 @@ const DndContainer = (props) => {
                             : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                         }
                       />
-                      </div>
+                      {/* </div> */}
                     </div>
                   </DraggableGridItem>
                 ))}
@@ -199,11 +203,12 @@ const AppWrapper = styled.div`
   // }
 `;
 
-const adjustGridItemsHeight = (grid, image) => {
+const adjustGridItemsHeight = (grid, photo) => {
   // set all grid photos to vairable "photos"
   // console.log(image, photo.firstChild.getBoundingClientRect())
   const photos = grid.children; // set all grid photo to vairable "photos"
   // console.log("photos grid children", photos);
+  // let rowSpan = photo.details === "100px" ? 40 : 80
 
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
@@ -213,12 +218,14 @@ const adjustGridItemsHeight = (grid, image) => {
     let rowGap = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-row-gap")
     );
-    // let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? photo.
-    // style.height = "240px" : photo.style.height = "112px"
     let rowSpan = Math.ceil(
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)
     );
+console.log("dividend", Math.ceil(
+  (photo.firstChild.getBoundingClientRect().height + rowGap)))
+    console.log("rowHeight + rowGap", rowHeight + rowGap)
+console.log("rowSpan", rowSpan)
     // let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? image.
     // style.height = "240px" : image.style.height = "112px"
     // console.log("rowspan", rowSpan);
@@ -227,7 +234,10 @@ const adjustGridItemsHeight = (grid, image) => {
   } return 
 };
 
-
+// let divisibleAmount = Math.ceil(
+//   (photo.firstChild.getBoundingClientRect().height + rowGap))
+// let rowSpan = divisibleAmount <= 118 ? 118 : divisibleAmount /
+//     (rowHeight + rowGap)
 //nodeValue
 
 
