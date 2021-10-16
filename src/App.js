@@ -16,6 +16,9 @@ import HTML5toTouch from "./dnd/HTML5toTouch";
 export default function App() {
   require("events").EventEmitter.defaultMaxListeners = 20;
  
+  window.onbeforeunload = function () {
+    window.scrollTo(0, 0);
+  }
   // OPEN LOGIN
  const [userProfile, setUserProfile] = useState(true);
  

@@ -153,6 +153,9 @@ const DndContainer = (props) => {
                           ? "picture"
                           : "emptyBox"
                       }
+                      style={ photo.url !== null ? photo.details === "100px"   
+                        ? {height: `100px`} 
+                        : photo.url !== null && {height: `220px`} : null}
                     >
                       {/* <div 
                       style={{"position": "absolute"}} 
@@ -220,8 +223,7 @@ const adjustGridItemsHeight = (grid, photo) => {
     );
     let rowSpan = Math.ceil(
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
-        (rowHeight + rowGap)
-    );
+        (rowHeight + rowGap)) <= 40 ? 40 : 80
 console.log("dividend", Math.ceil(
   (photo.firstChild.getBoundingClientRect().height + rowGap)))
     console.log("rowHeight + rowGap", rowHeight + rowGap)

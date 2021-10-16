@@ -250,14 +250,16 @@ input:-webkit-autofill {
   /* flex: 0 0 100px;   */
   /* margin: 7px; */
   overflow: hidden;
-  align-items: center;
-  justify-content: center;
+  /* align-items: center;
+  justify-content: center; */
   border-radius: 13px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
 }
 .picture .photo{
   overflow: hidden;
   position: relative;
   justify-content: center;
+  
   /* width: 150px;  */
 
 /* padding: 0px; */
@@ -278,7 +280,7 @@ border-radius: 13px;
   overflow: hidden;
   /* min-width: 150px; */
   /* max-width: 220px; */
-  /* min-height: 112px; */
+  min-height: 100px;
   align-items: center;
 }
 /* .picture :hover {
