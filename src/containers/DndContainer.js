@@ -177,7 +177,7 @@ const DndContainer = (props) => {
                         src={photo.url}
                         style={ photo.details === "100px"   
                         ? {height: `${photo.details}`} 
-                        : {width: `${photo.details}`} }
+                        : {minWidth:`${photo.details}`, maxHeight: "220px"} }
                         // loading="lazy"
                         // style={{ height }}
                         src={
