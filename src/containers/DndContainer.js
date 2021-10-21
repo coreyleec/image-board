@@ -108,8 +108,9 @@ const DndContainer = (props) => {
   const tallPhotos = photos !== undefined && photos.filter(photo => photo.details === "135px").map(photo => photo.index + 6)
 
   // console.log("filtered photos", photos !== undefined &&photos.find(photo => photo.index === tallPhotos.map))
-
-console.log("filtered photos",photos !== undefined && photos.filter(photo => tallPhotos.includes(photo.index)))
+  const filteredPhotos = photos !== undefined && photos.filter(photo => tallPhotos.includes(photo.index))
+  const remainderPhotos = photos !== undefined && photos.filter(photo => !filteredPhotos.includes(photo))
+console.log("filtered photos", photos !== undefined && photos.filter(photo => !filteredPhotos.includes(photo)))
   // const intersection = photos !== undefined && photos.filter(photo => tallPhotos.includes(photo.index));
 
   const opacity = imagesLoaded ? 1 : 0
@@ -141,7 +142,7 @@ console.log("filtered photos",photos !== undefined && photos.filter(photo => tal
               style={{ opacity }}>
             
               {photos != undefined &&
-                photos.sort(sortPhotos).map((photo) => (
+                remainderPhotos.sort(sortPhotos).map((photo) => (
                   <DraggableGridItem
                     key={photo.id}
                     photo={photo}
@@ -176,7 +177,7 @@ console.log("filtered photos",photos !== undefined && photos.filter(photo => tal
                          style={{display}} 
                          className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
                         }
-                      <p>{photo.index}</p>
+                      {/* <p>{photo.index}</p> */}
                       <img
                         className="photo"
                         ref={imgRef}
