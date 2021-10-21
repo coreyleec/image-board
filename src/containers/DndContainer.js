@@ -103,7 +103,15 @@ const DndContainer = (props) => {
   // const landscape = 
   // const height = photoHeight > photoWidth ? 230 : 100
 
-  
+  console.log("tall photos", photos !== undefined && photos.filter(photo => photo.details === "135px").map(photo => photo.index + 6))
+
+  const tallPhotos = photos !== undefined && photos.filter(photo => photo.details === "135px").map(photo => photo.index + 6)
+
+  // console.log("filtered photos", photos !== undefined &&photos.find(photo => photo.index === tallPhotos.map))
+
+console.log("filtered photos",photos !== undefined && photos.filter(photo => tallPhotos.includes(photo.index)))
+  // const intersection = photos !== undefined && photos.filter(photo => tallPhotos.includes(photo.index));
+
   const opacity = imagesLoaded ? 1 : 0
   const display = openModal ? "none" : "inline"
   return (
@@ -137,7 +145,7 @@ const DndContainer = (props) => {
                   <DraggableGridItem
                     key={photo.id}
                     photo={photo}
-                    onDrop={onDropVariable}
+                    onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                     // style={ photo.details === "100px"   
                     //     ? {gridRowEnd : "span 40"} 
                     //     : {gridRowEnd : "span 80" }}
@@ -168,10 +176,11 @@ const DndContainer = (props) => {
                          style={{display}} 
                          className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
                         }
-                      
+                      <p>{photo.index}</p>
                       <img
                         className="photo"
                         ref={imgRef}
+                        key={photo.index }
                         onLoad={() => handleLoad(photo.url)}
                         onClick={() => modalToggle(photo)}
                         src={photo.url}
