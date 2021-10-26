@@ -142,7 +142,7 @@ console.log("filtered photos", photos !== undefined && photos.filter(photo => !f
               style={{ opacity }}>
             
               {photos != undefined &&
-                remainderPhotos.sort(sortPhotos).map((photo) => (
+                photos.sort(sortPhotos).map((photo) => (
                   <DraggableGridItem
                     key={photo.id}
                     photo={photo}

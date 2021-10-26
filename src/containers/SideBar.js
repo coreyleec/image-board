@@ -92,10 +92,21 @@ export default SideBar;
 const Button = styled.button`
   align-items: flex-end;
 `;
+
 const Sticky = styled.div`
-  
+  /* padding-inline: 5px; */
   position: sticky;
   top: 0;
+  /* height: 100%;
+    background-color: coral; */
+    /* position: absolute; */
+   /* *:not(:last-child) {
+    display: block;
+    margin-bottom: 3px;  */
+} 
+@media (max-width: 1200px) {
+  .side-bar-open{width: 200px;background-color:gainsboro;}
+}
 `;
 
 // const [userFolders, setUserFolders] = useState({...props.userFolders})
