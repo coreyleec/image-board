@@ -591,14 +591,21 @@ const [previousPhotoArray, setPreviousPhotoArray] = useState()
   };
   
 
+  const changeTransition = () => {
+    document.getElementsByClassName("cont").style.transition = "none";
+    setTimeout((e)=>{
+    document.getElementsByClassName("cont").style.transition = "all 0.5s ease";
+    }, 1000);
+    }
 
+    
   
   
 
   const sortPhotos = (a, b) => a.index - b.index;
   return (
     <Router>
-      <div className="cont">
+      <div onResize={changeTransition()} className="cont">
         <SideBar
        folderShown={folderShown}
        edit={edit}

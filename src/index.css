@@ -59,8 +59,12 @@ aside:nth-child(1) {
 
 
 @media (max-width: 1200px) {
+  aside{
+    transition: none !important;
+  }
   .cont {
     grid-template-columns:  0 1fr 0;
+    transition: 1s;
   }
   /* .picture{
     position:absolute;  }*/
@@ -69,15 +73,15 @@ aside:nth-child(1) {
     position:relative;
   }
   .slide-button-right {
-    /* transition: all 1.5s; */
+    transition: all 1s;
     margin-left: 172px;    
   }
   .side-bar-open {
     background-color: gainsboro;
     /* transition: 1s; */
-    position:absolute;
+    position:relative;
     /* width: 200px; */
-    z-index:;
+    /* z-index:; */
     left:87%
   }
   /* .side-bar-open p{width: 100%;} */
@@ -185,7 +189,7 @@ input:-webkit-autofill {
   margin-top: 5px;
   margin-left: 5px;
   left: 0%;
-  transition: all 1s;
+  /* transition: 1s; */
   position: absolute;
   z-index: 1;
   font-size: 15px;
@@ -193,9 +197,9 @@ input:-webkit-autofill {
 
 .slide-button-right {
   margin-top: 5px;
-  left: 87%;
+  left: 88%;
   /* margin-right: auto; */
-  transition: all 1s;
+  /* transition: 1s; */
   position: absolute;
   z-index: 1;
   font-size: 15px;
@@ -203,15 +207,15 @@ input:-webkit-autofill {
 
 .side-bar-closed {
   width: 100%;
-  left: -87%;
-  transition: all 1s;
+  left: -100%;
+  /* transition: 1s; */
   position: absolute;
   }
 .side-bar-open {
     width: 100%;
+    left: 0%;
   position: absolute;
-  left: -0%;
-  transition: all 1s;
+  /* transition: 1s; */
   }
 
 .scrollable {    
@@ -295,19 +299,33 @@ input:-webkit-autofill {
   /* flex: 0 0 100px;   */
   /* margin: 7px; */
   overflow: hidden;
+  /* USE THIS TO STAY CENTER */
+   display: flex;
+  justify-content: center;
   /* align-items: center;
   justify-content: center; */
   border-radius: 13px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
 }
 .picture .photo{
+  margin: auto;
+  display: block;
+
+  /* left: 50%; */
+  /* transform: translateX(-50%); */
+  position: initial;
+  max-height: 220px;
+  min-width: 150px;
+  /* max-height: 240px;
+  
+  
   position: relative;
   left: 50%;
 transform: translateX(-50%);
+max-height: 220px;  */
 
   /* display: flex;
   justify-content: center;   */
-  max-height: 220px; 
   /* overflow: hidden; */
   /* position: relative; */
   /* justify-content: center; */

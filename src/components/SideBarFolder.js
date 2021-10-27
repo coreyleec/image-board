@@ -108,7 +108,7 @@ const StyledP = styled.p`
       width: 85%;
       color: black;
       margin-bottom: 0px;
-      cursor: pointer;
+      /* cursor: pointer; */
     
 
       

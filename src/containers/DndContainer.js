@@ -178,6 +178,7 @@ console.log("filtered photos", photos !== undefined && photos.filter(photo => !f
                          className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
                         }
                       {/* <p>{photo.index}</p> */}
+                      <div className="img-wrapper">
                       <img
                         className="photo"
                         ref={imgRef}
@@ -196,6 +197,7 @@ console.log("filtered photos", photos !== undefined && photos.filter(photo => !f
                             : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                         }
                       />
+                      </div>
                       {/* </div> */}
                     </div>
                   </DraggableGridItem>
