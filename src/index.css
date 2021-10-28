@@ -59,12 +59,12 @@ aside:nth-child(1) {
 
 
 @media (max-width: 1200px) {
-  aside{
+  /* aside{
     transition: none !important;
-  }
+  } */
   .cont {
     grid-template-columns:  0 1fr 0;
-    transition: 1s;
+    /* transition: 1s; */
   }
   /* .picture{
     position:absolute;  }*/
@@ -72,25 +72,33 @@ aside:nth-child(1) {
     z-index:0;
     position:relative;
   }
+  .slide-button-left{
+    /* margin-left: 25.3px;  */
+    transition: none !important;
+  }
   .slide-button-right {
-    transition: all 1s;
-    margin-left: 172px;    
+    /* transition: all 1s; */
+    transition: none !important;
+    /* margin-left: 172px;     */
   }
   .side-bar-open {
-    background-color: gainsboro;
-    /* transition: 1s; */
+    background-color: coral;
+    transition: none;
     position:relative;
+    transition: none !important;
     /* width: 200px; */
     /* z-index:; */
     left:87%
   }
   /* .side-bar-open p{width: 100%;} */
   .side-bar-closed{
-    background-color: gainsboro;
+    transition: none !important;
+    background-color: coral;
     margin-inline: 0;
     left:2%
   }
   .side-bar-closed .scrollable{
+    transition: none !important;
     padding-inline: 0px;
   }
   .scrollable{
@@ -122,7 +130,7 @@ footer {
 article {
   /* flex: 1 0 auto; */
   padding-top: 80px;
-  padding-inline: 10%;
+  padding-inline: max(10%);
 }
 
 button {
@@ -187,9 +195,10 @@ input:-webkit-autofill {
 
 .slide-button-left {
   margin-top: 5px;
-  margin-left: 5px;
-  left: 0%;
-  /* transition: 1s; */
+  
+  margin-left: .3vw ;
+  /* left: 0%; */
+  transition: 1s;
   position: absolute;
   z-index: 1;
   font-size: 15px;
@@ -197,27 +206,33 @@ input:-webkit-autofill {
 
 .slide-button-right {
   margin-top: 5px;
-  left: 88%;
+  /* left: 88%; */
+  margin-left: max(14.6vw, 172px);   
   /* margin-right: auto; */
-  /* transition: 1s; */
+  transition: 1s;
   position: absolute;
   z-index: 1;
   font-size: 15px;
 }
 
 .side-bar-closed {
-  width: 100%;
-  left: -100%;
+  width: 50%;
+  /* left: -100%; */
+  margin-left: -25vw;
   /* transition: 1s; */
   position: absolute;
   }
 .side-bar-open {
     width: 100%;
-    left: 0%;
+    /* left: 0%; */
+    margin-left: 0vw;
   position: absolute;
-  /* transition: 1s; */
+  transition: 1s;
   }
-
+  .side-bar-closed .scrollable  {
+    opacity: 0;
+    width: 0;
+  }
 .scrollable {    
     height: 700px;
     overflow-y: scroll;
@@ -290,56 +305,27 @@ input:-webkit-autofill {
   flex-direction: column; 
 } */
 .picture {
-  /* display: flex;
-  justify-content: center;   */
+  
   max-height: 220px; 
-  /* text-align: center; */
-  margin: 10px;
-  /* width: 130px; */
-  /* flex: 0 0 100px;   */
-  /* margin: 7px; */
   overflow: hidden;
-  /* USE THIS TO STAY CENTER */
+  
+  margin: 10px;
+  
+  /* ALLOWS FOR RESIZING WINDOW */
+  max-width: fit-content;
+  /* USE THIS TO KEEP IMAGE CENTER */
    display: flex;
   justify-content: center;
-  /* align-items: center;
-  justify-content: center; */
+  
   border-radius: 13px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
 }
 .picture .photo{
-  margin: auto;
-  display: block;
-
-  /* left: 50%; */
-  /* transform: translateX(-50%); */
-  position: initial;
   max-height: 220px;
   min-width: 150px;
-  /* max-height: 240px;
-  
-  
-  position: relative;
-  left: 50%;
-transform: translateX(-50%);
-max-height: 220px;  */
-
-  /* display: flex;
-  justify-content: center;   */
-  /* overflow: hidden; */
-  /* position: relative; */
-  /* justify-content: center; */
-  
-  /* width: 150px;  */
-
-/* padding: 0px; */
-/* min-height: 100px; */
-/* max-height: 240px;   */
-/* width: 135px; */
-
-
-
-/* transition: all .4s ease; */
+  /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
+  position: initial;
+ 
 }
 /* .picture .photo:hover{
 border-radius: 13px;

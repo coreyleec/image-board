@@ -53,13 +53,14 @@ const SideBar = (props) => {
     <aside>
       <Sticky>
           
-        <button
+      <button
           className={sideBar ? "slide-button-right" : "slide-button-left"}
           onClick={() => toggleSideBar()}
         >
           {sideBar ? "x" : "open"}
         </button>
         <div className={sideBar ? "side-bar-open" : "side-bar-closed"}>
+        
           {/* <div className={"sidebar-content-closed"}> */}
           <div className="scrollable" >
           <div className="break"></div>
@@ -105,7 +106,7 @@ const Sticky = styled.div`
     margin-bottom: 3px;  */
 } 
 @media (max-width: 1200px) {
-  .side-bar-open{width: 200px;background-color:gainsboro;}
+  .side-bar-open{width: 200px;background-color:coral;}
 }
 `;
 
