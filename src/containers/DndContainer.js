@@ -178,7 +178,7 @@ console.log("filtered photos", photos !== undefined && photos.filter(photo => !f
                          className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
                         }
                       {/* <p>{photo.index}</p> */}
-                      <div className="img-wrapper">
+                      <div className="img-wrapper"></div>
                       <img
                         className="photo"
                         ref={imgRef}
@@ -197,7 +197,6 @@ console.log("filtered photos", photos !== undefined && photos.filter(photo => !f
                             : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                         }
                       />
-                      </div>
                       {/* </div> */}
                     </div>
                   </DraggableGridItem>
@@ -262,7 +261,7 @@ const GridWrapper = styled.div`
   /* background-size: contain; */
   /* grid-template-columns: repeat(6, 160px); */
   grid-auto-rows: 1px;
-  grid-template-columns: repeat(6, minmax(0, 1.5fr) );
+  grid-template-columns: repeat(6, minmax(132px, 1.5fr) );
   // grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
   // grid-auto-columns: 100px;
   // grid-auto-rows: 180px;
