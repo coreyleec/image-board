@@ -106,23 +106,31 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
     // make a deep copy, because we are mutating the object on the last line
 
   // fetch(`http://localhost:3000/api/v1/photos/${currentPhoto.id}`, {
-  //       method: "PATCH", 
+  //       method: "PUT", 
   //       headers: {
   //       "Content-Type": "application/json"
   //       },
   //       body: JSON.stringify({
-  //         index:otherPhoto.index,
+  //         index:otherPhoto.index
   //     })
   //   })
+  //   .then((r) => r.json())
+  //   .then((photoObjA) => {
+  //     console.log("photoObjA", photoObjA);
+  //   });
   // fetch(`http://localhost:3000/api/v1/photos/${otherPhoto.id}`, {
-  //       method: "PATCH", 
+  //       method: "PUT", 
   //       headers: {
   //       "Content-Type": "application/json"
   //       },
   //       body: JSON.stringify({
-  //         index:currentPhoto.index,
+  //         index:currentPhoto.index
   //     })
   //   })
+  //   .then((r) => r.json())
+  //   .then((photoObjB) => {
+  //     console.log("photoObjB", photoObjB);
+  //   });
   // console.log("otherPhoto", otherPhoto)
   // console.log("currentPhoto", currentPhoto)
     onDrop(otherPhoto.id, currentPhoto.id);

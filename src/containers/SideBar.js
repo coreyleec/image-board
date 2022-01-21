@@ -64,16 +64,19 @@ const SideBar = (props) => {
           {/* <div className={"sidebar-content-closed"}> */}
           <div className="scrollable" >
           <div className="break"></div>
+            {props.currentUser && props.userFolders &&
+            <>
             <AboutMe {...props} />
-            <SideBarFolder {...props} />
+            <SideBarFolder {...props} key={props.folder_id} />
             <SideBarLinks {...props} />
+            </>}
 
             <br></br>
             <br></br>
             <br></br>
             <br></br>
             {/* <p>Welcome :)</p> */}
-            {props.currentUser == "" ? (
+            {props.currentUser === "" ? (
               <Button onClick={() => props.useTemplate(setBar(!sideBar))}>
                 use template
               </Button>

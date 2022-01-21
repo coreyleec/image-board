@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState, useRef, useLayoutEffect } from "react";
+import { useEffect, useState, useRef} from "react";
 import styled from "styled-components";
 import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
@@ -9,69 +9,82 @@ import ImageModal from "../components/ImageModal";
 
 const DndContainer = (props) => {
   const photos = props.photos;
+  // const [firstPhoto, setFirstPhoto] = useState()
+  // const [secondPhoto, setSecondPhoto] = useState()
+  
+
+
+  const [reorderedPhotos, setReorderedPhotos] = useState()
+  const [counter, setCounter] = useState(2)
+  const [moddedArray, setModdedArray] = useState([])
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
-    console.log("firstPhoto");
+    
     console.log(firstPhotoId, secondPhotoId)
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
-    console.log("firstPhoto", firstPhoto);
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
     // console.log("secondPhoto", secondPhoto);
     const firstIndex = firstPhoto.index; // declares variable value of first photo index
     firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
     secondPhoto.index = firstIndex; // then sets the second photo index to the first index
+    console.log("firstPhoto", firstPhoto, "secondPhoto", secondPhoto);
+    
+      console.log("newPhotos", newPhotos, "photos", photos)
+      // setFirstPhoto(firstPhoto)
+      // setSecondPhoto(secondPhoto)
     props.handlePhotos(newPhotos);
+    // let x = counter + 2
+    // reorderedPhotos.slice(x)
+    // setCounter(x)
+    // console.log("x counter", x)
+    reorderedPhotos !== undefined && setReorderedPhotos([...reorderedPhotos, firstPhoto, secondPhoto])
+    reorderedPhotos === undefined && setReorderedPhotos([firstPhoto, secondPhoto])
+    
+    // return(newPhotos)
   };
 
-  const disableOnDrop = () => {
-    console.log("onDrop disabled");
-  };
 
-  let onDropVariable = props.edit ? onDrop : disableOnDrop;
+const arrayHandler = () => {
+  reorderedPhotos !== undefined && console.log(...reorderedPhotos.slice(-2))
+  // reorderedPhotos !== undefined && setReorderedPhotos(...reorderedPhotos.slice(-2))
+  console.log("hellow")
+}
+  console.log("counter out", counter)
+  console.log("reorderedPhotos", reorderedPhotos)
 
-// useEffect(()=> {
-//   const grid = gridRef.current;
-//   const image = imgRef.current
-//   adjustGridItemsHeight(grid, image);
-// }, [props.photos])
+
+const disableOnDrop = () => {
+  console.log("onDrop disabled");
+};
+const onDropVariable = props.edit ? onDrop : disableOnDrop;
 
   const gridRef = useRef(null);
   const imgRef = useRef(null)
-  const { children } = props;
-
   const [imagesLoaded, setImagesLoaded] = useState(false);
-
   const handleLoad = (photo) => {
     const grid = gridRef.current;
     const image = imgRef.current
     let imageHeight = image.naturalHeight
     let imageWidth = image.naturalHeight
-    console.log(imageWidth + 'x' + imageHeight)
-    
+    // console.log(imageWidth + 'x' + imageHeight)
     adjustGridItemsHeight(grid, photo);
     setImagesLoaded(true);
-  };
 
+  };
+  
   const [photo, setPhoto] = useState();
   const [openModal, setOpenModal] = useState(false);
-
   const modalToggle = (photo) => {
-    //function fires depending on whether picture frames that are empty
     setPhoto(photo);
-    // console.log(photo);
     setOpenModal(!openModal);
-    // !edit &&
-    //   photo != undefined &&
-    // ? setOpenPhoto(!openPhoto)
-    // : ImagesetOpenModal(!ImageopenModal)
   };
   const sortPhotos = (a, b) => a.index - b.index;
   
   const nextPhoto = (initialPhoto) => {
     const photosOnly =
-      props.photos != undefined &&
-      props.photos.filter((photo) => photo.url != null).sort(sortPhotos);
+      props.photos !== undefined &&
+      props.photos.filter((photo) => photo.url !== null).sort(sortPhotos);
     let photos = props.edit === true ? props.photos : photosOnly;
     let initialIndex = photos.findIndex(
       (photo) => photo.index === initialPhoto.index
@@ -84,8 +97,8 @@ const DndContainer = (props) => {
 
   const previousPhoto = (initialPhoto) => {
     const photosOnly =
-      props.photos != undefined &&
-      props.photos.filter((photo) => photo.url != null).sort(sortPhotos);
+      props.photos !== undefined &&
+      props.photos.filter((photo) => photo.url !== null).sort(sortPhotos);
     let photos = props.edit === true ? props.photos : photosOnly;
     let initialIndex = photos.findIndex(
       (photo) => photo.index === initialPhoto.index
@@ -99,31 +112,25 @@ const DndContainer = (props) => {
       : setPhoto(previousPhoto);
   };
 
-  const portrait = 170
-  // const landscape = 
-  // const height = photoHeight > photoWidth ? 230 : 100
+  
 
-  console.log("tall photos", photos !== undefined && photos.filter(photo => photo.details === "135px").map(photo => photo.index + 6))
 
-  const tallPhotos = photos !== undefined && photos.filter(photo => photo.details === "135px").map(photo => photo.index + 6)
-
-  // console.log("filtered photos", photos !== undefined &&photos.find(photo => photo.index === tallPhotos.map))
-  const filteredPhotos = photos !== undefined && photos.filter(photo => tallPhotos.includes(photo.index))
-  const remainderPhotos = photos !== undefined && photos.filter(photo => !filteredPhotos.includes(photo))
-console.log("filtered photos", photos !== undefined && photos.filter(photo => !filteredPhotos.includes(photo)))
-  // const intersection = photos !== undefined && photos.filter(photo => tallPhotos.includes(photo.index));
 
   const opacity = imagesLoaded ? 1 : 0
   const display = openModal ? "none" : "inline"
+  
   return (
     <>
+    <button onClick={()=> props.testArrays(props.photos)} >click</button>
       {openModal && (
         <ImageModal
+        setPhotos={props.setPhotos}
         addPhoto={props.addPhoto}
         setOpenModal={props.setOpenModal}
         ImageopenModal={props.ImageopenModal}
           edit={props.edit}
           photo={photo}
+          setPhoto={setPhoto}
           photos={props.photos}
           setOpenModal={setOpenModal}
           openModal={openModal}
@@ -141,11 +148,12 @@ console.log("filtered photos", photos !== undefined && photos.filter(photo => !f
               // style={{ opacity: imagesLoaded ? 1 : 0 }}
               style={{ opacity }}>
             
-              {photos != undefined &&
+              {photos !== undefined &&
                 photos.sort(sortPhotos).map((photo) => (
                   <DraggableGridItem
                     key={photo.id}
                     photo={photo}
+                    onDragEnd={arrayHandler()}
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                     // style={ photo.details === "100px"   
                     //     ? {gridRowEnd : "span 40"} 
@@ -155,28 +163,21 @@ console.log("filtered photos", photos !== undefined && photos.filter(photo => !f
                     <div
                       className={
                         !props.edit
-                          ? photo.url != null
+                          ? photo.url !== null
                             ? "picture"
                             : "missing-box"
-                          : photo.url != null
+                          : photo.url !== null
                           ? "picture"
                           : "emptyBox"
                       }
-                      style={ photo.url !== null ? photo.details === "100px"   
-                        ? {height: `100px`} 
+                      style={ photo.url !== null ? photo.dimensions === "100px"   
+                        ? {height: `${photo.dimensions}`} 
                         : photo.url !== null && {height: `220px`} : null}
                     >
-                      {/* <div 
-                      style={{"position": "absolute"}} 
-                      > */}
 
 {/* DELETE PHOTO */}
 {/* props.openModal === true && */}
-                      { props.enableDelete && photo.url != null && 
-                        <button
-                         style={{display}} 
-                         className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
-                        }
+                      
                       {/* <p>{photo.index}</p> */}
                       <div className="img-wrapper"></div>
                       <img
@@ -185,20 +186,25 @@ console.log("filtered photos", photos !== undefined && photos.filter(photo => !f
                         key={photo.index }
                         onLoad={() => handleLoad(photo.url)}
                         onClick={() => modalToggle(photo)}
-                        src={photo.url}
-                        style={ photo.details === "100px"   
-                        ? {height: `${photo.details}`} 
-                        : {minWidth:`${photo.details}`, maxHeight: "220px"} }
+
+                        style={ photo.dimensions === "100px"   
+                        ? {height: `${photo.dimensions}`} 
+                        : {minWidth:`${photo.dimensions}`, maxHeight: "220px"} }
                         // loading="lazy"
-                        // style={{ height }}
                         src={
-                          photo.url != null
+                          photo.url !== null
                             ? photo.url
                             : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                         }
                       />
                       {/* </div> */}
                     </div>
+                    { props.enableDelete && photo.url !== null && 
+                        <button
+                         style={{display}}
+                         
+                         className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
+                        }
                   </DraggableGridItem>
                 ))}
             </GridWrapper>
@@ -235,10 +241,10 @@ const adjustGridItemsHeight = (grid, photo) => {
     let rowSpan = Math.ceil(
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)) <= 40 ? 40 : 80
-console.log("dividend", Math.ceil(
-  (photo.firstChild.getBoundingClientRect().height + rowGap)))
-    console.log("rowHeight + rowGap", rowHeight + rowGap)
-console.log("rowSpan", rowSpan)
+// console.log("dividend", Math.ceil(
+//   (photo.firstChild.getBoundingClientRect().height + rowGap)))
+    // console.log("rowHeight + rowGap", rowHeight + rowGap)
+// console.log("rowSpan", rowSpan)
     // let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? image.
     // style.height = "240px" : image.style.height = "112px"
     // console.log("rowspan", rowSpan);
@@ -305,7 +311,7 @@ const GridWrapper = styled.div`
 
 
 // const Picture = !props.edit
-//   ? props.url != undefined && photo.url != null
+//   ? props.url !== undefined && photo.url !== null
 //   ? styled.div`
 //   max-width: 135px; 
 //   overflow: hidden;
@@ -331,7 +337,7 @@ const GridWrapper = styled.div`
 //   height: 112px;
 //   box-shadow: -3px 3px 5px 2px #aaaaaa;
 //   }`
-// : photo.url != null
+// : photo.url !== null
 // ? styled.div`
 // max-width: 135px; 
 // overflow: hidden;
@@ -362,3 +368,25 @@ const GridWrapper = styled.div`
 //   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
 
 // }`
+
+
+// let result = photos.filter((firstPhoto) => {
+      //   return !newPhotos.some((secondPhoto) => {
+        //     return firstPhoto.id === secondPhoto.id
+        //   })
+        // })
+    // let difference = newPhotos.filter(photo1 => !props.photos.map(photo2 => photo1.id === photo2.id))
+  //   photos.forEach((photo, index, newPhotos) => {
+  //     var ItemIndex = newPhotos.findIndex(newPhotos => newPhotos.name === photo.name);
+  //     photos.splice(ItemIndex, 1)
+  //     console.log("ItemIndex", ItemIndex)
+  // }
+  // const compareAll = (photo1, photo2)=>{
+    //   return (photo1.id === photo2.id && photo1.index === photo2.index);
+    // }
+    // let output = newPhotos.filter(photo2 => {
+      //   let indexFound = props.photos.findIndex(photo1 => compareAll(photo1, photo2));
+      //   return indexFound == -1;
+      // })
+      
+      // console.log("output", output)

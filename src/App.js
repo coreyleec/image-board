@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useLayoutEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import styled from "styled-components";
 import Header from "./containers/Header";
@@ -7,17 +7,30 @@ import AsideRight from "./containers/AsideRight";
 import UserLoginSignup from "./containers/UserLoginSignup";
 import DndContainer from "./containers/DndContainer";
 
-import MultiBackend from "react-dnd-multi-backend";
-import HTML5toTouch from "./dnd/HTML5toTouch";
-
+// import MultiBackend from "react-dnd-multi-backend";
+// import HTML5toTouch from "./dnd/HTML5toTouch";
 
 
 
 export default function App() {
   require("events").EventEmitter.defaultMaxListeners = 20;
- 
+  
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
+  }
+  // SWITCH DATABASE VERSION
+  // const [dbVersion, setDbVersion] = useState(`https://memphis-project-api.herokuapp.com/api/v1`)
+  const [dbVersion, setDbVersion] = useState(`http://[::1]:3000/api/v1`)
+  const [versionToggle, setVersionToggle] = useState(false)
+  const dbToggle = () => {
+    // versionToggle === false 
+    // ? setVersionToggle(!versionToggle) && 
+    // setDbVersion(`http://[::1]:3000/api/v1`) 
+    // : setVersionToggle(!versionToggle) &&
+    // setDbVersion(`https://memphis-project-api.herokuapp.com/api/v1`)
+  }
+  const testArrays = (newPhotos, photos) => {
+    console.log("newPhotos", newPhotos, "photos", photos)
   }
   // OPEN LOGIN
  const [userProfile, setUserProfile] = useState(true);
@@ -102,7 +115,7 @@ const handlePassword = (password) => {
   const loginSubmit = (e) => {
     e.preventDefault();
     // console.log(data)
-    fetch(`http://localhost:3000/api/v1/login`, {
+    fetch(`${dbVersion}/login`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -115,7 +128,7 @@ const handlePassword = (password) => {
     })
       .then((res) => res.json())
       .then((user) => {
-        console.log(user);
+        console.log("user", user );
 
         setUserProfile(!userProfile);
         localStorage.token = user.token;
@@ -142,7 +155,7 @@ const handlePassword = (password) => {
   const signupSubmit = (e) => {
     e.preventDefault();
     // console.log(data)
-    fetch(`http://localhost:3000/api/v1/users/`, {
+    fetch(`${dbVersion}/users/`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -177,7 +190,7 @@ const handlePassword = (password) => {
     console.log(folder);
     console.log(folder.id);
     console.log(folderName);
-    fetch(`http://localhost:3000/api/v1/folders/${folder.id}`, {
+    fetch(`${dbVersion}/folders/${folder.id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -208,7 +221,7 @@ const handlePassword = (password) => {
     // console.log(folder)
     // console.log(folder.id)
     console.log(folderName);
-    fetch(`http://localhost:3000/api/v1/folders/`, {
+    fetch(`${dbVersion}/folders/`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -231,9 +244,9 @@ const handlePassword = (password) => {
 
   const chooseFolder = (folder) => {
     setFolderShown(folder.id)
-    fetch(`http://localhost:3000/api/v1/folders/${folder.id}/`, {
+    fetch(`${dbVersion}/folders/${folder.id}/`, {
       method: "GET",
-      headers: { "Content-Type": "application/json" },
+      headers: { "Content-Type": "application/json" }
     })
       .then((r) => r.json())
       .then((folder) => {
@@ -264,7 +277,7 @@ const handlePassword = (password) => {
         // console.log("previous folder", previousFolder)
         // THERE'S AN ISSUE WITH THE FETCH. RECIEVING ERROR: Uncaught (in promise) SyntaxError: Unexpected end of JSON input
         // SO FUNCTION IS OPTIMISTIC UNTIL RESOLVED
-      fetch(`http://localhost:3000/api/v1/folders/${folderObj.id}/`, {method: "DELETE",
+      fetch(`${dbVersion}/folders/${folderObj.id}/`, {method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
     })
@@ -279,7 +292,7 @@ const addLink = (e, linkName, linkUrl) => {
   console.log(linkName)
   console.log(linkUrl)
 
-  fetch(`http://localhost:3000/api/v1/links/`, {
+  fetch(`${dbVersion}/links/`, {
       method: 'POST'
       , headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -305,7 +318,7 @@ const addLink = (e, linkName, linkUrl) => {
     let updatedLinksArr = userLinks.filter((link) => link.id !== linkObj.id);
     setUserLinks(updatedLinksArr)
     
-    fetch(`http://localhost:3000/api/v1/links/${linkObj.id}/`, { method: "DELETE" })
+    fetch(`${dbVersion}/links/${linkObj.id}/`, { method: "DELETE" })
       .then((resp) => resp.json())
       .then(() => console.log("updatedLinksArr", updatedLinksArr, "linkObj", linkObj))
     };
@@ -317,7 +330,7 @@ const addLink = (e, linkName, linkUrl) => {
         console.log(linkUrl);
         console.log(link.id);
         console.log(linkName);
-        fetch(`http://localhost:3000/api/v1/links/${link.id}`, {
+        fetch(`${dbVersion}/links/${link.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${localStorage.token}`,
@@ -346,7 +359,7 @@ const addLink = (e, linkName, linkUrl) => {
 
 const updateUserAboutMe = (e, aboutMe) => {
   e.preventDefault();
-  fetch(`http://localhost:3000/api/v1/users/${currentUser.id}`, {
+  fetch(`${dbVersion}/users/${currentUser.id}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -366,7 +379,7 @@ const updateUserAboutMe = (e, aboutMe) => {
 const nameSubmit = (e, newName) => {
   e.preventDefault();
   // console.log(e, newName);
-  fetch(`http://localhost:3000/api/v1/users/${currentUser.id}`, {
+  fetch(`${dbVersion}/users/${currentUser.id}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -391,93 +404,96 @@ const handlePhotos = (photos) => {
   setPhotos(photos);
 };
 
-
-const addPhoto = (e, photo, name, details, url) => {
-
+const addPhoto = (e, formData, dimensions, photoName, photoDetails, photo) => {
   e.preventDefault();
 
-  let img = new Image()
-  img.src = url
-  let height = img.onload = () => {
-    // console.log("width " + img.width + "px." + "height" + img.height);
-    const height = img.width !== null && img.width > img.height ? "100px" : "135px"
-    // return 
-    // console.log("height", height)
-    // return height
-    console.log(e);
-  console.log(e, photo, name, details, url);
-  fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: name,
-      details: height,
-      url: url,
-    }),
-  })
-    .then((res) => res.json())
-    .then((photoObj) => {
-      // console.log(photoObj);
-      setPhotos(
-        photos.map((photo) => {
-          if (photo.id === photoObj.id) return photoObj;
-          else return photo;
-        })
-        );
-        
-      });
-  } 
-  let variable = height()
-  console.log(variable)
+  const data = new FormData(formData)
+    dimensions !== undefined && dimensions !== null && data.append('dimensions', dimensions)        
+    photoName !== undefined && photoName !== null && data.append('name', photoName)
+    photoDetails !== undefined && photoDetails !== null && data.append('details', photoDetails)
+
+  for(let [key, value] of data){console.log("data", `${key}:${value}`)}
+
+fetch(`${dbVersion}/photos/${photo.id}`, {
+method: "PUT",
+headers: {
+  Authorization: `Bearer ${localStorage.token}`,
+  "Accept": "application/json",},
+body: data
+})
+// .catch(e => console.error(e))
+.then((res) => res.json())
+.then((photoObj) => {
+  console.log("photoObj",photoObj);
+  setPhotos(photos.map((photo) => {
+      if (photo.id === photoObj.id) return photoObj;
+      else return photo;
+    })
+    );
+  });
+    };
+
+ 
+  
   // let prePictures = photos.filter(photo => photo.url !== null)
   //   let preEmptyBoxs = photos.filter(photo => photo.url === null)
   //   console.log(`${preEmptyBoxs.length}/ ${prePictures.length}`, preEmptyBoxs.length/prePictures.length)
 
   
-    };
-useEffect(() => {
-  let pictures = photos!== undefined && photos.filter(photo => photo.url !== null)
-  let emptyBoxs = photos!== undefined && photos.filter(photo => photo.url === null)
-  console.log(photos!== undefined && `${emptyBoxs.length}/ ${pictures.length}`, photos!== undefined && emptyBoxs.length/pictures.length)
-// return photos
-photos!== undefined && pictures.length/photos.length >= .80 && 
-fetch(`http://localhost:3000/api/v1/folders/${folderShown}/`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  })
-    .then((r) => r.json())
-    .then((folder) => {
-      // console.log("folder", folder);
-      setPhotos(folder.photos);
-    });
     
-}, [])
+    
+// useEffect(() => {
+//   let pictures = photos!== undefined && photos.filter(photo => photo.url !== null)
+//   let emptyBoxs = photos!== undefined && photos.filter(photo => photo.url === null)
+//   console.log(photos!== undefined && `${emptyBoxs.length}/ ${pictures.length}`, photos!== undefined && emptyBoxs.length/pictures.length)
+// photos!== undefined && pictures.length/photos.length >= .80 && 
+// fetch(`${dbVersion}/folders/${folderShown}/`, {
+//     method: "GET",
+//     headers: { "Content-Type": "application/json" },
+//   })
+//     .then((r) => r.json())
+//     .then((folder) => {
+//       setPhotos(folder.photos);
+//     });
+    
+// }, [])
 
 
-    //  > 8/10 
-    // &&
-    // fetch(`http://localhost:3000/api/v1/folders/${folderShown}/`, {
-    //   method: "GET",
-    //   headers: { "Content-Type": "application/json" },
-    // })
-    //   .then((r) => r.json())
-    //   .then((folder) => {
-    //     // console.log("folder", folder);
-    //     setPhotos(folder.photos);
-    //   });
 
+// let pictures = photos !== undefined && photos.filter(photo => photo.url !== null)
+//         let emptyBoxs = photos!== undefined && photos.filter(photo => photo.url === null)
+//         console.log(photos !== undefined && `${pictures.length}/ ${photos.length}`, photos !== undefined && pictures.length/photos.length)
 
-let pictures = photos !== undefined && photos.filter(photo => photo.url !== null)
-        let emptyBoxs = photos!== undefined && photos.filter(photo => photo.url === null)
-        console.log(photos !== undefined && `${pictures.length}/ ${photos.length}`, photos !== undefined && pictures.length/photos.length)
+        const createPhoto = (e, data) => {
+          e.preventDefault()
+          data.append('folder_id', folderShown)
+          // data.append('details', details)
+          for(let [key, value] of data){console.log("data", `${key}:${value}`)}
+
+          console.log(photo);
+          fetch(`${dbVersion}/photos/`, {
+            method: "POST",
+            headers: {
+              Authorization: `Bearer ${localStorage.token}`
+            },
+            body: data, 
+          })
+            .then((res) => res.json())
+            .then((photoObj) => {
+              console.log(photoObj);
+              setPhotos(
+                photos.map((photo) => {
+                  if (photo.id === photoObj.id) return photoObj;
+                  else return photo;
+                })
+              );
+            });
+        };
 
 const deletePhoto = (photo) => {
 
   console.log(photo);
-  fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
+  fetch(`${dbVersion}/photos/${photo.id}/`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -486,7 +502,9 @@ const deletePhoto = (photo) => {
     body: JSON.stringify({
       name: null,
       url: null,
-      details: "100px",
+      details: null, 
+      demensions: null,
+      image_file: null, 
     }),
   })
     .then((res) => res.json())
@@ -501,17 +519,6 @@ const deletePhoto = (photo) => {
     });
 };
 
-  // useLayoutEffect(() => {
-  //   fetch(`http://localhost:3000/photos`, {
-  //     method: "GET",
-  //     headers: { "Content-Type": "application/json" },
-  //   })
-  //     .then((r) => r.json())
-  //     .then((photos) => {
-  //       setPhotos(photos);
-  //       // console.log("photos", photos)
-  //     });
-  // }, []);
 
 
   // const sortPhotosOnly = () => {
@@ -520,57 +527,78 @@ const deletePhoto = (photo) => {
   //   setPhotos(sortedPhotosOnly)
   // }
 
-// edit === 
-
-// useEffect(() => {
-  
-
-// }, [])
 
 const [previousPhotoArray, setPreviousPhotoArray] = useState()
 // SUBMIT ENTIRE ARRAY REORDERED
+const [oldPhotos, setOldPhotos] = useState()
+// fetch(`${dbVersion}/folders/${folderShown}/`, {
+//   method: "GET",
+//   headers: { "Content-Type": "application/json" }
+// })
+//   .then((r) => r.json())
+//   .then((folder) => {
+//     console.log("folder", folder.photos);
+//     setOldPhotos(folder.photos);
 
-  const reorderSubmit = () => {
-  // FOR EACH PHOTO UPDATE THE INDEX VALUE
+//   });
+// FOR EACH PHOTO UPDATE THE INDEX VALUE
 // photos != undefined &&
-    // differenceArray.forEach((photo) =>
-    //     fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
-    //       method: "PATCH",
-    //       headers: { "Content-Type": "application/json" },
-    //       body: JSON.stringify({
-    //         index: photo.index,
-    //       }),
-    //     })
-    //   );
+// differenceArray.forEach((photo) =>
+//     fetch(`${dbVersion}/photos/${photo.id}/`, {
+//       method: "PATCH",
+//       headers: { "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         index: photo.index,
+//       }),
+//     })
+//   );
 // INCOMPLETE ALTERNATIVE APROACH: FETCH PREVIOUS ARRAY, AND COMPARE TO CURRENT ARRAY THEN UPDATE THE IMAGES THAT WERE DIFFERENT. BOTH FETCHED ARRAY AND PHOTOS STATE REPRESENT CORRECT VALUE BUT COMPARISON IS RETURNING ENTIRE ARRAY INSTEAD OF THE DIFFERENCE
-  let previousPhotoArray = fetch(`http://localhost:3000/api/v1/folders/${folderShown}/`, {
+
+const reorderSubmit = () => {
+ console.log("folderShown", folderShown)
+  // let previousPhotoArray = 
+  fetch(`${dbVersion}/folders/${folderShown}/`, {
     method: "GET",
     headers: { "Content-Type": "application/json" },
   })
     .then((r) => r.json())
-    .then((previousPhotoArray) => {
-      // let difference = previousPhotoArray.photos.filter((photo) => !photos.includes(photo));
-      console.log("previousPhotoArray", previousPhotoArray.photos); 
+    .then((previousFolder) => {
+      console.log("previousFolder", previousFolder.photos); 
       console.log("photos", photos)
-      console.log(previousPhotoArray.photos.filter(photo => !photos.includes(photo)))
-      const difference = previousPhotoArray.photos.filter(({ index: id1 }) => !photos.some(({ index: id2 }) => id2 === id1));
       
-      console.log("difference", difference)
-      return previousPhotoArray;
+      let changed = photos.filter((photo) => {
+        return !previousFolder.photos.some((photo1) => {
+          return photo.index === photo1.index;
+        });
+      }); 
+      // let difference = previousPhotoArray.photos.filter((photo) => !photos.includes(photo));
+      // console.log(previousFolder.photos.filter(photo => !photos.includes(photo) => {}))
+      
+      // const difference = previousFolder.photos.filter(( photo, index ) => {return Object.keys(photo).some(( prop ) => { return photo[prop] !== photos[index][prop]})
+      // });
+      // var result = result1.filter(function (o1) {
+      //   return !result2.some(function (o2) {
+      //       return o1.id === o2.id; // return the ones with equal id
+      //  });
+      // });
+      // if you want to be more clever...
+      // let result = result1.filter(o1 => !result2.some(o2 => o1.id === o2.id));
+    // let difference = 
+      // previousFolder.photos.filter(photo => {const {index, id} = photo;
+      // return photos.some(photoB => photoB.index && index && photos.id == id) || !photos.some(photos => photos.index !== index)
+      // })
+
+    // var changed = photos.filter(photo => !previousFolder.photos.includes(photo.index))
+    // previousFolder.photos.filter( function( p, idx ) { return Object.keys(p).some( function( prop ) {return p[prop] !== photos[idx][prop]})
+    // })
+      
+    console.log("changed", changed)
+
+      // console.log("difference", difference)
+      // return difference;
+      // console.log("difference", difference)
     })
-
-
-    
   };
-
-  // previousPhotoArray != undefined && previousPhotoArray.filter(photo => !photos.includes(photo)).forEach((photo) =>
-  // fetch(`http://localhost:3000/api/v1/photos/${photo.id}/`, {
-  //   method: "PATCH",
-  //   headers: { "Content-Type": "application/json" },
-  //   body: JSON.stringify({
-  //     index: photo.index,
-  //   }),
-  // })
 
   /// MODAL
 
@@ -578,25 +606,9 @@ const [previousPhotoArray, setPreviousPhotoArray] = useState()
   // const [openPhoto, setOpenPhoto] = useState(false);
   const [photo, setPhoto] = useState();
 
-  const modalToggle = (photo) => {
-    //function fires depending on whether picture frames that are empty
-    // update: no longer needs to be double coded. the code works the same for both scenarios
-    setPhoto(photo);
-    console.log(photo);
-    setOpenModal(!openModal)
-    // !edit &&
-    //   photo != undefined &&
-    // ? setOpenPhoto(!openPhoto)
-    // : setOpenModalForm(!openModalForm)
-  };
   
 
-  // const changeTransition = () => {
-  //   document.getElementsByClassName("cont").style.transition = "none";
-  //   setTimeout((e)=>{
-  //   document.getElementsByClassName("cont").style.transition = "all 0.5s ease";
-  //   }, 1000);
-  //   }
+
 
     
   
@@ -633,9 +645,14 @@ const [previousPhotoArray, setPreviousPhotoArray] = useState()
           nameSubmit={nameSubmit}
         />
         <AsideRight
+        createPhoto={createPhoto}
+        
           deleteToggle={deleteToggle}
           enableDelete={enableDelete}
           editToggle={editToggle}
+          dbToggle={dbToggle}
+          dbVersion={dbVersion}
+          versionToggle={versionToggle}
           currentUser={currentUser} edit={edit}
           reorderSubmit={reorderSubmit}
         />
@@ -646,6 +663,8 @@ const [previousPhotoArray, setPreviousPhotoArray] = useState()
           <article>
             <div>
               <DndContainer
+              testArrays={testArrays}
+              setPhotos={setPhotos}
               addPhoto={addPhoto}
               openModal={openModal}
               setOpenModal={setOpenModal}
@@ -653,7 +672,6 @@ const [previousPhotoArray, setPreviousPhotoArray] = useState()
                 enableDelete={enableDelete}
                 edit={edit}
                 photos={photos}
-                modalToggle={modalToggle}
                 handlePhotos={handlePhotos}
                 reorderSubmit={reorderSubmit}
               />

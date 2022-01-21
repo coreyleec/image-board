@@ -81,7 +81,7 @@ const StyledInput = styled.textarea`
 `;
 
 const AboutMeP = styled.p`
-    cursor: pointer;
+    cursor: default;
     font-size: 1rem;
     width: 100%;
     /* display: flex; */

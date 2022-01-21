@@ -7,10 +7,10 @@ const Header = (props) => {
 
     
     const [newUserName, setNewUserName] = useState()
-    const changeName = (newUserName) => {setNewUserName(newUserName)}
 
         return (
             <header>
+               
                  {!props.edit  
                 ?  <form 
                     // name={props.userName} 

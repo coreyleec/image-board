@@ -4,7 +4,10 @@ import styled from "styled-components";
 
 const AsideRight = (props) => {
   const [isToggled, setIsToggled] = useState(false);
-  const onToggle = () => setIsToggled(!isToggled);
+  const onToggle = () => {
+    props.edit === true && props.reorderSubmit(props.folder)
+    props.editToggle(!props.edit)
+  };
 
   return (
     <aside>
@@ -13,8 +16,7 @@ const AsideRight = (props) => {
             <Switch>
              <label className="toggle-switch">
             <input type="checkbox" checked={props.edit}
-             onChange={props.editToggle} 
-             
+             onChange={onToggle}
              />
             <span className="switch" />
             </label>
