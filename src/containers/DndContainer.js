@@ -8,15 +8,19 @@ import DraggableGridItem from "../dnd/DraggableGridItem";
 import ImageModal from "../components/ImageModal";
 
 const DndContainer = (props) => {
-  const photos = props.photos;
+  // const photos = props.photos;
   // const [firstPhoto, setFirstPhoto] = useState()
   // const [secondPhoto, setSecondPhoto] = useState()
-  
+  const sortPhotos = (a, b) => a.index - b.index;
+  const [photos, setPhotos] = useState()
+  // useEffect(() => {
+  //   setPhotos(props.photos.sort(sortPhotos))
+  // }, [props.photos])
 
 
-  const [reorderedPhotos, setReorderedPhotos] = useState()
   const [counter, setCounter] = useState(2)
-  const [moddedArray, setModdedArray] = useState([])
+  const [reorderedPhotos, setReorderedPhotos] = useState([])
+  const [reorderedArray, setReorderedArray] = useState([])
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
     
@@ -40,17 +44,35 @@ const DndContainer = (props) => {
     // console.log("x counter", x)
     reorderedPhotos !== undefined && setReorderedPhotos([...reorderedPhotos, firstPhoto, secondPhoto])
     reorderedPhotos === undefined && setReorderedPhotos([firstPhoto, secondPhoto])
-    
     // return(newPhotos)
   };
 
+  
+
+  useEffect(() => {
+    // let filteredPhotos = photos !== undefined && photos.filter(photo => photo.folder_id === props.folderShown)
+    // props.photos !== null && props.photos !== undefined &&
+    
+    setPhotos(photos !== undefined && props.photos.filter((photo) => photo.folder_id === props.folderShown).sort(sortPhotos))
+}, [props.folderShown, props.photos])
 
 const arrayHandler = () => {
-  reorderedPhotos !== undefined && console.log(...reorderedPhotos.slice(-2))
+  console.log("hello")
+  const lastTwo = reorderedPhotos.slice(-2)
+    console.log("lastTwo", lastTwo)
+    // reorderedArray.push.apply(reorderedArray, lastTwo)
+    reorderedArray === undefined 
+    ? setReorderedArray(lastTwo)
+    : setReorderedArray(reorderedArray.concat(lastTwo))
+  // reorderedPhotos !== undefined && reorderedArray !== undefined && 
+  // const lastTwo = reorderedPhotos.slice(-2)
+  // 
+  // reorderedArray === undefined && setReorderedArray(lastTwo)
   // reorderedPhotos !== undefined && setReorderedPhotos(...reorderedPhotos.slice(-2))
-  console.log("hellow")
+  // console.log("hellow")
 }
-  console.log("counter out", counter)
+  // console.log("counter out", counter)
+  console.log("reorderedArray", reorderedArray)
   console.log("reorderedPhotos", reorderedPhotos)
 
 
@@ -62,15 +84,22 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop;
   const gridRef = useRef(null);
   const imgRef = useRef(null)
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  const handleLoad = (photo) => {
+  
+  useEffect(() => {
     const grid = gridRef.current;
-    const image = imgRef.current
-    let imageHeight = image.naturalHeight
-    let imageWidth = image.naturalHeight
+    adjustGridItemsHeight(grid);
+    console.log("helloooo")
+  }, [photos]);
+  
+  const handleLoad = (photo) => {
+    
+    // const image = imgRef.current
+    // const grid = gridRef.current;
+    // let imageHeight = image.naturalHeight
+    // let imageWidth = image.naturalHeight
     // console.log(imageWidth + 'x' + imageHeight)
-    adjustGridItemsHeight(grid, photo);
+    // adjustGridItemsHeight(grid, photo);
     setImagesLoaded(true);
-
   };
   
   const [photo, setPhoto] = useState();
@@ -79,7 +108,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop;
     setPhoto(photo);
     setOpenModal(!openModal);
   };
-  const sortPhotos = (a, b) => a.index - b.index;
+  
   
   const nextPhoto = (initialPhoto) => {
     const photosOnly =
@@ -112,7 +141,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop;
       : setPhoto(previousPhoto);
   };
 
-  
+  console.log("photos", photos)
 
 
 
@@ -147,13 +176,10 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop;
               ref={gridRef}
               // style={{ opacity: imagesLoaded ? 1 : 0 }}
               style={{ opacity }}>
-            
-              {photos !== undefined &&
-                photos.sort(sortPhotos).map((photo) => (
-                  <DraggableGridItem
+              {!photos !== !null && photos !== undefined && photos.map((photo) => (<DraggableGridItem
                     key={photo.id}
                     photo={photo}
-                    onDragEnd={arrayHandler()}
+                    // onDragEnd={arrayHandler()}
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                     // style={ photo.details === "100px"   
                     //     ? {gridRowEnd : "span 40"} 

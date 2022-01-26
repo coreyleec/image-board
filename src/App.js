@@ -72,7 +72,7 @@ const [userAboutMe, setUserAboutMe] = useState("");
 const [edit, setEdit] = useState(false);
 const [enableDelete , setEnableDelete] = useState(false)
 // ADD PHOTO
-const [photos, setPhotos] = useState();
+const [photos, setPhotos] = useState([]);
 const [url, setUrl] = useState();
 const [details, setDetails] = useState();
 
@@ -87,10 +87,9 @@ const deleteToggle = () => {
 const editToggle = () => {
   edit === false
   ? setEdit(!edit)
-  : 
+  : setEdit(!edit) 
+  enableDelete === true && setEnableDelete(!enableDelete)
   // reorderSubmit()
-    setEdit(!edit) 
-    enableDelete === true && setEnableDelete(!enableDelete)
 };
 // LOGIN FUNCTIONS
  const useTemplate = () => {
@@ -140,16 +139,34 @@ const handlePassword = (password) => {
         setUserLinks(user.links);
         setUserFolders(user.folders);
         console.log("user folders", user.folders)
-        setPhotos(user.photos);
         setUserComments(user.comments);
         setFolderShown(user.folders[0].id)
-        // console.log(user.folders.reverse())
+        setPhotos(user.photos);
+        // forEach(user.folder setUserFolders())
+        // user.photos.forEach(photo => photo.folder_id === folder.id) setUserFolders
+        // for (let i = 0; i < user.folders.length; i++) {
+          
+        //   if userFolders.find(folder => folder.id === folderShown)
+        //   userFolders.forEach(folder => folder.id === user.photos.map(photo => photo.folder_id)
+        //   setUserFolders(userFoldersforEach())
+          // user.photos.folder_id === userFolders.user.photos.map
+          // for (var j = 0; j < Bars[i].checkIn.length; j++) {
+          // }
+          // set the eventname variable
+        // }
+
+        console.log("folder", user.folders, "first folder", user.folders[0], "first photos", JSON.stringify(user.folders[0].photos))
+        // console.log(user.folders[0].photos)
         // setFolderIds(user.folders.map(folder => folder.id))
         // history.push("/userprofile")
         // console.log(folderIds[0])
       });
     };
-    console.log(folderShown)
+//     console.log((userFolders[0]) && userFolders[0].photos)
+// useEffect(() => {
+//   let folder = userFolders.find(folder => folder.id === folderShown)
+//   userFolders[0].photos !== undefined && folderShown !== 0 && setPhotos(folder.photos)
+//   }, [userFolders[0].photos])
 
 // USER SIGNUP
   const signupSubmit = (e) => {
@@ -229,7 +246,7 @@ const handlePassword = (password) => {
       },
       body: JSON.stringify({
         name: folderName,
-        details: "add a description",
+        details: null,
         link: folderLink,
         user_id: currentUser.id,
       }),
@@ -241,20 +258,22 @@ const handlePassword = (password) => {
         chooseFolder(folderObj)
       });
   };
-
+ 
   const chooseFolder = (folder) => {
     setFolderShown(folder.id)
-    fetch(`${dbVersion}/folders/${folder.id}/`, {
-      method: "GET",
-      headers: { "Content-Type": "application/json" }
-    })
-      .then((r) => r.json())
-      .then((folder) => {
-        console.log("folder", folder);
-        setPhotos(folder.photos);
-        setFolderToggle(true);
-      });
+    // fetch(`${dbVersion}/folders/${folder.id}/`, {
+    //   method: "GET",
+    //   headers: { "Content-Type": "application/json" }
+    // })
+    //   .then((r) => r.json())
+    //   .then((folder) => {
+    //     console.log("folder", folder);
+    //     setPhotos(folder.photos);
+    //     setFolderToggle(true);
+    //   });
   };
+
+  
 
     const deleteFolder = (folderObj) => {
        // GETS INDEX OF DELETED FOLDER
@@ -609,12 +628,17 @@ const reorderSubmit = () => {
   
 
 
-
-    
+  // const [folderPhotos, setFolderPhotos] = useState()
+  //  useEffect(() => {
+  //   folderShown !== undefined && setFolderPhotos(photos.filter(photo => photo.folder_id === folderShown) )
+  //  }, [folderShown])
   
-  
-
   const sortPhotos = (a, b) => a.index - b.index;
+  // let sortedPhotos = new Array.photos.sort(sortPhotos)
+  // let reorderedPhotos = sortedPhotos !== undefined && 
+
+  // console.log("photo stuff", photos !== undefined && photos.filter(photo => photo.folder_id === folderShown))
+
   return (
     <Router>
       <div 
@@ -672,8 +696,10 @@ const reorderSubmit = () => {
                 enableDelete={enableDelete}
                 edit={edit}
                 photos={photos}
+                
                 handlePhotos={handlePhotos}
                 reorderSubmit={reorderSubmit}
+                folderShown={folderShown}
               />
               
               

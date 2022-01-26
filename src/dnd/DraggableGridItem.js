@@ -16,7 +16,7 @@ const DraggableGridItem = ({ photo, onDrop, children, ...p }) => {
       }),
     });
     
-    // console.log("payloadPhoto", payloadPhoto, "photo hover", photo.hover, "drag", drag, "isDragging", isDragging)
+    console.log("payloadPhoto", payloadPhoto, "photo hover", photo.hover, "drag", drag, "isDragging", isDragging)
 
     // useDrop return value array - no props, drop function
     const [, drop] = useDrop({
@@ -78,7 +78,7 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
     const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
     // Get horizontal middle
     const hoverMiddleX = (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
-    console.log(hoverMiddleX, "hoverMiddleX")
+    // console.log(hoverMiddleX, "hoverMiddleX")
     // Determine mouse position
     const clientOffset = monitor.getClientOffset();
     // Get pixels to the top
@@ -131,14 +131,14 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
   //   .then((photoObjB) => {
   //     console.log("photoObjB", photoObjB);
   //   });
-  // console.log("otherPhoto", otherPhoto)
-  // console.log("currentPhoto", currentPhoto)
-    onDrop(otherPhoto.id, currentPhoto.id);
-    // Note: we're mutating the monitor item here!
-    // Generally it's better to avoid mutations,
-    // but it's good here for the sake of performance
-    // to avoid expensive index searches.
-    otherPhoto.index = currentPhoto.index;
+  onDrop(otherPhoto.id, currentPhoto.id);
+  // Note: we're mutating the monitor item here!
+  // Generally it's better to avoid mutations,
+  // but it's good here for the sake of performance
+  // to avoid expensive index searches.
+  otherPhoto.index = currentPhoto.index;
+  console.log("otherPhoto", otherPhoto)
+  console.log("currentPhoto", currentPhoto)
     
  
   }

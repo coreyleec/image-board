@@ -69,8 +69,6 @@ const underlineFolder = (folder) => {
                     <StyledP 
                     key={folder.id} 
                     style={ props.folderShown != undefined && folder.id === props.folderShown ? {textDecoration: "underline"} : null} 
-
-
                          onClick={(event) => {props.chooseFolder(folder); underlineFolder(folder.id)}} >{folder.name}</StyledP>)
                         }
                         <div className="sidebar-break"></div>
