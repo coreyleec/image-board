@@ -113,10 +113,4 @@ const Sticky = styled.div`
 }
 `;
 
-// const [userFolders, setUserFolders] = useState({...props.userFolders})
-// useEffect(() => {
-//     props.userFolders && setUserFolders(props.userFolders);
-// }, [props.userFolders])
 
-// console.log(userFolders)
-// const [folder, setFolder] = useState()

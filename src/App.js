@@ -53,9 +53,9 @@ const [folderLink, setFolderLink] = useState();
 const [folderNames, setFolderNames] = useState();
 const [folderIds, setFolderIds] = useState();
 
-const [userFolders, setUserFolders] = useState([1]);
+const [userFolders, setUserFolders] = useState([0]);
 const [folderToggle, setFolderToggle] = useState(false);
-const [folderShown, setFolderShown] = useState(0);
+const [folderShown, setFolderShown] = useState(null);
 
 const [chosenFolder, setChosenFolder] = useState(0)
 
@@ -167,6 +167,9 @@ const handlePassword = (password) => {
 //   let folder = userFolders.find(folder => folder.id === folderShown)
 //   userFolders[0].photos !== undefined && folderShown !== 0 && setPhotos(folder.photos)
 //   }, [userFolders[0].photos])
+// useEffect(() => {
+//   setPhotos(photos.filter((photo) => photo.folder_id === folderShown))
+// }, [folderShown])
 
 // USER SIGNUP
   const signupSubmit = (e) => {
@@ -253,25 +256,17 @@ const handlePassword = (password) => {
     })
       .then((res) => res.json())
       .then((folderObj) => {
-        console.log(folderObj);
+        console.log("folder", folderObj, "folder photos", folderObj.photos);
         setUserFolders([...userFolders, folderObj]);
-        chooseFolder(folderObj)
+        let newArray = [...photos, folderObj.photos]
+        setPhotos(newArray.flat())
+        setFolderShown(folderObj.id)
       });
   };
  
-  const chooseFolder = (folder) => {
-    setFolderShown(folder.id)
-    // fetch(`${dbVersion}/folders/${folder.id}/`, {
-    //   method: "GET",
-    //   headers: { "Content-Type": "application/json" }
-    // })
-    //   .then((r) => r.json())
-    //   .then((folder) => {
-    //     console.log("folder", folder);
-    //     setPhotos(folder.photos);
-    //     setFolderToggle(true);
-    //   });
-  };
+  // const setFolderShown = (folder) => {
+  //   setFolderShown(folder.id)
+  // };
 
   
 
@@ -286,7 +281,7 @@ const handlePassword = (password) => {
        ? userFolders[1] 
        : userFolders[folderIndex - 1]
       // IF VIEWED FOLDER IS DELETED, SHOW PREVIOUS FOLDER. IF THIS FOLDER IS THE FIRST IN THE ARRAY, THEN SELECT THE NEXT FOLDER IN ARRAY
-        folderShown === folderObj.id && chooseFolder(previousFolder)
+        folderShown === folderObj.id && setFolderShown(previousFolder.id)
         // UPDATE FOLDERS ARRAY
       const updatedFoldersArr = userFolders.filter((folder) => folder.id !== folderObj.id);
       setUserFolders(updatedFoldersArr)
@@ -419,10 +414,6 @@ const nameSubmit = (e, newName) => {
       
 // PHOTO FUNCTIONS
 
-const handlePhotos = (photos) => {
-  setPhotos(photos);
-};
-
 const addPhoto = (e, formData, dimensions, photoName, photoDetails, photo) => {
   e.preventDefault();
 
@@ -446,44 +437,14 @@ body: data
   console.log("photoObj",photoObj);
   setPhotos(photos.map((photo) => {
       if (photo.id === photoObj.id) return photoObj;
-      else return photo;
-    })
+      else return photo;})
     );
   });
     };
 
  
-  
-  // let prePictures = photos.filter(photo => photo.url !== null)
-  //   let preEmptyBoxs = photos.filter(photo => photo.url === null)
-  //   console.log(`${preEmptyBoxs.length}/ ${prePictures.length}`, preEmptyBoxs.length/prePictures.length)
 
-  
-    
-    
-// useEffect(() => {
-//   let pictures = photos!== undefined && photos.filter(photo => photo.url !== null)
-//   let emptyBoxs = photos!== undefined && photos.filter(photo => photo.url === null)
-//   console.log(photos!== undefined && `${emptyBoxs.length}/ ${pictures.length}`, photos!== undefined && emptyBoxs.length/pictures.length)
-// photos!== undefined && pictures.length/photos.length >= .80 && 
-// fetch(`${dbVersion}/folders/${folderShown}/`, {
-//     method: "GET",
-//     headers: { "Content-Type": "application/json" },
-//   })
-//     .then((r) => r.json())
-//     .then((folder) => {
-//       setPhotos(folder.photos);
-//     });
-    
-// }, [])
-
-
-
-// let pictures = photos !== undefined && photos.filter(photo => photo.url !== null)
-//         let emptyBoxs = photos!== undefined && photos.filter(photo => photo.url === null)
-//         console.log(photos !== undefined && `${pictures.length}/ ${photos.length}`, photos !== undefined && pictures.length/photos.length)
-
-        const createPhoto = (e, data) => {
+const createPhoto = (e, data) => {
           e.preventDefault()
           data.append('folder_id', folderShown)
           // data.append('details', details)
@@ -507,7 +468,7 @@ body: data
                 })
               );
             });
-        };
+    };
 
 const deletePhoto = (photo) => {
 
@@ -540,109 +501,29 @@ const deletePhoto = (photo) => {
 
 
 
-  // const sortPhotosOnly = () => {
-  //   const photosOnly = (photos != undefined) && photos.filter(photo => photo.url != null)
-  //   const sortedPhotosOnly = photosOnly.sort((a, b) => { return a.photo - b.photo })
-  //   setPhotos(sortedPhotosOnly)
-  // }
 
-
-const [previousPhotoArray, setPreviousPhotoArray] = useState()
-// SUBMIT ENTIRE ARRAY REORDERED
-const [oldPhotos, setOldPhotos] = useState()
-// fetch(`${dbVersion}/folders/${folderShown}/`, {
-//   method: "GET",
-//   headers: { "Content-Type": "application/json" }
-// })
-//   .then((r) => r.json())
-//   .then((folder) => {
-//     console.log("folder", folder.photos);
-//     setOldPhotos(folder.photos);
-
-//   });
-// FOR EACH PHOTO UPDATE THE INDEX VALUE
-// photos != undefined &&
-// differenceArray.forEach((photo) =>
-//     fetch(`${dbVersion}/photos/${photo.id}/`, {
-//       method: "PATCH",
-//       headers: { "Content-Type": "application/json" },
-//       body: JSON.stringify({
-//         index: photo.index,
-//       }),
-//     })
-//   );
-// INCOMPLETE ALTERNATIVE APROACH: FETCH PREVIOUS ARRAY, AND COMPARE TO CURRENT ARRAY THEN UPDATE THE IMAGES THAT WERE DIFFERENT. BOTH FETCHED ARRAY AND PHOTOS STATE REPRESENT CORRECT VALUE BUT COMPARISON IS RETURNING ENTIRE ARRAY INSTEAD OF THE DIFFERENCE
-
+const [reorderedPhotos, setReorderedPhotos] = useState()
 const reorderSubmit = () => {
  console.log("folderShown", folderShown)
-  // let previousPhotoArray = 
-  fetch(`${dbVersion}/folders/${folderShown}/`, {
-    method: "GET",
-    headers: { "Content-Type": "application/json" },
-  })
-    .then((r) => r.json())
-    .then((previousFolder) => {
-      console.log("previousFolder", previousFolder.photos); 
-      console.log("photos", photos)
-      
-      let changed = photos.filter((photo) => {
-        return !previousFolder.photos.some((photo1) => {
-          return photo.index === photo1.index;
-        });
-      }); 
-      // let difference = previousPhotoArray.photos.filter((photo) => !photos.includes(photo));
-      // console.log(previousFolder.photos.filter(photo => !photos.includes(photo) => {}))
-      
-      // const difference = previousFolder.photos.filter(( photo, index ) => {return Object.keys(photo).some(( prop ) => { return photo[prop] !== photos[index][prop]})
-      // });
-      // var result = result1.filter(function (o1) {
-      //   return !result2.some(function (o2) {
-      //       return o1.id === o2.id; // return the ones with equal id
-      //  });
-      // });
-      // if you want to be more clever...
-      // let result = result1.filter(o1 => !result2.some(o2 => o1.id === o2.id));
-    // let difference = 
-      // previousFolder.photos.filter(photo => {const {index, id} = photo;
-      // return photos.some(photoB => photoB.index && index && photos.id == id) || !photos.some(photos => photos.index !== index)
-      // })
-
-    // var changed = photos.filter(photo => !previousFolder.photos.includes(photo.index))
-    // previousFolder.photos.filter( function( p, idx ) { return Object.keys(p).some( function( prop ) {return p[prop] !== photos[idx][prop]})
-    // })
-      
-    console.log("changed", changed)
-
-      // console.log("difference", difference)
-      // return difference;
-      // console.log("difference", difference)
+//  FOR EACH PHOTO UPDATE THE INDEX VALUE
+reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
+    fetch(`${dbVersion}/photos/${photo.id}/`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        index: photo.index,
+      }),
     })
+  );
   };
 
   /// MODAL
-
   const [openModal, setOpenModal] = useState(false);
-  // const [openPhoto, setOpenPhoto] = useState(false);
   const [photo, setPhoto] = useState();
-
-  
-
-
-  // const [folderPhotos, setFolderPhotos] = useState()
-  //  useEffect(() => {
-  //   folderShown !== undefined && setFolderPhotos(photos.filter(photo => photo.folder_id === folderShown) )
-  //  }, [folderShown])
-  
-  const sortPhotos = (a, b) => a.index - b.index;
-  // let sortedPhotos = new Array.photos.sort(sortPhotos)
-  // let reorderedPhotos = sortedPhotos !== undefined && 
-
-  // console.log("photo stuff", photos !== undefined && photos.filter(photo => photo.folder_id === folderShown))
 
   return (
     <Router>
       <div 
-      // onResize={changeTransition()}
        className="cont">
         <SideBar
        folderShown={folderShown}
@@ -652,7 +533,7 @@ const reorderSubmit = () => {
        deleteFolder={deleteFolder}
        userFolders={userFolders}
        addFolder={addFolder}
-       chooseFolder={chooseFolder}
+       setFolderShown={setFolderShown}
        updateFolder={updateFolder}
        addLink={addLink}
        userLinks={userLinks}
@@ -687,19 +568,18 @@ const reorderSubmit = () => {
           <article>
             <div>
               <DndContainer
+              setReorderedPhotos={setReorderedPhotos}
               testArrays={testArrays}
               setPhotos={setPhotos}
               addPhoto={addPhoto}
               openModal={openModal}
               setOpenModal={setOpenModal}
-                deletePhoto={deletePhoto}
-                enableDelete={enableDelete}
-                edit={edit}
-                photos={photos}
-                
-                handlePhotos={handlePhotos}
-                reorderSubmit={reorderSubmit}
-                folderShown={folderShown}
+              deletePhoto={deletePhoto}
+              enableDelete={enableDelete}
+              edit={edit}
+              photos={photos.filter((photo) => photo.folder_id === folderShown)}
+              reorderSubmit={reorderSubmit}
+              folderShown={folderShown}
               />
               
               

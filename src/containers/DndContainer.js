@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState, useRef} from "react";
+import { useEffect, useLayoutEffect, useState, useRef} from "react";
 import styled from "styled-components";
 import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
@@ -8,23 +8,16 @@ import DraggableGridItem from "../dnd/DraggableGridItem";
 import ImageModal from "../components/ImageModal";
 
 const DndContainer = (props) => {
-  // const photos = props.photos;
-  // const [firstPhoto, setFirstPhoto] = useState()
-  // const [secondPhoto, setSecondPhoto] = useState()
+
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState()
-  // useEffect(() => {
-  //   setPhotos(props.photos.sort(sortPhotos))
-  // }, [props.photos])
-
-
-  const [counter, setCounter] = useState(2)
-  const [reorderedPhotos, setReorderedPhotos] = useState([])
-  const [reorderedArray, setReorderedArray] = useState([])
+  
+  useEffect(() => {
+    setPhotos([...props.photos])
+  }, [props.photos])
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
-    
-    console.log(firstPhotoId, secondPhotoId)
+    // console.log(firstPhotoId, secondPhotoId)
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
@@ -32,54 +25,16 @@ const DndContainer = (props) => {
     const firstIndex = firstPhoto.index; // declares variable value of first photo index
     firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
     secondPhoto.index = firstIndex; // then sets the second photo index to the first index
-    console.log("firstPhoto", firstPhoto, "secondPhoto", secondPhoto);
-    
-      console.log("newPhotos", newPhotos, "photos", photos)
-      // setFirstPhoto(firstPhoto)
-      // setSecondPhoto(secondPhoto)
-    props.handlePhotos(newPhotos);
-    // let x = counter + 2
-    // reorderedPhotos.slice(x)
-    // setCounter(x)
-    // console.log("x counter", x)
-    reorderedPhotos !== undefined && setReorderedPhotos([...reorderedPhotos, firstPhoto, secondPhoto])
-    reorderedPhotos === undefined && setReorderedPhotos([firstPhoto, secondPhoto])
-    // return(newPhotos)
+    // console.log("firstPhoto", firstPhoto, "secondPhoto", secondPhoto);
+    // console.log("newPhotos", newPhotos, "photos", photos)
+    setPhotos(newPhotos);
+    props.setReorderedPhotos(newPhotos)
   };
-
-  
-
-  useEffect(() => {
-    // let filteredPhotos = photos !== undefined && photos.filter(photo => photo.folder_id === props.folderShown)
-    // props.photos !== null && props.photos !== undefined &&
-    
-    setPhotos(photos !== undefined && props.photos.filter((photo) => photo.folder_id === props.folderShown).sort(sortPhotos))
-}, [props.folderShown, props.photos])
-
-const arrayHandler = () => {
-  console.log("hello")
-  const lastTwo = reorderedPhotos.slice(-2)
-    console.log("lastTwo", lastTwo)
-    // reorderedArray.push.apply(reorderedArray, lastTwo)
-    reorderedArray === undefined 
-    ? setReorderedArray(lastTwo)
-    : setReorderedArray(reorderedArray.concat(lastTwo))
-  // reorderedPhotos !== undefined && reorderedArray !== undefined && 
-  // const lastTwo = reorderedPhotos.slice(-2)
-  // 
-  // reorderedArray === undefined && setReorderedArray(lastTwo)
-  // reorderedPhotos !== undefined && setReorderedPhotos(...reorderedPhotos.slice(-2))
-  // console.log("hellow")
-}
-  // console.log("counter out", counter)
-  console.log("reorderedArray", reorderedArray)
-  console.log("reorderedPhotos", reorderedPhotos)
-
 
 const disableOnDrop = () => {
   console.log("onDrop disabled");
 };
-const onDropVariable = props.edit ? onDrop : disableOnDrop;
+const onDropVariable = props.edit ? onDrop : console.log("onDrop disabled")
 
   const gridRef = useRef(null);
   const imgRef = useRef(null)
@@ -91,24 +46,12 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop;
     console.log("helloooo")
   }, [photos]);
   
-  const handleLoad = (photo) => {
-    
-    // const image = imgRef.current
-    // const grid = gridRef.current;
-    // let imageHeight = image.naturalHeight
-    // let imageWidth = image.naturalHeight
-    // console.log(imageWidth + 'x' + imageHeight)
-    // adjustGridItemsHeight(grid, photo);
-    setImagesLoaded(true);
-  };
-  
   const [photo, setPhoto] = useState();
   const [openModal, setOpenModal] = useState(false);
   const modalToggle = (photo) => {
     setPhoto(photo);
     setOpenModal(!openModal);
   };
-  
   
   const nextPhoto = (initialPhoto) => {
     const photosOnly =
@@ -176,10 +119,9 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop;
               ref={gridRef}
               // style={{ opacity: imagesLoaded ? 1 : 0 }}
               style={{ opacity }}>
-              {!photos !== !null && photos !== undefined && photos.map((photo) => (<DraggableGridItem
+              {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
                     key={photo.id}
                     photo={photo}
-                    // onDragEnd={arrayHandler()}
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                     // style={ photo.details === "100px"   
                     //     ? {gridRowEnd : "span 40"} 
@@ -210,7 +152,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop;
                         className="photo"
                         ref={imgRef}
                         key={photo.index }
-                        onLoad={() => handleLoad(photo.url)}
+                        onLoad={() => setImagesLoaded(true)}
                         onClick={() => modalToggle(photo)}
 
                         style={ photo.dimensions === "100px"   
@@ -301,8 +243,6 @@ const GridWrapper = styled.div`
   //   transform: scale(2,2);
   // }
 `;
-
-// const [domElements, setDomElements] = useState(props.children);
 
 // useEffect(() => {
 //   const grid = gridRef.current;
@@ -396,23 +336,3 @@ const GridWrapper = styled.div`
 // }`
 
 
-// let result = photos.filter((firstPhoto) => {
-      //   return !newPhotos.some((secondPhoto) => {
-        //     return firstPhoto.id === secondPhoto.id
-        //   })
-        // })
-    // let difference = newPhotos.filter(photo1 => !props.photos.map(photo2 => photo1.id === photo2.id))
-  //   photos.forEach((photo, index, newPhotos) => {
-  //     var ItemIndex = newPhotos.findIndex(newPhotos => newPhotos.name === photo.name);
-  //     photos.splice(ItemIndex, 1)
-  //     console.log("ItemIndex", ItemIndex)
-  // }
-  // const compareAll = (photo1, photo2)=>{
-    //   return (photo1.id === photo2.id && photo1.index === photo2.index);
-    // }
-    // let output = newPhotos.filter(photo2 => {
-      //   let indexFound = props.photos.findIndex(photo1 => compareAll(photo1, photo2));
-      //   return indexFound == -1;
-      // })
-      
-      // console.log("output", output)

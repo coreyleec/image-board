@@ -5,9 +5,9 @@ import styled from "styled-components";
 const AsideRight = (props) => {
   const [isToggled, setIsToggled] = useState(false);
   const onToggle = () => {
-    // props.edit === true && 
     props.editToggle(!props.edit)
-    // props.reorderSubmit(props.folder)
+    props.edit === true && 
+    props.reorderSubmit()
   };
 
   return (

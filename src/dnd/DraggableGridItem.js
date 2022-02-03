@@ -16,7 +16,7 @@ const DraggableGridItem = ({ photo, onDrop, children, ...p }) => {
       }),
     });
     
-    console.log("payloadPhoto", payloadPhoto, "photo hover", photo.hover, "drag", drag, "isDragging", isDragging)
+    // console.log("payloadPhoto", payloadPhoto, "photo hover", photo.hover, "drag", drag, "isDragging", isDragging)
 
     // useDrop return value array - no props, drop function
     const [, drop] = useDrop({
