@@ -34,7 +34,7 @@ const DndContainer = (props) => {
 const disableOnDrop = () => {
   console.log("onDrop disabled");
 };
-const onDropVariable = props.edit ? onDrop : console.log("onDrop disabled")
+const onDropVariable = props.edit ? onDrop : disableOnDrop
 
   const gridRef = useRef(null);
   const imgRef = useRef(null)
@@ -93,7 +93,6 @@ const onDropVariable = props.edit ? onDrop : console.log("onDrop disabled")
   
   return (
     <>
-    <button onClick={()=> props.testArrays(props.photos)} >click</button>
       {openModal && (
         <ImageModal
         setPhotos={props.setPhotos}
@@ -127,7 +126,6 @@ const onDropVariable = props.edit ? onDrop : console.log("onDrop disabled")
                     //     ? {gridRowEnd : "span 40"} 
                     //     : {gridRowEnd : "span 80" }}
                   >
-                    
                     <div
                       className={
                         !props.edit
@@ -142,16 +140,12 @@ const onDropVariable = props.edit ? onDrop : console.log("onDrop disabled")
                         ? {height: `${photo.dimensions}`} 
                         : photo.url !== null && {height: `220px`} : null}
                     >
-
 {/* DELETE PHOTO */}
-{/* props.openModal === true && */}
-                      
-                      {/* <p>{photo.index}</p> */}
                       <div className="img-wrapper"></div>
                       <img
                         className="photo"
                         ref={imgRef}
-                        key={photo.index }
+                        key={photo.index}
                         onLoad={() => setImagesLoaded(true)}
                         onClick={() => modalToggle(photo)}
 
@@ -165,14 +159,11 @@ const onDropVariable = props.edit ? onDrop : console.log("onDrop disabled")
                             : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                         }
                       />
-                      {/* </div> */}
                     </div>
-                    { props.enableDelete && photo.url !== null && 
+                    {props.enableDelete && photo.url !== null && 
                         <button
                          style={{display}}
-                         
-                         className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>
-                        }
+                         className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>}
                   </DraggableGridItem>
                 ))}
             </GridWrapper>

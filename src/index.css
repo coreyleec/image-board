@@ -170,9 +170,9 @@ button {
 }
 
 .delete-photo {
-  padding-top: 0px;
-  height: 0px;
-  padding-inline: 0px;
+  /* padding-top: 0px;
+  height: 0px; */
+  /* padding-inline: 0px; */
   cursor: pointer;
   background-color: transparent;
   color: red;
@@ -181,16 +181,12 @@ button {
   font-size: 2rem;
   line-height: 0px;
   z-index: 1;
+  float: right;
   position: relative;
-  display: inline; 
-  padding-left: 0px;
-  padding-right: 0px;
-  width: 0vw;
-  /* width: 0vw;
-  padding-inline: 0; */
-  /* float: right; */
-  top: 8px;
-  right: -108px;
+  right: 13px;
+  top: -100%;
+  padding-right: 8px;
+  padding-top: 17px;
 }
 .sidebar-break {
   width: 100%;
@@ -349,13 +345,13 @@ max-height: 100%; */
   overflow: hidden;
   min-height: 100px;
 }
-/* .picture :hover {
-  height: auto;
-  box-shadow: -3px 3px 5px 2px #aaaaaa,
-} */
-/* transform: scale(1.5); */
-/* width:145px; */
-/* transform: scale(2,2); */
+ .picture .photo :hover {
+  /* height: auto; */
+  /* box-shadow: -3px 3px 5px 2px #aaaaaa, */
+  /* transform: scale(1.5); */
+  /* width:145px; */
+  transform: scale(2,2);
+} 
 .emptyBox {
   color: gainsboro;
   height: 100px;
