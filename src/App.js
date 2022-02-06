@@ -162,14 +162,7 @@ const handlePassword = (password) => {
         // console.log(folderIds[0])
       });
     };
-//     console.log((userFolders[0]) && userFolders[0].photos)
-// useEffect(() => {
-//   let folder = userFolders.find(folder => folder.id === folderShown)
-//   userFolders[0].photos !== undefined && folderShown !== 0 && setPhotos(folder.photos)
-//   }, [userFolders[0].photos])
-// useEffect(() => {
-//   setPhotos(photos.filter((photo) => photo.folder_id === folderShown))
-// }, [folderShown])
+
 
 // USER SIGNUP
   const signupSubmit = (e) => {
@@ -501,8 +494,8 @@ const deletePhoto = (photo) => {
 
 
 
-
 const [reorderedPhotos, setReorderedPhotos] = useState()
+console.log("reorderedPhotos", reorderedPhotos)
 const reorderSubmit = () => {
  console.log("folderShown", folderShown)
 //  FOR EACH PHOTO UPDATE THE INDEX VALUE
@@ -514,7 +507,8 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
         index: photo.index,
       }),
     })
-  );
+  )
+  reorderedPhotos !== undefined &&  setReorderedPhotos(undefined)
   };
 
   /// MODAL

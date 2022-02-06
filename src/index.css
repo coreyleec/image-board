@@ -170,9 +170,6 @@ button {
 }
 
 .delete-photo {
-  /* padding-top: 0px;
-  height: 0px; */
-  /* padding-inline: 0px; */
   cursor: pointer;
   background-color: transparent;
   color: red;
@@ -309,22 +306,40 @@ input:-webkit-autofill {
   flex-direction: column; 
 } */
 .picture {
-  
+  height: 100px;
   max-height: 220px; 
   overflow: hidden;
-  
   margin: 10px;
-  
   /* ALLOWS FOR RESIZING WINDOW */
   max-width: fit-content;
   /* USE THIS TO KEEP IMAGE CENTER */
    display: flex;
   justify-content: center;
-  
   border-radius: 13px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
 }
+.image-tile {
+  max-height: 220px;
+  height: 100px; 
+  overflow: hidden;
+  margin: 10px;
+  /* ALLOWS FOR RESIZING WINDOW */
+  max-width: fit-content;
+  /* USE THIS TO KEEP IMAGE CENTER */
+   display: flex;
+  justify-content: center;
+  border-radius: 13px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
+}
+
 .picture .photo{
+  max-height: 220px;
+  min-width: 150px;
+  /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
+  position: initial;
+ 
+}
+.image-tile .photo{
   max-height: 220px;
   min-width: 150px;
   /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
@@ -339,45 +354,61 @@ margin: auto;
 max-width: 100%;
 max-height: 100%; */
 .photo {
-  
-  /* width: 100%; */
   position: relative;
   overflow: hidden;
-  min-height: 100px;
-}
- .picture .photo :hover {
-  /* height: auto; */
-  /* box-shadow: -3px 3px 5px 2px #aaaaaa, */
-  /* transform: scale(1.5); */
-  /* width:145px; */
-  transform: scale(2,2);
-} 
-.emptyBox {
-  color: gainsboro;
-  height: 100px;
-  margin: 10px;
+  /* min-height: 100px; */
   
 }
-.emptyBox .photo {
-  position: initial;
-  border-radius: 13px;
-  width: 100%; 
-  /* width: 135px;  */
+.img-wrapper:not(:hover) {
+  /* grid-template-columns: repeat(6,170px); */
+}
+ .image-tile:hover {
+   all: unset;
+  box-shadow: none;
+  transition: transform 0.2s ease;
+  transform: scale(1.2,1.2);
+  border-radius: 0px;
+  /* transition: border-radius 0.2s ease; */
+  /* transform-origin: left bottom; */
+  width: fit-content;
+  display: flex;
+  background-color: rgba(204, 204, 204, 0.75);
+  height: fit-content;
+  max-width: fit-content;
+  padding: 5px;
+  margin: 0px;
+  /* padding-bottom: 5px; */
+  overflow: visible;
+} 
+/* .card-content {
+  display: none;
+} */
+.card-name{
+  font-size: 20px;
+}
+.card-details{
+  font-size: 15px;
+  overflow-y: scroll;
+}
+.image-tile:hover .card-content {
+display: block;
+max-width: 30%;
+padding-inline: 5px;
+height: fit-content;
+}
+.image-tile:hover .photo {
+  /* object-fit: contain; */
+}
+.image-tile:hover img {
+  /* height:fit-content; */
+}
+/* .image-tile img {
   height: 100px;
-  box-shadow: -3px 3px 5px 2px #aaaaaa;
+} */
+.img-wrapper {
+  /* display: flex; */
+  
 }
-.emptyBox .photo:hover {
-  border-radius: 13px;
-  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-  /* transform: translateX(2px), translateY(2px); */
-}
-/* z-index: -1; */
-/* box-shadow: -6px 4px 18px 3px #aaaaaa, 0 0 13px -1px #aaaaaa inset; */
-/* top: 0;
-transition: top ease 0.5s;
-transition: transform 0.3s ease;
-transform: translateX(0px);
-transform: translateY(0px); */
 
 .missing-box {
   color: gainsboro;
@@ -395,10 +426,50 @@ transform: translateY(0px); */
   height: 112px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
 }
+/* .img-wrapper:not(:hover) + .card-content {
+  display: none;
+}
+*/
+.card-content {
+display: none;
+width: fit-content;
+} 
 
-
-
-
+.empty-box {
+  color: gainsboro;
+  height: 100px;
+  margin: 10px;
+  
+}
+.empty-box .photo {
+  position: initial;
+  border-radius: 13px;
+  width: 100%; 
+  /* width: 135px;  */
+  height: 100px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
+}
+:is(.empty-box, .picture):hover {
+  border-radius: 13px;
+  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+  transform: translate(1px, 1px);
+  
+}
+/* .empty-box .photo:hover {
+  border-radius: 13px;
+  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+}
+.picture .photo:hover {
+  border-radius: 13px;
+  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+} */
+/* z-index: -1; */
+/* box-shadow: -6px 4px 18px 3px #aaaaaa, 0 0 13px -1px #aaaaaa inset; */
+/* top: 0;
+transition: top ease 0.5s;
+transition: transform 0.3s ease;
+transform: translateX(0px);
+transform: translateY(0px); */
 
 
 * {

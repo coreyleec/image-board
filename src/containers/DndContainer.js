@@ -29,6 +29,7 @@ const DndContainer = (props) => {
     // console.log("newPhotos", newPhotos, "photos", photos)
     setPhotos(newPhotos);
     props.setReorderedPhotos(newPhotos)
+    console.log("newPhotos", newPhotos)
   };
 
 const disableOnDrop = () => {
@@ -86,7 +87,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
 
   console.log("photos", photos)
 
-
+// const [cursor, setCursor] = useState("default")
 
   const opacity = imagesLoaded ? 1 : 0
   const display = openModal ? "none" : "inline"
@@ -130,28 +131,29 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                       className={
                         !props.edit
                           ? photo.url !== null
-                            ? "picture"
+                            ? "image-tile"
                             : "missing-box"
                           : photo.url !== null
                           ? "picture"
-                          : "emptyBox"
+                          : "empty-box"
                       }
-                      style={ photo.url !== null ? photo.dimensions === "100px"   
-                        ? {height: `${photo.dimensions}`} 
-                        : photo.url !== null && {height: `220px`} : null}
+                      style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : null}
                     >
 {/* DELETE PHOTO */}
-                      <div className="img-wrapper"></div>
+                      {/* <div className={!props.edit && photo.url !== null && "img-wrapper"}> */}
+                        
                       <img
-                        className="photo"
+                        className={"photo"}
                         ref={imgRef}
                         key={photo.index}
                         onLoad={() => setImagesLoaded(true)}
                         onClick={() => modalToggle(photo)}
-
-                        style={ photo.dimensions === "100px"   
-                        ? {height: `${photo.dimensions}`} 
-                        : {minWidth:`${photo.dimensions}`, maxHeight: "220px"} }
+                        // onMouseDown={setCursor("grabbing")}
+                        // {cursor: `${cursor}`}
+                        // style={{cursor: isDragging ? 'grabbing' : 'default' }}
+                        style={photo.dimensions !== "100px"   
+                        ? {minWidth:`${photo.dimensions}`, maxHeight: "220px"}
+                        : null }
                         // loading="lazy"
                         src={
                           photo.url !== null
@@ -159,6 +161,11 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                             : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                         }
                       />
+                      {(photo.details || photo.name) 
+                      && <div className={"card-content"} >
+                        <h4 className={"card-name"}>{photo.name}</h4>
+                        <p className={"card-details"} >{photo.details}</p>
+                      </div>}
                     </div>
                     {props.enableDelete && photo.url !== null && 
                         <button
@@ -226,7 +233,8 @@ const GridWrapper = styled.div`
   /* background-size: contain; */
   /* grid-template-columns: repeat(6, 160px); */
   grid-auto-rows: 1px;
-  grid-template-columns: repeat(6, minmax(132px, 1.5fr) );
+  /* grid-template-columns: repeat(6, minmax(132px, 1.5fr) ); */
+  grid-template-columns: repeat(6,minmax(130px, 170px));
   // grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
   // grid-auto-columns: 100px;
   // grid-auto-rows: 180px;

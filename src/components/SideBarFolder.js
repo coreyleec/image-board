@@ -24,6 +24,11 @@ const underlineFolder = (folder) => {
 // props.folderShown
 // onClick={() => {setNewFolder(!newFolder)}} 
 // text-decoration: ${({folderToggle}) => (folderToggle ? "underline" : "null")};
+const submitFolderEdit = (e, folder) => {
+  if (e.key == 'Enter' && e.shiftKey == false) {props.updateFolder(e, folderName, folder, console.log("submit")) 
+  e.currentTarget.blur();
+  
+}}
     return (
         <div>
 {/* FOLDER TOGGLE */}
@@ -36,9 +41,8 @@ const underlineFolder = (folder) => {
                     </div>
 {/* NEW FOLDER */}
                 <div>
-            { newFolder && props.edit && 
+                      { newFolder && props.edit && 
                         <form onSubmit={(e) => submitCloseForm(e)}
-                        
                         > 
                         <StyledInput autoFocus="autofocus" type="text" placeholder="folder name" 
                         onChange={(e) => setFolderName(e.target.value)}></StyledInput> </form>}
@@ -48,17 +52,17 @@ const underlineFolder = (folder) => {
             {props.userFolders != null && props.edit 
                     ? props.userFolders.map(folder =>   
                     <div className="subtract-item" key={folder.id} folder={folder}>
-                        <form folder={folder} key={folder.id} 
-                            onSubmit={(e) => props.updateFolder(e, folderName, folder)}
-                            >
-                                <StyledInput type="text" 
+                        
+                                <StyledInput
+                                onKeyDown={(e) => submitFolderEdit(e, folder)}
+                                contentEditable={props.edit} type="text" 
                                 defaultValue={folder.name} 
-                                // className="folder-form"
-                                onChange={(e) => setFolderName(e.target.value)}
+                                // placeholder={folder.name == null ? "folder name" : folder.name}
+                                onInput={(e) => setFolderName(e.currentTarget.textContent)}
                                 >
-
+                                {folder.name}
                                 </StyledInput>
-                        </form>
+
                         {props.enableDelete === true  
                         && <SubtractButton 
                         onClick={() => props.deleteFolder(folder)} >-</SubtractButton>
@@ -88,7 +92,7 @@ background-color: transparent;
   transform: scale(2, 1);
 `
 
-const StyledInput = styled.input`
+const StyledInput = styled.div`
 font-size: 2rem;
 padding: 0px;
 float: left;

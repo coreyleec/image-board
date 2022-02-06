@@ -104,25 +104,6 @@ console.log(photo)
                 props.setOpenModal(!openModal))}
               >
             <div className="modal-cont">
-{/* NAME FORM EDIT AND PREVIW */}
-              {(photo.name != null || photo.details != null || props.edit) && 
-              <div className="modal-text-cont" style={{"backgroundColor": contColor}}>
-               <StyledImageName 
-                  type="text" contentEditable={props.edit}
-                  style={{"cursor": props.edit ? "text" : "default"}}
-                  onInput={e => setPhotoName(e.currentTarget.textContent)}
-                  placeholder={(props.edit && photo.name == null) ? "add name": null}>
-                    {photo.name != null && photo.name}
-                </StyledImageName>
-{/* DETAILS FORM EDIT AND PREVIEW */}
-                  <StyledImageDetails
-                    type="text" contentEditable={props.edit}
-                    style={{"cursor": props.edit ? "text" : "default"}}
-                    onInput={e => setPhotoDetails(e.currentTarget.textContent)}
-                    placeholder={(props.edit && photo.details === null) ? "add details" : null}>
-                      {photo.details !== null && photo.details}
-                  </StyledImageDetails>
-              </div>}
 {/* IMAGE FORM EDIT AND PREVIEW */}
               <div className="modal-img-cont">
               {!props.edit && photo !== undefined && photo.url != null 
@@ -148,7 +129,25 @@ console.log(photo)
                   </div>
                 }
               </div>
-
+{/* NAME FORM EDIT AND PREVIW */}
+{(photo.name != null || photo.details != null || props.edit) && 
+              <div className="modal-text-cont" style={{"backgroundColor": contColor}}>
+               <StyledImageName 
+                  type="text" contentEditable={props.edit}
+                  style={{"cursor": props.edit ? "text" : "default"}}
+                  onInput={e => setPhotoName(e.currentTarget.textContent)}
+                  placeholder={(props.edit && photo.name == null) ? "add name": null}>
+                    {photo.name != null && photo.name}
+                </StyledImageName>
+{/* DETAILS FORM EDIT AND PREVIEW */}
+                  <StyledImageDetails
+                    type="text" contentEditable={props.edit}
+                    style={{"cursor": props.edit ? "text" : "default"}}
+                    onInput={e => setPhotoDetails(e.currentTarget.textContent)}
+                    placeholder={(props.edit && photo.details === null) ? "add details" : null}>
+                      {photo.details !== null && photo.details}
+                  </StyledImageDetails>
+              </div>}
             </div>
               </form>
           </ModelContent>
