@@ -366,6 +366,7 @@ const addLink = (e, linkName, linkUrl) => {
 
 const updateUserAboutMe = (e, aboutMe) => {
   e.preventDefault();
+  console.log("about me", aboutMe)
   fetch(`${dbVersion}/users/${currentUser.id}`, {
     method: "PATCH",
     headers: {

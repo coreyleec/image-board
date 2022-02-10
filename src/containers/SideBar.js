@@ -51,14 +51,15 @@ const SideBar = (props) => {
   // console.log(props.userLinks)
   return (
     <aside>
-      <Sticky>
-          
-      <button
-          className={sideBar ? "slide-button-right" : "slide-button-left"}
-          onClick={() => toggleSideBar()}
+      <Sticky >
+      <ButtonContainer sideBar={sideBar}>
+      <button 
+          // className={sideBar ? "slide-button-right" : "slide-button-left"}
+          onClick={() => setBar(!sideBar)}
         >
           {sideBar ? "x" : "open"}
         </button>
+          </ButtonContainer>    
         <div className={sideBar ? "side-bar-open" : "side-bar-closed"}>
         
           {/* <div className={"sidebar-content-closed"}> */}
@@ -97,17 +98,25 @@ const Button = styled.button`
   align-items: flex-end;
 `;
 
+const ButtonContainer = styled.div`
+  display: flex;  
+  padding-inline: 5px;
+  padding-top: 5px;
+  button {
+    position: sticky;
+    transition: left 1s ;
+    ${({sideBar})  => sideBar ? `left : 16%` : `left: -10%` };
+   /* float: ${({sideBar})  => sideBar ? 'right' : 'left'}; */
+   
+` 
+
 const Sticky = styled.div`
-  /* padding-inline: 5px; */
   position: sticky;
   top: 0;
-  /* height: 100%;
-    background-color: coral; */
-    /* position: absolute; */
-   /* *:not(:last-child) {
-    display: block;
-    margin-bottom: 3px;  */
+  
 } 
+
+}
 @media (max-width: 1200px) {
   .side-bar-open{width: 200px;background-color:coral;}
 }

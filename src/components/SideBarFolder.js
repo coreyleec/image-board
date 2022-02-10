@@ -1,29 +1,12 @@
 import React from 'react'
-import { Component } from 'react';
-import { useState, useEffect } from 'react'
-import styled, { css } from "styled-components";
-
+import { useState } from 'react'
+import styled from "styled-components";
 
 const SideBarFolder = (props) => {
-// ADD FOLDER STATE TOGGLE
-const [newFolder, setNewFolder] = useState(false)
-const newFolderToggle = () => {setNewFolder(!newFolder)}
-const [folderName, setFolderName] = useState("")
-const [selectedFolder, setSelectedFolder] = useState(false)
-const [folderToggle, setFolderToggle] = useState(true)
 
-const submitCloseForm = (e) => {
-    props.addFolder(e, folderName) 
-    setNewFolder(!newFolder)
-}
-const underlineFolder = (folder) => {
-    // setChosenFolder(folder.id)
-    //  setFolderToggle(!folderToggle)
-    console.log(folder)
-}
-// props.folderShown
-// onClick={() => {setNewFolder(!newFolder)}} 
-// text-decoration: ${({folderToggle}) => (folderToggle ? "underline" : "null")};
+const [newFolder, setNewFolder] = useState(false)
+const [folderName, setFolderName] = useState("")
+
 const submitNewFolder = (e, folder) => {
   if (e.key == 'Enter' && e.shiftKey == false) {props.addFolder(e, folderName) 
   e.currentTarget.blur();
@@ -33,7 +16,6 @@ const submitFolderEdit = (e, folder) => {
   if (e.key == 'Enter' && e.shiftKey == false) {props.updateFolder(e, folderName, folder) 
   e.currentTarget.blur();
 }}
-
 
     return (
         <div>
@@ -65,10 +47,8 @@ const submitFolderEdit = (e, folder) => {
                         folderShown={props.folderShown}
                         placeholder={folder.name}
                         onKeyDown={(e) => submitFolderEdit(e, folder)}
-                        // onClick={console.log("hello dude")}
                         onClick={(e) => {props.setFolderShown(folder.id)}}
                         style={folder.id === props.folderShown ? {textDecoration: "underline"} : null} 
-                        // style={{"cursor": props.edit ? "text" : "default"}}
                         onInput={e => setFolderName(e.currentTarget.textContent)}
                         >
                         {folder.name}
@@ -92,6 +72,9 @@ color: red;
 line-height: 0px;
 padding: 0;
 transform: scale(2, 1);
+margin-top: 8%;
+align-self: self-start;
+cursor: pointer;
 `
 const StyledEditableDiv = styled.div`
 font-size: 2rem;

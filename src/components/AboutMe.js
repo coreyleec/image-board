@@ -3,42 +3,30 @@ import { useState, useEffect } from "react";
 import styled from "styled-components";
 
 const AboutMe = (props) => {
-  const [aboutMeToggle, setAboutMeToggle] = useState(false);
-  const toggleAboutMe = () => {
-    setAboutMeToggle(!aboutMeToggle);
-  };
-  const [userAboutMe, setUserAboutMe] = useState("");
-  const changeAboutMe = (newAboutMe) => {
-    setUserAboutMe(newAboutMe);
-  };
+
+  const [aboutMe, setAboutMe] = useState("");
 const submitAboutMe = (e) => {
-    if (e.key == 'Enter' && e.shiftKey == false) {props.updateUserAboutMe(e, userAboutMe)}
+    if (e.key == 'Enter' && e.shiftKey == false) {props.updateUserAboutMe(e, aboutMe)
+      e.currentTarget.blur();}
 }
 
   return (
     <div>
-     
-        {props.userAboutMe != null && props.edit ? (
-          <form
-            onKeyDown={(e) => submitAboutMe(e)}
+          {/* <form
+            
             details={props.userAboutMe}
             key={props.currentUser.id}
             onSubmit={(e) => props.updateUserAboutMe(e, userAboutMe)}
-          >
+          > */}
             <StyledInput
-              type="textarea"
-              rows="3"
+              type="text" contentEditable={props.edit}
+              edit={props.edit}
               className="sidebar-StyledInput"
-              defaultValue={props.userAboutMe}
-              placeholder="add a description"
-              onChange={(e) => changeAboutMe(e.target.value)}
-            ></StyledInput>
-          </form>
-        ) : (
-          <AboutMeP onClick={() => setAboutMeToggle()}>
-            {props.userAboutMe}
-          </AboutMeP>
-        )}
+              placeholder={(props.edit) && "add a description"}
+              onKeyDown={(e) => submitAboutMe(e)}
+              onInput={(e) => setAboutMe(e.currentTarget.textContent)}
+            >{props.userAboutMe}</StyledInput>
+          {/* </form> */}
       </div>
     // </div>
   );
@@ -46,44 +34,46 @@ const submitAboutMe = (e) => {
 
 export default AboutMe;
 
-const StyledInput = styled.textarea`
+const StyledInput = styled.div`
   background-color: inherit;
-  overflow-y:overlay;
-  resize: none;
+  overflow-y: overlay;
   padding: 0;
+  max-height: 150px;
   line-height: 1.5;
   border-width: 0;
   margin-top: 0;
   padding-right: 1px;
   font-size: 1rem;
-  height: fit-content;
-  margin-bottom: 1rem;
+  max-height: 95px;
   text-align: left;
   font-family: Helvetica, sans-serif;
   width: 100%;
-  color: #757575;
-
+  color: black;
+  ${({ edit }) => edit && `
+    color: #757575;
+    cursor: text;
+  `}
+    :empty::before {
+    content:attr(placeholder);
+  }
   ::-webkit-scrollbar {
   display: unset;
   }
-  /* ::-webkit-scrollbar-track{
+  ::-webkit-scrollbar-track{
         width: 5px;
-    } */
+    }
   :hover{
       display: show;
       
   ::-webkit-scrollbar{width: 2px;}
     ::-webkit-scrollbar-thumb{border: 1px solid black;}
-    /* right: 10px; */
-    
+    /* right: 10px; */  
   }
-  
 `;
 
 const AboutMeP = styled.p`
     cursor: default;
     font-size: 1rem;
     width: 100%;
-    /* display: flex; */
     color: black;
     `

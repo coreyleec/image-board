@@ -132,6 +132,7 @@ const SubtractButton = styled.button`
   line-height: 0px;
   padding: 0;
   transform: scale(2, 1);
+  cursor: pointer;
 `;
 const StyledInput = styled.input`
   font-size: 2rem;
@@ -147,7 +148,6 @@ const StyledUrl = styled.textarea`
   overflow: overlay;
   padding: 0;
   padding-right: 1px;
-  line-height: 1.5;
   border-width: 0;
   font-size: 1rem;
   text-align: left;

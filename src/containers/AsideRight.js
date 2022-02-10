@@ -14,6 +14,7 @@ const AsideRight = (props) => {
     <aside>
       {props.currentUser != undefined && props.currentUser.id != null && 
             <Sticky>
+              <>
             <Switch>
              <label className="toggle-switch">
             <input type="checkbox" checked={props.edit}
@@ -36,6 +37,7 @@ const AsideRight = (props) => {
             <p>enable delete</p> 
             </Switch>
             : null }
+            </>
             </Sticky>} 
     </aside>
   );

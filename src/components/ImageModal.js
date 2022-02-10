@@ -134,7 +134,6 @@ console.log(photo)
               <div className="modal-text-cont" style={{"backgroundColor": contColor}}>
                <StyledImageName 
                   type="text" contentEditable={props.edit}
-                  style={{"cursor": props.edit ? "text" : "default"}}
                   onInput={e => setPhotoName(e.currentTarget.textContent)}
                   placeholder={(props.edit && photo.name == null) ? "add name": null}>
                     {photo.name != null && photo.name}
@@ -168,10 +167,12 @@ const StyledImageName = styled.div`
   border-width: 0;
   font-size: 40px;
   color: white;
+  cursor: default;
+${({ edit }) => edit && `cursor: text;`}
   :empty::before {
     color: rgb(118, 118, 118);
     content:attr(placeholder);
-}`
+  }`
 
 const StyledImageDetails = styled.div`
 resize: none;
@@ -184,6 +185,11 @@ text-align: left;
 border-width: 0;
 width: 100%;
 overflow: overlay;
+cursor: default;
+${({ edit }) => edit && `
+    color: #757575;
+    cursor: text;
+  `}
 :empty::before {
   color: rgb(118, 118, 118);
   content:attr(placeholder);
@@ -199,6 +205,7 @@ overflow: overlay;
   ::-webkit-scrollbar-thumb {
     border: 1px solid gainsboro;
   }
+  
 }`
 
 const ModelContent = styled.div`
