@@ -46,8 +46,14 @@ export default AsideRight;
 
 
 const Sticky = styled.div`
-position: sticky;
+  position: sticky;
   top: 0;
+  @media (max-width: 1200px) {
+    all: unset;
+    position: fixed;
+    left: 90%;}
+  
+  
 `
 
 const Switch = styled.label`

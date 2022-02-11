@@ -49,6 +49,7 @@ const StyledInput = styled.div`
   font-family: Helvetica, sans-serif;
   width: 100%;
   color: black;
+  cursor: default;
   ${({ edit }) => edit && `
     color: #757575;
     cursor: text;

@@ -49,4 +49,5 @@ const TitleHeader = styled.h1`
     font-family: "HelveticaNeue-Light";
     font-weight: normal;
     padding-right: 20px;
+    cursor: default;
 `

@@ -127,18 +127,12 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                     //     ? {gridRowEnd : "span 40"} 
                     //     : {gridRowEnd : "span 80" }}
                   >
-                    <div
-                      className={
-                        !props.edit
-                          ? photo.url !== null
-                            ? "image-tile"
-                            : "missing-box"
-                          : photo.url !== null
-                          ? "picture"
-                          : "empty-box"
-                      }
+                    <PictureFrame
+                      edit={props.edit}
+                      url={photo.url}
                       style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : null}
                     >
+
 {/* DELETE PHOTO */}
                       {/* <div className={!props.edit && photo.url !== null && "img-wrapper"}> */}
                         
@@ -166,7 +160,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                         <h4 className={"card-name"}>{photo.name}</h4>
                         <p className={"card-details"} >{photo.details}</p>
                       </div>}
-                    </div>
+                    </PictureFrame>
                     {props.enableDelete && photo.url !== null && 
                         <button
                          style={{display}}
@@ -183,10 +177,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
 export default DndContainer;
 
 const AppWrapper = styled.div`
-  // padding: 10px 150px;
-  // @media (max-width: 400px) {
-  //   padding: 10px;
-  // }
+  
 `;
 
 const adjustGridItemsHeight = (grid, photo) => {
@@ -207,23 +198,12 @@ const adjustGridItemsHeight = (grid, photo) => {
     let rowSpan = Math.ceil(
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)) <= 40 ? 40 : 80
-// console.log("dividend", Math.ceil(
-//   (photo.firstChild.getBoundingClientRect().height + rowGap)))
-    // console.log("rowHeight + rowGap", rowHeight + rowGap)
-// console.log("rowSpan", rowSpan)
-    // let height = (photo.firstChild.getBoundingClientRect().height > photo.firstChild.getBoundingClientRect().width) ? image.
-    // style.height = "240px" : image.style.height = "112px"
-    // console.log("rowspan", rowSpan);
+
     photo.style.gridRowEnd = "span " + rowSpan;
 
   } return 
 };
 
-// let divisibleAmount = Math.ceil(
-//   (photo.firstChild.getBoundingClientRect().height + rowGap))
-// let rowSpan = divisibleAmount <= 118 ? 118 : divisibleAmount /
-//     (rowHeight + rowGap)
-//nodeValue
 
 
 const GridWrapper = styled.div`
@@ -235,103 +215,120 @@ const GridWrapper = styled.div`
   grid-auto-rows: 1px;
   /* grid-template-columns: repeat(6, minmax(132px, 1.5fr) ); */
   grid-template-columns: repeat(6,minmax(130px, 170px));
-  // grid-template-columns: repeat(auto-fill, minmax(130px,1fr));
-  // grid-auto-columns: 100px;
-  // grid-auto-rows: 180px;
-  // &:hover {
-  //   transform: scale(2,2);
-  // }
+
 `;
+// COMPASS 
+ {/* className={
+          !props.edit
+            ? photo.url !== null
+              ? "image-tile"
+              : "missing-box"
+            : photo.url !== null
+            ? "picture"
+            : "empty-box"
+        } */}
 
-// useEffect(() => {
-//   const grid = gridRef.current;
-//   adjustGridItemsHeight(grid);
-// });
+const PictureFrame = styled.div`
+/* IMAGE TILE AND PICTURE */
+  height: 100px;
+  overflow: hidden;
+  margin: 10px;
+  /* ALLOWS FOR RESIZING WINDOW */
+  max-width: fit-content;
+  /* USE THIS TO KEEP IMAGE CENTER */
+  display: flex;
+  justify-content: center;
+  border-radius: 13px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
 
-// useEffect(() => {
-//   const grid = gridRef.current;
-//   imagesLoaded(grid, () => {
-//     adjustGridItemsHeight(grid);
-//   });
-// });
+  .card-content {
+  display: none;
+  width: fit-content;
+  } 
+  .photo {
+  /* position: relative; */
+  /* overflow: hidden;  */
+}
 
-// setImagesLoaded(true);
-// imagesLoaded(grid).then(() => adjustGridItemsHeight(grid))
+  ${({ edit, url }) => !edit ? url !== null 
+  ? `
+  // IMAGE TILE HOVER 
+  :hover {
+  all: unset;
+  box-shadow: none;
+  transition: transform 0.2s ease;
+  transform: scale(1.2,1.2);
+  border-radius: 0px;
+  /* transition: border-radius 0.2s ease; */
+  /* transform-origin: left bottom; */
+  width: fit-content;
+  display: flex;
+  background-color: rgba(204, 204, 204, 0.75);
+  height: fit-content;
+  max-width: fit-content;
+  padding: 5px;
+  margin: 0px;
+  /* padding-bottom: 5px; */
+  overflow: visible;
+} 
+:hover .card-content {
+display: block;
+max-width: 30%;
+padding-inline: 5px;
+height: fit-content;
+}
+.photo{
+  max-height: 220px;
+  min-width: 150px;
+  /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
+  position: initial;
+ 
+}
+`
+: `
+// MISSING BOX
+  color: gainsboro;
+  flex: 0 0 100px;
+  z-index: -2;
+  position: relative;
 
-// expression that returns a Promise
-// (PromiseExpression).then((value) => {
-// after the promise is resolved
-// uses value
-//})
-// const value = await (PromiseExpression)
-// after the promise is resolved
+  .photo {
+  z-index: -2;
+  position: relative;
+  // border-radius: 13px;
+  // width: 150px; 
+  // height: 100px;
+  // box-shadow: -3px 3px 5px 2px #aaaaaa;
+}`: url !== null ? `
+// PICTURE
+:hover {
+  border-radius: 13px;
+  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+  transform: translate(1px, 1px); 
+}
+.photo{
+  max-height: 220px;
+  width: 150px;
+  /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
+  position: initial;
+}
+}`:`
+// EMPTY BOX
+  color: gainsboro;
+  height: 100px;
 
-// setTimeout(() => adjustGridItemsHeight(grid), 2000)
-// useEffect(() => {
-//   const grid = gridRef.current;
-//   setTimeout(() => adjustGridItemsHeight(grid), 2000)
-//     setImagesLoaded(true);
-//   });
-// console.log(grid)
-
-
-// const Picture = !props.edit
-//   ? props.url !== undefined && photo.url !== null
-//   ? styled.div`
-//   max-width: 135px; 
-//   overflow: hidden;
-//   align-items: center;
-//   justify-content: center;
-//   border-radius: 13px;
-// img {
-//   overflow: hidden;
-//   position: relative;
-//   max-width: 150px; 
-//   max-height: 215px;  
-//   }`
-//   : styled.div`
-//   color: gainsboro;
-//   flex: 0 0 100px;
-//   width: 150px; 
-//   padding: 12px;
-//   height: auto;
-// img {
-//   z-index: -1;
-//   border-radius: 13px;
-//   width: 150px; 
-//   height: 112px;
-//   box-shadow: -3px 3px 5px 2px #aaaaaa;
-//   }`
-// : photo.url !== null
-// ? styled.div`
-// max-width: 135px; 
-// overflow: hidden;
-// align-items: center;
-// justify-content: center;
-// border-radius: 13px;
-// img {
-// overflow: hidden;
-// position: relative;
-// max-width: 150px; 
-// max-height: 215px;  
-// }`
-// : styled.div` 
-//   color: gainsboro;
-//   flex: 0 0 100px;
-//   width: 150px; 
-//   padding: 15px;
-//   height: auto;
-// }
-// img {
-//   border-radius: 13px;
-//   width: 135px; 
-//   height: 100px;
-//   box-shadow: -3px 3px 5px 2px #aaaaaa;
-// }
-// .emptyBox .photo:hover {
-//   border-radius: 13px;
-//   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-
-// }`
-
+  :hover {
+  border-radius: 13px;
+  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+  transform: translate(2px, 2px); 
+}
+  .photo {
+  position: initial;
+  border-radius: 13px;
+  // width: 100%; 
+  width: 150px;
+  height: 100px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;`
+}
+`
 

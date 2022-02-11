@@ -105,21 +105,21 @@ const ButtonContainer = styled.div`
   button {
     position: sticky;
     transition: left 1s ;
-    ${({sideBar})  => sideBar ? `left : 16%` : `left: -10%` };
+    ${({sideBar})  => sideBar ? `left : 16%` : `left: 0%` };
    /* float: ${({sideBar})  => sideBar ? 'right' : 'left'}; */
-   
+  }
 ` 
 
 const Sticky = styled.div`
   position: sticky;
   top: 0;
-  
-} 
+  @media (max-width: 1200px) {
+    .side-bar-open{width: 200px;background-color:coral;}}
+  `  
+ 
 
-}
-@media (max-width: 1200px) {
-  .side-bar-open{width: 200px;background-color:coral;}
-}
-`;
+
+
+
 
 
