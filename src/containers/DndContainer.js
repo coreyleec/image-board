@@ -303,6 +303,7 @@ height: fit-content;
 // PICTURE
 :hover {
   border-radius: 13px;
+  z-index: 3;
   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
   transform: translate(1px, 1px); 
 }
@@ -318,7 +319,9 @@ height: fit-content;
   height: 100px;
 
   :hover {
-  border-radius: 13px;
+    position: initial;
+    border-radius: 13px;
+    z-index: -1;
   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
   transform: translate(2px, 2px); 
 }

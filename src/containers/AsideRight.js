@@ -51,15 +51,26 @@ const Sticky = styled.div`
   @media (max-width: 1200px) {
     all: unset;
     position: fixed;
-    left: 90%;}
+    right: -3px;
+    background-color: coral;
+    border-top-left-radius: 22px;
+    border-bottom-left-radius: 22px;
+  p {
+    display: none;
+  }
+  }
   
   
 `
-
+// @media (max-width: 900px) {
+//   right: -3px;
+// p {
+//   display: none;
+// }  
 const Switch = styled.label`
   display:flex;
   margin-top: 0;
-
+  
  p {
   
   margin-bottom: .70rem;

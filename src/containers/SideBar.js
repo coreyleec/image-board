@@ -51,7 +51,8 @@ const SideBar = (props) => {
   // console.log(props.userLinks)
   return (
     <aside>
-      <Sticky >
+      <Sticky sideBar={sideBar}>
+      <>
       <ButtonContainer sideBar={sideBar}>
       <button 
           // className={sideBar ? "slide-button-right" : "slide-button-left"}
@@ -59,11 +60,10 @@ const SideBar = (props) => {
         >
           {sideBar ? "x" : "open"}
         </button>
-          </ButtonContainer>    
-        <div className={sideBar ? "side-bar-open" : "side-bar-closed"}>
-        
-          {/* <div className={"sidebar-content-closed"}> */}
-          <div className="scrollable" >
+          </ButtonContainer>  
+      
+          <div className={"side-bar"} sideBar={sideBar}>
+          <div className="scrollable" sideBar={sideBar} >
           <div className="break"></div>
             {props.currentUser && props.userFolders &&
             <>
@@ -87,6 +87,7 @@ const SideBar = (props) => {
             {/* <p>image board is a visual tool for image curation, as well as a digital portfolio template</p> */}
           </div>
         </div>
+        </>
       </Sticky>
     </aside>
   );
@@ -100,21 +101,67 @@ const Button = styled.button`
 
 const ButtonContainer = styled.div`
   display: flex;  
-  padding-inline: 5px;
+  /* padding-inline: 5px; */
   padding-top: 5px;
+  @media (max-width: 1200px) {
+    /* padding-inline: 5px; */
+    padding-right: 10px;
+    width: 200px;
+  }
   button {
     position: sticky;
-    transition: left 1s ;
-    ${({sideBar})  => sideBar ? `left : 16%` : `left: 0%` };
+    transition: left 1s;
+    z-index: 5;
+    ${({sideBar})  => sideBar ? `left : 20%` : `left: 0%` };
    /* float: ${({sideBar})  => sideBar ? 'right' : 'left'}; */
   }
+  
 ` 
 
 const Sticky = styled.div`
   position: sticky;
   top: 0;
-  @media (max-width: 1200px) {
-    .side-bar-open{width: 200px;background-color:coral;}}
+  z-index: 1;
+
+  .side-bar {
+    position: relative;
+    transition: right 1s ease;
+    padding-inline: 5px;
+    ${({sideBar})  => sideBar ? `right : 0%` : `right: 100%` };
+
+    @media (max-width: 1200px) {
+    /* all: unset; */
+    position: fixed;
+    height: 50%;
+    top: 0%;
+    width: 200px;
+    transition: left 1s ease;
+    ${({sideBar})  => sideBar ? `left : 0%` : `left: -20%` };
+    /* transition: width 1s ease;
+    ${({sideBar})  => sideBar ? `width: 200px` : `width: 0px` };
+     */
+    background: coral;
+  }
+  scrollable {
+    height: 700px;
+    overflow-y: scroll;
+    display: block;
+    /* padding-inline: 5px; */
+    @media (max-width: 1200px) {
+    /* all: unset; */
+    /* width: 200px; */
+    /* background: coral; */
+  }
+  :-webkit-scrollbar {
+    width: 0px;
+  }
+  }
+  
+  }
+  /* @media (max-width: 1200px) {
+    .side-bar{width: 200px;background-color:coral;}
+  } */
+
   `  
  
 
