@@ -1,28 +1,16 @@
 import React, { useEffect, useState, useRef } from "react";
 import { Modal } from "react-bootstrap";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 
 const ImageModal = (props) => {
   
   let openModal = props.openModal;
   let photo = props.photo;
   let modalToggle = props.modalToggle;
-  const [editMode, setEditMode] = useState(props.edit)
-  useEffect(() => {
-    setEditMode(props.edit)
-  }, [props.edit])
   const [dimensions, setDimensions] = useState()
   const [photoSrc, setPhotoSrc] = useState(photo.url)
   const [photoName, setPhotoName] = useState(props.photo.name)
   const [photoDetails, setPhotoDetails] = useState(props.photo.details)
-  // const [photo, setPhoto] = useState(props.photo)
-  // let photo = file !== null ? file : props.photo
-console.log(photo)
-  const handleLeftKey = (e) => {
-    if (e.key === "ArrowLeft") {
-      console.log("enter press here! ");
-    }
-  };
 
   const [contColor, setContColor] = useState()
   useEffect(() => {
@@ -60,11 +48,11 @@ console.log(photo)
      setPhotoSrc(image)
     let img = new Image()
     img.src = image
-    let height = img.onload = () => {
-      console.log("width " + img.width + "px" + " height" + img.height);
-      const height = img.width !== null && img.width > img.height ? "100px" : "135px"
-      setDimensions(height)
-    } 
+    // let height = img.onload = () => {
+    //   console.log("width " + img.width + "px" + " height" + img.height);
+    // } 
+    const height = img.width !== null && img.width > img.height ? "100px" : "135px"
+    setDimensions(height)
   }
 
 

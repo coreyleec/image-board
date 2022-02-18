@@ -1,32 +1,25 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 const AboutMe = (props) => {
 
   const [aboutMe, setAboutMe] = useState("");
 const submitAboutMe = (e) => {
-    if (e.key == 'Enter' && e.shiftKey == false) {props.updateUserAboutMe(e, aboutMe)
+    if (e.key === 'Enter' && e.shiftKey === false) {props.updateUserAboutMe(e, aboutMe)
       e.currentTarget.blur();}
 }
 
   return (
     <div>
-          {/* <form
-            
-            details={props.userAboutMe}
-            key={props.currentUser.id}
-            onSubmit={(e) => props.updateUserAboutMe(e, userAboutMe)}
-          > */}
             <StyledInput
               type="text" contentEditable={props.edit}
               edit={props.edit}
               className="sidebar-StyledInput"
-              placeholder={(props.edit) && "add a description"}
+              placeholder={props.edit && "add a description"}
               onKeyDown={(e) => submitAboutMe(e)}
               onInput={(e) => setAboutMe(e.currentTarget.textContent)}
             >{props.userAboutMe}</StyledInput>
-          {/* </form> */}
       </div>
     // </div>
   );
@@ -72,9 +65,9 @@ const StyledInput = styled.div`
   }
 `;
 
-const AboutMeP = styled.p`
-    cursor: default;
-    font-size: 1rem;
-    width: 100%;
-    color: black;
-    `
+// const AboutMeP = styled.p`
+//     cursor: default;
+//     font-size: 1rem;
+//     width: 100%;
+//     color: black;
+//     `

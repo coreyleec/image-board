@@ -8,12 +8,12 @@ const [newFolder, setNewFolder] = useState(false)
 const [folderName, setFolderName] = useState("")
 
 const submitNewFolder = (e, folder) => {
-  if (e.key == 'Enter' && e.shiftKey == false) {props.addFolder(e, folderName) 
+  if (e.key === 'Enter' && e.shiftKey === false) {props.addFolder(e, folderName) 
   e.currentTarget.blur();
   setNewFolder(!newFolder)
 }}
 const submitFolderEdit = (e, folder) => {
-  if (e.key == 'Enter' && e.shiftKey == false) {props.updateFolder(e, folderName, folder) 
+  if (e.key === 'Enter' && e.shiftKey === false) {props.updateFolder(e, folderName, folder) 
   e.currentTarget.blur();
 }}
 
@@ -94,24 +94,15 @@ ${({ edit }) => edit && `
 }
 `
 
-const StyledInput = styled.textarea`
-font-size: 2rem;
-padding: 0px;
-float: left;
-line-height: 1.5;
-text-align: left;
-width: 100%;
-color: #757575;
-`
-const StyledP = styled.p`
-font-size: 2rem;
-text-align: left;
-width: 85%;
-color: black;
-margin-bottom: 0px;
-cursor: pointer;
-/* text-decoration: none; */
-}
+// const StyledP = styled.p`
+// font-size: 2rem;
+// text-align: left;
+// width: 85%;
+// color: black;
+// margin-bottom: 0px;
+// cursor: pointer;
+// /* text-decoration: none; */
+// }
 
       /* :nth-child(2) a {
   overflow: hidden;
@@ -127,4 +118,4 @@ cursor: pointer;
   transform: translate3d(0, 0, 0);
 } */
 
-`
+// `

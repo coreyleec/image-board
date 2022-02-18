@@ -52,7 +52,7 @@ main {
 }
 aside:nth-child(1) {
   /* padding-top: 5px; */
-  padding-inline: 5px;
+  /* padding-inline: 5px; */
   grid-area: leftbar;
   background-color: coral;
 }
@@ -98,6 +98,8 @@ footer {
   background-color: gainsboro;
   grid-area: footer;
   min-height: 100px;
+  background-color: coral
+  ;
 }
 
 article {
@@ -108,6 +110,7 @@ article {
 
 button {
   background-color: gainsboro;
+  
 }
 .add-item {
   display:flex;
@@ -273,6 +276,7 @@ input:-webkit-autofill {
   .modal {
     padding:100px;
     position: fixed;
+    z-index: 1;
     top :0;
     left:0;
     right:0;

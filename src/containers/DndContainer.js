@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useLayoutEffect, useState, useRef} from "react";
+import { useEffect, useState, useRef} from "react";
 import styled from "styled-components";
 import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
@@ -93,12 +93,11 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   const display = openModal ? "none" : "inline"
   
   return (
-    <>
+    <article>
       {openModal && (
         <ImageModal
         setPhotos={props.setPhotos}
         addPhoto={props.addPhoto}
-        setOpenModal={props.setOpenModal}
         ImageopenModal={props.ImageopenModal}
           edit={props.edit}
           photo={photo}
@@ -133,11 +132,10 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                       style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : null}
                     >
 
-{/* DELETE PHOTO */}
-                      {/* <div className={!props.edit && photo.url !== null && "img-wrapper"}> */}
-                        
+{/* DELETE PHOTO */}    
                       <img
                         className={"photo"}
+                        // alt="photo"
                         ref={imgRef}
                         key={photo.index}
                         onLoad={() => setImagesLoaded(true)}
@@ -150,7 +148,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                         : null }
                         // loading="lazy"
                         src={
-                          photo.url !== null
+                          !!photo.url
                             ? photo.url
                             : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
                         }
@@ -161,7 +159,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                         <p className={"card-details"} >{photo.details}</p>
                       </div>}
                     </PictureFrame>
-                    {props.enableDelete && photo.url !== null && 
+                    {props.enableDelete && !!photo.url && 
                         <button
                          style={{display}}
                          className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>}
@@ -171,7 +169,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
           </div>
         </AppWrapper>
       </DndProvider>
-    </>
+      </article>
   );
 };
 export default DndContainer;
@@ -250,11 +248,11 @@ const PictureFrame = styled.div`
   /* overflow: hidden;  */
 }
 
-  ${({ edit, url }) => !edit ? url !== null 
+  ${({ edit, url }) => !edit ? !!url 
   ? `
   // IMAGE TILE HOVER 
   :hover {
-  all: unset;
+  // all: unset;
   box-shadow: none;
   transition: transform 0.2s ease;
   transform: scale(1.2,1.2);
@@ -299,7 +297,7 @@ height: fit-content;
   // width: 150px; 
   // height: 100px;
   // box-shadow: -3px 3px 5px 2px #aaaaaa;
-}`: url !== null ? `
+}`: !!url ? `
 // PICTURE
 :hover {
   border-radius: 13px;

@@ -1,27 +1,17 @@
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import styled from "styled-components";
 
 const SideBarLinks = (props) => {
   // ADD LINK STATE TOGGLE
   const [newLink, setNewLink] = useState(false);
-  const newLinkToggle = () => {
-    setNewLink(!newLink);
-  };
   const [linkName, setLinkName] = useState("");
   const changeLinkName = (linkName) => {
     setLinkName(linkName);
   };
   const [linkUrl, setLinkUrl] = useState();
-
-  const submitLink = (e) => {
-    if (e.key == "Enter" && e.shiftKey == false) {
-      props.addLink(e, linkName, linkUrl);
-    }
-  };
-
   const submitUpdatedLink = (e, linkName, linkUrl, link) => {
-    if (e.key == "Enter" && e.shiftKey == false) {
+    if (e.key === "Enter" && e.shiftKey === false) {
       props.updateLink(e, linkName, linkUrl, link);
     }
   };
@@ -43,9 +33,7 @@ const SideBarLinks = (props) => {
         {props.edit && (
           <button
             className="side-bar-add-button"
-            onClick={() => {
-              setNewLink(!newLink);
-            }}
+            onClick={() => {setNewLink(!newLink)}}
           >
             +
           </button>
@@ -77,7 +65,7 @@ const SideBarLinks = (props) => {
         </form>
       )}
       {/* EDIT LINK */}
-      {props.userLinks != undefined && props.userLinks != null && props.edit ? (
+      {props.userLinks !== undefined && props.userLinks !== null && props.edit ? (
         props.userLinks.map((link) => (
           <form
             link={link}

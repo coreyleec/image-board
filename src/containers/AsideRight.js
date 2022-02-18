@@ -1,9 +1,10 @@
 import React from "react";
-import { useEffect, useState } from "react";
+// import { useState } from "react";
 import styled from "styled-components";
 
 const AsideRight = (props) => {
-  const [isToggled, setIsToggled] = useState(false);
+
+  
   const onToggle = () => {
     props.editToggle(!props.edit)
     props.edit === true && 
@@ -12,7 +13,7 @@ const AsideRight = (props) => {
 
   return (
     <aside>
-      {props.currentUser != undefined && props.currentUser.id != null && 
+      {props.currentUser !== undefined && props.currentUser.id !== null && 
             <Sticky>
               <>
             <Switch>
