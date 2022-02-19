@@ -2,13 +2,16 @@ import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
 
+
 const AboutMe = (props) => {
 
   const [aboutMe, setAboutMe] = useState("");
-const submitAboutMe = (e) => {
-    if (e.key === 'Enter' && e.shiftKey === false) {props.updateUserAboutMe(e, aboutMe)
-      e.currentTarget.blur();}
-}
+  const submitAboutMe = (e) => {
+    if (e.key === 'Enter' && e.shiftKey === false) {
+      // props.loggedIn && 
+      props.updateUserAboutMe(e, aboutMe)
+        e.currentTarget.blur();}
+  }
 
   return (
     <div>

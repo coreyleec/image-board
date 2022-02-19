@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, useNavigate } from 'react-router-dom';
-import { browserHistory } from 'react-router';
+import { BrowserRouter as Router, Route, Routes, useNavigate, useLocation } from 'react-router-dom';
+// import { browserHistory } from 'react-router';
 // import styled from "styled-components";
 import Header from "./containers/Header";
 import SideBar from "./containers/SideBar";
@@ -25,15 +25,16 @@ export const App = () => {
     })
     .then((res) => res.json())
     .then((user) => 
-    {console.log("user", user)
-      setUser(user)
-      setUserName(user.user.name);
-      // setUserAboutMe(user.user.details);
-        // setUserLinks(user.links);
-        // setUserFolders(user.user.folders);
+    {
+      // console.log("user", user)
+      // setUser(user)
+      setUserName(user.name);
+      setUserAboutMe(user.details);
+        setUserLinks(user.links);
+        setUserFolders(user.folders);
         // console.log("user folders", user.user.folders)
-        // setFolderShown(user.user.folders[0].id)
-        // setPhotos(user.user.photos)
+        setFolderShown(user.folders[0].id)
+        setPhotos(user.photos)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
   })
@@ -44,10 +45,7 @@ export const App = () => {
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`https://memphis-project-api.herokuapp.com/api/v1`)
   const [dbVersion] = useState(`http://[::1]:3000/api/v1`)
-  // `https://memphis-project-api.herokuapp.com/api/v1`
-  browserHistory.listen( location =>  {
-    console.log("path", location.pathname)
-   });
+
   // OPEN LOGIN
  const [userProfile, setUserProfile] = useState(true);
  
@@ -55,14 +53,14 @@ export const App = () => {
 //  const [userId, setUserId] = useState();
  
  // TRANSITIONS FROM LOGIN TO USER PHOTOS
- const [currentUser, setCurrentUser] = useState("");
-//  const [users, setUsers] = useState([]);
+const [currentUser, setCurrentUser] = useState("");
+const [loggedIn, setLoggedIn] = useState(false)
 //  const [userComments, setUserComments] = useState(null);
 
 // FOLDERS //
 // const [folderDetais, setFolderDetails] = useState();
 
-const [userFolders, setUserFolders] = useState([0]);
+const [userFolders, setUserFolders] = useState();
 const [folderShown, setFolderShown] = useState(null);
 
 // LINKS //
@@ -103,71 +101,7 @@ const editToggle = () => {
 const handleNav = (path) => {
   navigate(path)
 }
-// USER LOGIN
-  const loginSubmit = (e, name, password) => {
-    e.preventDefault();
-    // console.log("name", name, "password", password)
-    fetch(`${dbVersion}/login`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name,
-        password: password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((user) => {
-        // console.log("user", user );
-        setUserProfile(!userProfile);
-        localStorage.token = user.token;
-        // setUserId(user.id);
-        setCurrentUser(user.user);
-        setUserName(user.user.name);
-        // setUserEmail(user.user.email);
-        setUserAboutMe(user.user.details);
-        setUserLinks(user.links);
-        setUserFolders(user.folders);
-        console.log("user folders", user.folders)
-        // setUserComments(user.comments);
-        setFolderShown(user.folders[0].id)
-        setPhotos(user.photos)
-        handleNav("/")
-        
-      });
-    };
 
-
-// USER SIGNUP
-  const signupSubmit = (e, name, email, password) => {
-    e.preventDefault();
-    fetch(`${dbVersion}/users/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: name,
-        email: email,
-        password: password,
-      }),
-    })
-      .then((res) => res.json())
-      .then((user) => {
-        console.log(user);
-        localStorage.token = user.token;
-        setCurrentUser(user.user);
-        setUserLinks(user.links);
-        setUserFolders(user.folders);
-        setPhotos(user.photos);
-        // setUserComments(user.comments);
-        setUserProfile(!userProfile);
-        // history.push("/userprofile")
-      });
-  };
 
 
   // FOLDER FUNCTIONS
@@ -349,7 +283,8 @@ const updateUserAboutMe = (e, aboutMe) => {
 const nameSubmit = (e, newName) => {
   e.preventDefault();
   // console.log(e, newName);
-  fetch(`${dbVersion}/users/${currentUser.id}`, {
+  // !loggedIn ? 
+    fetch(`${dbVersion}/users/${currentUser.id}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -364,7 +299,8 @@ const nameSubmit = (e, newName) => {
     .then((userObj) => {
       console.log(userObj);
       setUserName(userObj.name);
-    });
+    })
+    // : setUserName(newName);
 };
 
       
@@ -455,6 +391,10 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
       <div 
        className="cont">
         <SideBar
+          dbVersion={dbVersion}
+          setUserFolders={setUserFolders}
+          userFolders={userFolders}
+          loggedIn={loggedIn}
           folderShown={folderShown}
           edit={edit}
           enableDelete={enableDelete}
@@ -474,11 +414,13 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
         />
         <Header
           // currentUser={currentUser}
+          loggedIn={loggedIn}
           userName={userName}
           edit={!edit}
           nameSubmit={nameSubmit}
         />
         <AsideRight
+          loggedIn={loggedIn}
           deleteToggle={deleteToggle}
           enableDelete={enableDelete}
           editToggle={editToggle}
@@ -489,6 +431,7 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
           {/* GRID STARTS HERE */}
         <Routes> 
             <Route exact path='/' element={<DndContainer
+              loggedIn={loggedIn}
               navigate={navigate}
               setReorderedPhotos={setReorderedPhotos}
               setPhotos={setPhotos}
@@ -505,9 +448,18 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
               
               <Route exact path='/login' element={
                 <UserLoginSignup 
+                setUserProfile={setUserProfile}
+                userProfile={userProfile}
+                setCurrentUser={setCurrentUser}
+                setUserAboutMe={setUserAboutMe}
+                setUserLinks={setUserLinks}
+                setUserFolders={setUserFolders}
+                setFolderShown={setFolderShown}
+                dbVersion={dbVersion}
+                setPhotos={setPhotos}
+                setUserName={setUserName}
+                  loggedIn={loggedIn}
                   navigate={navigate}
-                  signupSubmit={signupSubmit}
-                  loginSubmit={loginSubmit}
                   setUserProfile={setUserProfile} 
                   useTemplate={useTemplate} 
                   handleCurrentUser={handleCurrentUser} 

@@ -13,9 +13,36 @@ const submitNewFolder = (e, folder) => {
   setNewFolder(!newFolder)
 }}
 const submitFolderEdit = (e, folder) => {
-  if (e.key === 'Enter' && e.shiftKey === false) {props.updateFolder(e, folderName, folder) 
+  if (e.key === 'Enter' && e.shiftKey === false) {updateFolder(e, folderName, folder) 
   e.currentTarget.blur();
 }}
+
+const updateFolder = (e, folderName, folder) => {
+  e.preventDefault();
+  fetch(`${props.dbVersion}/folders/${folder.id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: folderName,
+      // details: folderDetais,
+      // link: folderLink,
+      // user_id: currentUser.id
+    }),
+  })
+    .then((res) => res.json())
+    .then((folderObj) => {
+      console.log(folderObj);
+      props.setUserFolders(
+        props.userFolders.map((folder) => {
+          if (folder.id === folderObj.id) return folderObj;
+          else return folder;
+        })
+      );
+    });
+};
 
     return (
         <div>

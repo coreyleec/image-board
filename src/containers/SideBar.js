@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import  React  from "react";
+import { useLocation } from 'react-router-dom';
 import SideBarFolder from "../components/SideBarFolder";
 import SideBarLinks from "../components/SideBarLinks";
 import AboutMe from "../components/AboutMe";
@@ -10,6 +11,8 @@ import { Nav } from "react-bootstrap";
 const SideBar = (props) => {
   // TOGGLE SIDEBAR
   const [sideBar, setBar] = useState(false);
+  const location = useLocation();
+
   
   // LOGOUT
   const logout = () => {
@@ -29,17 +32,23 @@ const SideBar = (props) => {
           <div className="side-bar" >
           <div className="scrollable">
           <div className="break"></div>
-            {props.currentUser && props.userFolders &&
+            {/* {props.currentUser && props.userFolders && */}
+            {!!props.userFolders && location.pathname === "/" && 
             <>
             <AboutMe {...props} />
             <SideBarFolder {...props} key={props.folder_id} />
             <SideBarLinks {...props} />
             </>}
-            <Nav.Link as={Link} to="/community">
+            {location.pathname !== "/community" &&<Nav.Link as={Link} to="/community">
             <StyledP>
               community
               </StyledP>
-              </Nav.Link>
+              </Nav.Link>}
+            {location.pathname !== "/" && <Nav.Link as={Link} to="/">
+            <StyledP>
+              home base
+              </StyledP>
+              </Nav.Link>}
             <br></br>
             <br></br>
             <br></br>
@@ -54,6 +63,7 @@ const SideBar = (props) => {
             ) : (
               <Button onClick={() => logout()}>log out</Button>
             )}
+            {/* props.setLoggedIn(false) */}
             {/* <p>image board is a visual tool for image curation, as well as a digital portfolio template</p> */}
           </div>
         </div>

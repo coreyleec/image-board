@@ -48,11 +48,11 @@ const ImageModal = (props) => {
      setPhotoSrc(image)
     let img = new Image()
     img.src = image
-    // let height = img.onload = () => {
-    //   console.log("width " + img.width + "px" + " height" + img.height);
-    // } 
-    const height = img.width !== null && img.width > img.height ? "100px" : "135px"
-    setDimensions(height)
+    let height = img.onload = () => {
+      console.log("width " + img.width + "px" + " height" + img.height);
+      const height = img.width !== null && img.width > img.height ? "100px" : "135px"
+      setDimensions(height)
+    } 
   }
 
 

@@ -1,5 +1,6 @@
 import React from "react";
 import { useEffect, useState, useRef} from "react";
+import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
@@ -8,7 +9,7 @@ import DraggableGridItem from "../dnd/DraggableGridItem";
 import ImageModal from "../components/ImageModal";
 
 const DndContainer = (props) => {
-
+  const location = useLocation();
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState()
   
@@ -303,7 +304,7 @@ height: fit-content;
   border-radius: 13px;
   z-index: 3;
   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-  transform: translate(1px, 1px); 
+  transform: translate(1px, -1px); 
 }
 .photo{
   max-height: 220px;
@@ -321,7 +322,7 @@ height: fit-content;
     border-radius: 13px;
     z-index: -1;
   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-  transform: translate(2px, 2px); 
+  transform: translate(2px, -2px); 
 }
   .photo {
   position: initial;

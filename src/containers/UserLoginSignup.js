@@ -1,5 +1,6 @@
 import { useState} from "react";
 import React from "react";
+import { useNavigate } from 'react-router-dom';
 // import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
@@ -19,6 +20,85 @@ const [userLogin, setUserLogin] = useState(false);
     setUserLogin(false);
   };
 
+
+  let navigate = useNavigate();
+// USER LOGIN
+const loginSubmit = (e, name, password) => {
+  e.preventDefault();
+  // console.log("name", name, "password", password)
+  fetch(`${props.dbVersion}/login`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: name,
+      password: password,
+    }),
+  })
+  .catch(e => alert.error(e))
+    .then((res) => res.json())
+    .then((user) => {
+      console.log("user", user );
+      props.setUserProfile(!props.userProfile);
+      localStorage.token = user.token;
+      console.log("token", localStorage.token)
+      // setUserId(user.id);
+      props.setCurrentUser(user.user);
+      props.setUserName(user.user.name);
+      // setUserEmail(user.user.email);
+      props.setUserAboutMe(user.user.details);
+      props.setUserLinks(user.links);
+      props.setUserFolders(user.folders);
+      console.log("user folders", user.folders)
+      // setUserComments(user.comments);
+      props.setFolderShown(user.folders[0].id)
+      props.setPhotos(user.photos)
+      // setLoggedIn(true)
+      navigate("/")
+      
+    });
+  };
+
+console.log("token", localStorage.token)
+// USER SIGNUP
+const signupSubmit = (e, name, email, password) => {
+  e.preventDefault();
+  fetch(`${props.dbVersion}/users/`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: name,
+      email: email,
+      password: password,
+    }),
+  })
+    .then((res) => res.json())
+    .then((user) => {
+      console.log("user", user);
+      props.setUserProfile(!props.userProfile);
+      localStorage.token = user.token;
+      console.log("token", localStorage.token)
+      // setUserId(user.id);
+      props.setCurrentUser(user.user);
+      props.setUserName(user.user.name);
+      // setUserEmail(user.user.email);
+      props.setUserAboutMe(user.user.details);
+      props.setUserLinks(user.links);
+      props.setUserFolders(user.folders);
+      console.log("user folders", user.folders)
+      // setUserComments(user.comments);
+      props.setFolderShown(user.folders[0].id)
+      props.setPhotos(user.photos)        
+      navigate("/")
+      // history.push("/userprofile")
+    });
+};
+
   // const handleChange = e => {
   //     [e.target.name]: [e.target.value]
   // }
@@ -30,7 +110,7 @@ const [userLogin, setUserLogin] = useState(false);
         <button onClick={() => login()}>login</button>
       </ButtonFlex>
       {userLogin ? (
-        <form onSubmit={e => props.loginSubmit(e, name, password)}>
+        <form onSubmit={e => loginSubmit(e, name, password)}>
           <input
             type="text"
             placeholder="name"
@@ -47,7 +127,7 @@ const [userLogin, setUserLogin] = useState(false);
         </form>
       ) : null}
       {userSignUp ? (
-        <form onSubmit={props.signupSubmit(e => e, name, email,  password)}>
+        <form onSubmit={e => signupSubmit(e, name, email,  password)}>
           {/* <button onClick={() => setUserSignUp(!userSignUp)} className="closeSidebar">X</button> */}
           {/* <p>sign up</p> */}
           <input

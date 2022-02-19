@@ -1,9 +1,12 @@
 import React from 'react'
 import {useEffect, useState} from 'react'
+import { useLocation } from 'react-router-dom';
 import styled from 'styled-components'
 
 
 const CommunityPage = () => {
+    const location = useLocation();
+    console.log("path", location.pathname);
 const [users, setUsers] = useState()
 const [photos, setPhotos] = useState()
 const [folders, setFolders] = useState()
@@ -93,17 +96,17 @@ img {
 }
 `
 const UserBox = styled.div`
-box-shadow: -3px 3px 5px 2px #aaaaaa;
-border-radius: 13px;
+/* box-shadow: -3px 3px 5px 2px #aaaaaa;
+border-radius: 13px; */
 margin-block: 10px;
 padding: 5px;
 height: 100px;
 :hover {
     position: initial;
-    border-radius: 13px;
+    /* border-radius: 13px; */
     z-index: -1;
-  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-  transform: translate(2px, 2px); 
+  box-shadow: -7px 7px 10px 4px #aaaaaa;
+  transform: translate(move); 
   }}
 `
 const UsersCont = styled.div`

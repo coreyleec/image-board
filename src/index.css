@@ -95,7 +95,7 @@ aside:nth-child(3) {
 }
 
 footer {
-  background-color: gainsboro;
+  /* background-color: gainsboro; */
   grid-area: footer;
   min-height: 100px;
   background-color: coral

@@ -1,10 +1,11 @@
 import { useState } from 'react'
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
 
 const Header = (props) => {
-
+    const location = useLocation();
     
     const [newUserName, setNewUserName] = useState()
 
@@ -16,14 +17,16 @@ const Header = (props) => {
                     // name={props.userName} 
                     onSubmit={(e) => props.nameSubmit(e, newUserName)}>
                         <NameInput
-                        type="text" 
+                        type="name"
+                        name="name" 
+                        autocomplete="name"
                         defaultValue={props.userName} 
                         className="name-form" 
                             // value={currentUser.name}
                             onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader >{props.userName === "" ? "ImageBoard" : props.userName }</TitleHeader> 
+                : <TitleHeader >{location.pathname !== "/" ? "ImageBoard" : props.userName }</TitleHeader> 
                     }
             </header>
         )

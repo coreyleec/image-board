@@ -1,12 +1,13 @@
 import React from "react";
 // import { useState } from "react";
+import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
 const AsideRight = (props) => {
-
-  
+  const location = useLocation();
   const onToggle = () => {
     props.editToggle(!props.edit)
+    // props.edit && props.loggedIn && 
     props.edit === true && 
     props.reorderSubmit()
   };
@@ -16,7 +17,7 @@ const AsideRight = (props) => {
       {props.currentUser !== undefined && props.currentUser.id !== null && 
             <Sticky>
               <>
-            <Switch>
+            {location.pathname === "/" && <Switch>
              <label className="toggle-switch">
             <input type="checkbox" checked={props.edit}
              onChange={onToggle}
@@ -24,7 +25,7 @@ const AsideRight = (props) => {
             <span className="switch" />
             </label>
             <p>edit</p>
-            </Switch>
+            </Switch>}
             
             {props.edit === true 
             ? <Switch>
