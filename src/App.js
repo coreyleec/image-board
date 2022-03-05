@@ -16,29 +16,8 @@ export const App = () => {
   require("events").EventEmitter.defaultMaxListeners = 20;
   const [user, setUser] = useState()
   let navigate = useNavigate();
-  useEffect(() => {
-    fetch("http://[::1]:3000/api/v1/landing_page/", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-    })
-    .then((res) => res.json())
-    .then((user) => 
-    {
-      // console.log("user", user)
-      // setUser(user)
-      setUserName(user.name);
-      setUserAboutMe(user.details);
-        setUserLinks(user.links);
-        setUserFolders(user.folders);
-        // console.log("user folders", user.user.folders)
-        setFolderShown(user.folders[0].id)
-        setPhotos(user.photos)
-        // setUserComments(user.comments);
-        // setUserEmail(user.user.email);
-  })
-}, [])
+  const location = useLocation();
+ 
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
@@ -54,6 +33,9 @@ export const App = () => {
  
  // TRANSITIONS FROM LOGIN TO USER PHOTOS
 const [currentUser, setCurrentUser] = useState("");
+const [currentUserId, setCurrentUserId] = useState("");
+const [userId, setUserId] = useState("");
+console.log("currentUser", currentUser)
 const [loggedIn, setLoggedIn] = useState(false)
 //  const [userComments, setUserComments] = useState(null);
 
@@ -102,13 +84,69 @@ const handleNav = (path) => {
   navigate(path)
 }
 
+ useEffect(() => {
+  location.pathname === "/home" && !!currentUserId && fetch(`http://[::1]:3000/api/v1/${currentUserId}/`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((user) => 
+    {
+      console.log("user", user)
+      setUserId(user.id)
+      setUserName(user.name);
+      setUserAboutMe(user.details);
+        setUserLinks(user.links);
+        setUserFolders(user.folders);
+        // console.log("user folders", user.user.folders)
+        setFolderShown(user.folders[0].id)
+        // setPhotos(user.folders[0].photos)
+        // setUserComments(user.comments);
+        // setUserEmail(user.user.email);
+  })
+}, [ ])
+
+ useEffect(() => {
+  location.pathname === "/" && !currentUserId && fetch("http://[::1]:3000/api/v1/landing_page/", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((user) => 
+    {
+      console.log("user", user)
+      setUserId(user.id)
+      setUserName(user.name);
+      setUserAboutMe(user.details);
+        setUserLinks(user.links);
+        setUserFolders(user.folders);
+        // console.log("user folders", user.user.folders)
+        setFolderShown(user.folders[0].id)
+        // setPhotos(user.folders[0].photos)
+        // setUserComments(user.comments);
+        // setUserEmail(user.user.email);
+  })
+}, [ ])
 
 
   // FOLDER FUNCTIONS
 
+
+  const [folderPrivacy, setFolderPrivacy] = useState()
+  useEffect(() => {
+    if(!!folderShown) {const folder = userFolders.filter(folder => folder.id === folderShown)[0]
+    const privacy = folder.public
+    setPhotos(folder.photos) && setFolderPrivacy(folder.public)}
+    // !!props.photos && setPhotos([...props.photos])
+  }, [folderShown])
+
   const updateFolder = (e, folderName, folder) => {
     e.preventDefault();
-    fetch(`${dbVersion}/folders/${folder.id}`, {
+    fetch(`http://[::1]:3000/api/v1/folders/${folder.id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -133,9 +171,36 @@ const handleNav = (path) => {
       });
   };
 
+  const updateFolderPravacy = (e) => {
+    e.preventDefault();
+    fetch(`http://[::1]:3000/api/v1/folders/${folderShown}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        public: !folderPrivacy,
+        // details: folderDetais,
+        // link: folderLink,
+        // user_id: currentUser.id
+      }),
+    })
+      .then((res) => res.json())
+      .then((folderObj) => {
+        console.log(folderObj);
+        setUserFolders(
+          userFolders.map((folder) => {
+            if (folder.id === folderObj.id) return folderObj;
+            else return folder;
+          })
+        );
+      });
+  };
+
   const addFolder = (e, folderName) => {
     e.preventDefault();
-    fetch(`${dbVersion}/folders/`, {
+    fetch(`http://[::1]:3000/api/v1/folders/`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -152,8 +217,8 @@ const handleNav = (path) => {
       .then((folderObj) => {
         console.log("folder", folderObj, "folder photos", folderObj.photos);
         setUserFolders([...userFolders, folderObj]);
-        let newArray = [...photos, folderObj.photos]
-        setPhotos(newArray.flat())
+        // let newArray = [...photos, folderObj.photos]
+        // setPhotos(newArray.flat())
         setFolderShown(folderObj.id)
       });
   };
@@ -180,7 +245,7 @@ const handleNav = (path) => {
         // console.log("previous folder", previousFolder)
         // THERE'S AN ISSUE WITH THE FETCH. RECIEVING ERROR: Uncaught (in promise) SyntaxError: Unexpected end of JSON input
         // SO FUNCTION IS OPTIMISTIC UNTIL RESOLVED
-      fetch(`${dbVersion}/folders/${folderObj.id}/`, {method: "DELETE",
+      fetch(`http://[::1]:3000/api/v1/folders/${folderObj.id}/`, {method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
     })
@@ -195,7 +260,7 @@ const addLink = (e, linkName, linkUrl) => {
   console.log(linkName)
   console.log(linkUrl)
 
-  fetch(`${dbVersion}/links/`, {
+  fetch(`http://[::1]:3000/api/v1/links/`, {
       method: 'POST'
       , headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -221,19 +286,19 @@ const addLink = (e, linkName, linkUrl) => {
     let updatedLinksArr = userLinks.filter((link) => link.id !== linkObj.id);
     setUserLinks(updatedLinksArr)
     
-    fetch(`${dbVersion}/links/${linkObj.id}/`, { method: "DELETE" })
+    fetch(`http://[::1]:3000/api/v1/links/${linkObj.id}/`, { method: "DELETE" })
       .then((resp) => resp.json())
       .then(() => console.log("updatedLinksArr", updatedLinksArr, "linkObj", linkObj))
     };
 
 
-      const updateLink = (e, linkName, linkUrl, link) => {
+  const updateLink = (e, linkName, linkUrl, link) => {
         e.preventDefault();
         console.log(e);
         console.log(linkUrl);
         console.log(link.id);
         console.log(linkName);
-        fetch(`${dbVersion}/links/${link.id}`, {
+        fetch(`http://[::1]:3000/api/v1/links/${link.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${localStorage.token}`,
@@ -263,7 +328,7 @@ const addLink = (e, linkName, linkUrl) => {
 const updateUserAboutMe = (e, aboutMe) => {
   e.preventDefault();
   console.log("about me", aboutMe)
-  fetch(`${dbVersion}/users/${currentUser.id}`, {
+  fetch(`http://[::1]:3000/api/v1/users/${currentUser.id}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -284,7 +349,7 @@ const nameSubmit = (e, newName) => {
   e.preventDefault();
   // console.log(e, newName);
   // !loggedIn ? 
-    fetch(`${dbVersion}/users/${currentUser.id}`, {
+    fetch(`http://[::1]:3000/api/v1/users/${currentUser.id}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -306,39 +371,13 @@ const nameSubmit = (e, newName) => {
       
 // PHOTO FUNCTIONS
 
-const addPhoto = (e, formData, dimensions, photoName, photoDetails, photo) => {
-  e.preventDefault();
 
-  const data = new FormData(formData)
-    dimensions !== undefined && dimensions !== null && data.append('dimensions', dimensions)        
-    photoName !== undefined && photoName !== null && data.append('name', photoName)
-    photoDetails !== undefined && photoDetails !== null && data.append('details', photoDetails)
-
-  for(let [key, value] of data){console.log("data", `${key}:${value}`)}
-
-fetch(`${dbVersion}/photos/${photo.id}`, {
-method: "PUT",
-headers: {
-  Authorization: `Bearer ${localStorage.token}`,
-  "Accept": "application/json",},
-body: data
-})
-// .catch(e => console.error(e))
-.then((res) => res.json())
-.then((photoObj) => {
-  console.log("photoObj",photoObj);
-  setPhotos(photos.map((photo) => {
-      if (photo.id === photoObj.id) return photoObj;
-      else return photo;})
-    );
-  });
-    };
 
 
 const deletePhoto = (photo) => {
 
   console.log(photo);
-  fetch(`${dbVersion}/photos/${photo.id}/`, {
+  fetch(`http://[::1]:3000/api/v1/photos/${photo.id}/`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -372,9 +411,9 @@ const reorderSubmit = () => {
  console.log("folderShown", folderShown)
 //  FOR EACH PHOTO UPDATE THE INDEX VALUE
 reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
-    fetch(`${dbVersion}/photos/${photo.id}/`, {
+    fetch(`http://[::1]:3000/api/v1/photos/${photo.id}/`, {
       method: "PATCH",
-      headers: { "Content-Type": "application/json" },
+      headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         index: photo.index,
       }),
@@ -382,6 +421,7 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
   )
   reorderedPhotos !== undefined &&  setReorderedPhotos(undefined)
   };
+// const pholder = userFolders !== undefined && userFolders.filter(folder => folder.id === folderShown)[0]
 
   /// MODAL
   const [openModal, setOpenModal] = useState(false);
@@ -408,6 +448,8 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
           userLinks={userLinks}
           updateLink={updateLink}
           currentUser={currentUser}
+          userId={userId}
+          currentUserId={currentUserId}
           updateUserAboutMe={updateUserAboutMe}
           userAboutMe={userAboutMe}
           useTemplate={useTemplate}
@@ -420,36 +462,70 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
           nameSubmit={nameSubmit}
         />
         <AsideRight
+          updateFolderPravacy={updateFolderPravacy}
+          folderPrivacy={folderPrivacy}
           loggedIn={loggedIn}
           deleteToggle={deleteToggle}
           enableDelete={enableDelete}
           editToggle={editToggle}
-          currentUser={currentUser} edit={edit}
+          // currentUser={currentUser} 
+          edit={edit}
           reorderSubmit={reorderSubmit}
+          userId={userId}
+          currentUserId={currentUserId}
         />
         <main>
           {/* GRID STARTS HERE */}
         <Routes> 
-            <Route exact path='/' element={<DndContainer
+          <Route exact path={"/home"} element={<DndContainer
               loggedIn={loggedIn}
               navigate={navigate}
               setReorderedPhotos={setReorderedPhotos}
               setPhotos={setPhotos}
-              addPhoto={addPhoto}
+              // addPhoto={addPhoto}
               openModal={openModal}
               setOpenModal={setOpenModal}
               deletePhoto={deletePhoto}
               enableDelete={enableDelete}
               edit={edit}
-              photos={photos.filter((photo) => photo.folder_id === folderShown)}
+              photos={!!photos && photos}
               reorderSubmit={reorderSubmit}
               folderShown={folderShown}
-              />} />
-              
+              />} />    
+          <Route exact path={"/"} element={<DndContainer
+              loggedIn={loggedIn}
+              navigate={navigate}
+              setReorderedPhotos={setReorderedPhotos}
+              setPhotos={setPhotos}
+              // addPhoto={addPhoto}
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              deletePhoto={deletePhoto}
+              enableDelete={enableDelete}
+              edit={edit}
+              photos={!!photos && photos}
+              reorderSubmit={reorderSubmit}
+              folderShown={folderShown}
+              />} />    
+          <Route exact path={"/user"} element={<DndContainer
+              loggedIn={loggedIn}
+              navigate={navigate}
+              setReorderedPhotos={setReorderedPhotos}
+              setPhotos={setPhotos}
+              // addPhoto={addPhoto}
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              deletePhoto={deletePhoto}
+              enableDelete={enableDelete}
+              edit={edit}
+              photos={!!photos && photos}
+              reorderSubmit={reorderSubmit}
+              folderShown={folderShown}
+              />} />    
               <Route exact path='/login' element={
                 <UserLoginSignup 
-                setUserProfile={setUserProfile}
                 userProfile={userProfile}
+                setUserProfile={setUserProfile}
                 setCurrentUser={setCurrentUser}
                 setUserAboutMe={setUserAboutMe}
                 setUserLinks={setUserLinks}
@@ -458,16 +534,26 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
                 dbVersion={dbVersion}
                 setPhotos={setPhotos}
                 setUserName={setUserName}
-                  loggedIn={loggedIn}
+                  // loggedIn={loggedIn}
                   navigate={navigate}
                   setUserProfile={setUserProfile} 
                   useTemplate={useTemplate} 
                   handleCurrentUser={handleCurrentUser} 
                   currentUser={currentUser} 
-                  useTemplate={useTemplate} 
+                  setCurrentUserId={setCurrentUserId}
+                  // useTemplate={useTemplate} 
                 />}/>
 
-                <Route exact path='/community' element={<CommunityPage />}/>
+                <Route exact path="/community" element={<CommunityPage  
+                setUserName={setUserName}
+                setUserAboutMe={setUserAboutMe}
+                setUserFolders={setUserFolders}
+                setPhotos={setPhotos}
+                setUserLinks={setUserLinks}
+                setFolderShown={setFolderShown}
+                setUserId={setUserId}
+                dbVersion={dbVersion}
+                />}/>
                 
                 
               

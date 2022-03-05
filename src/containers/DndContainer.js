@@ -12,9 +12,9 @@ const DndContainer = (props) => {
   const location = useLocation();
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState()
-  
+  console.log("folder photos", !!props.photos && props.photos)
   useEffect(() => {
-    setPhotos([...props.photos])
+    !!props.photos && setPhotos([...props.photos])
   }, [props.photos])
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
@@ -48,6 +48,34 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
     console.log("helloooo")
   }, [photos]);
   
+  const addPhoto = (e, formData, dimensions, photoName, photoDetails, photo) => {
+    e.preventDefault();
+  
+    const data = new FormData(formData)
+      dimensions !== undefined && dimensions !== null && data.append('dimensions', dimensions)        
+      photoName !== undefined && photoName !== null && data.append('name', photoName)
+      photoDetails !== undefined && photoDetails !== null && data.append('details', photoDetails)
+  
+    for(let [key, value] of data){console.log("data", `${key}:${value}`)}
+  
+  fetch(`http://[::1]:3000/api/v1/photos/${photo.id}`, {
+  method: "PUT",
+  headers: {
+    Authorization: `Bearer ${localStorage.token}`,
+    "Accept": "application/json",},
+  body: data
+  })
+  // .catch(e => console.error(e))
+  .then((res) => res.json())
+  .then((photoObj) => {
+    console.log("photoObj",photoObj);
+    setPhotos(photos.map((photo) => {
+        if (photo.id === photoObj.id) return photoObj;
+        else return photo;})
+      );
+    });
+      };
+
   const [photo, setPhoto] = useState();
   const [openModal, setOpenModal] = useState(false);
   const modalToggle = (photo) => {
@@ -90,7 +118,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
 
 // const [cursor, setCursor] = useState("default")
 
-  const opacity = imagesLoaded ? 1 : 0
+  // const opacity = imagesLoaded ? 1 : 0
   const display = openModal ? "none" : "inline"
   
   return (
@@ -98,7 +126,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
       {openModal && (
         <ImageModal
         setPhotos={props.setPhotos}
-        addPhoto={props.addPhoto}
+        addPhoto={addPhoto}
         ImageopenModal={props.ImageopenModal}
           edit={props.edit}
           photo={photo}
@@ -118,8 +146,10 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
             <GridWrapper
               ref={gridRef}
               // style={{ opacity: imagesLoaded ? 1 : 0 }}
-              style={{ opacity }}>
+              // style={{ opacity }}
+              >
               {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
+              style={(photo.url === null) && {'z-index': '-1'}} style={{'z-index': '-1'}}
                     key={photo.id}
                     photo={photo}
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}
@@ -130,6 +160,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                     <PictureFrame
                       edit={props.edit}
                       url={photo.url}
+                      style={{'z-index': '-1'}}
                       style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : null}
                     >
 
@@ -199,6 +230,7 @@ const adjustGridItemsHeight = (grid, photo) => {
         (rowHeight + rowGap)) <= 40 ? 40 : 80
 
     photo.style.gridRowEnd = "span " + rowSpan;
+    // photo.style.opacity = '0'
 
   } return 
 };
@@ -219,12 +251,14 @@ const GridWrapper = styled.div`
 // COMPASS 
  {/* className={
           !props.edit
+          EDIT = TRUE
             ? photo.url !== null
-              ? "image-tile"
-              : "missing-box"
+              ? "image-tile" // HAS IMAGE URL
+              : "missing-box" // HAS NO IMAGE URL
+          EDIT = FALSE
             : photo.url !== null
-            ? "picture"
-            : "empty-box"
+            ? "picture"  // HAS IMAGE URL
+            : "empty-box" // HAS NO IMAGE URL
         } */}
 
 const PictureFrame = styled.div`
@@ -239,7 +273,7 @@ const PictureFrame = styled.div`
   justify-content: center;
   border-radius: 13px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
-
+  transition: all .2s ease-in-out;
   .card-content {
   display: none;
   width: fit-content;
@@ -248,23 +282,28 @@ const PictureFrame = styled.div`
   /* position: relative; */
   /* overflow: hidden;  */
 }
-
+/* transform-origin: left bottom; */
   ${({ edit, url }) => !edit ? !!url 
   ? `
   // IMAGE TILE HOVER 
   :hover {
+    // transition: all .2s ease;
   // all: unset;
+  // position: absolute; 
+  left: 50%; top: 50%;
   box-shadow: none;
-  transition: transform 0.2s ease;
+  // -webkit-transition: transform 1s ease;
+  // transition: border-radius 1s ease; 
   transform: scale(1.2,1.2);
+  transform-origin: center center;
+
   border-radius: 0px;
-  /* transition: border-radius 0.2s ease; */
-  /* transform-origin: left bottom; */
   width: fit-content;
-  display: flex;
+  // display: flex;
   background-color: rgba(204, 204, 204, 0.75);
+  backdrop-filter: blur(6px);
   height: fit-content;
-  max-width: fit-content;
+  // max-width: fit-content;
   padding: 5px;
   margin: 0px;
   /* padding-bottom: 5px; */
@@ -279,6 +318,7 @@ height: fit-content;
 .photo{
   max-height: 220px;
   min-width: 150px;
+  
   /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
   position: initial;
  
@@ -300,6 +340,7 @@ height: fit-content;
   // box-shadow: -3px 3px 5px 2px #aaaaaa;
 }`: !!url ? `
 // PICTURE
+
 :hover {
   border-radius: 13px;
   z-index: 3;
@@ -307,8 +348,9 @@ height: fit-content;
   transform: translate(1px, -1px); 
 }
 .photo{
+  min-width: 150px;
   max-height: 220px;
-  width: 150px;
+  // width: 150px;
   /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
   position: initial;
 }
@@ -316,11 +358,10 @@ height: fit-content;
 // EMPTY BOX
   color: gainsboro;
   height: 100px;
-
+  // z-index: -1;
   :hover {
     position: initial;
     border-radius: 13px;
-    z-index: -1;
   box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
   transform: translate(2px, -2px); 
 }

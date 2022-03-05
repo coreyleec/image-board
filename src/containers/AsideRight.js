@@ -14,10 +14,20 @@ const AsideRight = (props) => {
 
   return (
     <aside>
-      {props.currentUser !== undefined && props.currentUser.id !== null && 
+      {(location.pathname === "/") && (props.currentUserId === "" || props.currentUserId === props.userId) && 
             <Sticky>
               <>
-            {location.pathname === "/" && <Switch>
+           {!!props.folderPrivacy && <Switch>
+             <label className="toggle-switch">
+            <input type="checkbox" 
+            // checked={props.folder.public}
+            //  onChange={}
+             />
+            <span className="switch" />
+            </label>
+            <p>public</p>
+            </Switch>}
+            <Switch>
              <label className="toggle-switch">
             <input type="checkbox" checked={props.edit}
              onChange={onToggle}
@@ -25,7 +35,7 @@ const AsideRight = (props) => {
             <span className="switch" />
             </label>
             <p>edit</p>
-            </Switch>}
+            </Switch>
             
             {props.edit === true 
             ? <Switch>
@@ -50,8 +60,19 @@ export default AsideRight;
 const Sticky = styled.div`
   position: sticky;
   top: 0;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  transition: all 2.5s;
+  /* transition: border-top-left-radius border-top-left-radius 2s ease-in-out; */
+  /* transition: border-top-left-radius 2s ease-in-out;
+  transition: border-bottom-left-radius 2s ease-in-out;
+  transition: background-color 3s; */
   @media (max-width: 1200px) {
     all: unset;
+    transition: all 2.5s;
+    /* transition: background-color 3s;
+    transition: border-top-left-radius 2s ease-in-out;
+    transition: border-bottom-left-radius 2s ease-in-out; */
     position: fixed;
     right: -3px;
     background-color: coral;

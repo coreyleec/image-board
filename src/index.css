@@ -33,14 +33,25 @@ body::-webkit-scrollbar {
   "leftbar header header"
   "leftbar main rightbar"
   "leftbar footer rightbar";
-  
 
+}
+@media only screen and (max-width: 1200px) {
+  
+  .cont {
+    grid-template-columns:  0% 1fr 0%;
+  }
+  
 }
 
 header {
   grid-area: header;
   min-height: 150px;
-  background-color: coral;
+  background-color: gainsboro;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 6px;
+  border-left-width: 0px;
+  border-style: solid;
 }
 
 main {
@@ -54,32 +65,17 @@ aside:nth-child(1) {
   /* padding-top: 5px; */
   /* padding-inline: 5px; */
   grid-area: leftbar;
-  background-color: coral;
-}
-
-
-@media (max-width: 1200px) {
-  /* aside{
-    transition: none !important;
-  } */
-  .cont {
-    grid-template-columns:  0 1fr 0;
-    /* transition: 1s; */
-  }
-
-
-  
-  .side-bar-closed .scrollable{
-    transition: none !important;
-    padding-inline: 0px;
-  }
-  .scrollable{
-    /* z-index: .5; */
-  }
-  /* aside {display:none;} */
-  
+  background-color: gainsboro;
+  border-top-width: 0px;
+  border-right-width: 6px;
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+  border-style: solid;
   
 }
+
+
+
 /* aside:nth-child(1) input {
 font-size: 2rem;
     text-align: left;
@@ -90,7 +86,12 @@ font-size: 2rem;
 
 aside:nth-child(3) {
   grid-area: rightbar;
-  background-color: coral;
+  background-color: gainsboro;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 6px;
+  border-style: solid;
   /* overflow: hidden; */
 }
 
@@ -98,13 +99,17 @@ footer {
   /* background-color: gainsboro; */
   grid-area: footer;
   min-height: 100px;
-  background-color: coral
-  ;
+  background-color: gainsboro;
+  border-top-width: 6px;
+  border-right-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+  /* border-style: solid; */
 }
 
 article {
   /* flex: 1 0 auto; */
-  padding-top: 80px;
+  padding-block: 80px;
   padding-inline: max(10%);
 }
 
@@ -247,8 +252,8 @@ input:-webkit-autofill {
 
   .nav-bar-header{
     font-style: italic;
-  -moz-text-fill-color:coral;
-  -webkit-text-fill-color: coral;
+  -moz-text-fill-color:gainsboro;
+  -webkit-text-fill-color: gainsboro;
   -moz-text-stroke-color: black;
   -webkit-text-stroke-color: black;
   -moz-text-stroke-width: 1.5px;  

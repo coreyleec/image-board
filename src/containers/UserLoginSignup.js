@@ -26,7 +26,7 @@ const [userLogin, setUserLogin] = useState(false);
 const loginSubmit = (e, name, password) => {
   e.preventDefault();
   // console.log("name", name, "password", password)
-  fetch(`${props.dbVersion}/login`, {
+  fetch(`http://[::1]:3000/api/v1/login`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -37,26 +37,28 @@ const loginSubmit = (e, name, password) => {
       password: password,
     }),
   })
-  .catch(e => alert.error(e))
+  // .catch(e => console.log(e))
     .then((res) => res.json())
     .then((user) => {
-      console.log("user", user );
+      console.log("user login", user );
       props.setUserProfile(!props.userProfile);
-      localStorage.token = user.token;
+      localStorage.token = user.user.token;
       console.log("token", localStorage.token)
       // setUserId(user.id);
+      props.setCurrentUserId(user.user.id)
       props.setCurrentUser(user.user);
       props.setUserName(user.user.name);
-      // setUserEmail(user.user.email);
       props.setUserAboutMe(user.user.details);
-      props.setUserLinks(user.links);
-      props.setUserFolders(user.folders);
-      console.log("user folders", user.folders)
+      props.setUserFolders(user.user.folders);
+      console.log("user.folders", user.user.folders)
+      props.setFolderShown(user.user.folders[0].id)
+      // props.setPhotos(user.photos)
+      props.setUserLinks(user.user.links);
+      // setUserEmail(user.user.email);
+      console.log("user folders", user.user.folders)
       // setUserComments(user.comments);
-      props.setFolderShown(user.folders[0].id)
-      props.setPhotos(user.photos)
       // setLoggedIn(true)
-      navigate("/")
+      navigate("/home")
       
     });
   };
@@ -65,7 +67,7 @@ console.log("token", localStorage.token)
 // USER SIGNUP
 const signupSubmit = (e, name, email, password) => {
   e.preventDefault();
-  fetch(`${props.dbVersion}/users/`, {
+  fetch(`http://[::1]:3000/api/v1/users/`, {
     method: "POST",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -79,22 +81,25 @@ const signupSubmit = (e, name, email, password) => {
   })
     .then((res) => res.json())
     .then((user) => {
-      console.log("user", user);
+      console.log("user login", user );
       props.setUserProfile(!props.userProfile);
-      localStorage.token = user.token;
+      localStorage.token = user.user.token;
       console.log("token", localStorage.token)
       // setUserId(user.id);
+      props.setCurrentUserId(user.user.id)
       props.setCurrentUser(user.user);
       props.setUserName(user.user.name);
-      // setUserEmail(user.user.email);
       props.setUserAboutMe(user.user.details);
-      props.setUserLinks(user.links);
-      props.setUserFolders(user.folders);
-      console.log("user folders", user.folders)
+      props.setUserFolders(user.user.folders);
+      console.log("user.folders", user.user.folders)
+      props.setFolderShown(user.user.folders[0].id)
+      // props.setPhotos(user.photos)
+      props.setUserLinks(user.user.links);
+      // setUserEmail(user.user.email);
+      console.log("user folders", user.user.folders)
       // setUserComments(user.comments);
-      props.setFolderShown(user.folders[0].id)
-      props.setPhotos(user.photos)        
-      navigate("/")
+      // setLoggedIn(true)
+      navigate("/home")
       // history.push("/userprofile")
     });
 };

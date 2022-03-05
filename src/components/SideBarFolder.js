@@ -19,7 +19,7 @@ const submitFolderEdit = (e, folder) => {
 
 const updateFolder = (e, folderName, folder) => {
   e.preventDefault();
-  fetch(`${props.dbVersion}/folders/${folder.id}`, {
+  fetch(`http://[::1]:3000/api/v1/folders/${folder.id}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -44,6 +44,7 @@ const updateFolder = (e, folderName, folder) => {
     });
 };
 
+
     return (
         <div>
 {/* FOLDER TOGGLE */}
@@ -57,13 +58,14 @@ const updateFolder = (e, folderName, folder) => {
                 <div>
             {newFolder && props.edit && 
                         <StyledEditableDiv 
-                        autoFocus="autofocus"
+                        id={"folderInput"}
                         type="text" edit={props.edit}
                         contentEditable={newFolder} 
                         placeholder={"add folder name"}
                         style={{"cursor": props.edit ? "text" : "default"}}
                         onKeyDown={(e) => submitNewFolder(e)}
-                        onInput={(e) => setFolderName(e.currentTarget.textContent)}></StyledEditableDiv> }
+                        onInput={(e) => setFolderName(e.currentTarget.textContent)}>
+                        </StyledEditableDiv> }
 </div>
 
 {/* EDIT FOLDER NAME */}
@@ -119,6 +121,19 @@ ${({ edit }) => edit && `
 :empty::before {
   content:attr(placeholder);
 }
+:nth-child(2) a {
+  overflow: hidden;
+} */
+
+ ::after {
+  opacity 1;
+  transform: translate3d(-100%, 0, 0);
+}
+
+:hover::after,
+:focus::after{
+  transform: translate3d(0, 0, 0);
+} 
 `
 
 // const StyledP = styled.p`

@@ -156,6 +156,7 @@ const StyledImageName = styled.div`
   font-size: 40px;
   color: white;
   cursor: default;
+  line-height: 43px;
 ${({ edit }) => edit && `cursor: text;`}
   :empty::before {
     color: rgb(118, 118, 118);

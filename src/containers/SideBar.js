@@ -20,6 +20,10 @@ const SideBar = (props) => {
     window.location.reload(false);
   };
 
+  const condition = !!props.userId ? "/user" : !!props.currentUserId && "/home" 
+
+const path = !!props.currentUserId ? "/home" : "/"
+
   return (
     <aside>
       <Sticky sideBar={sideBar}>
@@ -44,11 +48,18 @@ const SideBar = (props) => {
               community
               </StyledP>
               </Nav.Link>}
-            {location.pathname !== "/" && <Nav.Link as={Link} to="/">
+              {/* location.pathname !== "/user" && */}
+            {(location.pathname !== "/home" || "/" || "user") && <Nav.Link as={Link} to={path} onClick={console.log("path", path)}>
             <StyledP>
-              home base
+              home
               </StyledP>
               </Nav.Link>}
+            {/* // !!props.currentUserId === false && !!props.userId &&  */}
+            {/* <Nav.Link as={Link} to={"home"} >
+            <StyledP>
+              home
+              </StyledP>
+              </Nav.Link> */}
             <br></br>
             <br></br>
             <br></br>
@@ -123,7 +134,10 @@ const Sticky = styled.div`
       width: 200px;
       transition: left 1s ease;
       ${({sideBar})  => sideBar ? `left : 0%` : `left: -30%` };
-      background: coral;
+      /* background: gainsboro;  */
+      /* opacity: 51%; */
+      backdrop-filter: blur(6px);
+      /* background: coral; */
       border-bottom-right-radius: 22px;
     }
   scrollable {
@@ -136,7 +150,9 @@ const Sticky = styled.div`
     width: 0px;
   }
   }
-  
+  a {
+    text-decoration-line: none;
+  }
   }
   `
 const StyledP = styled.p`

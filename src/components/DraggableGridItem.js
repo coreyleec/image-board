@@ -13,9 +13,11 @@ export default function DraggableGridItem(props) {
     hover: createDragHoverCallback(ref, photo, onDrop)
   });
 console.log(props)
-  const opacity = isDragging ? 0 : 1;
+  // const opacity = isDragging ? 0 : 1;
   return <GridItemWrapper {...p} 
-  style={{ opacity }}
+  draggable={(!!props.photo.url)}
+  // style={{ opacity }}
+
   >
     <div className="photo-cont"
        ref={ref}
