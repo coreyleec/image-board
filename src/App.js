@@ -18,6 +18,12 @@ export const App = () => {
   let navigate = useNavigate();
   const location = useLocation();
  
+  useEffect(() => {
+    const currentPath = location.pathname;
+    const searchParams = new URLSearchParams(location.search);
+    console.log("currentPath", currentPath, "searchParams", searchParams)
+  }, [location]);
+
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
@@ -35,8 +41,8 @@ export const App = () => {
 const [currentUser, setCurrentUser] = useState("");
 const [currentUserId, setCurrentUserId] = useState("");
 const [userId, setUserId] = useState("");
-console.log("currentUser", currentUser)
-const [loggedIn, setLoggedIn] = useState(false)
+// console.log("currentUser", currentUser)
+// const [loggedIn, setLoggedIn] = useState(false)
 //  const [userComments, setUserComments] = useState(null);
 
 // FOLDERS //
@@ -85,7 +91,7 @@ const handleNav = (path) => {
 }
 
  useEffect(() => {
-  location.pathname === "/home" && !!currentUserId && fetch(`http://[::1]:3000/api/v1/${currentUserId}/`, {
+  (location.pathname === "/home") && !!currentUserId && fetch(`http://[::1]:3000/api/v1/users/${currentUserId}/`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -94,19 +100,44 @@ const handleNav = (path) => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("user", user)
+      console.log("currentUser", user)
       setUserId(user.id)
-      setUserName(user.name);
+      setUserName(user.user.name);
+      console.log("currentUserName", user.user.name)
       setUserAboutMe(user.details);
         setUserLinks(user.links);
-        setUserFolders(user.folders);
+        setUserFolders(user.user.folders);
         // console.log("user folders", user.user.folders)
-        setFolderShown(user.folders[0].id)
+        setFolderShown(user.user.folders[0].id)
         // setPhotos(user.folders[0].photos)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
   })
-}, [ ])
+}, [location.pathname])
+
+// useEffect(() => {
+//   (location.pathname === "/user") && !!userId && fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
+//         method: "GET",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//     })
+//     .then((res) => res.json())
+//     .then((user) => 
+//     {
+//       console.log("User", user)
+//       setUserId(user.id)
+//       setUserName(user.name);
+//       setUserAboutMe(user.details);
+//         setUserLinks(user.links);
+//         setUserFolders(user.user.folders);
+//         // console.log("user folders", user.user.folders)
+//         setFolderShown(user.user.folders[0].id)
+//         // setPhotos(user.folders[0].photos)
+//         // setUserComments(user.comments);
+//         // setUserEmail(user.user.email);
+//   })
+// }, [location.pathname])
 
  useEffect(() => {
   location.pathname === "/" && !currentUserId && fetch("http://[::1]:3000/api/v1/landing_page/", {
@@ -118,7 +149,7 @@ const handleNav = (path) => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("user", user)
+      console.log("adminUser", user)
       setUserId(user.id)
       setUserName(user.name);
       setUserAboutMe(user.details);
@@ -130,7 +161,7 @@ const handleNav = (path) => {
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
   })
-}, [ ])
+}, [location.pathname])
 
 
   // FOLDER FUNCTIONS
@@ -431,10 +462,12 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
       <div 
        className="cont">
         <SideBar
+        // state={{ from: location }}
           dbVersion={dbVersion}
+          location={location.pathname}
           setUserFolders={setUserFolders}
           userFolders={userFolders}
-          loggedIn={loggedIn}
+          // loggedIn={loggedIn}
           folderShown={folderShown}
           edit={edit}
           enableDelete={enableDelete}
@@ -450,13 +483,14 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
           currentUser={currentUser}
           userId={userId}
           currentUserId={currentUserId}
+          setCurrentUserId={setCurrentUserId}
           updateUserAboutMe={updateUserAboutMe}
           userAboutMe={userAboutMe}
           useTemplate={useTemplate}
         />
         <Header
           // currentUser={currentUser}
-          loggedIn={loggedIn}
+          // loggedIn={loggedIn}
           userName={userName}
           edit={!edit}
           nameSubmit={nameSubmit}
@@ -464,7 +498,8 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
         <AsideRight
           updateFolderPravacy={updateFolderPravacy}
           folderPrivacy={folderPrivacy}
-          loggedIn={loggedIn}
+          // loggedIn={loggedIn}
+          location={location.pathname}
           deleteToggle={deleteToggle}
           enableDelete={enableDelete}
           editToggle={editToggle}
@@ -478,7 +513,7 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
           {/* GRID STARTS HERE */}
         <Routes> 
           <Route exact path={"/home"} element={<DndContainer
-              loggedIn={loggedIn}
+              // loggedIn={loggedIn}
               navigate={navigate}
               setReorderedPhotos={setReorderedPhotos}
               setPhotos={setPhotos}
@@ -492,8 +527,9 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
               reorderSubmit={reorderSubmit}
               folderShown={folderShown}
               />} />    
-          <Route exact path={"/"} element={<DndContainer
-              loggedIn={loggedIn}
+          <Route exact path={"/"} element={
+          <DndContainer
+              // loggedIn={loggedIn}
               navigate={navigate}
               setReorderedPhotos={setReorderedPhotos}
               setPhotos={setPhotos}
@@ -508,7 +544,7 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
               folderShown={folderShown}
               />} />    
           <Route exact path={"/user"} element={<DndContainer
-              loggedIn={loggedIn}
+              // loggedIn={loggedIn}
               navigate={navigate}
               setReorderedPhotos={setReorderedPhotos}
               setPhotos={setPhotos}
@@ -540,11 +576,14 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
                   useTemplate={useTemplate} 
                   handleCurrentUser={handleCurrentUser} 
                   currentUser={currentUser} 
+                  setUserId={setUserId}
                   setCurrentUserId={setCurrentUserId}
                   // useTemplate={useTemplate} 
                 />}/>
 
                 <Route exact path="/community" element={<CommunityPage  
+                userId={userId}
+                currentUserId={currentUserId}
                 setUserName={setUserName}
                 setUserAboutMe={setUserAboutMe}
                 setUserFolders={setUserFolders}

@@ -14,7 +14,7 @@ const AsideRight = (props) => {
 
   return (
     <aside>
-      {(location.pathname === "/") && (props.currentUserId === "" || props.currentUserId === props.userId) && 
+      {(props.location === "/home") && (!!props.currentUserId) && 
             <Sticky>
               <>
            {!!props.folderPrivacy && <Switch>

@@ -41,7 +41,7 @@ const fetchUser = (userId) => {
       console.log("user", user)
       // setUser(user)
       props.setUserId(user.id);
-      props.setUserName(user.name);
+      props.setUserName(user.user.name);
       props.setUserAboutMe(user.user.details);
       // props.setUserFolders(user.folders);
       props.setUserFolders(user.user.folders);
@@ -49,7 +49,7 @@ const fetchUser = (userId) => {
       props.setFolderShown(user.user.folders[0].id)
       // props.setPhotos(user.folders[0].photos)
       props.setUserLinks(user.user.links);
-navigate("/user")
+      (userId === props.currentUserId) ? navigate("/home") : navigate("/user")
         // console.log("user folders", user.user.folders)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);

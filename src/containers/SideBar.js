@@ -1,28 +1,34 @@
 import { useState, useEffect } from "react";
 import  React  from "react";
-import { useLocation } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import SideBarFolder from "../components/SideBarFolder";
 import SideBarLinks from "../components/SideBarLinks";
 import AboutMe from "../components/AboutMe";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
-import { Nav } from "react-bootstrap";
+// import { Nav } from "react-bootstrap";
 
 const SideBar = (props) => {
   // TOGGLE SIDEBAR
   const [sideBar, setBar] = useState(false);
   const location = useLocation();
 
-  
+  const navigate = useNavigate()
   // LOGOUT
   const logout = () => {
+    navigate("/")
     localStorage.clear();
+    props.setCurrentUserId(null)
     window.location.reload(false);
   };
 
   const condition = !!props.userId ? "/user" : !!props.currentUserId && "/home" 
 
-const path = !!props.currentUserId ? "/home" : "/"
+
+const [path, setPath] = useState()
+useEffect(() => {
+  !!props.currentUserId ? setPath("/home") : setPath("/")
+}, [props.currentUserId])
 
   return (
     <aside>
@@ -37,42 +43,42 @@ const path = !!props.currentUserId ? "/home" : "/"
           <div className="scrollable">
           <div className="break"></div>
             {/* {props.currentUser && props.userFolders && */}
-            {!!props.userFolders && location.pathname === "/" && 
+            {(!!props.userFolders) && (props.location === "/" || props.location === "/home") && 
             <>
             <AboutMe {...props} />
             <SideBarFolder {...props} key={props.folder_id} />
             <SideBarLinks {...props} />
             </>}
-            {location.pathname !== "/community" &&<Nav.Link as={Link} to="/community">
+            {props.location !== "/community" &&<Link as={Link} to="/community">
             <StyledP>
               community
               </StyledP>
-              </Nav.Link>}
+              </Link>}
               {/* location.pathname !== "/user" && */}
-            {(location.pathname !== "/home" || "/" || "user") && <Nav.Link as={Link} to={path} onClick={console.log("path", path)}>
+            {(props.location !== "/home") && (props.location !== "/" ) &&<Link as={Link} to={path} onClick={console.log("path", path)}>
             <StyledP>
               home
               </StyledP>
-              </Nav.Link>}
+              </Link>}
             {/* // !!props.currentUserId === false && !!props.userId &&  */}
-            {/* <Nav.Link as={Link} to={"home"} >
+            {/* <Link as={Link} to={"home"} >
             <StyledP>
               home
               </StyledP>
-              </Nav.Link> */}
+              </Link> */}
             <br></br>
             <br></br>
             <br></br>
             <br></br>
             {/* <p>Welcome :)</p> */}
-            {props.currentUser === "" ? (
+            {!!props.currentUserId ? (
+              <Button onClick={() => logout()}>log out</Button>) 
+            :(
               <Button onClick={() => props.useTemplate(setBar(!sideBar))}>
-                  <Nav.Link as={Link} to="/login">
+                  <Link as={Link} to="/login">
                 use template
-                </Nav.Link>
+                </Link>
               </Button>
-            ) : (
-              <Button onClick={() => logout()}>log out</Button>
             )}
             {/* props.setLoggedIn(false) */}
             {/* <p>image board is a visual tool for image curation, as well as a digital portfolio template</p> */}

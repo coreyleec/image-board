@@ -41,21 +41,21 @@ const loginSubmit = (e, name, password) => {
     .then((res) => res.json())
     .then((user) => {
       console.log("user login", user );
-      props.setUserProfile(!props.userProfile);
+      // props.setUserProfile(!props.userProfile);
       localStorage.token = user.user.token;
       console.log("token", localStorage.token)
-      // setUserId(user.id);
+      props.setUserId(user.id);
       props.setCurrentUserId(user.user.id)
-      props.setCurrentUser(user.user);
-      props.setUserName(user.user.name);
-      props.setUserAboutMe(user.user.details);
-      props.setUserFolders(user.user.folders);
-      console.log("user.folders", user.user.folders)
-      props.setFolderShown(user.user.folders[0].id)
+      // props.setCurrentUser(user.user);
+      // props.setUserName(user.user.name);
+      // props.setUserAboutMe(user.user.details);
+      // props.setUserFolders(user.user.folders);
+      // console.log("user.folders", user.user.folders)
+      // props.setFolderShown(user.user.folders[0].id)
       // props.setPhotos(user.photos)
-      props.setUserLinks(user.user.links);
+      // props.setUserLinks(user.user.links);
       // setUserEmail(user.user.email);
-      console.log("user folders", user.user.folders)
+      // console.log("user folders", user.user.folders)
       // setUserComments(user.comments);
       // setLoggedIn(true)
       navigate("/home")
@@ -85,7 +85,7 @@ const signupSubmit = (e, name, email, password) => {
       props.setUserProfile(!props.userProfile);
       localStorage.token = user.user.token;
       console.log("token", localStorage.token)
-      // setUserId(user.id);
+      props.setUserId(user.id);
       props.setCurrentUserId(user.user.id)
       props.setCurrentUser(user.user);
       props.setUserName(user.user.name);
@@ -94,7 +94,7 @@ const signupSubmit = (e, name, email, password) => {
       console.log("user.folders", user.user.folders)
       props.setFolderShown(user.user.folders[0].id)
       // props.setPhotos(user.photos)
-      props.setUserLinks(user.user.links);
+      props.setUserLinks(user.links);
       // setUserEmail(user.user.email);
       console.log("user folders", user.user.folders)
       // setUserComments(user.comments);

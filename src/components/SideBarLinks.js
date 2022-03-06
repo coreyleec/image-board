@@ -65,7 +65,7 @@ const SideBarLinks = (props) => {
         </form>
       )}
       {/* EDIT LINK */}
-      {props.userLinks !== undefined && props.userLinks !== null && props.edit ? (
+      {!!props.userLinks && props.edit ? (
         props.userLinks.map((link) => (
           <form
             link={link}
@@ -100,17 +100,33 @@ const SideBarLinks = (props) => {
           </form>
         ))
       ) : (
-        <div className="link-cont">
-          {props.userLinks.map((link) => (
+        <LinkCont>
+          {!!props.userLinks && props.userLinks.map((link) => (
             <a href={link.url}> {link.name} </a>
           ))}
-        </div>
+        </LinkCont>
       )}
     </>
   );
 };
 
 export default SideBarLinks;
+const LinkCont = styled.div`
+a {
+    display: block;
+    color: blue;
+  }
+`
+const StyledP = styled.p`
+font-size: 2rem;
+text-align: left;
+width: 85%;
+color: black;
+margin-bottom: 0px;
+cursor: pointer;
+color: blue;
+/* text-decoration: none; */
+}`
 
 const SubtractButton = styled.button`
   background-color: transparent;

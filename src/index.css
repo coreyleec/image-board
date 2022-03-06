@@ -246,9 +246,7 @@ input:-webkit-autofill {
     display: block;
     line-height: none;
   }
-  .link-cont a {
-    display: block;
-  }
+  
 
   .nav-bar-header{
     font-style: italic;

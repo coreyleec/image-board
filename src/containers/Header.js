@@ -26,7 +26,7 @@ const Header = (props) => {
                             onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader >{location.pathname !== "/" ? "ImageBoard" : props.userName }</TitleHeader> 
+                : <TitleHeader >{(location.pathname !== "/home") && (location.pathname !== "/" ) && (location.pathname !== "/user" ) ? "ImageBoard" : props.userName }</TitleHeader> 
                     }
             </header>
         )
