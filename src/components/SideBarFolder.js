@@ -1,5 +1,6 @@
 import React from 'react'
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { DndProvider } from "react-dnd";
 import styled from "styled-components";
 
 const SideBarFolder = (props) => {
@@ -43,8 +44,15 @@ const updateFolder = (e, folderName, folder) => {
       );
     });
 };
-
-
+// const inputRef = useRef()
+// useEffect(() => {
+//   !!newFolder && inputRef.current.focus();
+// }, [inputRef]);
+// const openNewFolderForm = () => {
+//   setNewFolder(!newFolder)
+//   inputRef.current.focus()
+// }
+// }
     return (
         <div>
 {/* FOLDER TOGGLE */}
@@ -52,7 +60,9 @@ const updateFolder = (e, folderName, folder) => {
                         <p  className="nav-bar-header" 
                         >folders</p>
             {props.edit && 
-                        <button className="side-bar-add-button" onClick={() => {setNewFolder(!newFolder)}} >+</button>}
+                        <button className="side-bar-add-button" onClick={() => {setNewFolder(!newFolder)
+                          // openNewFolderForm()
+                          }} >+</button>}
                     </div>
 {/* NEW FOLDER */}
                 <div>
@@ -60,6 +70,7 @@ const updateFolder = (e, folderName, folder) => {
                         <StyledEditableDiv 
                         id={"folderInput"}
                         type="text" edit={props.edit}
+                        // ref={inputRef}
                         contentEditable={newFolder} 
                         placeholder={"add folder name"}
                         style={{"cursor": props.edit ? "text" : "default"}}
@@ -69,12 +80,14 @@ const updateFolder = (e, folderName, folder) => {
 </div>
 
 {/* EDIT FOLDER NAME */}
+{/* <DndProvider> */}
             {props.userFolders != null && props.userFolders.map(folder => <div 
                         className="subtract-item" key={folder.id} folder={folder}>
                         <StyledEditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
                         folderShown={props.folderShown}
-                        placeholder={folder.name}
+                        defaultValue={folder.name}
+                        draggable={true}
                         onKeyDown={(e) => submitFolderEdit(e, folder)}
                         onClick={(e) => {props.setFolderShown(folder.id)}}
                         style={folder.id === props.folderShown ? {textDecoration: "underline"} : null} 
@@ -86,6 +99,7 @@ const updateFolder = (e, folderName, folder) => {
                         && <SubtractButton 
                         onClick={() => props.deleteFolder(folder)} >-</SubtractButton>}
                         </div>)}
+        {/* </DndProvider> */}
                         <div className="sidebar-break"></div>
         </div>
     )
@@ -109,7 +123,7 @@ const StyledEditableDiv = styled.div`
 font-size: 2rem;
 padding: 0px;
 float: left;
-line-height: 1.5;
+line-height: 1.2;
 text-align: left;
 width: 100%; 
 color: black;

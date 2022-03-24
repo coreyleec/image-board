@@ -43,11 +43,11 @@ useEffect(() => {
           <div className="scrollable">
           <div className="break"></div>
             {/* {props.currentUser && props.userFolders && */}
-            {(!!props.userFolders) && (props.location === "/" || props.location === "/home") && 
+            {(!!props.userFolders) && (props.location === "/" || props.location === "/home" || props.location === "/user" ) && 
             <>
             <AboutMe {...props} />
             <SideBarFolder {...props} key={props.folder_id} />
-            <SideBarLinks {...props} />
+            <SideBarLinks updateLink={props.updateLink} addLink={props.addLink} userLinks={props.userLinks} edit={props.edit} enableDelete={props.enableDelete} deleteLink={props.deleteLink} />
             </>}
             {props.location !== "/community" &&<Link as={Link} to="/community">
             <StyledP>

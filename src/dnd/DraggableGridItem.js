@@ -3,9 +3,9 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useDrag, useDrop } from 'react-dnd';
 
-const DraggableGridItem = ({ photo, onDrop, children, ...p }) => {
+const DraggableGridItem = ({ photo, onDrop, children, edit, ...p }) => {
   // const { photo, onDrop, children, ...p } = props;
-  // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
+  console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
 
   const useDragAndDrop = (ref, payloadPhoto) => {
  // useDrag return value array - collected props: isDragging is Boolean, drag is function
@@ -46,14 +46,15 @@ const DraggableGridItem = ({ photo, onDrop, children, ...p }) => {
 
 
   const opacity = isDragging ? 0 : 1;
-
-  return <GridItemWrapper 
-  {...p} ref={ref} style={{ opacity }}
-  
-  >
-   
+// const style = (photo.url === null) && {zIndex : '-1'}
+  return <GridItemWrapper  
+    {...p} ref={ref}  
+    // style={{ opacity }} 
+    // style={{style}}
+    edit={edit} 
+    photo={photo}
+    >
     {children}
-  
     </GridItemWrapper>
 };
 export default DraggableGridItem
@@ -149,7 +150,9 @@ const GridItemWrapper = styled.div `
    /* width: minmax(165px, 240px); */
   /* width: 165px; */
   justify-content: center;
-  
+   ${({url, edit}) => !url && !edit && `z-index: -1`
+
+  }
   /* background-size: contain; */
   // min-width: 240px;
   // background-color: #fff, 0;

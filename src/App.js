@@ -35,15 +35,23 @@ export const App = () => {
  const [userProfile, setUserProfile] = useState(true);
  
  // LOGIN
-//  const [userId, setUserId] = useState();
- 
- // TRANSITIONS FROM LOGIN TO USER PHOTOS
-const [currentUser, setCurrentUser] = useState("");
-const [currentUserId, setCurrentUserId] = useState("");
-const [userId, setUserId] = useState("");
-// console.log("currentUser", currentUser)
-// const [loggedIn, setLoggedIn] = useState(false)
-//  const [userComments, setUserComments] = useState(null);
+const [currentUser, setCurrentUser] = useState();
+const [currentUserId, setCurrentUserId] = useState(0);
+const [userId, setUserId] = useState();
+
+const [loggedIn, setLoggedIn] = useState()
+// useEffect(() => {
+//   setLoggedIn(`${currentUserId} === ${userId}`)
+//   !!loggedIn && console.log("loggedIn", loggedIn)
+// }, [userId, currentUserId])
+// !!loggedIn && console.log("loggedIn", !!parseInt(loggedIn))
+
+// useEffect(() => {
+//   setLoggedIn([currentUserId, userId])
+// }, [userId, currentUserId])
+// !!loggedIn && console.log("loggedIn", (loggedIn[0] === loggedIn[1]))
+
+// COMMENTS //
 
 // FOLDERS //
 // const [folderDetais, setFolderDetails] = useState();
@@ -52,7 +60,7 @@ const [userFolders, setUserFolders] = useState();
 const [folderShown, setFolderShown] = useState(null);
 
 // LINKS //
-const [userLinks, setUserLinks] = useState([]);
+const [userLinks, setUserLinks] = useState();
 
 // EDIT USER INFO
 // const [userEmail, setUserEmail] = useState("");
@@ -86,9 +94,16 @@ const editToggle = () => {
     !!user && setUserProfile(!userProfile);
   };
 // let navigate = useNavigate
-const handleNav = (path) => {
-  navigate(path)
-}
+
+// useEffect(() => {
+//   (location.pathname === "/home") && (!currentUserId) && navigate("/") || (location.pathname === "/user" && !userId) && !!currentUserId ? navigate("/home") : navigate("/")
+// }, [location.pathname])
+// useEffect(() => {
+// }, [location.pathname])
+useEffect(() => {
+  (location.pathname !== "/" | "/home" | "/user" ) && !!edit && setEdit(false)
+}, [location.pathname])
+
 
  useEffect(() => {
   (location.pathname === "/home") && !!currentUserId && fetch(`http://[::1]:3000/api/v1/users/${currentUserId}/`, {
@@ -100,12 +115,12 @@ const handleNav = (path) => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("currentUser", user)
-      setUserId(user.id)
+      console.log("User", user)
+      setUserId(user.user.id)
       setUserName(user.user.name);
-      console.log("currentUserName", user.user.name)
+      console.log("UserName", user.user.name)
       setUserAboutMe(user.details);
-        setUserLinks(user.links);
+        setUserLinks(user.user.links);
         setUserFolders(user.user.folders);
         // console.log("user folders", user.user.folders)
         setFolderShown(user.user.folders[0].id)
@@ -202,7 +217,7 @@ const handleNav = (path) => {
       });
   };
 
-  const updateFolderPravacy = (e) => {
+  const updateFolderPrivacy = (e) => {
     e.preventDefault();
     fetch(`http://[::1]:3000/api/v1/folders/${folderShown}`, {
       method: "PATCH",
@@ -241,7 +256,8 @@ const handleNav = (path) => {
         name: folderName,
         details: null,
         // link: folderLink,
-        user_id: currentUser.id,
+        index: userFolders.length + 1,
+        user_id: currentUserId,
       }),
     })
       .then((res) => res.json())
@@ -301,7 +317,7 @@ const addLink = (e, linkName, linkUrl) => {
         name: linkName,
         details: "add a description" ,
         url: linkUrl ,
-        user_id: currentUser.id
+        user_id: currentUserId
     })
   })
   .then(res => res.json())
@@ -317,7 +333,9 @@ const addLink = (e, linkName, linkUrl) => {
     let updatedLinksArr = userLinks.filter((link) => link.id !== linkObj.id);
     setUserLinks(updatedLinksArr)
     
-    fetch(`http://[::1]:3000/api/v1/links/${linkObj.id}/`, { method: "DELETE" })
+    fetch(`http://[::1]:3000/api/v1/links/${linkObj.id}/`, { method: "DELETE", headers: {
+      Authorization: `Bearer ${localStorage.token}`
+  }, })
       .then((resp) => resp.json())
       .then(() => console.log("updatedLinksArr", updatedLinksArr, "linkObj", linkObj))
     };
@@ -496,7 +514,7 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
           nameSubmit={nameSubmit}
         />
         <AsideRight
-          updateFolderPravacy={updateFolderPravacy}
+          updateFolderPrivacy={updateFolderPrivacy}
           folderPrivacy={folderPrivacy}
           // loggedIn={loggedIn}
           location={location.pathname}
@@ -524,12 +542,12 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
               enableDelete={enableDelete}
               edit={edit}
               photos={!!photos && photos}
-              reorderSubmit={reorderSubmit}
+              // reorderSubmit={reorderSubmit}
               folderShown={folderShown}
               />} />    
           <Route exact path={"/"} element={
           <DndContainer
-              // loggedIn={loggedIn}
+              loggedIn={loggedIn}
               navigate={navigate}
               setReorderedPhotos={setReorderedPhotos}
               setPhotos={setPhotos}
@@ -555,7 +573,7 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
               enableDelete={enableDelete}
               edit={edit}
               photos={!!photos && photos}
-              reorderSubmit={reorderSubmit}
+              // reorderSubmit={reorderSubmit}
               folderShown={folderShown}
               />} />    
               <Route exact path='/login' element={

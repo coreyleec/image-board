@@ -24,8 +24,9 @@ const SideBarLinks = (props) => {
     <>
       {/* LINK FORM TOGGLE */}
       <div className="add-item">
+        {(!!props.userLinks[0] || props.edit) && 
+        <> 
         <p
-          // style={{"fontStyle": "italic"}}
           className="nav-bar-header"
         >
           links
@@ -36,8 +37,9 @@ const SideBarLinks = (props) => {
             onClick={() => {setNewLink(!newLink)}}
           >
             +
-          </button>
-        )}
+          </button>)}
+          </>
+        }
       </div>
       {/* NEW LINK FORM */}
       {newLink && props.edit && (
@@ -52,11 +54,11 @@ const SideBarLinks = (props) => {
             autoFocus="autofocus"
             onChange={(e) => setLinkName(e.target.value)}
           ></StyledInput>
-          <StyledInput
+          <StyledUrl
             type="text"
             placeholder="link url"
             onChange={(e) => setLinkUrl(e.target.value)}
-          ></StyledInput>
+          ></StyledUrl>
           <input
             type="submit"
             value="submit"
@@ -64,6 +66,7 @@ const SideBarLinks = (props) => {
           ></input>
         </form>
       )}
+      
       {/* EDIT LINK */}
       {!!props.userLinks && props.edit ? (
         props.userLinks.map((link) => (
@@ -117,16 +120,6 @@ a {
     color: blue;
   }
 `
-const StyledP = styled.p`
-font-size: 2rem;
-text-align: left;
-width: 85%;
-color: black;
-margin-bottom: 0px;
-cursor: pointer;
-color: blue;
-/* text-decoration: none; */
-}`
 
 const SubtractButton = styled.button`
   background-color: transparent;

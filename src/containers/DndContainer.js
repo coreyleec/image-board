@@ -18,19 +18,14 @@ const DndContainer = (props) => {
   }, [props.photos])
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
-    // console.log(firstPhotoId, secondPhotoId)
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
-    // console.log("secondPhoto", secondPhoto);
     const firstIndex = firstPhoto.index; // declares variable value of first photo index
     firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
     secondPhoto.index = firstIndex; // then sets the second photo index to the first index
-    // console.log("firstPhoto", firstPhoto, "secondPhoto", secondPhoto);
-    // console.log("newPhotos", newPhotos, "photos", photos)
     setPhotos(newPhotos);
     props.setReorderedPhotos(newPhotos)
-    console.log("newPhotos", newPhotos)
   };
 
 const disableOnDrop = () => {
@@ -45,7 +40,6 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   useEffect(() => {
     const grid = gridRef.current;
     adjustGridItemsHeight(grid);
-    console.log("helloooo")
   }, [photos]);
   
   const addPhoto = (e, formData, dimensions, photoName, photoDetails, photo) => {
@@ -149,13 +143,12 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
               // style={{ opacity }}
               >
               {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
-              style={(photo.url === null) && {'z-index': '-1'}} style={{'z-index': '-1'}}
+              // style={(photo.url === null) && {zIndex : '-1'}} 
+              // style={{'display': 'none'}}
+                    edit={props.edit}
                     key={photo.id}
-                    photo={photo}
+                    url={photo.url}
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}
-                    // style={ photo.details === "100px"   
-                    //     ? {gridRowEnd : "span 40"} 
-                    //     : {gridRowEnd : "span 80" }}
                   >
                     <PictureFrame
                       edit={props.edit}
@@ -167,7 +160,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
 {/* DELETE PHOTO */}    
                       <img
                         className={"photo"}
-                        // alt="photo"
+                        alt="photo"
                         ref={imgRef}
                         key={photo.index}
                         onLoad={() => setImagesLoaded(true)}
@@ -189,6 +182,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                       && <div className={"card-content"} >
                         <h4 className={"card-name"}>{photo.name}</h4>
                         <p className={"card-details"} >{photo.details}</p>
+                        <button className="heart"></button>
                       </div>}
                     </PictureFrame>
                     {props.enableDelete && !!photo.url && 
@@ -228,8 +222,12 @@ const adjustGridItemsHeight = (grid, photo) => {
     let rowSpan = Math.ceil(
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)) <= 40 ? 40 : 80
-
+// console.log("stuff", photo.secondChild.getBoundingClientRect().height)
+    // let rowSpan = Math.ceil(
+    //   (photo.firstChild.getBoundingClientRect().height + rowGap))
     photo.style.gridRowEnd = "span " + rowSpan;
+    // (photo.firstChild.getBoundingClientRect().height === 0) && 
+    // photo.style.zIndex = "-1"
     // photo.style.opacity = '0'
 
   } return 
@@ -277,6 +275,37 @@ const PictureFrame = styled.div`
   .card-content {
   display: none;
   width: fit-content;
+  .heart{
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    display: inline-block;
+    width: 10px;
+    margin: 2px;
+    aspect-ratio: 1;
+    border-image: radial-gradient(red 61%,#0000 0%) 79% fill/54%;
+    -webkit-clip-path: polygon(-41% 0,43% 80%,173% 0);
+    -webkit-clip-path: polygon(-51% 0,54% 86%,139% 0);
+    clip-path: polygon(-50% 0,55% 83%,153% 0);
+    background-color: transparent;
+    cursor: pointer;
+    /* position: absolute;
+    bottom: 0px;
+    right: 0px;
+    display: inline-block;
+    width: 10px;
+    aspect-ratio: 1;
+    border-image: radial-gradient(red 69%,#0000 70%) 86% fill/95%;
+    -webkit-clip-path: polygon(-41% 0,43% 80%,130% -12);
+    clip-path: polygon(-51% 0,54% 86%,139% 0); */
+    /* position: relative;
+ display:inline-block;
+  width: 200px; 
+  aspect-ratio: 1;
+  border-image: radial-gradient(red 69%,#0000 70%) 84.5% fill/100%;
+  clip-path: polygon(-41% 0,50% 91%, 141% 0); */
+}
+  }
   } 
   .photo {
   /* position: relative; */
@@ -287,7 +316,7 @@ const PictureFrame = styled.div`
   ? `
   // IMAGE TILE HOVER 
   :hover {
-    // transition: all .2s ease;
+    transition: all .2s ease;
   // all: unset;
   // position: absolute; 
   left: 50%; top: 50%;
@@ -314,6 +343,13 @@ display: block;
 max-width: 30%;
 padding-inline: 5px;
 height: fit-content;
+p {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 }
 .photo{
   max-height: 220px;
@@ -328,16 +364,12 @@ height: fit-content;
 // MISSING BOX
   color: gainsboro;
   flex: 0 0 100px;
-  z-index: -2;
   position: relative;
-
+  :hover {
+  transform: translate(1px, -1px); 
+}
   .photo {
-  z-index: -2;
   position: relative;
-  // border-radius: 13px;
-  // width: 150px; 
-  // height: 100px;
-  // box-shadow: -3px 3px 5px 2px #aaaaaa;
 }`: !!url ? `
 // PICTURE
 
@@ -358,12 +390,11 @@ height: fit-content;
 // EMPTY BOX
   color: gainsboro;
   height: 100px;
-  // z-index: -1;
   :hover {
     position: initial;
     border-radius: 13px;
-  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-  transform: translate(2px, -2px); 
+    box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+  // transform: translate(2px, -2px); 
 }
   .photo {
   position: initial;
