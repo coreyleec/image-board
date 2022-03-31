@@ -24,7 +24,7 @@ const SideBarLinks = (props) => {
     <>
       {/* LINK FORM TOGGLE */}
       <div className="add-item">
-        {(!!props.userLinks[0] || props.edit) && 
+        {(!!props.userLinks || props.edit) && 
         <> 
         <p
           className="nav-bar-header"

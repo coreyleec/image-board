@@ -5,8 +5,8 @@ import { useDrag, useDrop } from 'react-dnd';
 
 const DraggableGridItem = ({ photo, onDrop, children, edit, ...p }) => {
   // const { photo, onDrop, children, ...p } = props;
-  console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
-
+  // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
+// console.log("props", p)
   const useDragAndDrop = (ref, payloadPhoto) => {
  // useDrag return value array - collected props: isDragging is Boolean, drag is function
     const [{ isDragging }, drag] = useDrag({

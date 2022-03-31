@@ -115,6 +115,27 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   // const opacity = imagesLoaded ? 1 : 0
   const display = openModal ? "none" : "inline"
   
+const favoriteToggle = (favorite, userId) => {
+// const methodVar = !!favorite ? "DESTROY" : "CREATE"
+  fetch(`http://[::1]:3000/api/v1/user/${userId}`, {
+    method: "CREATE",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Accept": "application/json",},
+    favoritable_id: photo.id,
+    favoritable_type: "Photo" 
+    })
+    // .catch(e => console.error(e))
+    .then((res) => res.json())
+    .then((photoObj) => {
+      console.log("photoObj",photoObj);
+      setPhotos(photos.map((photo) => {
+          if (photo.id === photoObj.id) return photoObj;
+          else return photo;})
+        );
+      });
+}
+
   return (
     <article>
       {openModal && (
@@ -135,7 +156,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
       )}
 
       <DndProvider backend={MultiBackend} options={HTML5toTouch}>
-        <AppWrapper>
+        
           <div className="grid">
             <GridWrapper
               ref={gridRef}
@@ -153,7 +174,8 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                     <PictureFrame
                       edit={props.edit}
                       url={photo.url}
-                      style={{'z-index': '-1'}}
+                      favorite={props.favoritable}
+                      // style={{'z-index': '-1'}}
                       style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : null}
                     >
 
@@ -182,26 +204,39 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
                       && <div className={"card-content"} >
                         <h4 className={"card-name"}>{photo.name}</h4>
                         <p className={"card-details"} >{photo.details}</p>
-                        <button className="heart"></button>
                       </div>}
-                    </PictureFrame>
                     {props.enableDelete && !!photo.url && 
                         <button
-                         style={{display}}
-                         className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>}
+                        style={{display}}
+                        className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>}
+                        <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart>
+                    </PictureFrame>
                   </DraggableGridItem>
                 ))}
             </GridWrapper>
           </div>
-        </AppWrapper>
+
       </DndProvider>
       </article>
   );
 };
 export default DndContainer;
 
-const AppWrapper = styled.div`
+const Heart = styled.button`
+   position: absolute;
+    bottom: -4px;
+    right: 13px;
+    font-family: 'Sawarabi Mincho', serif;
+    font-size: medium;
+    color: ${favorites => !!favorites ? `red` : `#aaa`};
+    border-width: 0px;
   
+    display: inline-block;
+    width: 10px;
+    margin: 2px;
+    aspect-ratio: 1;
+    background-color: transparent;
+    cursor: pointer;
 `;
 
 const adjustGridItemsHeight = (grid, photo) => {
@@ -213,6 +248,7 @@ const adjustGridItemsHeight = (grid, photo) => {
 
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
+    // console.log("photo grid children", photo.lastChild.lastChild.src);
     let rowHeight = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-auto-rows")
     );
@@ -275,36 +311,7 @@ const PictureFrame = styled.div`
   .card-content {
   display: none;
   width: fit-content;
-  .heart{
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    display: inline-block;
-    width: 10px;
-    margin: 2px;
-    aspect-ratio: 1;
-    border-image: radial-gradient(red 61%,#0000 0%) 79% fill/54%;
-    -webkit-clip-path: polygon(-41% 0,43% 80%,173% 0);
-    -webkit-clip-path: polygon(-51% 0,54% 86%,139% 0);
-    clip-path: polygon(-50% 0,55% 83%,153% 0);
-    background-color: transparent;
-    cursor: pointer;
-    /* position: absolute;
-    bottom: 0px;
-    right: 0px;
-    display: inline-block;
-    width: 10px;
-    aspect-ratio: 1;
-    border-image: radial-gradient(red 69%,#0000 70%) 86% fill/95%;
-    -webkit-clip-path: polygon(-41% 0,43% 80%,130% -12);
-    clip-path: polygon(-51% 0,54% 86%,139% 0); */
-    /* position: relative;
- display:inline-block;
-  width: 200px; 
-  aspect-ratio: 1;
-  border-image: radial-gradient(red 69%,#0000 70%) 84.5% fill/100%;
-  clip-path: polygon(-41% 0,50% 91%, 141% 0); */
-}
+  
   }
   } 
   .photo {
@@ -376,7 +383,7 @@ p {
 :hover {
   border-radius: 13px;
   z-index: 3;
-  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+  box-shadow: -7px 7px 10px 4px #aaaaaa;
   transform: translate(1px, -1px); 
 }
 .photo{
@@ -393,9 +400,10 @@ p {
   :hover {
     position: initial;
     border-radius: 13px;
-    box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-  // transform: translate(2px, -2px); 
-}
+    box-shadow: -7px 7px 10px 4px #aaaaaa;
+    // , 0 0 10px -1px #aaaaaa inset
+    transform: translate(2px, -2px); 
+  }
   .photo {
   position: initial;
   border-radius: 13px;
