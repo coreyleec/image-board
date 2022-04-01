@@ -41,6 +41,7 @@ const loginSubmit = (e, name, password) => {
     .then((user) => {
       console.log("user login", user );
       localStorage.token = user.user.token;
+      props.setUserId(user.id);
       props.setCurrentUserId(user.user.id)
       // props.setUserName(user.user.name);
       // props.setUserAboutMe(user.user.details);
@@ -59,7 +60,6 @@ const signupSubmit = (e, name, email, password) => {
   fetch(`http://[::1]:3000/api/v1/users/`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${localStorage.token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
@@ -68,22 +68,23 @@ const signupSubmit = (e, name, email, password) => {
       password: password,
     }),
   })
+    .catch(e => alert(e))
     .then((res) => res.json())
     .then((user) => {
       console.log("user login", user );
-      props.setUserProfile(!props.userProfile);
+      // props.setUserProfile(!props.userProfile);
       localStorage.token = user.user.token;
       console.log("token", localStorage.token)
       props.setUserId(user.id);
       props.setCurrentUserId(user.user.id)
-      props.setCurrentUser(user.user);
-      props.setUserName(user.user.name);
-      props.setUserAboutMe(user.user.details);
-      props.setUserFolders(user.user.folders);
-      console.log("user.folders", user.user.folders)
-      props.setFolderShown(user.user.folders[0].id)
-      props.setUserLinks(user.links);
-      console.log("user folders", user.user.folders)
+      // props.setCurrentUser(user.user);
+      // props.setUserName(user.user.name);
+      // props.setUserAboutMe(user.user.details);
+      // props.setUserFolders(user.user.folders);
+      // console.log("user.folders", user.user.folders)
+      // props.setFolderShown(user.user.folders[0].id)
+      // props.setUserLinks(user.links);
+      // console.log("user folders", user.user.folders)
       navigate("/home")
     });
 };

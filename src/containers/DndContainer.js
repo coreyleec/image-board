@@ -115,27 +115,49 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   // const opacity = imagesLoaded ? 1 : 0
   const display = openModal ? "none" : "inline"
   
-const favoriteToggle = (favorite, userId) => {
+const favoriteToggle = (photo) => {
 // const methodVar = !!favorite ? "DESTROY" : "CREATE"
-  fetch(`http://[::1]:3000/api/v1/user/${userId}`, {
-    method: "CREATE",
-    headers: {
-      Authorization: `Bearer ${localStorage.token}`,
-      "Accept": "application/json",},
-    favoritable_id: photo.id,
-    favoritable_type: "Photo" 
-    })
-    // .catch(e => console.error(e))
-    .then((res) => res.json())
-    .then((photoObj) => {
-      console.log("photoObj",photoObj);
-      setPhotos(photos.map((photo) => {
-          if (photo.id === photoObj.id) return photoObj;
-          else return photo;})
-        );
-      });
+!!photo.favorites.length ? console.log(photo, "favorited", !!photo.favorites.length, "user", photo.favorites[0].user_id, "photo", photo.id) : console.log("favorited", !!photo.favorites.length, "user", photo.user_id, "photo", photo.id )
+!!photo.favorites.length 
+    ? fetch(`http://[::1]:3000/api/v1/favorites/${photo.id}`, {
+      method: "DESTROY",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Accept": "application/json",}
+        })
+        // .catch(e => console.error(e))
+        .then((res) => res.json())
+        .then((photoObj) => {
+          console.log("photoObj",photoObj);
+          setPhotos(photos.map((photo) => {
+              if (photo.id === photoObj.id) return photoObj;
+              else return photo;})
+            );
+          })
+      : fetch(`http://[::1]:3000/api/v1/favorites/`, {
+        method: "CREATE",
+        headers: {
+          Authorization: `Bearer ${localStorage.token}`,
+          "Accept": "application/json",},
+        favoritable_id: photo.id,
+        favoritable_type: "Photo", 
+        user_id: photo.user_id
+        })
+        // .catch(e => console.error(e))
+        .then((res) => res.json())
+        .then((photoObj) => {
+          console.log("photoObj",photoObj);
+          setPhotos(photos.map((photo) => {
+              if (photo.id === photoObj.id) return photoObj;
+              else return photo;})
+            );
+          })
 }
 
+
+const testFavorite = (photo) => {
+  !!photo.favorites.length ? console.log(photo, "favorited", !!photo.favorites.length, "user", photo.favorites[0].user_id, "photo", photo.id) : console.log("favorited", !!photo.favorites.length, "user", photo.user_id, "photo", photo.id )
+}
   return (
     <article>
       {openModal && (
@@ -172,14 +194,14 @@ const favoriteToggle = (favorite, userId) => {
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                   >
                     <PictureFrame
+                      favorited={photo.favorites.length} 
                       edit={props.edit}
                       url={photo.url}
-                      favorite={props.favoritable}
+                      contentSizing={!!photo.name || !!photo.details}
+                      // favorite={props.favoritable}
                       // style={{'z-index': '-1'}}
                       style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : null}
-                    >
-
-{/* DELETE PHOTO */}    
+                    >  
                       <img
                         className={"photo"}
                         alt="photo"
@@ -205,11 +227,16 @@ const favoriteToggle = (favorite, userId) => {
                         <h4 className={"card-name"}>{photo.name}</h4>
                         <p className={"card-details"} >{photo.details}</p>
                       </div>}
+{/* DELETE BUTTON */}
                     {props.enableDelete && !!photo.url && 
                         <button
                         style={{display}}
                         className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>}
-                        <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart>
+{/* FAVORITE BUTTON */}
+                        {(!!props.currentUserId) && (props.currentUserId !== props.userId) && <button 
+                        className="heart"
+                        onClick={() => favoriteToggle
+                        (photo)} className="heart">♥</button>}
                     </PictureFrame>
                   </DraggableGridItem>
                 ))}
@@ -223,20 +250,7 @@ const favoriteToggle = (favorite, userId) => {
 export default DndContainer;
 
 const Heart = styled.button`
-   position: absolute;
-    bottom: -4px;
-    right: 13px;
-    font-family: 'Sawarabi Mincho', serif;
-    font-size: medium;
-    color: ${favorites => !!favorites ? `red` : `#aaa`};
-    border-width: 0px;
-  
-    display: inline-block;
-    width: 10px;
-    margin: 2px;
-    aspect-ratio: 1;
-    background-color: transparent;
-    cursor: pointer;
+   
 `;
 
 const adjustGridItemsHeight = (grid, photo) => {
@@ -308,6 +322,23 @@ const PictureFrame = styled.div`
   border-radius: 13px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
   transition: all .2s ease-in-out;
+  .heart{
+    position: absolute;
+    bottom: -4px;
+    right: 12px;
+    font-family: 'Sawarabi Mincho', serif;
+    font-size: medium;
+    color: ${props => (!!props.favorited ? `red` : `#aaa`)};
+    border-width: 0px;
+  
+    display: none;
+    width: 10px;
+    margin: ${props => (props.contentSizing ? `2px` : `5px`)};
+    aspect-ratio: 1;
+    background-color: transparent;
+    cursor: pointer;
+
+  }
   .card-content {
   display: none;
   width: fit-content;
@@ -344,6 +375,9 @@ const PictureFrame = styled.div`
   margin: 0px;
   /* padding-bottom: 5px; */
   overflow: visible;
+  .heart{
+  display: inline-block;
+}
 } 
 :hover .card-content {
 display: block;
@@ -357,6 +391,7 @@ p {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
 }
 .photo{
   max-height: 220px;

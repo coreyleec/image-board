@@ -50,6 +50,7 @@ const fetchUser = (userId) => {
       // props.setPhotos(user.folders[0].photos)
       props.setUserLinks(user.user.links);
       (userId === props.currentUserId) ? navigate("/home") : navigate("/user")
+      // (userId === props.currentUserId) ? navigate("/home") : navigate(`/user/${userId}`)
         // console.log("user folders", user.user.folders)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);

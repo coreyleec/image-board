@@ -104,7 +104,9 @@ useEffect(() => {
   (location.pathname !== "/" | "/home" | "/user" ) && !!edit && setEdit(false)
 }, [location.pathname])
 
-
+// useEffect(() => {
+//   (location.pathname === "/community") && navigate("/community")
+// }, [location.pathname])
  useEffect(() => {
   (location.pathname === "/home") && !!currentUserId && fetch(`http://[::1]:3000/api/v1/users/${currentUserId}/`, {
         method: "GET",
@@ -131,7 +133,7 @@ useEffect(() => {
 }, [location.pathname])
 
 // useEffect(() => {
-//   (location.pathname === "/user") && !!userId && fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
+//   !!currentUserId && (userId !== currentUserId) && (location.pathname === "/user") ? navigate("/home") : navigate(`/user/${userId}`) && fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
 //         method: "GET",
 //         headers: {
 //           "Content-Type": "application/json",
@@ -141,7 +143,7 @@ useEffect(() => {
 //     .then((user) => 
 //     {
 //       console.log("User", user)
-//       setUserId(user.id)
+//       // setUserId(user.id)
 //       setUserName(user.name);
 //       setUserAboutMe(user.details);
 //         setUserLinks(user.links);
@@ -152,7 +154,7 @@ useEffect(() => {
 //         // setUserComments(user.comments);
 //         // setUserEmail(user.user.email);
 //   })
-// }, [location.pathname])
+// }, [location.pathname, userId])
 
  useEffect(() => {
   location.pathname === "/" && !currentUserId && fetch("http://[::1]:3000/api/v1/landing_page/", {
@@ -165,13 +167,13 @@ useEffect(() => {
     .then((user) => 
     {
       console.log("adminUser", user)
-      setUserId(user.id)
-      setUserName(user.name);
-      setUserAboutMe(user.details);
-        setUserLinks(user.links);
-        setUserFolders(user.folders);
+      setUserId(user.user.id)
+      setUserName(user.user.name);
+      setUserAboutMe(user.user.details);
+        setUserLinks(user.user.links);
+        setUserFolders(user.user.folders);
         // console.log("user folders", user.user.folders)
-        setFolderShown(user.folders[0].id)
+        setFolderShown(user.user.folders[0].id)
         // setPhotos(user.folders[0].photos)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
@@ -544,6 +546,8 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
               photos={!!photos && photos}
               // reorderSubmit={reorderSubmit}
               folderShown={folderShown}
+              currentUserId={currentUserId}
+              userId={userId}
               />} />    
           <Route exact path={"/"} element={
           <DndContainer
@@ -560,8 +564,10 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
               photos={!!photos && photos}
               reorderSubmit={reorderSubmit}
               folderShown={folderShown}
+              currentUserId={currentUserId}
+              userId={userId}
               />} />    
-          <Route exact path={"/user"} element={<DndContainer
+          <Route exact path={`/user/`} element={<DndContainer
               // loggedIn={loggedIn}
               navigate={navigate}
               setReorderedPhotos={setReorderedPhotos}
@@ -575,6 +581,8 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
               photos={!!photos && photos}
               // reorderSubmit={reorderSubmit}
               folderShown={folderShown}
+              currentUserId={currentUserId}
+              userId={userId}
               />} />    
               <Route exact path='/login' element={
                 <UserLoginSignup 
