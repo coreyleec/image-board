@@ -75,7 +75,7 @@ const signupSubmit = (e, name, email, password) => {
       // props.setUserProfile(!props.userProfile);
       localStorage.token = user.user.token;
       console.log("token", localStorage.token)
-      props.setUserId(user.id);
+      // props.setUserId(user.id);
       props.setCurrentUserId(user.user.id)
       // props.setCurrentUser(user.user);
       // props.setUserName(user.user.name);

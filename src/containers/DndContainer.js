@@ -119,11 +119,10 @@ const favoriteToggle = (photo) => {
 // const methodVar = !!favorite ? "DESTROY" : "CREATE"
 !!photo.favorites.length ? console.log(photo, "favorited", !!photo.favorites.length, "user", photo.favorites[0].user_id, "photo", photo.id) : console.log("favorited", !!photo.favorites.length, "user", photo.user_id, "photo", photo.id )
 !!photo.favorites.length 
-    ? fetch(`http://[::1]:3000/api/v1/favorites/${photo.id}`, {
-      method: "DESTROY",
+    ? fetch(`http://[::1]:3000/api/v1/favorites/${photo.favorites[0].id}`, {
+      method: "DELETE",
       headers: {
-        Authorization: `Bearer ${localStorage.token}`,
-        "Accept": "application/json",}
+        Authorization: `Bearer ${localStorage.token}`}
         })
         // .catch(e => console.error(e))
         .then((res) => res.json())
@@ -135,13 +134,14 @@ const favoriteToggle = (photo) => {
             );
           })
       : fetch(`http://[::1]:3000/api/v1/favorites/`, {
-        method: "CREATE",
+        method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
-          "Accept": "application/json",},
-        favoritable_id: photo.id,
-        favoritable_type: "Photo", 
-        user_id: photo.user_id
+          "Content-Type": "application/json",},
+          body: JSON.stringify({
+            favoritable_id: photo.id,
+            favoritable_type: "Photo", 
+            user_id: photo.user_id}),
         })
         // .catch(e => console.error(e))
         .then((res) => res.json())
@@ -194,7 +194,7 @@ const testFavorite = (photo) => {
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                   >
                     <PictureFrame
-                      favorited={photo.favorites.length} 
+                      favorited={!!photo.favorites && photo.favorites.length} 
                       edit={props.edit}
                       url={photo.url}
                       contentSizing={!!photo.name || !!photo.details}

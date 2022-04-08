@@ -59,6 +59,10 @@ const [loggedIn, setLoggedIn] = useState()
 const [userFolders, setUserFolders] = useState();
 const [folderShown, setFolderShown] = useState(null);
 
+// FAVORITES // 
+
+const [favorites, setFavorites] = useState()
+
 // LINKS //
 const [userLinks, setUserLinks] = useState();
 
@@ -108,22 +112,24 @@ useEffect(() => {
 //   (location.pathname === "/community") && navigate("/community")
 // }, [location.pathname])
  useEffect(() => {
-  (location.pathname === "/home") && !!currentUserId && fetch(`http://[::1]:3000/api/v1/users/${currentUserId}/`, {
+  (location.pathname === "/home") && !!currentUserId && fetch(`http://[::1]:3000/api/v1/profile/`, {
         method: "GET",
         headers: {
+          Authorization: `Bearer ${localStorage.token}`,
           "Content-Type": "application/json",
         },
     })
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("User", user)
+      console.log("User", user.user)
       setUserId(user.user.id)
       setUserName(user.user.name);
-      console.log("UserName", user.user.name)
+      console.log("UserName", user.user.favorites[0].photos)
       setUserAboutMe(user.details);
         setUserLinks(user.user.links);
         setUserFolders(user.user.folders);
+        setFavorites(user.user.favorites[0].photos)
         // console.log("user folders", user.user.folders)
         setFolderShown(user.user.folders[0].id)
         // setPhotos(user.folders[0].photos)
@@ -564,6 +570,25 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
               photos={!!photos && photos}
               reorderSubmit={reorderSubmit}
               folderShown={folderShown}
+              currentUserId={currentUserId}
+              userId={userId}
+              />} />    
+          <Route exact path={"/favorites"} element={
+          <DndContainer
+              loggedIn={loggedIn}
+              navigate={navigate}
+              // setReorderedPhotos={setReorderedPhotos}
+              setPhotos={setPhotos}
+              photos={!!favorites && favorites}
+              // addPhoto={addPhoto}
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              // deletePhoto={deletePhoto}
+              // enableDelete={enableDelete}
+              edit={edit}
+              // photos={!!photos && photos}
+              // reorderSubmit={reorderSubmit}
+              // folderShown={folderShown}
               currentUserId={currentUserId}
               userId={userId}
               />} />    

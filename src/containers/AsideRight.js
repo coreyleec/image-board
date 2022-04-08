@@ -11,6 +11,27 @@ const AsideRight = (props) => {
     props.edit === true && 
     props.reorderSubmit()
   };
+
+  const [search, setSearch] = useState([0])
+
+  const searchUser = (input) => {
+    console.log(input)
+    // setSearch(...search, input)
+    fetch(`http://[::1]:3000/api/v1/search_results/`, {
+      method: "POST",
+      headers:  {"Content-Type": "application/json"}, 
+      body: JSON.stringify({
+        search: input
+      })
+    })
+    .then((res) => res.json())
+    .then((usersArray) => {
+      console.log(usersArray);
+      setSearch(usersArray)
+      // setUserAboutMe(userObj.details);
+    });
+  }
+
 const [enableCollaborate, setEnableCollaborate] = useState(false)
   return (
     <aside>
@@ -59,7 +80,13 @@ const [enableCollaborate, setEnableCollaborate] = useState(false)
             >
               {/* {enableCollaborate && ">"} */}
             </button>
-            {enableCollaborate && <input autoFocus="autofocus" type="text" placeholder="search user"/>}
+            {enableCollaborate && 
+            <input autoFocus="autofocus" type="text" onChange={(e) => searchUser(e.target.value)} placeholder="search user"/>}
+            <ul>
+              {search.map((user) => (<li>
+                {user.name}
+              </li>))}
+            </ul>
             </span>
             </label>
             <p>add collaborator</p> 

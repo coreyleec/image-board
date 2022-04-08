@@ -49,10 +49,15 @@ useEffect(() => {
             <SideBarFolder {...props} key={props.folder_id} />
             <SideBarLinks updateLink={props.updateLink} addLink={props.addLink} userLinks={props.userLinks} edit={props.edit} enableDelete={props.enableDelete} deleteLink={props.deleteLink} />
             </>}
+            {props.location === "/home" && <Link as={Link} to="/favorites">
+            <p className="nav-bar-header">
+              favorites
+              </p>
+              </Link>}
             {props.location !== "/community" &&<Link as={Link} to="/community">
-            <StyledP>
+            <p className="nav-bar-header">
               community
-              </StyledP>
+              </p>
               </Link>}
               {/* location.pathname !== "/user" && */}
             {(props.location !== "/home") && (props.location !== "/" ) &&<Link as={Link} to={path} onClick={console.log("path", path)}>
