@@ -107,7 +107,7 @@ const CardCont = styled.div`
 `
 const PhotoCard = styled.div`
 display: flex;
-
+height: 100px;
 border-radius: 13px;
 margin-block: 10px;
 padding: 5px;
@@ -122,8 +122,7 @@ box-shadow: -3px 3px 5px 2px #aaaaaa;
   box-shadow: -7px 7px 10px 4px #aaaaaa; 
   
 }
-  /* img {
-    height: 100px;}} */
+
 img {
     height: 100px;
     width: -webkit-fill-available;

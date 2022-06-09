@@ -2,56 +2,56 @@ import React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { DndProvider } from "react-dnd";
 import styled from "styled-components";
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const SideBarFolder = (props) => {
+const SideBarFavorites = (props) => {
   
-  const [newFolder, setNewFolder] = useState(false)
-  const [folderName, setFolderName] = useState("")
+  const [newFavorites, setNewFavorites] = useState(false)
+  const [favoriteName, setFavorites] = useState("")
   
   let navigate = useNavigate();
-  const submitNewFolder = (e, folder) => {
-  if (e.key === 'Enter' && e.shiftKey === false) {props.addFolder(e, folderName) 
+  const submitNewFavorites = (e, favorite) => {
+  if (e.key === 'Enter' && e.shiftKey === false) {props.addFavorites(e, favoriteName) 
   e.currentTarget.blur();
-  setNewFolder(!newFolder)
+  setNewFavorites(!newFavorites)
 }}
-const submitFolderEdit = (e, folder) => {
-  if (e.key === 'Enter' && e.shiftKey === false) {updateFolder(e, folderName, folder) 
+const submitFavorites = (e, favorite) => {
+  if (e.key === 'Enter' && e.shiftKey === false) {updateFavorites(e, favoriteName, favorite) 
   e.currentTarget.blur();
 }}
 
-const updateFolder = (e, folderName, folder) => {
+const updateFavorites = (e, favoriteName, favorite) => {
   e.preventDefault();
-  fetch(`http://[::1]:3000/api/v1/folders/${folder.id}`, {
+  fetch(`http://[::1]:3000/api/v1/favorites/${favorite.id}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      name: folderName,
-      // details: folderDetais,
-      // link: folderLink,
+      name: favoriteName,
+      // details: favoriteDetais,
+      // link: favoriteLink,
       // user_id: currentUser.id
     }),
   })
     .then((res) => res.json())
-    .then((folderObj) => {
-      console.log(folderObj);
-      props.setUserFolders(
-        props.userFolders.map((folder) => {
-          if (folder.id === folderObj.id) return folderObj;
-          else return folder;
+    .then((favoriteObj) => {
+      console.log(favoriteObj);
+      props.setUserFavorites(
+        props.userFavorites.map((favorite) => {
+          if (favorite.id === favoriteObj.id) return favoriteObj;
+          else return favorite;
         })
       );
     });
 };
 // const inputRef = useRef()
 // useEffect(() => {
-//   !!newFolder && inputRef.current.focus();
+//   !!newFavorites && inputRef.current.focus();
 // }, [inputRef]);
-// const openNewFolderForm = () => {
-//   setNewFolder(!newFolder)
+// const openNewFavorites = () => {
+//   setNewFavorites(!newFavorites)
 //   inputRef.current.focus()
 // }
 // }
@@ -60,57 +60,54 @@ const updateFolder = (e, folderName, folder) => {
 {/* FOLDER TOGGLE */}
                     <div className="add-item" >
                     <div className="nav-bar-header-wrapper" >
-                  {("folders").split('').map(n => (<p className="nav-bar-header">
+                  {("favorites").split('').map(n => (<p className="nav-bar-header">
                       {n}
                     </p>))
                     }
                     </div>
             {props.edit && 
-                        <button className="side-bar-add-button" onClick={() => {setNewFolder(!newFolder)
-                          // openNewFolderForm()
+                        <button className="side-bar-add-button" onClick={() => {setNewFavorites(!newFavorites)
+                          // openNewFavorites()
                           }} >+</button>}
                     </div>
 {/* NEW FOLDER */}
                 <div>
-            {newFolder && props.edit && 
+            {newFavorites && props.edit && 
                         <StyledEditableDiv 
-                        id={"folderInput"}
+                        id={"favoriteInput"}
                         type="text" edit={props.edit}
                         // ref={inputRef}
-                        contentEditable={newFolder} 
-                        placeholder={"add folder name"}
+                        contentEditable={newFavorites} 
+                        placeholder={"add favorite name"}
                         style={{"cursor": props.edit ? "text" : "default"}}
-                        onKeyDown={(e) => submitNewFolder(e)}
-                        onInput={(e) => setFolderName(e.currentTarget.textContent)}>
+                        onKeyDown={(e) => submitNewFavorites(e)}
+                        onInput={(e) => setFavorites(e.currentTarget.textContent)}>
                         </StyledEditableDiv> }
 </div>
 
 {/* EDIT FOLDER NAME */}
 {/* <DndProvider> */}
-            {props.userFolders != null && props.userFolders.map(folder => <div 
-                        className="subtract-item" key={folder.id} folder={folder}>
-<Link to={`/home/folders/${props.folderShown}`} >                          
+            {props.userFavorites != null && props.userFavorites.map(favorite => <div 
+                        className="subtract-item" key={favorite.id} favorite={favorite}>
                         <StyledEditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
-                        folderShown={props.folderShown}
-                        defaultValue={folder.name}
+                        favoriteShown={props.favoriteShown}
+                        defaultValue={favorite.name}
                         draggable={true}
-                        onKeyDown={(e) => submitFolderEdit(e, folder)}
-      // SET FAVORITE SHOWN TO NULL
-                        onClick={(e) => {props.setFolderShown(folder.id)
+                        onKeyDown={(e) => submitFavorites(e, favorite)}
+// SET FOLDER SHOWN TO NULL
+                        onClick={(e) => {props.setFavoriteShown(favorite.id)
                         // navigate("/home")
-      // DELETE ^
                         }}
-                        style={(folder.id === props.folderShown) && (props.location === "/home" || "/") ? {textDecoration: "underline"} : null} 
-                        onInput={e => setFolderName(e.currentTarget.textContent)}
+// DELETE NAVIGATE ^
+                        style={(favorite.id === props.favoriteShown) && (props.location === "/home" || "/") ? {textDecoration: "underline"} : null} 
+                        onInput={e => setFavorites(e.currentTarget.textContent)}
                         >
-                        {folder.name}
+                        {favorite.name}
                         </StyledEditableDiv>
-
-</Link>
                         {props.enableDelete === true  
                         && <SubtractButton 
-                        onClick={() => props.deleteFolder(folder)} >-</SubtractButton>}
+                        onClick={() => props.deleteFavorites(favorite)} >-</SubtractButton>}
                         </div>)}
         {/* </DndProvider> */}
                         <div className="sidebar-break"></div>
@@ -118,7 +115,7 @@ const updateFolder = (e, folderName, folder) => {
     )
 }
 
-export default SideBarFolder
+export default SideBarFavorites
  
 const SubtractButton = styled.button`
 background-color: transparent;

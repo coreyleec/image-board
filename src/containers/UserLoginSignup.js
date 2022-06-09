@@ -71,7 +71,7 @@ const signupSubmit = (e, name, email, password) => {
     .catch(e => alert(e))
     .then((res) => res.json())
     .then((user) => {
-      console.log("user login", user );
+      console.log("user signup", user );
       // props.setUserProfile(!props.userProfile);
       localStorage.token = user.user.token;
       console.log("token", localStorage.token)

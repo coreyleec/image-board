@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import  React  from "react";
 import { useNavigate, useLocation } from 'react-router-dom';
-import SideBarFolder from "../components/SideBarFolder";
 import SideBarLinks from "../components/SideBarLinks";
+import SideBarFolder from "../components/SideBarFolder";
+import SideBarFavorites from "../components/SideBarFavorites";
 import AboutMe from "../components/AboutMe";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -12,7 +13,7 @@ const SideBar = (props) => {
   // TOGGLE SIDEBAR
   const [sideBar, setBar] = useState(false);
   const location = useLocation();
-
+ console.log("new props", !!props.userState && props.userState.openModal)
   const navigate = useNavigate()
   // LOGOUT
   const logout = () => {
@@ -35,42 +36,57 @@ useEffect(() => {
       <Sticky sideBar={sideBar}>
       <>
       <ButtonContainer sideBar={sideBar}>
-      <button onClick={() => setBar(!sideBar)}>
-          {sideBar ? "x" : "open"}
+        <button onClick={() => setBar(!sideBar)}>
+            {sideBar ? "x" : "open"}
         </button>
-          </ButtonContainer>  
+      </ButtonContainer>  
           <div className="side-bar" >
+            {/* <div className="filter_cont">
+            <div className="background-filter"> */}
           <div className="scrollable">
           <div className="break"></div>
             {/* {props.currentUser && props.userFolders && */}
-            {(!!props.userFolders) && (props.location === "/" || props.location === "/home" || props.location === "/user" ) && 
+            {(!!props.userFolders) && (props.location === "/" || "home" || "user" || "community" ) && 
             <>
             <AboutMe {...props} />
             <SideBarFolder {...props} key={props.folder_id} />
             <SideBarLinks updateLink={props.updateLink} addLink={props.addLink} userLinks={props.userLinks} edit={props.edit} enableDelete={props.enableDelete} deleteLink={props.deleteLink} />
             </>}
-            {props.location === "/home" && <Link as={Link} to="/favorites">
-            <p className="nav-bar-header">
-              favorites
-              </p>
+            {(props.location === "/home") && 
+            <Link as={Link} to="/favorites">
+            <div className="nav-bar-header-wrapper" >
+            {("favorites").split('').map(n => (<p className="nav-bar-header">
+                {n}
+              </p>))
+              }
+              </div>
               </Link>}
+              {(props.location === "/home") && <SideBarFavorites as={Link} to="/favorites">
+            <div className="nav-bar-header-wrapper" >
+            {("favorites").split('').map(n => (<p className="nav-bar-header">
+                {n}
+              </p>))
+              }
+              </div>
+              </SideBarFavorites>}
             {props.location !== "/community" &&<Link as={Link} to="/community">
-            <p className="nav-bar-header">
-              community
-              </p>
+              <div className="nav-bar-header-wrapper" >
+            {("community").split('').map(n => (<p className="nav-bar-header">
+                {n}
+              </p>))
+              }
+              </div>
               </Link>}
               {/* location.pathname !== "/user" && */}
             {(props.location !== "/home") && (props.location !== "/" ) &&<Link as={Link} to={path} onClick={console.log("path", path)}>
-            <StyledP>
-              home
-              </StyledP>
+            <div className="nav-bar-header-wrapper" >
+            {("home").split('').map(n => (<p className="nav-bar-header">
+                {n}
+              </p>))
+              }
+              </div>
               </Link>}
-            {/* // !!props.currentUserId === false && !!props.userId &&  */}
-            {/* <Link as={Link} to={"home"} >
-            <StyledP>
-              home
-              </StyledP>
-              </Link> */}
+           
             <br></br>
             <br></br>
             <br></br>
@@ -89,6 +105,8 @@ useEffect(() => {
             {/* <p>image board is a visual tool for image curation, as well as a digital portfolio template</p> */}
           </div>
         </div>
+        {/* </div>
+        </div> */}
         </>
       </Sticky>
     </aside>
@@ -129,10 +147,16 @@ const Sticky = styled.div`
 
   .side-bar {
     padding-inline: 5px;
-    height: 50%;
+    /* height: 75%; */
+    max-height: 100vh;
+    overflow-y: scroll ;
+    padding-bottom: 5px;
     position: relative;
     transition: right 1s ease;
     ${({sideBar})  => sideBar ? `right : 0%` : `right: 100%` };
+    /* -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+    mask-image: linear-gradient(to bottom, black 50%, transparent 100%); */
+    
     /* position: fixed;
     top: 0%;
     transition: left 1s ease;
@@ -140,7 +164,10 @@ const Sticky = styled.div`
 
     @media (max-width: 1200px) {
       position: fixed;
-      height: 50%;
+      /* height: 50%; */
+      /* height: fit-content; */
+      max-height: 75vh;
+      /* overflow-y: scroll; */
       top: 0%;
       width: 200px;
       transition: left 1s ease;
@@ -150,16 +177,47 @@ const Sticky = styled.div`
       backdrop-filter: blur(6px);
       /* background: coral; */
       border-bottom-right-radius: 22px;
+      &::-webkit-scrollbar {
+      width: 0px;
+      }
     }
-  scrollable {
-    height: 700px;
-    overflow-y: scroll;
+    /* .filter_cont{
+      width: 100%;
+      height: 100%;
+      position: relative;
+      padding-inline: 5px;
+    }
+    .background-filter{
+      padding-inline: 5px;
+      /* position: absolute; */
+      /* top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0; */
+      /* backdrop-filter: blur(6px); */
+      /* overflow: hidden; */
+      /* width: 110%;
+    }
+    .background-filter:before {
+      background: url('../assets/transparent-img.png');
+      background-size: cover;
+      /* left: 0;
+      right: 0;
+      bottom: 0px; */
+      /* position: absolute; */
+      /* height: 20%; */
+      /* width: 110%; */
+      /* background-size: fill; */
+      /* -webkit-filter: blur(12px); */
+      /* filter: blur(12px); */
+    /* }  */
+  .scrollable {
+    /* height: 700px; */
+    /* overflow-y: scroll; */
     display: block;
     @media (max-width: 1200px) {
   }
-  :-webkit-scrollbar {
-    width: 0px;
-  }
+  
   }
   a {
     text-decoration-line: none;

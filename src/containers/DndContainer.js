@@ -12,9 +12,11 @@ const DndContainer = (props) => {
   const location = useLocation();
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState()
-  console.log("folder photos", !!props.photos && props.photos)
+  // console.log("folder photos", !!props.photos && props.photos)
   useEffect(() => {
     !!props.photos && setPhotos([...props.photos])
+    const grid = gridRef.current;
+    adjustGridItemsHeight(grid);
   }, [props.photos])
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
@@ -36,8 +38,12 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   const gridRef = useRef(null);
   const imgRef = useRef(null)
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  
+ const adjustFunction = () => {
+  const grid = gridRef.current;
+  adjustGridItemsHeight(grid)
+ }
   useEffect(() => {
+    console.log("testing grid adjustment", photos)
     const grid = gridRef.current;
     adjustGridItemsHeight(grid);
   }, [photos]);
@@ -70,9 +76,39 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
     });
       };
 
+      const deletePhoto = (photo) => {
+
+        console.log(photo);
+        fetch(`http://[::1]:3000/api/v1/photos/${photo.id}/`, {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${localStorage.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name: null,
+            url: null,
+            details: null, 
+            demensions: null,
+            image_file: null, 
+          }),
+        })
+          .then((res) => res.json())
+          .then((photoObj) => {
+            console.log(photoObj);
+            setPhotos(
+              photos.map((photo) => {
+                if (photo.id === photoObj.id) return photoObj;
+                else return photo;
+              })
+            );
+          });
+      };
+
   const [photo, setPhoto] = useState();
   const [openModal, setOpenModal] = useState(false);
   const modalToggle = (photo) => {
+    console.log("photo", photo)
     setPhoto(photo);
     setOpenModal(!openModal);
   };
@@ -108,7 +144,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
       : setPhoto(previousPhoto);
   };
 
-  console.log("photos", photos)
+  // console.log("photos", photos)
 
 // const [cursor, setCursor] = useState("default")
 
@@ -122,17 +158,14 @@ const favoriteToggle = (photo) => {
     ? fetch(`http://[::1]:3000/api/v1/favorites/${photo.favorites[0].id}`, {
       method: "DELETE",
       headers: {
-        Authorization: `Bearer ${localStorage.token}`}
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",}
         })
         // .catch(e => console.error(e))
         .then((res) => res.json())
-        .then((photoObj) => {
-          console.log("photoObj",photoObj);
-          setPhotos(photos.map((photo) => {
-              if (photo.id === photoObj.id) return photoObj;
-              else return photo;})
-            );
-          })
+        .then((photosArray) => {
+          console.log("photosArray", photosArray);
+          setPhotos(photosArray)})
       : fetch(`http://[::1]:3000/api/v1/favorites/`, {
         method: "POST",
         headers: {
@@ -141,16 +174,21 @@ const favoriteToggle = (photo) => {
           body: JSON.stringify({
             favoritable_id: photo.id,
             favoritable_type: "Photo", 
-            user_id: photo.user_id}),
+            user_id: photo.user_id, 
+          }),
+            
         })
         // .catch(e => console.error(e))
         .then((res) => res.json())
-        .then((photoObj) => {
-          console.log("photoObj",photoObj);
-          setPhotos(photos.map((photo) => {
-              if (photo.id === photoObj.id) return photoObj;
-              else return photo;})
-            );
+        .then((favoriteObj) => {
+          console.log("favoriteObj", favoriteObj);
+          setPhotos(
+            photos.map((photo) => {
+              if (photo.id === favoriteObj.photo.id) return favoriteObj.photo
+              // photo.favorites[0] = favoriteObj.photo.favorites[0];
+              else return photo;
+            })
+          );
           })
 }
 
@@ -160,6 +198,7 @@ const testFavorite = (photo) => {
 }
   return (
     <article>
+      <button onClick={adjustFunction}>adjust</button>
       {openModal && (
         <ImageModal
         setPhotos={props.setPhotos}
@@ -178,7 +217,7 @@ const testFavorite = (photo) => {
       )}
 
       <DndProvider backend={MultiBackend} options={HTML5toTouch}>
-        
+        <>
           <div className="grid">
             <GridWrapper
               ref={gridRef}
@@ -191,6 +230,7 @@ const testFavorite = (photo) => {
                     edit={props.edit}
                     key={photo.id}
                     url={photo.url}
+                    photo={photo}
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                   >
                     <PictureFrame
@@ -207,7 +247,8 @@ const testFavorite = (photo) => {
                         alt="photo"
                         ref={imgRef}
                         key={photo.index}
-                        onLoad={() => setImagesLoaded(true)}
+                        // onLoad keeps tall images from overlapping the photo on the next line
+                        // onLoad={adjustFunction}
                         onClick={() => modalToggle(photo)}
                         // onMouseDown={setCursor("grabbing")}
                         // {cursor: `${cursor}`}
@@ -219,7 +260,7 @@ const testFavorite = (photo) => {
                         src={
                           !!photo.url
                             ? photo.url
-                            : "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+                            : require('../assets/transparent-img.png')
                         }
                       />
                       {(photo.details || photo.name) 
@@ -227,22 +268,22 @@ const testFavorite = (photo) => {
                         <h4 className={"card-name"}>{photo.name}</h4>
                         <p className={"card-details"} >{photo.details}</p>
                       </div>}
-{/* DELETE BUTTON */}
-                    {props.enableDelete && !!photo.url && 
-                        <button
-                        style={{display}}
-                        className="delete-photo" onClick={() => props.deletePhoto(photo)} >+</button>}
 {/* FAVORITE BUTTON */}
-                        {(!!props.currentUserId) && (props.currentUserId !== props.userId) && <button 
+                        {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && <button 
                         className="heart"
                         onClick={() => favoriteToggle
-                        (photo)} className="heart">♥</button>}
+                        (photo)} >♥</button>}
                     </PictureFrame>
+  {/* DELETE BUTTON */}
+                        {props.enableDelete && !!photo.url && 
+                        <button
+                        style={{display}}
+                        className="delete-photo" onClick={() => props.deletePhoto(photo) } >+</button>}
                   </DraggableGridItem>
                 ))}
             </GridWrapper>
           </div>
-
+      </>
       </DndProvider>
       </article>
   );
@@ -254,6 +295,7 @@ const Heart = styled.button`
 `;
 
 const adjustGridItemsHeight = (grid, photo) => {
+  console.log("testing grid function")
   // set all grid photos to vairable "photos"
   // console.log(image, photo.firstChild.getBoundingClientRect())
   const photos = grid.children; // set all grid photo to vairable "photos"
@@ -275,6 +317,7 @@ const adjustGridItemsHeight = (grid, photo) => {
 // console.log("stuff", photo.secondChild.getBoundingClientRect().height)
     // let rowSpan = Math.ceil(
     //   (photo.firstChild.getBoundingClientRect().height + rowGap))
+    console.log("rowSpan", rowSpan)
     photo.style.gridRowEnd = "span " + rowSpan;
     // (photo.firstChild.getBoundingClientRect().height === 0) && 
     // photo.style.zIndex = "-1"
@@ -310,19 +353,25 @@ const GridWrapper = styled.div`
         } */}
 
 const PictureFrame = styled.div`
-/* IMAGE TILE AND PICTURE */
-  height: 100px;
-  overflow: hidden;
-  margin: 10px;
-  /* ALLOWS FOR RESIZING WINDOW */
-  max-width: fit-content;
-  /* USE THIS TO KEEP IMAGE CENTER */
-  display: flex;
-  justify-content: center;
-  border-radius: 13px;
-  box-shadow: -3px 3px 5px 2px #aaaaaa;
-  transition: all .2s ease-in-out;
-  .heart{
+height: 100px;
+    overflow: hidden;
+    margin: 10px;
+    max-width: -webkit-fit-content;
+    max-width: -moz-fit-content;
+    max-width: fit-content;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    border-radius: 13px;
+    box-shadow: -3px 3px 5px 2px #aaaaaa;
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in;
+  .heart{  
     position: absolute;
     bottom: -4px;
     right: 12px;
@@ -346,8 +395,9 @@ const PictureFrame = styled.div`
   }
   } 
   .photo {
-  /* position: relative; */
-  /* overflow: hidden;  */
+   /* min-width: 150px;
+  max-height: 220px;
+  position: initial; */
 }
 /* transform-origin: left bottom; */
   ${({ edit, url }) => !edit ? !!url 

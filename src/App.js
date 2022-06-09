@@ -17,12 +17,8 @@ export const App = () => {
   const [user, setUser] = useState()
   let navigate = useNavigate();
   const location = useLocation();
- 
-  useEffect(() => {
-    const currentPath = location.pathname;
-    const searchParams = new URLSearchParams(location.search);
-    console.log("currentPath", currentPath, "searchParams", searchParams)
-  }, [location]);
+  const [locationOrigin, setLocationOrigin] = useState()
+  
 
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
@@ -104,15 +100,30 @@ const editToggle = () => {
 // }, [location.pathname])
 // useEffect(() => {
 // }, [location.pathname])
+
+
 useEffect(() => {
-  (location.pathname !== "/" | "/home" | "/user" ) && !!edit && setEdit(false)
+  console.log("in useEffect", location.pathname, location.pathname.split('/')[1])
+
+  location.pathname === '/' &&
+  console.log("useEffect", location.pathname.split('/'))
+  setLocationOrigin(location.pathname.split('/')[1])
+
 }, [location.pathname])
+
+console.log("locationOrigin", locationOrigin)
+useEffect(() => {
+  const currentPath = location.pathname;
+  const searchParams = new URLSearchParams(location.search);
+  console.log("currentPath", currentPath, "searchParams", searchParams)
+}, [location]);
+
 
 // useEffect(() => {
 //   (location.pathname === "/community") && navigate("/community")
 // }, [location.pathname])
  useEffect(() => {
-  (location.pathname === "/home") && !!currentUserId && fetch(`http://[::1]:3000/api/v1/profile/`, {
+  (locationOrigin === "home") && !!currentUserId && fetch(`http://[::1]:3000/api/v1/profile/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -122,14 +133,13 @@ useEffect(() => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("User", user.user)
+      console.log("User Profile", user.user)
       setUserId(user.user.id)
       setUserName(user.user.name);
-      console.log("UserName", user.user.favorites[0].photos)
       setUserAboutMe(user.details);
         setUserLinks(user.user.links);
         setUserFolders(user.user.folders);
-        setFavorites(user.user.favorites[0].photos)
+        setFavorites(user.user.favorite_folders[0].favorite_photos)
         // console.log("user folders", user.user.folders)
         setFolderShown(user.user.folders[0].id)
         // setPhotos(user.folders[0].photos)
@@ -137,6 +147,35 @@ useEffect(() => {
         // setUserEmail(user.user.email);
   })
 }, [location.pathname])
+
+const [folderCollaborators, setFolderCollaborators] = useState(null)
+  const [folderPrivacy, setFolderPrivacy] = useState()
+  const [favoriteShown, setFavoriteShown] = useState(null)
+  const [userFavorites, setUserFavorites] = useState();
+  useEffect(() => {
+console.log("use", (currentUserId === userId))
+    const condition = (currentUserId === userId) || (folderCollaborators == currentUserId) 
+    if(condition && !!folderShown && !favoriteShown) 
+      {const folder = userFolders.filter(folder => folder.id === folderShown)[0]
+      setPhotos(folder.photos) 
+      setFolderPrivacy(folder.public)
+      setFolderCollaborators(folder.collaborators)
+      navigate(`/home/folders/${favoriteShown}`)}
+      
+    else if (condition && !folderShown && !!favoriteShown)
+      {const favorite = userFavorites.filter(favorite => favorite.id === favoriteShown)[0]
+      setPhotos(favorite.photos) 
+      // setFavoritePrivacy(favorite.public)
+      // setFavoriteCollaborators(favorite.collaborators)
+    }
+    // !!props.photos && setPhotos([...props.photos])
+    // console.log("folderShown", folderShown)
+  }, [folderShown])
+  // console.log("folderShown", folderShown, "folderCollaborator", folderCollaborator)
+
+  useEffect(() => {
+    (locationOrigin !== "/" | "home" | "user" ) && !!edit && setEdit(false)
+  }, [location.pathname])
 
 // useEffect(() => {
 //   !!currentUserId && (userId !== currentUserId) && (location.pathname === "/user") ? navigate("/home") : navigate(`/user/${userId}`) && fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
@@ -178,6 +217,7 @@ useEffect(() => {
       setUserAboutMe(user.user.details);
         setUserLinks(user.user.links);
         setUserFolders(user.user.folders);
+        setFavorites(user.user.favorite_folders)
         // console.log("user folders", user.user.folders)
         setFolderShown(user.user.folders[0].id)
         // setPhotos(user.folders[0].photos)
@@ -188,15 +228,6 @@ useEffect(() => {
 
 
   // FOLDER FUNCTIONS
-
-
-  const [folderPrivacy, setFolderPrivacy] = useState()
-  useEffect(() => {
-    if(!!folderShown) {const folder = userFolders.filter(folder => folder.id === folderShown)[0]
-    const privacy = folder.public
-    setPhotos(folder.photos) && setFolderPrivacy(folder.public)}
-    // !!props.photos && setPhotos([...props.photos])
-  }, [folderShown])
 
   const updateFolder = (e, folderName, folder) => {
     e.preventDefault();
@@ -215,13 +246,44 @@ useEffect(() => {
     })
       .then((res) => res.json())
       .then((folderObj) => {
-        console.log(folderObj);
+        console.log("folderObj", folderObj.collaborator);
         setUserFolders(
           userFolders.map((folder) => {
             if (folder.id === folderObj.id) return folderObj;
             else return folder;
           })
         );
+      });
+  };
+
+  const addCollaborator = (userId) => {
+    // e.preventDefault();
+    console.log("id", userId, "folder", folderShown)
+    fetch(`http://[::1]:3000/api/v1/add_collaborator/${folderShown}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        collaborators: userId,
+        // details: folderDetais,
+        // link: folderLink,
+        // user_id: currentUser.id
+      }),
+    })
+      .then((res) => res.json())
+      .then((collaborators) => {
+        console.log("setFolderCollaborators", setFolderCollaborators);
+        setFolderCollaborators(collaborators)
+        // setUserFolders(
+        //   userFolders.map((folder) => {
+        //     if (folder.id === folderObj.id) 
+        //     // folder.collaborator = folderObj.collaborator
+        //     // return folderObj;
+        //     // else return folder;
+        //   })
+        // );
       });
   };
 
@@ -463,22 +525,48 @@ const deletePhoto = (photo) => {
 
 
 const [reorderedPhotos, setReorderedPhotos] = useState()
-console.log("reorderedPhotos", reorderedPhotos)
+// console.log("reorderedPhotos", reorderedPhotos)
 const reorderSubmit = () => {
- console.log("folderShown", folderShown)
+//  console.log("folderShown", folderShown)
 //  FOR EACH PHOTO UPDATE THE INDEX VALUE
-reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
-    fetch(`http://[::1]:3000/api/v1/photos/${photo.id}/`, {
+// let path = (location.pathname === "/favorites") ? "favorite_photos" : "photos"
+// reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
+//     fetch(`http://[::1]:3000/api/v1/${path}/${photo.id}/`, {
+//       method: "PATCH",
+//       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         index: photo.index,
+//       }),
+//     })
+//   )
+//   reorderedPhotos !== undefined &&  setReorderedPhotos(undefined)
+//   };
+
+    fetch(`http://[::1]:3000/api/v1/reorder/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        index: photo.index,
+        favorite_photos: reorderedPhotos,
       }),
     })
-  )
+  // )
   reorderedPhotos !== undefined &&  setReorderedPhotos(undefined)
   };
 // const pholder = userFolders !== undefined && userFolders.filter(folder => folder.id === folderShown)[0]
+
+
+// props.setFavorites(props.favorites.map((photo) => {
+//   if (photo.id === favoriteObj.favorite_photo.id) return favoriteObj.favorite_photo;
+//   else return photo;}))
+
+// const [props, setProps] = useState()
+const [userState, setUserState] = useState()
+  useEffect(() => {
+    setUserState({navigate, photos, setPhotos, openModal, setOpenModal, folderShown, userId, currentUserId})
+  }, [userId])
+  
+// const {navigate, photos, setPhotos, openModal, setOpenModal, folderShown, userId, currentUserId} = props
+
 
   /// MODAL
   const [openModal, setOpenModal] = useState(false);
@@ -489,6 +577,7 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
        className="cont">
         <SideBar
         // state={{ from: location }}
+        userState={userState}
           dbVersion={dbVersion}
           location={location.pathname}
           setUserFolders={setUserFolders}
@@ -525,11 +614,15 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
           updateFolderPrivacy={updateFolderPrivacy}
           folderPrivacy={folderPrivacy}
           // loggedIn={loggedIn}
-          location={location.pathname}
+          folderCollaborators={folderCollaborators}
+          location={locationOrigin}
           deleteToggle={deleteToggle}
           enableDelete={enableDelete}
           editToggle={editToggle}
           // currentUser={currentUser} 
+          addCollaborator={addCollaborator}
+          collaborators={folderCollaborators}
+          folderShown={folderShown}
           edit={edit}
           reorderSubmit={reorderSubmit}
           userId={userId}
@@ -538,62 +631,66 @@ reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
         <main>
           {/* GRID STARTS HERE */}
         <Routes> 
-          <Route exact path={"/home"} element={<DndContainer
-              // loggedIn={loggedIn}
-              navigate={navigate}
-              setReorderedPhotos={setReorderedPhotos}
-              setPhotos={setPhotos}
-              // addPhoto={addPhoto}
-              openModal={openModal}
-              setOpenModal={setOpenModal}
-              deletePhoto={deletePhoto}
-              enableDelete={enableDelete}
-              edit={edit}
-              photos={!!photos && photos}
-              // reorderSubmit={reorderSubmit}
-              folderShown={folderShown}
-              currentUserId={currentUserId}
-              userId={userId}
-              />} />    
-          <Route exact path={"/"} element={
+        <Route exact path={"/"} element={
           <DndContainer
-              loggedIn={loggedIn}
+
               navigate={navigate}
-              setReorderedPhotos={setReorderedPhotos}
+              photos={!!photos && photos}
               setPhotos={setPhotos}
-              // addPhoto={addPhoto}
               openModal={openModal}
               setOpenModal={setOpenModal}
+              folderShown={folderShown}
+              userId={userId}
+              currentUserId={currentUserId}
+
+              setReorderedPhotos={setReorderedPhotos}
+              // addPhoto={addPhoto}
               deletePhoto={deletePhoto}
               enableDelete={enableDelete}
               edit={edit}
-              photos={!!photos && photos}
               reorderSubmit={reorderSubmit}
-              folderShown={folderShown}
-              currentUserId={currentUserId}
-              userId={userId}
+              
               />} />    
-          <Route exact path={"/favorites"} element={
-          <DndContainer
-              loggedIn={loggedIn}
+
+          <Route exact path={"/home/folders/:id"} element={<DndContainer
+
               navigate={navigate}
-              // setReorderedPhotos={setReorderedPhotos}
+              photos={!!photos && photos}
               setPhotos={setPhotos}
-              photos={!!favorites && favorites}
-              // addPhoto={addPhoto}
               openModal={openModal}
               setOpenModal={setOpenModal}
-              // deletePhoto={deletePhoto}
-              // enableDelete={enableDelete}
+              folderShown={folderShown}
+              userId={userId}
+              currentUserId={currentUserId}
+              
+              setReorderedPhotos={setReorderedPhotos}
+              // addPhoto={addPhoto}
+              deletePhoto={deletePhoto}
+              enableDelete={enableDelete}
               edit={edit}
+              // reorderSubmit={reorderSubmit}
+              />} />    
+         
+          <Route exact path={"home/favorites/:id"} element={
+          <DndContainer
+              navigate={navigate}
+              photos={favorites}
+              setPhotos={setPhotos}
+              openModal={openModal}
+              setOpenModal={setOpenModal}
+              setReorderedPhotos={setReorderedPhotos}
+              userId={userId}
+              currentUserId={currentUserId}
+              
+              edit={edit}
+              setFavorites={setFavorites}
+              // ={!!favorites && favorites.favorite_photos}
               // photos={!!photos && photos}
               // reorderSubmit={reorderSubmit}
-              // folderShown={folderShown}
-              currentUserId={currentUserId}
-              userId={userId}
+              // favoriteShown={favoriteShown}
               />} />    
           <Route exact path={`/user/`} element={<DndContainer
-              // loggedIn={loggedIn}
+
               navigate={navigate}
               setReorderedPhotos={setReorderedPhotos}
               setPhotos={setPhotos}
