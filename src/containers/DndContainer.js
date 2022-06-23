@@ -1,6 +1,8 @@
 import React from "react";
 import { useEffect, useState, useRef} from "react";
 import { useLocation } from 'react-router-dom';
+import {withRouter} from 'react-router';
+
 import styled from "styled-components";
 import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
@@ -198,6 +200,11 @@ const testFavorite = (photo) => {
 }
   return (
     <article>
+      <>
+          <button onClick={() => props.setBaseName('user')}>user basename</button>
+          <button onClick={() => props.setBaseName('home')}>home basename</button>
+        <button onClick={() => props.setBaseName('')}>/ basename</button>
+        </>
       <button onClick={adjustFunction}>adjust</button>
       {openModal && (
         <ImageModal
@@ -228,7 +235,7 @@ const testFavorite = (photo) => {
               // style={(photo.url === null) && {zIndex : '-1'}} 
               // style={{'display': 'none'}}
                     edit={props.edit}
-                    key={photo.id}
+                    key={photo.dimensions}
                     url={photo.url}
                     photo={photo}
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}

@@ -2,14 +2,16 @@ import React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { DndProvider } from "react-dnd";
 import styled from "styled-components";
-import { useNavigate } from 'react-router-dom';
+import {  useHistory } from 'react-router-dom';
 
 const SideBarFavorites = (props) => {
   
   const [newFavorites, setNewFavorites] = useState(false)
-  const [favoriteName, setFavorites] = useState("")
+  const [favoriteName, setUserFavorites] = useState("")
   
-  let navigate = useNavigate();
+  let history = useHistory()
+  let navigate = history.push;
+  
   const submitNewFavorites = (e, favorite) => {
   if (e.key === 'Enter' && e.shiftKey === false) {props.addFavorites(e, favoriteName) 
   e.currentTarget.blur();
@@ -39,7 +41,7 @@ const updateFavorites = (e, favoriteName, favorite) => {
     .then((favoriteObj) => {
       console.log(favoriteObj);
       props.setUserFavorites(
-        props.userFavorites.map((favorite) => {
+        props.favoriteDetails.map((favorite) => {
           if (favorite.id === favoriteObj.id) return favoriteObj;
           else return favorite;
         })
@@ -55,6 +57,7 @@ const updateFavorites = (e, favoriteName, favorite) => {
 //   inputRef.current.focus()
 // }
 // }
+console.log("props.favoriteDetails", props.favoriteDetails)
     return (
         <div>
 {/* FOLDER TOGGLE */}
@@ -81,13 +84,13 @@ const updateFavorites = (e, favoriteName, favorite) => {
                         placeholder={"add favorite name"}
                         style={{"cursor": props.edit ? "text" : "default"}}
                         onKeyDown={(e) => submitNewFavorites(e)}
-                        onInput={(e) => setFavorites(e.currentTarget.textContent)}>
+                        onInput={(e) => setUserFavorites(e.currentTarget.textContent)}>
                         </StyledEditableDiv> }
 </div>
 
 {/* EDIT FOLDER NAME */}
 {/* <DndProvider> */}
-            {props.userFavorites != null && props.userFavorites.map(favorite => <div 
+            {!!props.favoriteDetails  && props.favoriteDetails.map(favorite => <div 
                         className="subtract-item" key={favorite.id} favorite={favorite}>
                         <StyledEditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
@@ -96,12 +99,13 @@ const updateFavorites = (e, favoriteName, favorite) => {
                         draggable={true}
                         onKeyDown={(e) => submitFavorites(e, favorite)}
 // SET FOLDER SHOWN TO NULL
-                        onClick={(e) => {props.setFavoriteShown(favorite.id)
-                        // navigate("/home")
+                        onClick={(e) => {
+                          // props.setUserFavoriteshown(favorite.id)
+                        navigate(`/favorites/${favorite.id}`)
                         }}
 // DELETE NAVIGATE ^
                         style={(favorite.id === props.favoriteShown) && (props.location === "/home" || "/") ? {textDecoration: "underline"} : null} 
-                        onInput={e => setFavorites(e.currentTarget.textContent)}
+                        onInput={e => setUserFavorites(e.currentTarget.textContent)}
                         >
                         {favorite.name}
                         </StyledEditableDiv>

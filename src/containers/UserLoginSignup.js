@@ -1,6 +1,6 @@
 import { useState} from "react";
 import React from "react";
-import { useNavigate } from 'react-router-dom';
+import { useHistory, useRouteMatch } from 'react-router-dom';
 import styled from "styled-components";
 
 const UserLoginSignup = (props) => {
@@ -20,7 +20,12 @@ const [userLogin, setUserLogin] = useState(false);
   };
 
 
-  let navigate = useNavigate();
+  let history = useHistory()
+  let navigate = history.push
+  const { url, path } = useRouteMatch();
+  console.log("url, path", url, path)
+
+
 // USER LOGIN
 const loginSubmit = (e, name, password) => {
   e.preventDefault();
@@ -48,12 +53,14 @@ const loginSubmit = (e, name, password) => {
       // props.setUserFolders(user.user.folders);
       // props.setFolderShown(user.user.folders[0].id)
       // props.setUserLinks(user.user.links);
-      navigate("/home")
+      // props.setBaseName('home')
+      props.setBaseName("home")
+      // navigate("/")
       
     });
   };
 
-console.log("token", localStorage.token)
+// console.log("token", localStorage.token)
 // USER SIGNUP
 const signupSubmit = (e, name, email, password) => {
   e.preventDefault();
@@ -135,7 +142,10 @@ const signupSubmit = (e, name, email, password) => {
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
           />
-          <button type="submit">submit</button>
+
+          <button 
+          onMouseOver={() => props.setBaseName('home')} onMouseOut={() => props.setBaseName('')}
+          type="submit">submit</button>
         </form>
       ) : null}
       </article>

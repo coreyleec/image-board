@@ -13,7 +13,7 @@ const AsideRight = (props) => {
   };
 
   const [search, setSearch] = useState([0])
-
+  console.log("props.directory", props.directory)
   const searchUser = (input) => {
     console.log(input)
     // setSearch(...search, input)
@@ -38,9 +38,13 @@ const searchToggle = () => {
   setEnableCollaborate(!enableCollaborate)
   !!search && setSearch([0])
 }
+console.log("path", location.pathname.split('/')[1])
+let path = location.pathname.split('/')[1]
+
+// || ((path === "user") && (props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) return true})))
   return (
     <aside>
-      {(!!props.currentUserId) && ((!!props.locationOrigin && props.locationOrigin === "home" && props.currentUserId === props.userId) || (props.location === "/user" && props.folderCollaborator == props.currentUserId)) && 
+      {((!!props.currentUserId) && (path === "home") && (props.currentUserId === props.userId)) && 
             <Sticky>
               <>
            
@@ -105,7 +109,7 @@ const searchToggle = () => {
             <label clasName="collaborator-cont">
               <span className="switch" >
               <ul>
-              {props.collaborators.map(collaborator => (<li>{collaborator.name}</li>))}
+              {!!props.collaborators && props.collaborators.map(collaborator => (<li>{collaborator.name}</li>))}
               </ul>
               </span>
               </label>

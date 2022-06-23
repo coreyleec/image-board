@@ -1,12 +1,14 @@
 import React from 'react'
-import {useEffect, useState} from 'react'
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react'
+import { useHistory, useLocation } from 'react-router-dom';
 import styled from 'styled-components'
 
 
 const CommunityPage = (props) => {
     const location = useLocation();
-    const navigate = useNavigate()
+    const history = useHistory()
+    const navigate = history.push
+    
     console.log("path", location.pathname);
 const [users, setUsers] = useState()
 const [photos, setPhotos] = useState()
@@ -49,7 +51,7 @@ const fetchUser = (userId) => {
       props.setFolderShown(user.user.folders[0].id)
       // props.setPhotos(user.folders[0].photos)
       props.setUserLinks(user.user.links);
-      (userId === props.currentUserId) ? navigate("/home") : navigate("/user")
+      (userId === props.currentUserId) ? navigate(`/home/folders/${user.user.folders[0].id}`) : navigate(`/user/folders/${user.user.folders[0].id}`)
       // (userId === props.currentUserId) ? navigate("/home") : navigate(`/user/${userId}`)
         // console.log("user folders", user.user.folders)
         // setUserComments(user.comments);
