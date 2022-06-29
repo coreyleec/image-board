@@ -15,6 +15,7 @@ const [photos, setPhotos] = useState()
 const [folders, setFolders] = useState()
 
 useEffect(() => {
+  !!props.userId &&
     fetch("http://[::1]:3000/api/v1/community/", {
         method: "GET",
       headers: {
@@ -41,18 +42,17 @@ const fetchUser = (userId) => {
     .then((user) => 
     {
       console.log("user", user)
-      // setUser(user)
-      props.setUserId(user.id);
+      props.setUserId(user.user.id);
       props.setUserName(user.user.name);
       props.setUserAboutMe(user.user.details);
-      // props.setUserFolders(user.folders);
-      props.setUserFolders(user.user.folders);
-      // props.setFolderShown(user.folders[0].id)
-      props.setFolderShown(user.user.folders[0].id)
-      // props.setPhotos(user.folders[0].photos)
+      props.setFolders(user.user.folders);
+      props.setFolderShown(user.user.folders[0].index)
       props.setUserLinks(user.user.links);
-      (userId === props.currentUserId) ? navigate(`/home/folders/${user.user.folders[0].id}`) : navigate(`/user/folders/${user.user.folders[0].id}`)
-      // (userId === props.currentUserId) ? navigate("/home") : navigate(`/user/${userId}`)
+      props.setPhotos(user.user.folders[0].photos)
+      navigate(`/user/folders/${user.user.folders[0].index}`)
+      // (userId === props.currentUserId) ? props.setBaseName('home') : props.setBaseName('user') 
+      // navigate('/')
+      // navigate(`/user`)
         // console.log("user folders", user.user.folders)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);

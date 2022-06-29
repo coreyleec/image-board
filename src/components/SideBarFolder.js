@@ -2,7 +2,7 @@ import React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { DndProvider } from "react-dnd";
 import styled from "styled-components";
-import {  useHistory, Link , useLocation} from 'react-router-dom';
+import {  useHistory, Link , useLocation, useRouteMatch} from 'react-router-dom';
 
 const SideBarFolder = (props) => {
   console.log("parse", props.favoriteDetails)
@@ -11,6 +11,7 @@ const SideBarFolder = (props) => {
   let location = useLocation()
   let history = useHistory()
   let navigate = history.push;
+  const match = useRouteMatch()
   
   const submitNewFolder = (e, folder) => {
   if (e.key === 'Enter' && e.shiftKey === false) {props.addFolder(e, folderName) 
@@ -90,9 +91,9 @@ const updateFolder = (e, folderName, folder) => {
 let path = location.pathname.split("/")[1] */}
 {/* EDIT FOLDER NAME */}
 {/* <DndProvider> */}
-            {!!props.folderDetails && props.folderDetails.map(folder => <div 
+            {!!props.folderDetails && props.folderDetails.sort((a, b) => a.index - b.index).map(folder => <div 
                         className="subtract-item" key={folder.id} folder={folder}>
-<Link to={`/folders/${folder.id}`} >                          
+{/* <Link to={`/folders/${folder.id}`} >                           */}
                         <StyledEditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
                         // folderDetails={props.folderDetails}
@@ -100,17 +101,17 @@ let path = location.pathname.split("/")[1] */}
                         draggable={true}
                         onKeyDown={(e) => submitFolderEdit(e, folder)}
       // SET FAVORITE SHOWN TO NULL
-                        onClick={(e) => {props.setFolderShown(folder.id)
+                        onClick={(e) => {props.setFolderPhotos(folder.index)
                         }}
-                        // navigate("/home")
+                        // navigate(`/${match.path}/folders/`)
       // DELETE ^
-                        style={(folder.id === props.folderShown) && (location === "/home/" || "/") ? {textDecoration: "underline"} : null} 
+                        style={(folder.index === props.folderShown) && (location === "/home/" || "/") ? {textDecoration: "underline"} : null} 
                         onInput={e => setFolderName(e.currentTarget.textContent)}
                         >
                         {folder.name}
                         </StyledEditableDiv>
 
-</Link>
+{/* </Link> */}
                         {props.enableDelete === true  
                         && <SubtractButton 
                         onClick={() => props.deleteFolder(folder)} >-</SubtractButton>}

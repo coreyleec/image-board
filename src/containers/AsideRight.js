@@ -44,7 +44,7 @@ let path = location.pathname.split('/')[1]
 // || ((path === "user") && (props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) return true})))
   return (
     <aside>
-      {((!!props.currentUserId) && (path === "home") && (props.currentUserId === props.userId)) && 
+      {((props.directory === "home") && (props.currentUserId === props.userId)) && 
             <Sticky>
               <>
            

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import React from "react";
-import { Link, useHistory, useLocation } from "react-router-dom";
+import { Link, useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import SideBarLinks from "../components/SideBarLinks";
 import SideBarFolder from "../components/SideBarFolder";
 import SideBarFavorites from "../components/SideBarFavorites";
@@ -22,14 +22,16 @@ const SideBar = (props) => {
     props.setCurrentUserId(null);
     window.location.reload(false);
   };
+const match = useRouteMatch()
+  const path = !!props.currentUserId ? "home" : "-";
 
-  // const condition = !!props.userId ? "/user" : !!props.currentUserId && "/home";
+  // const [path, setPath] = useState();
 
-  const [path, setPath] = useState();
-
-  useEffect(() => {
-    !!props.currentUserId ? setPath("/home") : setPath("/");
-  }, [props.currentUserId]);
+  // useEffect(() => {
+  //   (location.pathname === '/community' || '/login') 
+  //   ? (!!props.currentUserId) && setPath("-")
+  //   : (!props.currentUserId) && setPath("home");
+  // }, [props.currentUserId]);
 
   return (
     <aside>
@@ -41,8 +43,7 @@ const SideBar = (props) => {
             </button>
           </ButtonContainer>
           <div className="side-bar">
-            {/* <div className="filter_cont">
-            <div className="background-filter"> */}
+
             <div className="scrollable">
               <div className="break"></div>
               {/* {props.currentUser && props.userFolders && */}
@@ -51,17 +52,16 @@ const SideBar = (props) => {
                   <>
                     <AboutMe {...props} />
                     <SideBarFolder 
-                    // {...props} 
+                    setFolderPhotos={props.setFolderPhotos}
                     addFolder={props.addFolder}
                     setUserFolders={props.setUserFolders}
                     edit={props.edit}
-                    // userFolders={props.userFolders}
+                    setFavoritePhotos={props.setFavoritePhotos}
                     setFolderShown={props.setFolderShown}
                     folderShown={props.folderShown}
                     folderDetails={props.folderDetails}
-                    // folderDetails={(!!props.folderDetails) && props.folderDetails.map(details => JSON.parse(details))}
                     enableDelete={props.enableDelete}
-
+                    directory={props.directory}
                     // key={props.folder_id} 
                     />
                     <SideBarFavorites {...props} key={props.folder_id}/>
@@ -75,9 +75,10 @@ const SideBar = (props) => {
                     />
                   </>
                 )}
-<>
-              {props.location !== "/community" && (
-                <Link as={Link} to="/community">
+{/* COMMUNITY */}
+<div style={{"width": "min-content"}}>
+              {props.directory !== 'community' && (
+                <Link as={Link} to="/community" >
                   <div className="nav-bar-header-wrapper">
                     {"community".split("").map((n) => (
                       <p className="nav-bar-header">{n}</p>
@@ -85,38 +86,39 @@ const SideBar = (props) => {
                   </div>
                 </Link>
               )}
-</>
+
               {/* location.pathname !== "/user" && */}
-              <>
-              {(location.pathname !== ("/" || "home")) && (
-                <Link as={Link} to={path}>
+{/* HOME */}
+              {props.directory !== 'home' && props.directory !== '-' && (
+                <Link as={Link} to={!!props.folderDetails &&`/${path}/folders/${ props.folderDetails[0].index}`} 
+                // onClick={() => props.setBaseName(path)}
+                >
                   <div className="nav-bar-header-wrapper">
-                    {"home".split("").map((n) => (
-                      <p className="nav-bar-header">{n}</p>
+                    {"home".split("").map((l) => (
+                      <p className="nav-bar-header">{l}</p>
                     ))}
                   </div>
                 </Link>
               )}
-              </>
+</div>
 
               <br></br>
               <br></br>
               <br></br>
               <br></br>
               {/* <p>Welcome :)</p> */}
+{/* LOGIN */}              
               {!!props.currentUserId ? (
                 <Button
-                //  onMouseOver={() => props.setBaseName('')} onMouseOut={() => props.setBaseName('home')} 
                 onClick={() => logout()}>log out</Button>
               ) : (
                 <Button 
-                // onMouseOver={() => props.setBaseName('home')} onMouseOut={() => props.setBaseName('')}
                  onClick={() => props.useTemplate(setBar(!sideBar))}>
                   use template
                 </Button>
               )}
               {/* props.setLoggedIn(false) */}
-              {/* <p>image board is a visual tool for image curation, as well as a digital portfolio template</p> */}
+              {/* <p>image board is a visual tool for image curation, and digital portfolio</p> */}
             </div>
           </div>
           {/* </div>
@@ -229,7 +231,7 @@ const Sticky = styled.div`
       /* height: 700px; */
       /* overflow-y: scroll; */
       display: block;
-      width: min-content;
+      
       @media (max-width: 1200px) {
       }
     }

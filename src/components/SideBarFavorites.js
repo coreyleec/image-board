@@ -99,12 +99,12 @@ console.log("props.favoriteDetails", props.favoriteDetails)
                         draggable={true}
                         onKeyDown={(e) => submitFavorites(e, favorite)}
 // SET FOLDER SHOWN TO NULL
-                        onClick={(e) => {
-                          // props.setUserFavoriteshown(favorite.id)
-                        navigate(`/favorites/${favorite.id}`)
+                        onClick={() => {
+                          props.setFavoritePhotos(favorite.index)
                         }}
+                        // navigate(`/favorites/${favorite.id}`)
 // DELETE NAVIGATE ^
-                        style={(favorite.id === props.favoriteShown) && (props.location === "/home" || "/") ? {textDecoration: "underline"} : null} 
+                        style={(favorite.index === props.favoriteShown) && (props.location === "/home" || "/") ? {textDecoration: "underline"} : null} 
                         onInput={e => setUserFavorites(e.currentTarget.textContent)}
                         >
                         {favorite.name}

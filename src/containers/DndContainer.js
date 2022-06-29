@@ -1,6 +1,6 @@
 import React from "react";
 import { useEffect, useState, useRef} from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation, useRouteMatch } from 'react-router-dom';
 import {withRouter} from 'react-router';
 
 import styled from "styled-components";
@@ -15,11 +15,17 @@ const DndContainer = (props) => {
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState()
   // console.log("folder photos", !!props.photos && props.photos)
+
+  
   useEffect(() => {
     !!props.photos && setPhotos([...props.photos])
     const grid = gridRef.current;
     adjustGridItemsHeight(grid);
   }, [props.photos])
+
+  const match  = useRouteMatch();
+  console.log("url, path", match.path)
+
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
     let newPhotos = [...photos]; // copy of array
@@ -235,7 +241,7 @@ const testFavorite = (photo) => {
               // style={(photo.url === null) && {zIndex : '-1'}} 
               // style={{'display': 'none'}}
                     edit={props.edit}
-                    key={photo.dimensions}
+                    key={photo.index}
                     url={photo.url}
                     photo={photo}
                     onDrop={photo.url === null ? onDropVariable : disableOnDrop}
@@ -253,7 +259,7 @@ const testFavorite = (photo) => {
                         className={"photo"}
                         alt="photo"
                         ref={imgRef}
-                        key={photo.index}
+                        key={(!!photo.url) &&photo.url}
                         // onLoad keeps tall images from overlapping the photo on the next line
                         // onLoad={adjustFunction}
                         onClick={() => modalToggle(photo)}

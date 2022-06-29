@@ -46,7 +46,7 @@ const loginSubmit = (e, name, password) => {
     .then((user) => {
       console.log("user login", user );
       localStorage.token = user.user.token;
-      props.setUserId(user.id);
+      props.setUserId(user.user.id);
       props.setCurrentUserId(user.user.id)
       // props.setUserName(user.user.name);
       // props.setUserAboutMe(user.user.details);
@@ -54,7 +54,7 @@ const loginSubmit = (e, name, password) => {
       // props.setFolderShown(user.user.folders[0].id)
       // props.setUserLinks(user.user.links);
       // props.setBaseName('home')
-      props.setBaseName("home")
+      // props.setBaseName("home")
       // navigate("/")
       
     });
@@ -82,7 +82,7 @@ const signupSubmit = (e, name, email, password) => {
       // props.setUserProfile(!props.userProfile);
       localStorage.token = user.user.token;
       console.log("token", localStorage.token)
-      // props.setUserId(user.id);
+      props.setUserId(user.user.id);
       props.setCurrentUserId(user.user.id)
       // props.setCurrentUser(user.user);
       // props.setUserName(user.user.name);
@@ -92,7 +92,8 @@ const signupSubmit = (e, name, email, password) => {
       // props.setFolderShown(user.user.folders[0].id)
       // props.setUserLinks(user.links);
       // console.log("user folders", user.user.folders)
-      navigate("/home")
+      // props.setBaseName("home")
+      // navigate(`/home/folders/${user.user.folders[0].index}`)
     });
 };
 
@@ -144,7 +145,7 @@ const signupSubmit = (e, name, email, password) => {
           />
 
           <button 
-          onMouseOver={() => props.setBaseName('home')} onMouseOut={() => props.setBaseName('')}
+          // onMouseOver={() => props.setBaseName('home')} onMouseOut={() => props.setBaseName('')}
           type="submit">submit</button>
         </form>
       ) : null}
