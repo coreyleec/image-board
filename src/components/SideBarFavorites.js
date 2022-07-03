@@ -57,12 +57,19 @@ const updateFavorites = (e, favoriteName, favorite) => {
 //   inputRef.current.focus()
 // }
 // }
+const [condition, setCondition] = useState()
+useEffect(() => {
+  (props.directory === 'home' || props.directory === '-') ?
+  setCondition(false)
+  : setCondition(true)
+}, [props.directory])
+
 console.log("props.favoriteDetails", props.favoriteDetails)
     return (
         <div>
 {/* FOLDER TOGGLE */}
                     <div className="add-item" >
-                    <div className="nav-bar-header-wrapper" >
+                    <div className="nav-bar-header-wrapper" onClick={() => setCondition(!condition)}>
                   {("favorites").split('').map(n => (<p className="nav-bar-header">
                       {n}
                     </p>))
@@ -89,7 +96,7 @@ console.log("props.favoriteDetails", props.favoriteDetails)
 </div>
 
 {/* EDIT FOLDER NAME */}
-{/* <DndProvider> */}
+<SlideDrawer condition={condition} >
             {!!props.favoriteDetails  && props.favoriteDetails.map(favorite => <div 
                         className="subtract-item" key={favorite.id} favorite={favorite}>
                         <StyledEditableDiv
@@ -112,15 +119,21 @@ console.log("props.favoriteDetails", props.favoriteDetails)
                         {props.enableDelete === true  
                         && <SubtractButton 
                         onClick={() => props.deleteFavorites(favorite)} >-</SubtractButton>}
-                        </div>)}
-        {/* </DndProvider> */}
+                        </div>
+                        )}
+                        </SlideDrawer>
+
                         <div className="sidebar-break"></div>
-        </div>
+                        </div>
     )
 }
 
 export default SideBarFavorites
- 
+
+ const SlideDrawer = styled.div`
+ transition: height 1s ease-in-out;
+ ${({ condition }) => (condition ? `max-height: 0px; overflow: hidden;` : `height: min-content;`)}`
+//  (sideBar ? `left : 0%` : `left: -30%`)}
 const SubtractButton = styled.button`
 background-color: transparent;
 border: none;
@@ -130,6 +143,12 @@ line-height: 0px;
 padding: 0;
 transform: scale(2, 1);
 margin-top: 8%;
+padding-right: 6px;
+/* padding-left: 6px; */
+height: 40px;
+margin-top: 0px;
+padding-top: 0px;
+padding-bottom: 4px;
 align-self: self-start;
 cursor: pointer;
 `

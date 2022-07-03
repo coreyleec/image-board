@@ -16,22 +16,30 @@ const SideBar = (props) => {
   let navigate = history.push;
   // LOGOUT
   const logout = () => {
-    props.setBaseName('')
     navigate("/");
     localStorage.clear();
     props.setCurrentUserId(null);
     window.location.reload(false);
   };
 const match = useRouteMatch()
-  const path = !!props.currentUserId ? "home" : "-";
+  // const path = !!props.currentUserId ? "home" : "-";
 
-  // const [path, setPath] = useState();
+  const [func, setFunc] = useState();
 
   // useEffect(() => {
-  //   (location.pathname === '/community' || '/login') 
-  //   ? (!!props.currentUserId) && setPath("-")
-  //   : (!props.currentUserId) && setPath("home");
-  // }, [props.currentUserId]);
+  //   // (location.pathname === '/community' || '/login') 
+  //   (!props.currentUserId) 
+  //   ?  setFunc(props.landingFetch)
+  //   :  setFunc(props.profileFetch);
+  // }, [location.pathname]);
+
+//   useEffect(() => {
+//     // (location.pathname === '/community' || '/login')
+//     (!!props.currentUserId) && (!!props.folderDetails)
+//     ? !!props.folderDetails && setPath(`/-/folders/${props.folderDetails[0].index}`)
+//     : !!props.folderDetails && setPath(`/home/folders/${props.folderDetails[0].index}`);
+//   }, [!!props.folderDetails]);
+// console.log('path 2', !!props.folderDetails && props.folderDetails[0].index)
 
   return (
     <aside>
@@ -54,17 +62,25 @@ const match = useRouteMatch()
                     <SideBarFolder 
                     setFolderPhotos={props.setFolderPhotos}
                     addFolder={props.addFolder}
-                    setUserFolders={props.setUserFolders}
+                    // setUserFolders={props.setUserFolders}
                     edit={props.edit}
-                    setFavoritePhotos={props.setFavoritePhotos}
-                    setFolderShown={props.setFolderShown}
+                    // setFavoritePhotos={props.setFavoritePhotos}
+                    // setFolderShown={props.setFolderShown}
                     folderShown={props.folderShown}
                     folderDetails={props.folderDetails}
                     enableDelete={props.enableDelete}
                     directory={props.directory}
-                    // key={props.folder_id} 
+                    // key={props.userId} 
                     />
-                    <SideBarFavorites {...props} key={props.folder_id}/>
+                    <SideBarFavorites  
+                    directory={props.directory}
+                    setFavoritePhotos={props.setFavoritePhotos}
+                    favoriteDetails={props.favoriteDetails}
+                    favoriteShown={props.favoriteShown}
+                    enableDelete={props.enableDelete}
+                    // key={props.userId}
+                    edit={props.edit}
+                    />
                     <SideBarLinks
                       updateLink={props.updateLink}
                       addLink={props.addLink}
@@ -90,15 +106,17 @@ const match = useRouteMatch()
               {/* location.pathname !== "/user" && */}
 {/* HOME */}
               {props.directory !== 'home' && props.directory !== '-' && (
-                <Link as={Link} to={!!props.folderDetails &&`/${path}/folders/${ props.folderDetails[0].index}`} 
-                // onClick={() => props.setBaseName(path)}
-                >
-                  <div className="nav-bar-header-wrapper">
+                // <Link as={Link} to={!!props.folderDetails &&`/${path}`} 
+                // >
+                
+                  <div className="nav-bar-header-wrapper" 
+                  onClick={() => props.fetch()}
+                  >
                     {"home".split("").map((l) => (
                       <p className="nav-bar-header">{l}</p>
                     ))}
                   </div>
-                </Link>
+                // </Link>
               )}
 </div>
 

@@ -156,7 +156,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
 
 // const [cursor, setCursor] = useState("default")
 
-  // const opacity = imagesLoaded ? 1 : 0
+  const opacity = imagesLoaded ? 1 : 0
   const display = openModal ? "none" : "inline"
   
 const favoriteToggle = (photo) => {
@@ -206,11 +206,6 @@ const testFavorite = (photo) => {
 }
   return (
     <article>
-      <>
-          <button onClick={() => props.setBaseName('user')}>user basename</button>
-          <button onClick={() => props.setBaseName('home')}>home basename</button>
-        <button onClick={() => props.setBaseName('')}>/ basename</button>
-        </>
       <button onClick={adjustFunction}>adjust</button>
       {openModal && (
         <ImageModal
@@ -241,10 +236,11 @@ const testFavorite = (photo) => {
               // style={(photo.url === null) && {zIndex : '-1'}} 
               // style={{'display': 'none'}}
                     edit={props.edit}
-                    key={photo.index}
+                    // key={photo.index}
                     url={photo.url}
                     photo={photo}
-                    onDrop={photo.url === null ? onDropVariable : disableOnDrop}
+
+                    onDrop={onDrop}
                   >
                     <PictureFrame
                       favorited={!!photo.favorites && photo.favorites.length} 
@@ -258,10 +254,12 @@ const testFavorite = (photo) => {
                       <img
                         className={"photo"}
                         alt="photo"
-                        ref={imgRef}
-                        key={(!!photo.url) &&photo.url}
+                        // ref={imgRef}
+                        // key={photo.index}
+                        // key={!!photo.url &&photo.url}
+                        onLoad={() => props.edit && adjustFunction()}
                         // onLoad keeps tall images from overlapping the photo on the next line
-                        // onLoad={adjustFunction}
+                        
                         onClick={() => modalToggle(photo)}
                         // onMouseDown={setCursor("grabbing")}
                         // {cursor: `${cursor}`}

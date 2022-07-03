@@ -55,7 +55,7 @@ const loginSubmit = (e, name, password) => {
       // props.setUserLinks(user.user.links);
       // props.setBaseName('home')
       // props.setBaseName("home")
-      // navigate("/")
+      // navigate("/home")
       
     });
   };

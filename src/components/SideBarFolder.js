@@ -129,10 +129,16 @@ background-color: transparent;
 border: none;
 font-size: 2rem;
 color: red;
-line-height: 0px;
+line-height: 6px;
 padding: 0;
 transform: scale(2, 1);
-margin-top: 8%;
+/* margin-top: 8%; */
+padding-right: 6px;
+/* padding-left: 6px; */
+height: 40px;
+margin-top: 0px;
+padding-top: 0px;
+padding-bottom: 4px;
 align-self: self-start;
 cursor: pointer;
 `
@@ -140,7 +146,7 @@ const StyledEditableDiv = styled.div`
 font-size: 2rem;
 padding: 0px;
 float: left;
-line-height: 1.2;
+line-height: 1.1;
 text-align: left;
 width: 100%; 
 color: black;

@@ -3,7 +3,7 @@ import React, { useRef } from 'react';
 import styled from 'styled-components';
 import { useDrag, useDrop } from 'react-dnd';
 
-const DraggableGridItem = ({ photo, onDrop, children, edit, ...p }) => {
+const DraggableGridItem = ({  photo, onDrop, children, edit, ...p }) => {
   // const { photo, onDrop, children, ...p } = props;
   // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
 // console.log("props", p)
@@ -49,6 +49,7 @@ const DraggableGridItem = ({ photo, onDrop, children, edit, ...p }) => {
 // const style = (photo.url === null) && {zIndex : '-1'}
   return <GridItemWrapper  
     {...p} ref={ref}  
+
     // style={{ opacity }} 
     // style={{style}}
     edit={edit} 

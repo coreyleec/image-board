@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useLocation, Switch, useHistory, useRouteMatch } from 'react-router-dom';
+import { Routes, Route, useLocation, Switch, useHistory, useRouteMatch, Redirect } from 'react-router-dom';
 // import {withRouter} from 'react-router';
 
 // import { browserHistory } from 'react-router';
@@ -130,15 +130,9 @@ const editToggle = () => {
 
 
 
-
-
-
-console.log("location.pathname", location.pathname)
- useEffect(() => {
-  //  (directory === 'home') && 
-  //  props.baseName === 'home' &&
-  !!currentUserId && (userId === currentUserId) &&
-   fetch(`http://[::1]:3000/api/v1/profile/`, {
+const profileFetch = () => {
+  
+  fetch(`http://[::1]:3000/api/v1/profile/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -157,13 +151,21 @@ console.log("location.pathname", location.pathname)
         setUserFavorites(user.user.favorite_folders)
         // setFolderPhotos(user.user.folders[0].index)
         setFolderShown(user.user.folders[0].index)
-        // setPhotos(user.folders[0].photos)
+        setPhotos(user.user.folders[0].photos)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
         
         navigate(`/home/folders/${user.user.folders[0].index}`)
         
   })
+}
+
+
+console.log("location.pathname", location.pathname)
+ useEffect(() => {
+  //  directory === 'home' && 
+  !!currentUserId && userId === currentUserId && profileFetch()
+   
 }, [currentUserId])
 
 // useEffect(() => {
@@ -280,8 +282,8 @@ const setFavoritePhotos = (index) => {
 //   })
 // }, [userId])
 
- useEffect(() => {
-  (location.pathname === '/-') && (!currentUserId) && (!userId) && fetch("http://[::1]:3000/api/v1/landing_page/", {
+const landingFetch = () => {
+  fetch("http://[::1]:3000/api/v1/landing_page/", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -307,7 +309,11 @@ const setFavoritePhotos = (index) => {
         // setUserEmail(user.user.email);
         navigate(`/-/folders/${user.user.folders[0].index}`)
   })
-}, [])
+}
+
+ useEffect(() => {
+  location.pathname === '/-' && location.pathname !== '/login' && location.pathname !== '/community' && landingFetch()
+}, [location.pathname])
 // console.log("parse", !!favoriteDetails && favoriteDetails.map(detail => JSON.parse(detail)))
 
 useEffect(() => {
@@ -414,6 +420,7 @@ useEffect(() => {
 
   const addFolder = (e, folderName) => {
     e.preventDefault();
+    const nextIndex = folderDetails[folderDetails.length - 1].index + 1
     fetch(`http://[::1]:3000/api/v1/folders/`, {
       method: "POST",
       headers: {
@@ -424,7 +431,7 @@ useEffect(() => {
         name: folderName,
         details: null,
         // link: folderLink,
-        index: folders.length + 1,
+        index: nextIndex,
         user_id: currentUserId,
       }),
     })
@@ -644,7 +651,7 @@ const reorderSubmit = () => {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        favorite_photos: reorderedPhotos,
+        reordered_photos: reorderedPhotos,
       }),
     })
   // )
@@ -709,11 +716,13 @@ const reorderSubmit = () => {
           // dbVersion={dbVersion}
           // location={location.pathname}
           // folders={folders}
+          fetch={!!currentUserId ? profileFetch : landingFetch}
+          // profileFetch={}
           directory={directory}
-          baseName={props.baseName}
+          // baseName={props.baseName}
           setFavoritePhotos={setFavoritePhotos}
           setFolderPhotos={setFolderPhotos}
-          setBaseName={props.setBaseName}
+          // setBaseName={props.setBaseName}
           setFolders={setFolders}
           // userFavorites={}
           setUserFavorites={setUserFavorites}
@@ -772,7 +781,7 @@ const reorderSubmit = () => {
         <main>
           {/* GRID STARTS HERE */}
           
-      <Route path={[ '/-', '/home', '/user' ]} 
+      <Route path={[ '/-','/home', '/user' ]} 
       >
         {/* component={withRouter( */}
           <DndRoutePrefix
@@ -797,31 +806,8 @@ const reorderSubmit = () => {
               {/* />  */}
               {/* )} */}
               </Route>    
-      <Route exact path={'/-'} 
-      >
-        {/* component={withRouter( */}
-          <Dnd
-
-              navigate={navigate}
-              photos={!!photos && photos}
-              setPhotos={setPhotos}
-              openModal={openModal}
-              setOpenModal={setOpenModal}
-              folderShown={folderShown}
-              
-              userId={userId}
-              currentUserId={currentUserId}
-
-              setReorderedPhotos={setReorderedPhotos}
-              // addPhoto={addPhoto}
-              deletePhoto={deletePhoto}
-              enableDelete={enableDelete}
-              edit={edit}
-              reorderSubmit={reorderSubmit}
-              /> 
-              {/* />  */}
-              {/* )} */}
-              </Route>    
+              <Redirect from="/" to="/-" />
+ 
 
          
               <Route exact path='/login' >
