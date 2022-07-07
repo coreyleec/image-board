@@ -13,6 +13,7 @@ return (
       >
 
           <DndContainer
+            hightlighted={props.hightlighted}
               setBaseName={props.setBaseName}
               photos={props.photos}
               setPhotos={props.setPhotos}

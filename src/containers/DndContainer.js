@@ -58,11 +58,12 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   
   const addPhoto = (e, formData, dimensions, photoName, photoDetails, photo) => {
     e.preventDefault();
-  
+    
     const data = new FormData(formData)
       dimensions !== undefined && dimensions !== null && data.append('dimensions', dimensions)        
       photoName !== undefined && photoName !== null && data.append('name', photoName)
       photoDetails !== undefined && photoDetails !== null && data.append('details', photoDetails)
+      props.userId !== props.currentUserId && data.append('uuid', photoDetails)
   
     for(let [key, value] of data){console.log("data", `${key}:${value}`)}
   
@@ -243,6 +244,7 @@ const testFavorite = (photo) => {
                     onDrop={onDrop}
                   >
                     <PictureFrame
+                      hightlighted={props.hightlighted}
                       favorited={!!photo.favorites && photo.favorites.length} 
                       edit={props.edit}
                       url={photo.url}
@@ -274,6 +276,11 @@ const testFavorite = (photo) => {
                             : require('../assets/transparent-img.png')
                         }
                       />
+                      {(photo.details || photo.name) 
+                      && <div className={"card-content"} >
+                        <h4 className={"card-name"}>{photo.name}</h4>
+                        <p className={"card-details"} >{photo.details}</p>
+                      </div>}
                       {(photo.details || photo.name) 
                       && <div className={"card-content"} >
                         <h4 className={"card-name"}>{photo.name}</h4>

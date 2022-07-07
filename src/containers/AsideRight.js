@@ -41,11 +41,18 @@ const searchToggle = () => {
 console.log("path", location.pathname.split('/')[1])
 let path = location.pathname.split('/')[1]
 
+// const [isCollabor, setIsCollabor] = useEffect(false)
+// useEffect(() => {
+//   !!props.folderCollaborators && !!props.currentUserId && props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) setIsCollabor(true)})
+// }, [props.folderCollaborators])
+
 // || ((path === "user") && (props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) return true})))
+console.log("folderCollaborators", props.folderCollaborators)
   return (
     <aside>
-      {((props.directory === "home") && (props.currentUserId === props.userId)) && 
             <Sticky>
+      {(((props.directory === "home") && (props.currentUserId === props.userId)) || 
+      ((props.directory === "user") && (!!props.folderCollaborators && props.folderCollaborators.map((collaborator) => {if (collaborator.uuid === props.currentUserId) return true})))) && 
               <>
            
             <Switch>
@@ -97,31 +104,38 @@ let path = location.pathname.split('/')[1]
             {enableCollaborate && 
             <input autoFocus="autofocus" type="text" onChange={(e) => searchUser(e.target.value)} placeholder="search user"/>}
             <ul>
-              {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.id)}>
+              {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
                 {user.name}
               </li>))}
             </ul>
             </span>
             </label>
-            <p>add collaborator</p> 
+            <p>collaborate</p> 
             </InputSwitch>
-            <CollabotorList>
-            <label clasName="collaborator-cont">
-              <span className="switch" >
-              <ul>
-              {!!props.collaborators && props.collaborators.map(collaborator => (<li>{collaborator.name}</li>))}
-              </ul>
-              </span>
-              </label>
-              </CollabotorList>
+            
       </>
             }
             
             </>
-            
-            
+          } 
+            {!!props.folderCollaborators.length &&
+            <CollabotorList hightlighted={props.hightlighted}>
+            <div clasName="collaborator-cont">
+              <span className="switch" >
+              <ul>
+              {!!props.folderCollaborators.length && props.folderCollaborators.map(collaborator => (<li 
+              onClick={() => props.hiliteCollaborator(collaborator, props.highlighted)}
+              >{collaborator.name}</li>))}
+              </ul>
+              </span>
+              </div>
+              </CollabotorList>}
+              <ul>
+                {!!props.highlighted && props.highlighted.map(user => (<li>{user.name}</li>))}
+              </ul>
             </Sticky>
-            } 
+            
+            
     </aside>
   );
 };
@@ -133,7 +147,10 @@ const Sticky = styled.div`
   top: 0;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
-  transition: all 2.5s;
+  padding-bottom: 10px;
+  transition: all 2.5s; 
+  padding-inline: 10px;
+  padding-bottom: 10px;
   /* z-index: 1; */
   /* transition: border-top-left-radius border-top-left-radius 2s ease-in-out; */
   /* transition: border-top-left-radius 2s ease-in-out;
@@ -142,12 +159,16 @@ const Sticky = styled.div`
   @media (max-width: 1200px) {
     all: unset;
     transition: all 2.5s;
+    padding-inline: 10px;
+    padding-bottom: 10px;
     z-index: 1;
     /* transition: background-color 3s;
     transition: border-top-left-radius 2s ease-in-out;
     transition: border-bottom-left-radius 2s ease-in-out; */
     position: fixed;
-    right: -3px;
+    right: 0px;
+    /* padding-bottom: 10px; */
+
     background-color: coral;
     border-top-left-radius: 22px;
     border-bottom-left-radius: 22px;
@@ -175,10 +196,11 @@ const Switch = styled.label`
   margin-top: 0;
   
  p {
-  
+  padding-left: 10px;
   margin-bottom: .70rem;
   margin-top: 0.50rem;
   font-size: 19px;
+  
 }
 
 .toggle-switch {
@@ -187,7 +209,8 @@ position: relative;
 display: inline-block;
 width: 50px;
 height: 25px;
-margin: 10px;
+/* margin-block: 10px; */
+margin-top: 10px;
 }
 .toggle-switch input[type="checkbox"] {
 display: none;
@@ -222,24 +245,44 @@ background-color:  #ccc;
 }
 
 `
-const CollabotorList = styled.label`
-  display:flex;
-  margin-top: 0;
-  margin-inline: 10px;
-  width: 100%
+const CollabotorList = styled.div`
+  /* display:flex; */
+  /* margin-top: 0; */
+  /* margin-inline: 10px; */
+  /* width: 100%; */
+  margin-top: 10px;
+
 
 .collaborator-cont {
   position: relative;
     display: inline-block;
+    /* width:91%; */
+    width: -webkit-fill-available;
     /* width: 50px; */
     /* min-height: 25px; */
     height: fit-content;
-    margin: 10px;
+    margin-top: 10px;
     padding: .5px;
     background-color: #ccc;
     border-radius: 14px;
-    width: 100%;
-    
+    /* width: 100%; */
+    @media (max-width: 1200px) {
+    /* all: unset; */
+    transition: all 2.5s;
+    /* z-index: 1; */
+    position: relative;
+    display: inline-block;
+    /* width:91%; */
+    width: -webkit-fill-available;
+    /* width: 50px; */
+    /* min-height: 25px; */
+    height: fit-content;
+    margin-top: 10px;
+    padding: .5px;
+    background-color: #ccc;
+    border-radius: 14px;
+  
+  }
     /* width: ${props => !props.enableCollaborate ? '50px' : '100%'}; */
     .switch{
     width: 100%;
@@ -254,13 +297,27 @@ const CollabotorList = styled.label`
 }
     }
 .switch ul li {
-    list-style-type: none;
+  list-style-type: none;
+    cursor: pointer;
+    border-radius: 9px;
+    padding: 2px;
+    margin-top: 0.2rem;
+    padding-left: 0px;
+    transition: padding-left 0.3s ease;
+    :hover {
+      /* transition: padding-left 0.7s ease; */
+      /* box-shadow: -1px 1px 5px -2px #000000;
+      transform: translate(.5px, -.5px);  */
+      padding-left: 7px;
+    }
   }
 .switch ul {
     background-color: #aaa;
     border-radius: 10px;
     /* margin: 3px; */
     padding: 4px;
+    padding: 10px;
+    line-height: 1.3;
   }
 }`
 const InputSwitch = styled.label`
@@ -272,11 +329,14 @@ const InputSwitch = styled.label`
   p {
     /* ${({enableCollaborate})  => enableCollaborate && `width: 0;`} */
   /* transition: width 1s ease; */
-  width: ${props => !props.enableCollaborate ? '50%' : '0%'};
-  margin-bottom: .70rem;
-  margin-top: 0.50rem;
+  /* width: ${props => !props.enableCollaborate ? '100%' : '0%'}; */
+  display: ${props => !!props.enableCollaborate && 'none' };
+  /* margin-bottom: .70rem; */
+  margin-top: 0.60rem;
+  padding-left: 10px;
   font-size: 19px;
-  overflow: hidden;
+  /* overflow: hidden; */
+  /* display: none; */
   /* flex-grow: 0;  */
   
 }
@@ -296,13 +356,14 @@ input {
     /* width: 50px; */
     /* min-height: 25px; */
     height: ${props => !!props.search[0] ? 'fit-content' : '26px'};
-    margin: 10px;
+    margin-top: 10px;    
     padding: .5px;
     background-color: #ccc;
     border-radius: ${props => !!props.search[0] ? '14px' : '25px'};;
     width: ${props => !props.enableCollaborate ? '50px' : '100%'};
 .switch ul li {
     list-style-type: none;
+    cursor: pointer;
   }
 .switch ul {
     background-color: #aaa;

@@ -48,6 +48,7 @@ const loginSubmit = (e, name, password) => {
       localStorage.token = user.user.token;
       props.setUserId(user.user.id);
       props.setCurrentUserId(user.user.id)
+      props.setUuid(user.user.uuid)
       // props.setUserName(user.user.name);
       // props.setUserAboutMe(user.user.details);
       // props.setUserFolders(user.user.folders);

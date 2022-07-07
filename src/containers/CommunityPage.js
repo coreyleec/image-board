@@ -35,6 +35,7 @@ const fetchUser = (userId) => {
   fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
         method: "GET",
         headers: {
+          Authorization: `Bearer ${localStorage.token}`,
           "Content-Type": "application/json",
         },
     })
@@ -47,6 +48,7 @@ const fetchUser = (userId) => {
       props.setUserAboutMe(user.user.details);
       props.setFolders(user.user.folders);
       props.setFolderShown(user.user.folders[0].index)
+      props.setFolderCollaborators(user.user.folders[0].collaborators)
       props.setUserLinks(user.user.links);
       props.setPhotos(user.user.folders[0].photos)
       navigate(`/user/folders/${user.user.folders[0].index}`)
