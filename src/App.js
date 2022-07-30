@@ -36,7 +36,7 @@ export const App = (props) => {
     setDirectory(root)
   }, [location.pathname])
   
-
+  
   
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
@@ -107,22 +107,6 @@ const editToggle = () => {
 
 
 
-// useEffect(() => {
-//   (location.pathname === '/community') &&
-//   !!userId &&
-//   (props.baseName === ('user')) ? 
-//   navigate(`/folders/${folderShown}`) : navigate(location.pathname)
-
-//   // navigate(location.pathname)
-// }, [props.baseName])
-// useEffect(() => {
-//   (props.baseName === ('user')) ? 
-//   navigate(`/folders/${folderShown}`) : navigate(location.pathname)
-
-//   // navigate(location.pathname)
-// }, [props.baseName])
-
-
 
 const profileFetch = () => {
   
@@ -155,10 +139,38 @@ const profileFetch = () => {
   })
 }
 
+const fetchUser = (user_id) => {
+  fetch(`http://[::1]:3000/api/v1/users/${user_id}/`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.token}`,
+          "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((user) => 
+    {
+      console.log("user", user)
+      setUserId(user.user.id);
+      // props.setUuid(user.user.uuid)
+      setUserName(user.user.name);
+      setUserAboutMe(user.user.details);
+      setFolders(user.user.folders);
+      setFolderShown(user.user.folders[0].index)
+      setFolderCollaborators(user.user.folders[0].collaborators)
+      setUserLinks(user.user.links);
+      setPhotos(user.user.folders[0].photos)
+      navigate(`/user/folders/${user.user.folders[0].index}`)
+      
+        // setUserComments(user.comments);
+        // setUserEmail(user.user.email);
+  })
+}
 
 console.log("location.pathname", location.pathname)
  useEffect(() => {
   //  directory === 'home' && 
+  console.log('test useEffect')
   !!currentUserId && userId === currentUserId && profileFetch()
    
 }, [currentUserId])
@@ -255,43 +267,75 @@ const setFavoritePhotos = (index) => {
   setPhotos(favoriteFolder[0].favorite_photos)
   navigate(`/${directory}/favorites/${index}`)
 }
-const [highlighted, setHightlighted] = useState([])
-const hiliteCollaborator = (user, highlighted) => {
-  // setHightlighted([...highlighted, user])
-  // let index = highlighted.indexOf(user)
-  // console.log("user",user, "user.uuid", user.uuid, "present?", !!highlighted && highlighted.map(collaborator => collaborator.uuid === user.uuid), "absent?", !!highlighted && highlighted.map(collaborator => collaborator.uuid !== user.uuid), "highlighted", highlighted)
-  // console.log.("index",index)
-  // let filteredArray = !!highlighted.length && highlighted.filter(collaborator => collaborator.uuid !== user.uuid) 
-  // | highlighted
-  console.log("highlighted", highlighted)
-  // ARRAY PRESENT AND NOT NULL
-  console.log("user", user, "!!highlighted", !!highlighted.lenth, "highlighted.length < 1", highlighted.length < 1, "highlighted.map(collaborator => collaborator.uuid === user.uuid)", highlighted.map(collaborator => collaborator.uuid === user.uuid)[0], !!(highlighted.map(collaborator => collaborator.uuid === user.uuid).length),  highlighted.map(collaborator => collaborator.uuid !== user.uuid)[0])
 
-  if (highlighted.length < 1) {
-  setHightlighted([user]) 
-  } else if (highlighted.map(collaborator => collaborator.uuid === user.uuid)[0]) { 
-  setHightlighted(highlighted.filter(collaborator => collaborator.uuid !== user.uuid)) 
-  } else if (highlighted.filter(collaborator => collaborator.uuid === user.uuid).length === 0) {setHightlighted([...highlighted, user])}
-  // highlighted.length < 1 ?
-  // setHightlighted([...highlighted, user]) 
-  // : !!highlighted.map(collaborator => !collaborator.uuid === !user.uuid) ? 
-  // setHightlighted(highlighted.filter(collaborator => collaborator.uuid === user.uuid)) 
-  // : setHightlighted([...highlighted, user])
+const [colorArr, setColorArr] = useState([{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}])
 
-  // highlighted.length >= 0 && 
-  // !!(highlighted.map(collaborator => collaborator.uuid !== user.uuid).length) && 
-  // : null
-  // : setHightlighted([...highlighted, user]) 
-  // if ()
-  //  { let fileteredArray = highlighted.splice(index)
-    //  l 
-    // let index = highlighted.indexOf(user)
+const colors = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}]
 
+
+const [count, setCount] = useState([])
+
+
+const hiliteCollaborator = (user) => {
+  const filtered = photos.filter(photo => photo.uid === user.uuid)
+  if (count < 1) {
+    
+    let color = colorArr.splice(0, 1)[0]
+
+    setColorArr(colorArr)
+    
+    Object.assign(user, color)
+
+    filtered.map(photo => {
+      Object.assign(photo, color)
+    })
+    
+
+  } else if (user.color !== undefined && folderCollaborators.filter(collaborator => collaborator.color === user.color).length === 1) {
+    
+    let color = {}
+
+    color.color = user.color
+
+    let index = colors.map(color => color.color).indexOf(color.color)
+    
+    let colorArray = [...colorArr]
+
+    colorArray.splice(index, 0, color)
+    
+    setColorArr(colorArray)
+
+    const userIndex = folderCollaborators.indexOf(user)
+    
+    delete user.color
+    
+    const updatedArr = [...folderCollaborators]
+    
+    updatedArr.splice(userIndex, 1, user)
+    
+    setFolderCollaborators(updatedArr)
+
+    filtered.map(photo => {delete photo.color})
+
+  } else if ((colors.length !== count) && (user.color === undefined)) {
+    
+    let color = colorArr.splice(0, 1)[0]
+    setColorArr(colorArr)
+    
+    Object.assign(user, color)
+
+    filtered.map(photo => {
+      Object.assign(photo, color)
+    })
   
-
+  }
+  setCount(folderCollaborators.filter(user => user.color !== undefined).length)
+    
 }
 
-console.log("highlighted", highlighted)
+
+
+
 
 // useEffect(() => {
 //   directory === '/user' && !currentUserId && (userId !== currentUserId)  && fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
@@ -317,7 +361,7 @@ console.log("highlighted", highlighted)
 //         // setUserEmail(user.user.email);
 //   })
 // }, [userId])
-
+const [demo, setDemo] = useState(false)
 const landingFetch = () => {
   fetch("http://[::1]:3000/api/v1/landing_page/", {
         method: "GET",
@@ -335,9 +379,11 @@ const landingFetch = () => {
         setUserLinks(user.user.links);
         setFolders(user.user.folders);
         setUserFavorites(user.user.favorite_folders)
+        setDemo(user.user.demo)
+        setUuid(user.user.uuid)
         // setFavoriteDetails(user.user.favorite_folders.map(favoriteFolder => (`{"name": "${favoriteFolder.name}", "id": ${favoriteFolder.id}}`)))
         // setFolderDetails(user.user.folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}}`)))
-        
+        setFolderCollaborators(user.user.folders[0].collaborators)
         setFolderShown(user.user.folders[0].index)
         // console.log("user folders", user.user.folders)
         setPhotos(user.user.folders[0].photos)
@@ -346,6 +392,25 @@ const landingFetch = () => {
         navigate(`/-/folders/${user.user.folders[0].index}`)
   })
 }
+useEffect(() => {
+  // (directory === 'home' || directory === 'user' || directory === '-')
+  if (directory === 'login' || 'community'){
+    setEdit(false)
+    setColorArr(colors)
+    // setDemo(false)
+    //   console.log('test')
+  }
+
+
+}, [location.pathname])
+
+useEffect(() => {
+  if (directory !== '-' && demo === true){
+    setDemo(false)
+  }
+  console.log('test')
+}, [directory])
+
 
  useEffect(() => {
   location.pathname === '/-' && location.pathname !== '/login' && location.pathname !== '/community' && landingFetch()
@@ -396,7 +461,7 @@ useEffect(() => {
       });
   };
 
-  const addCollaborator = (userId) => {
+  const addCollaborator = (uuid) => {
     // e.preventDefault();
     console.log("id", userId, "folder", folderShown)
     const folder = folders.find(folder => folder.index === folderShown)
@@ -407,7 +472,7 @@ useEffect(() => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        uuid: userId,
+        uuid: uuid,
         // details: folderDetais,
         // link: folderLink,
         // user_id: currentUser.id
@@ -694,53 +759,11 @@ const reorderSubmit = () => {
   // )
   reorderedPhotos !== undefined &&  setReorderedPhotos(undefined)
   };
-// const pholder = folders !== undefined && folders.filter(folder => folder.id === folderShown)[0]
 
-
-// props.setUserFavorites(props.favorites.map((photo) => {
-//   if (photo.id === favoriteObj.favorite_photo.id) return favoriteObj.favorite_photo;
-//   else return photo;}))
-
-// const [props, setProps] = useState()
-// const [userState, setUserState] = useState()
-//   useEffect(() => {
-//     setUserState({navigate, photos, setPhotos, openModal, setOpenModal, folderShown, userId, currentUserId})
-//   }, [userId])
-//   const [generalState, setGeneralState] = useState({
-//     photos: null, 
-//     setPhotos: null, 
-//     userId: null,
-//     openModal: null, 
-//     setOpenModal: null,  
-//     currentUserId: null,
-//     userId: null, 
-//     navigate: null,
-//   })
-
-//   console.log("before generalState", generalState)
-//   useEffect(() => {
-//     setGeneralState({
-//     photos: photos, 
-//     setPhotos: setPhotos, 
-//     userId: userId,
-//     openModal: openModal, 
-//     setOpenModal: setOpenModal,  
-//     currentUserId: currentUserId,
-//     userId: userId, 
-//     navigate: navigate,
-//     })
-//     console.log(" during generalState", generalState)
-//   }, [userId])
-//   console.log(" after generalState", generalState)
-// const {navigate, photos, setPhotos, openModal, setOpenModal, folderShown, userId, currentUserId} = props
-
-// console.log("favfolds", (!!userFavorites) && userFavorites.map(favoriteFolder => (`{name: ${favoriteFolder.name}, id: ${favoriteFolder.id}}`)) )
   /// MODAL
   const [openModal, setOpenModal] = useState(false);
   const [token, setToken] = useState(localStorage.getItem('token'));
-  // <Routes>
-    {/* <Route exact path={[  '/' , '/home' , '/user']}> */}
-    {/* <Router>  */}
+  
     return (
       
       <Switch> 
@@ -748,22 +771,13 @@ const reorderSubmit = () => {
       className="cont">
          
         <SideBar
-        // state={{ from: location }}
-        // userState={userState}
-          // dbVersion={dbVersion}
-          // location={location.pathname}
-          // folders={folders}
+          demo={demo}
           fetch={!!currentUserId ? profileFetch : landingFetch}
-          // profileFetch={}
           directory={directory}
-          // baseName={props.baseName}
           setFavoritePhotos={setFavoritePhotos}
           setFolderPhotos={setFolderPhotos}
-          // setBaseName={props.setBaseName}
           setFolders={setFolders}
-          // userFavorites={}
           setUserFavorites={setUserFavorites}
-          // loggedIn={loggedIn}
           favoriteDetails={favoriteDetails}
           folderDetails={folderDetails}
           folderShown={folderShown}
@@ -772,7 +786,6 @@ const reorderSubmit = () => {
           enableDelete={enableDelete}
           deleteLink={deleteLink}
           deleteFolder={deleteFolder}
-          // folders={folders}
           addFolder={addFolder}
           setFolderShown={setFolderShown}
           updateFolder={updateFolder}
@@ -789,28 +802,24 @@ const reorderSubmit = () => {
           useTemplate={useTemplate}
         />
         <Header
-          
-          // currentUser={currentUser}
-          // loggedIn={loggedIn}
           directory={directory}
           userName={userName}
           edit={!edit}
           nameSubmit={nameSubmit}
         />
         <AsideRight
-        highlighted={highlighted}
+        demo={demo}
+        uuid={uuid}
         directory={directory}
         hiliteCollaborator={hiliteCollaborator}
           updateFolderPrivacy={updateFolderPrivacy}
           folderPrivacy={folderPrivacy}
-          // loggedIn={loggedIn}
           folderCollaborators={folderCollaborators}
           deleteToggle={deleteToggle}
           enableDelete={enableDelete}
           editToggle={editToggle}
-          // currentUser={currentUser} 
           addCollaborator={addCollaborator}
-          // collaborators={folderCollaborators}
+
           folderShown={folderShown}
           edit={edit}
           reorderSubmit={reorderSubmit}
@@ -826,16 +835,17 @@ const reorderSubmit = () => {
           <DndRoutePrefix
               setBaseName={props.setBaseName}
               // navigate={navigate}
-              highlighted={highlighted}
+              folderCollaborators={folderCollaborators}
               photos={!!photos && photos}
               setPhotos={setPhotos}
               openModal={openModal}
               setOpenModal={setOpenModal}
               folderShown={folderShown}
-              
+              colorArr={colorArr}
               userId={userId}
+              uuid={uuid}
               currentUserId={currentUserId}
-
+              folderCollaborators={folderCollaborators}
               setReorderedPhotos={setReorderedPhotos}
               // addPhoto={addPhoto}
               deletePhoto={deletePhoto}
@@ -852,7 +862,7 @@ const reorderSubmit = () => {
          
               <Route exact path='/login' >
                 <UserLoginSignup 
-                setBaseName={props.setBaseName}
+                setDemo={setDemo}
                 setUuid={setUuid}
                 userProfile={userProfile}
                 setUserProfile={setUserProfile}
@@ -888,7 +898,9 @@ const reorderSubmit = () => {
                 setFolderShown={setFolderShown}
                 setUserId={setUserId}
                 setFolderCollaborators={setFolderCollaborators}
+                setUuid={setUuid}
                 dbVersion={dbVersion}
+                fetchUser={fetchUser}
                 />
                 </Route>
                 

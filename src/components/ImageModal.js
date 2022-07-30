@@ -120,11 +120,12 @@ const ImageModal = (props) => {
 {/* NAME FORM EDIT AND PREVIW */}
 {(photo.name != null || photo.details != null || props.edit) && 
               <div className="modal-text-cont" style={{"backgroundColor": contColor}}>
+                
                <StyledImageName 
-                  type="text" contentEditable={props.edit}
-                  onInput={e => setPhotoName(e.currentTarget.textContent)}
-                  placeholder={(props.edit && photo.name == null) ? "add name": null}>
-                    {photo.name != null && photo.name}
+                type="text" contentEditable={props.edit}
+                onInput={e => setPhotoName(e.currentTarget.textContent)}
+                placeholder={(props.edit && !!photo.name.length) ? null : "add name"}>
+                    {photo.name.join(' ')}
                 </StyledImageName>
 {/* DETAILS FORM EDIT AND PREVIEW */}
                   <StyledImageDetails

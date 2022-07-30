@@ -106,8 +106,7 @@ const match = useRouteMatch()
               {/* location.pathname !== "/user" && */}
 {/* HOME */}
               {props.directory !== 'home' && props.directory !== '-' && (
-                // <Link as={Link} to={!!props.folderDetails &&`/${path}`} 
-                // >
+                
                 
                   <div className="nav-bar-header-wrapper" 
                   onClick={() => props.fetch()}
@@ -116,7 +115,7 @@ const match = useRouteMatch()
                       <p className="nav-bar-header">{l}</p>
                     ))}
                   </div>
-                // </Link>
+
               )}
 </div>
 

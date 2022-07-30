@@ -1,10 +1,19 @@
-import { useRef } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useDragAndDrop } from './useDragAndDrop';
 import styled from 'styled-components';
 
-export default function DraggableGridItem(props) {
-  const { photo, onDrop, children, ...p } = props;
-  console.log(children)
+const DraggableGridItem = (props) => {
+  // const [color, setColor] = useState()
+  const { photo, onDrop, collaborator, children, ...p } = props;
+
+  // useEffect(() => {
+  //   if (collaborator.color !== undefined){ 
+  //     const color = collaborator.color
+  //     console.log('hi', color)
+  //   setColor(color)}
+  // }, [props.colorArr])
+
+  console.log('drag', children)
   const ref = useRef(null);
   console.log(ref)
 
@@ -13,20 +22,24 @@ export default function DraggableGridItem(props) {
     hover: createDragHoverCallback(ref, photo, onDrop)
   });
 console.log(props)
+
   // const opacity = isDragging ? 0 : 1;
-  return <GridItemWrapper {...p} 
-  draggable={(!!props.photo.url)}
-  // style={{ opacity }}
+  return (
+    <GridItemWrapper {...p} 
+    // color={color}
+    draggable={(!!photoObj.url)}
+    // style={{ opacity }}
 
-  >
-    <div className="photo-cont"
-       ref={ref}
-     >
-    </div>
-    <div>{children}</div>
-    </GridItemWrapper>
-};
-
+    >
+      <div className="photo-cont"
+        ref={ref}
+        
+      >
+      </div>
+      <div>{children}</div>
+      </GridItemWrapper>
+)};
+export default DraggableGridItem
 // This was copied and adapted from react-dnd sortable example: https://react-dnd.github.io/react-dnd/examples/sortable/simple
 // Even though we are working with a grid, I decided to keep the items sorted as a list,
 // in order to avoid problems with different screen sizes and sorting.
@@ -75,6 +88,7 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
 }
 
 const GridItemWrapper = styled.div `
+  /* border : ${({color}) => color !== undefined ? `solid 1px ${color}`: 'solid 1px #aaa' }; */
   width: 150px;
   min-width: 240px;
   background-color: #fff;

@@ -1,5 +1,5 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
@@ -42,21 +42,25 @@ console.log("path", location.pathname.split('/')[1])
 let path = location.pathname.split('/')[1]
 
 // const [isCollabor, setIsCollabor] = useEffect(false)
-// useEffect(() => {
-//   !!props.folderCollaborators && !!props.currentUserId && props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) setIsCollabor(true)})
-// }, [props.folderCollaborators])
+useEffect(() => {
+  console.log("props.folderCollaborators", props.folderCollaborators) 
+  // !!props.currentUserId && props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) setIsCollabor(true)})
+}, [props.folderCollaborators])
 
-// || ((path === "user") && (props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) return true})))
-console.log("folderCollaborators", props.folderCollaborators)
+const numbers = [1, 2, 3, 4]
+const [val, setVal] = useState()
+const [newColors, setNewColors] = useState([])
+
+
+
+console.log("test", (props.currentUserId === props.userId) ,!!props.folderCollaborators.length && props.folderCollaborators.map((collaborator) => {if (collaborator.uuid === props.uuid) return true}) , props.demo)
   return (
     <aside>
+      {(((props.directory === 'home' || props.directory === 'user' || props.directory === '-'))) &&  
             <Sticky>
-      {(((props.directory === "home") && (props.currentUserId === props.userId)) || 
-      ((props.directory === "user") && (!!props.folderCollaborators && props.folderCollaborators.map((collaborator) => {if (collaborator.uuid === props.currentUserId) return true})))) && 
-              <>
-           
+            <>
             <Switch>
-             <label className="toggle-switch">
+            <label className="toggle-switch">
             <input type="checkbox" checked={props.edit}
              onChange={onToggle}
              />
@@ -80,7 +84,8 @@ console.log("folderCollaborators", props.folderCollaborators)
             <p>enable delete</p> 
 {/* TOGGLE PRIVACY */}
             </Switch>
-            {!!props.folderPrivacy && <Switch>
+            {!!props.folderPrivacy && 
+            <Switch>
             <label className="toggle-switch">
             <input type="checkbox" 
             // checked={props.folder.public}
@@ -94,7 +99,7 @@ console.log("folderCollaborators", props.folderCollaborators)
             <InputSwitch 
             search={search}
             enableCollaborate={enableCollaborate} >
-             <label  className="toggle-switch">
+            <label className="toggle-switch">
             <span className="switch">
             <button className="checkbox" 
             onClick={() => searchToggle()}
@@ -113,27 +118,28 @@ console.log("folderCollaborators", props.folderCollaborators)
             <p>collaborate</p> 
             </InputSwitch>
             
-      </>
-            }
-            
-            </>
-          } 
+      </>}
             {!!props.folderCollaborators.length &&
-            <CollabotorList hightlighted={props.hightlighted}>
+            <CollabotorList >
             <div clasName="collaborator-cont">
               <span className="switch" >
               <ul>
-              {!!props.folderCollaborators.length && props.folderCollaborators.map(collaborator => (<li 
-              onClick={() => props.hiliteCollaborator(collaborator, props.highlighted)}
-              >{collaborator.name}</li>))}
+                
+              {!!props.folderCollaborators.length && props.folderCollaborators.map((collaborator) => (
+              <CollabLi 
+              collaborator={collaborator}
+              onClick={() => props.hiliteCollaborator(collaborator)}
+              >{collaborator.name}</CollabLi>))}
               </ul>
               </span>
               </div>
               </CollabotorList>}
-              <ul>
-                {!!props.highlighted && props.highlighted.map(user => (<li>{user.name}</li>))}
-              </ul>
+            </>
+            
             </Sticky>
+          } 
+            
+             
             
             
     </aside>
@@ -147,10 +153,10 @@ const Sticky = styled.div`
   top: 0;
   border-top-left-radius: 0px;
   border-bottom-left-radius: 0px;
-  padding-bottom: 10px;
+  padding-block: 10px;
   transition: all 2.5s; 
   padding-inline: 10px;
-  padding-bottom: 10px;
+  /* padding-bottom: 10px; */
   /* z-index: 1; */
   /* transition: border-top-left-radius border-top-left-radius 2s ease-in-out; */
   /* transition: border-top-left-radius 2s ease-in-out;
@@ -160,7 +166,7 @@ const Sticky = styled.div`
     all: unset;
     transition: all 2.5s;
     padding-inline: 10px;
-    padding-bottom: 10px;
+    padding-block: 10px;
     z-index: 1;
     /* transition: background-color 3s;
     transition: border-top-left-radius 2s ease-in-out;
@@ -194,11 +200,11 @@ const Sticky = styled.div`
 const Switch = styled.label`
   display:flex;
   margin-top: 0;
-  
+  margin-bottom: 10px;
  p {
   padding-left: 10px;
-  margin-bottom: .70rem;
-  margin-top: 0.50rem;
+  
+  /* margin-top: 0.50rem; */
   font-size: 19px;
   
 }
@@ -210,7 +216,7 @@ display: inline-block;
 width: 50px;
 height: 25px;
 /* margin-block: 10px; */
-margin-top: 10px;
+/* margin-top: 10px; */
 }
 .toggle-switch input[type="checkbox"] {
 display: none;
@@ -246,12 +252,8 @@ background-color:  #ccc;
 
 `
 const CollabotorList = styled.div`
-  /* display:flex; */
-  /* margin-top: 0; */
-  /* margin-inline: 10px; */
-  /* width: 100%; */
-  margin-top: 10px;
-
+  
+  /* margin-bottom: 10px; */
 
 .collaborator-cont {
   position: relative;
@@ -261,7 +263,7 @@ const CollabotorList = styled.div`
     /* width: 50px; */
     /* min-height: 25px; */
     height: fit-content;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     padding: .5px;
     background-color: #ccc;
     border-radius: 14px;
@@ -277,13 +279,13 @@ const CollabotorList = styled.div`
     /* width: 50px; */
     /* min-height: 25px; */
     height: fit-content;
-    margin-top: 10px;
+    /* margin-top: 10px; */
     padding: .5px;
     background-color: #ccc;
     border-radius: 14px;
   
   }
-    /* width: ${props => !props.enableCollaborate ? '50px' : '100%'}; */
+
     .switch{
     width: 100%;
     position: absolute;
@@ -295,31 +297,40 @@ const CollabotorList = styled.div`
     border-radius: 25px;
     transition: transform 0.3s ease;
 }
+
     }
-.switch ul li {
-  list-style-type: none;
+    
+  }
+.switch ul {
+    background-color: #aaa;
+    border-radius: 14px;
+    /* margin: 3px; */
+    /* padding: 4px;
+    padding: 10px; */
+    padding-inline: 10px;
+    padding-block: 8px;
+    line-height: 1.3;
+  }
+}`
+const CollabLi = styled.li`
+    list-style-type: none;
     cursor: pointer;
-    border-radius: 9px;
-    padding: 2px;
-    margin-top: 0.2rem;
-    padding-left: 0px;
+    border : ${({collaborator}) => collaborator.color !== undefined ? `solid 1px ${collaborator.color}` :
+    'solid 1px #aaa' };
+    border-radius: 8px;
+    padding-top: 2px;
+    padding-inline: 4px;
+    /* border: solid 1px red; */
+    margin-block: 2px;
+    /* padding-left: 0px; */
     transition: padding-left 0.3s ease;
+
     :hover {
       /* transition: padding-left 0.7s ease; */
       /* box-shadow: -1px 1px 5px -2px #000000;
       transform: translate(.5px, -.5px);  */
-      padding-left: 7px;
-    }
-  }
-.switch ul {
-    background-color: #aaa;
-    border-radius: 10px;
-    /* margin: 3px; */
-    padding: 4px;
-    padding: 10px;
-    line-height: 1.3;
-  }
-}`
+      padding-left: 7px;}
+    `
 const InputSwitch = styled.label`
   display:flex;
   margin-top: 0;
@@ -332,7 +343,7 @@ const InputSwitch = styled.label`
   /* width: ${props => !props.enableCollaborate ? '100%' : '0%'}; */
   display: ${props => !!props.enableCollaborate && 'none' };
   /* margin-bottom: .70rem; */
-  margin-top: 0.60rem;
+  /* margin-top: 0.60rem; */
   padding-left: 10px;
   font-size: 19px;
   /* overflow: hidden; */
@@ -356,11 +367,15 @@ input {
     /* width: 50px; */
     /* min-height: 25px; */
     height: ${props => !!props.search[0] ? 'fit-content' : '26px'};
-    margin-top: 10px;    
+    /* margin-top: 10px;     */
+    margin-bottom: 10px;
     padding: .5px;
     background-color: #ccc;
     border-radius: ${props => !!props.search[0] ? '14px' : '25px'};;
     width: ${props => !props.enableCollaborate ? '50px' : '100%'};
+.switch {
+    margin-bottom: 10px;
+  }
 .switch ul li {
     list-style-type: none;
     cursor: pointer;

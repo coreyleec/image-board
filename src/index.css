@@ -43,6 +43,9 @@ body::-webkit-scrollbar {
   .cont {
     grid-template-columns:  0% 1fr 0%;
   }
+  aside:nth-child(3) {    
+    border-style: solid;
+  }
   
 }
 
@@ -169,6 +172,7 @@ button {
   top: -98%;
   padding-right: 8px;
   padding-top: 17px;
+  transition: transform .3s linear;
 }
 .sidebar-break {
   width: 100%;

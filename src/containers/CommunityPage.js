@@ -31,35 +31,7 @@ useEffect(() => {
     )
 }, [])
 
-const fetchUser = (userId) => {
-  fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.token}`,
-          "Content-Type": "application/json",
-        },
-    })
-    .then((res) => res.json())
-    .then((user) => 
-    {
-      console.log("user", user)
-      props.setUserId(user.user.id);
-      props.setUserName(user.user.name);
-      props.setUserAboutMe(user.user.details);
-      props.setFolders(user.user.folders);
-      props.setFolderShown(user.user.folders[0].index)
-      props.setFolderCollaborators(user.user.folders[0].collaborators)
-      props.setUserLinks(user.user.links);
-      props.setPhotos(user.user.folders[0].photos)
-      navigate(`/user/folders/${user.user.folders[0].index}`)
-      // (userId === props.currentUserId) ? props.setBaseName('home') : props.setBaseName('user') 
-      // navigate('/')
-      // navigate(`/user`)
-        // console.log("user folders", user.user.folders)
-        // setUserComments(user.comments);
-        // setUserEmail(user.user.email);
-  })
-}
+
     return (
         <Body>
             <Cont>
@@ -71,14 +43,14 @@ const fetchUser = (userId) => {
                 <div className="text-cont">
                 <p className="photo-name" >{photo.name}</p>
                 <p className="photo-details" >{photo.details}</p>
-                <p className="user-name" onClick={() => fetchUser(photo.user_id)} > {photo.folder.user.name}</p>
+                <p className="user-name" onClick={() => props.fetchUser(photo.user_id)} > {photo.folder.user.name}</p>
                 {/* <p className="folder-name">{photo.folder.name}</p> */}
                 </div>
                 </PhotoCard>)}
             </CardCont>
             <UsersCont>
             {!!users && users.slice(0, 5).map(user => 
-                <UserBox onClick={() => fetchUser(user.id)}>
+                <UserBox onClick={() => props.fetchUser(user.uuid)}>
                     {/* <img src={photo.url}/> */}
                     <p>{user.name}</p>
                     <p>{user.details}</p>
