@@ -11,13 +11,13 @@ const DndRoutePrefix = (props) => {
         //     match: props.photos.some((photo) => photo.color === colab.color),
         //   })))
         //   let hi = props.folderCollaborators.map((colab) => {
-        //     let colaber = props.photos.find(photo => photo.uid === colab.uuid)  
+        //     let colaber = props.photos.find(photo => photo.u_id === colab.uuid)  
         //     if (colaber.color){
         //         photo.color = colaber.color
         //     }
         //     return photo \
     //     const photo = props.photos.map(photo => {
-    //     const collaber = props.folderCollaborators.find(user => user.uuid === photo.uid)  
+    //     const collaber = props.folderCollaborators.find(user => user.uuid === photo.u_id)  
     //     if (!!collaber.color){
     //         collaber.color = photo.color
     //     }

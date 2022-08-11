@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 // import { useDragAndDrop } from './useDragAndDrop';
 import styled from 'styled-components';
 import { useDrag, useDrop } from 'react-dnd';
@@ -16,7 +16,7 @@ const DraggableGridItem = ({  photo, onDrop, children, edit, ...p }) => {
       }),
     });
     
-    // console.log("payloadPhoto", payloadPhoto, "photo hover", photo.hover, "drag", drag, "isDragging", isDragging)
+    console.log("payloadPhoto", payloadPhoto, "photo hover", photo.hover, "drag", drag, "isDragging", isDragging)
 
     // useDrop return value array - no props, drop function
     const [, drop] = useDrop({
@@ -49,7 +49,7 @@ const DraggableGridItem = ({  photo, onDrop, children, edit, ...p }) => {
 // const style = (photo.url === null) && {zIndex : '-1'}
   return <GridItemWrapper  
     {...p} ref={ref}  
-
+    isDragging={isDragging}
     // style={{ opacity }} 
     // style={{style}}
     edit={edit} 
@@ -148,12 +148,23 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
 
 
 const GridItemWrapper = styled.div `
+/* transform: translate(0, 0); */
    /* width: minmax(165px, 240px); */
   /* width: 165px; */
+  /* &:active {
+    box-shadow: unset;
+  } */
+  /* transition: z-index 1s ease; */
+  
   justify-content: center;
-   ${({url, edit}) => !url && !edit && `z-index: -1`
-
+   ${({url, edit}) => !url && !edit ? 
+   `z-index: -1; transition-delay: .1s;` :
+   `z-index: 0; transition-delay: .1s;`
   }
+   /* ${({url, edit}) => !url && !edit ? 
+   `transition-delay: 0s;` :
+   `transition-delay: .5s;`
+  } */
   /* background-size: contain; */
   // min-width: 240px;
   // background-color: #fff, 0;

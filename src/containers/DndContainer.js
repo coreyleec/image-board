@@ -2,7 +2,7 @@ import React from "react";
 import { useEffect, useState, useRef} from "react";
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import {withRouter} from 'react-router';
-
+// import styled, { createGlobalStyle } from "styled-components/macro";
 import styled from "styled-components";
 import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
@@ -219,10 +219,14 @@ const testFavorite = (photo) => {
 // }
 // console.log("test", threeWrap())
 
+const [drag, setDrag] = useState(false)
+const dragging = () => {
+  setDrag()
+}
 const nameArray = [], size = 3;
   return (
     <article>
-      <button onClick={adjustFunction}>adjust</button>
+      {/* <button onClick={adjustFunction}>adjust</button> */}
       {openModal && (
         <ImageModal
         setPhotos={props.setPhotos}
@@ -249,24 +253,24 @@ const nameArray = [], size = 3;
               // style={{ opacity }}
               >
               {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
-              // style={(photo.url === null) && {zIndex : '-1'}} 
-              // style={{'display': 'none'}}
               
                     edit={props.edit}
                     // key={photo.index}
                     url={photo.url}
                     photo={photo}
-                    collaborator={!!photo.uid && props.folderCollaborators.filter(user => user.uuid === photo.uid)}
+                    collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
                     colorArr={props.colorArr}
                     onDrop={onDrop}
                     highlight={photo.color}
                   >
                     <PictureFrame
+                    className="picture"
                       favorited={!!photo.favorites && photo.favorites.length} 
                       edit={props.edit}
                       url={photo.url}
                       highlight={photo.color}
                       contentSizing={!!photo.name || !!photo.details}
+                      enableDelete={props.enableDelete}
                       dimensions={photo.dimensions}
                       style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : null
                       }
@@ -296,15 +300,7 @@ const nameArray = [], size = 3;
                       />
                       {(photo.details || photo.name) 
                       && <div className={"card-content"} >
-                        {/* {
-                        
-                        photo.name.split(' ').map(
-                          while (photo.name.split(' ').length > 0)
-                          nameArray.push(photo.name.split(' ').splice(0, size));
-                          return(nameArray.map(line => {<h4>{line}</h4>}
-                          ))
-                          )} */}
-                          {/* !!photo.name.length && photo.name.map(line =>  */}
+                       
                           {photo.name.map(line =><h4>{line}</h4>)}
                           {/* <h4>{photo.name}</h4> */}
                         <p className={"card-details"} >{photo.details}</p>
@@ -315,12 +311,16 @@ const nameArray = [], size = 3;
                         className="heart"
                         onClick={() => favoriteToggle
                         (photo)} >♥</button>}
-                    </PictureFrame>
   {/* DELETE BUTTON */}
                         {props.enableDelete && !!photo.url && 
+                        <div className="delete-cont">
                         <button
+                        className="delete-photo" 
                         style={{display}}
-                        className="delete-photo" onClick={() => props.deletePhoto(photo) } >+</button>}
+                        onClick={() => props.deletePhoto(photo)} >+</button>
+                        </div>
+                        }
+                    </PictureFrame>
                   </DraggableGridItem>
                 ))}
             </GridWrapper>
@@ -339,14 +339,12 @@ const Heart = styled.button`
 const adjustGridItemsHeight = (grid, photo) => {
   console.log("testing grid function")
   // set all grid photos to vairable "photos"
-  // console.log(image, photo.firstChild.getBoundingClientRect())
+  
   const photos = grid.children; // set all grid photo to vairable "photos"
-  // console.log("photos grid children", photos);
-  // let rowSpan = photo.details === "100px" ? 40 : 80
 
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
-    // console.log("photo grid children", photo.lastChild.lastChild.src);
+
     let rowHeight = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-auto-rows")
     );
@@ -356,14 +354,10 @@ const adjustGridItemsHeight = (grid, photo) => {
     let rowSpan = Math.ceil(
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)) <= 40 ? 40 : 80
-// console.log("stuff", photo.secondChild.getBoundingClientRect().height)
-    // let rowSpan = Math.ceil(
-    //   (photo.firstChild.getBoundingClientRect().height + rowGap))
+
     console.log("rowSpan", rowSpan)
     photo.style.gridRowEnd = "span " + rowSpan;
-    // (photo.firstChild.getBoundingClientRect().height === 0) && 
-    // photo.style.zIndex = "-1"
-    // photo.style.opacity = '0'
+  
 
   } return 
 };
@@ -374,11 +368,8 @@ const GridWrapper = styled.div`
   display: grid;
   justify-content: center;
   grid-gap: 2px;
-  /* background-size: contain; */
   grid-auto-rows: 1px;
-  grid-template-columns: repeat(6,minmax(130px, 170px));
-  /* grid-template-columns: repeat(6, 160px); */
-  /* grid-template-columns: repeat(6, minmax(132px, 1.5fr) ); */
+  grid-template-columns: repeat(6,minmax(140px, 155px));
 
 `;
 // COMPASS 
@@ -395,7 +386,10 @@ const GridWrapper = styled.div`
         } */}
 
 const PictureFrame = styled.div`
+
     ${({highlight}) => highlight !== undefined && `border : solid 2px ${highlight};`}
+    
+    position: relative;
     height: 100px;
     overflow: hidden;
     margin: 10px;
@@ -412,6 +406,9 @@ const PictureFrame = styled.div`
     justify-content: center;
     border-radius: 13px;
     box-shadow: -3px 3px 5px 2px #aaaaaa;
+    /* &:active {
+    box-shadow: unset;
+    } */
     /* -webkit-transition: box-shadow .3s linear, transform 0.3s ease-out, border-radius .4s linear, padding .3s linear; */
     -webkit-transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .4s linear;
     transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .4s linear;
@@ -438,22 +435,53 @@ const PictureFrame = styled.div`
   }
   } 
   .photo {
-   /* min-width: 150px;
+    min-width: 150px;
+    /* 
   max-height: 220px;
   position: initial; */
   border-radius: 13px;
   height: inherit;
+  position: relative;
+  /* bottom: 2px; */
+  bottom: 0px;
+    
+  ${({highlight}) => !!highlight ? `bottom : 2px;` : `bottom : 0px;`}
+
+
   -webkit-transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .4s linear;
   transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .4s linear;
 }
-/* transform-origin: left bottom; */
+.delete-cont{
+    position: absolute;
+    ${({highlight}) => !!highlight ? `left: 83%; top: 13px;` : `left: 82%; top: 15px;`}
+}
+
+.delete-photo{
+  cursor: pointer;
+      background-color: transparent;
+      color: red;
+      transform: rotate(-45deg);
+      border: none;
+      font-size: 2rem;
+      line-height: 0px;
+      z-index: 0;
+      height: fit-content;
+      padding: 0px;
+      position: relative;
+      width: 0px;
+      transition: transform .3s linear;
+  
+}
+
   ${({ edit, url }) => !edit ? !!url 
   ? `
 
   transition: box-shadow .3s linear, transform .3s ease-out,border-radius .4s linear, padding .3s linear;
 
   // IMAGE TILE HOVER 
-  :hover {
+  &:hover {
+    position: relative;
+    // z-index: 5;
     border-radius: 0px;
     // left: 50%; top: 50%;
     margin: -10px;
@@ -473,7 +501,7 @@ const PictureFrame = styled.div`
   }
   
 } 
-:hover .card-content {
+&:hover .card-content {
   display: block;
   width: 3.5em;
   // max-width: 40%;
@@ -495,7 +523,7 @@ const PictureFrame = styled.div`
     font-size: x-small;
   }
 }
-:hover .photo{
+&:hover .photo{
   // max-height: 220px;
   height: auto;
   // min-width: 150px;
@@ -508,40 +536,54 @@ const PictureFrame = styled.div`
   color: gainsboro;
   flex: 0 0 100px;
   position: relative;
-  :hover {
-    transform: translate(1px, -1px); 
-  }
+  box-shadow: none;
+
   .photo {
     position: relative;
     border-radius: 13px;
   }`
   : !!url ? `
+  
 // PICTURE
-  :hover {
+  &:active {
+    box-shadow: none !important;
+    transition: box-shadow .1s linear;
+    }
+  &:hover {
     z-index: 3;
     box-shadow: -7px 7px 10px 4px #aaaaaa;
     transform: translate(1px, -1px); 
-    :hover + button {
-      transition: transform .3s linear, font-size .3s linear;
-      transform: rotate(-45deg) translate(1px, -1px);
-      font-size: 3rem;
-    }
+    // &:hover + button {
+    //   transition: right .3s ease, top .3s ease transform .3s linear, font-size .3s linear;
+    //   right: 12px;
+    //   top: -98.5%;
+    //   transform: rotate(-45deg) translate(1px, -1px);
+    //   // font-size: 3rem;
+    // }
   }
 
 .photo{
+  
   // min-width: 150px;
   // width: 150px;
   max-height: 220px;
   border-radius: 13px;
   /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
-  position: initial;
+  // position: initial;
 }
 }`:`
 // EMPTY BOX
-  color: gainsboro;
+  background: gainsboro;
   height: 100px;
   // transition: box-shadow .2s linear, transform .2s ease-out;
-  :hover {
+  transition: box-shadow .2s linear;
+  &:active {
+    box-shadow: 0px 0px 1px 1px #aaaaaa !important;
+    transition: box-shadow .1s linear;
+    // border-width: .5px;
+    // border: black;
+    }
+  &:hover {
     position: initial;
     border-radius: 13px;
     box-shadow: -7px 7px 10px 4px #aaaaaa;
@@ -554,8 +596,10 @@ const PictureFrame = styled.div`
   border-radius: 13px;
   width: 150px;
   height: 100px;
-  box-shadow: -3px 3px 5px 2px #aaaaaa;}
+  // box-shadow: -3px 3px 5px 2px #aaaaaa;
+}
   `
   }
 `
+
 

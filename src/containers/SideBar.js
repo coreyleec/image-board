@@ -58,10 +58,11 @@ const match = useRouteMatch()
               {/* (location.pathname === ("/" || "/home/" || "/user/" || "/community")) && */}
               {!!props.folderDetails &&     (
                   <>
-                    <AboutMe {...props} />
+                    {/* <AboutMe {...props} /> */}
                     <SideBarFolder 
                     setFolderPhotos={props.setFolderPhotos}
                     addFolder={props.addFolder}
+                    deleteFolder={props.deleteFolder}
                     // setUserFolders={props.setUserFolders}
                     edit={props.edit}
                     // setFavoritePhotos={props.setFavoritePhotos}
@@ -248,8 +249,11 @@ const Sticky = styled.div`
       /* height: 700px; */
       /* overflow-y: scroll; */
       display: block;
-      
-      @media (max-width: 1200px) {
+      margin-top: 124px;
+      /* @media (max-width: 1200px) {
+      } */
+      @media only screen and (max-width: 1200px) {
+        margin-top: 150px;
       }
     }
     a {

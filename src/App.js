@@ -277,7 +277,7 @@ const [count, setCount] = useState([])
 
 
 const hiliteCollaborator = (user) => {
-  const filtered = photos.filter(photo => photo.uid === user.uuid)
+  const filtered = photos.filter(photo => photo.u_id === user.uuid)
   if (count < 1) {
     
     let color = colorArr.splice(0, 1)[0]
@@ -397,6 +397,7 @@ useEffect(() => {
   if (directory === 'login' || 'community'){
     setEdit(false)
     setColorArr(colors)
+    enableDelete === true && setEnableDelete(false)
     // setDemo(false)
     //   console.log('test')
   }
@@ -531,10 +532,10 @@ useEffect(() => {
       },
       body: JSON.stringify({
         name: folderName,
-        details: null,
+        // details: null,
         // link: folderLink,
         index: nextIndex,
-        user_id: currentUserId,
+        u_id: currentUserId,
       }),
     })
       .then((res) => res.json())
@@ -552,7 +553,7 @@ useEffect(() => {
        // GETS INDEX OF DELETED FOLDER
       //  console.log(folderObj)
       const folderIndex = folders.findIndex(
-        (folder) => folder.id === folderObj.id);
+        (folder) => folder.index === folderObj.index);
         // console.log("folderIndex", folderIndex)
       // GETS INDEX OF FOLDER NEXT TO DELETED FOLDER
        const previousFolder = (folderShown === folders[0].index )
@@ -561,7 +562,7 @@ useEffect(() => {
       // IF VIEWED FOLDER IS DELETED, SHOW PREVIOUS FOLDER. IF THIS FOLDER IS THE FIRST IN THE ARRAY, THEN SELECT THE NEXT FOLDER IN ARRAY
         folderShown === folderObj.index && setFolderShown(previousFolder.index)
         // UPDATE FOLDERS ARRAY
-      const updatedFoldersArr = folders.filter((folder) => folder.id !== folderObj.id);
+      const updatedFoldersArr = folders.filter((folder) => folder.index !== folderObj.index);
       setFolders(updatedFoldersArr)
       // CONSOLE LOG VALUES
         // console.log("folderIndex", folderIndex)
@@ -569,7 +570,7 @@ useEffect(() => {
         // console.log("previous folder", previousFolder)
         // THERE'S AN ISSUE WITH THE FETCH. RECIEVING ERROR: Uncaught (in promise) SyntaxError: Unexpected end of JSON input
         // SO FUNCTION IS OPTIMISTIC UNTIL RESOLVED
-      fetch(`http://[::1]:3000/api/v1/folders/${folderObj.id}/`, {method: "DELETE",
+      fetch(`http://[::1]:3000/api/v1/folders/${folderObj.index}/`, {method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
     })

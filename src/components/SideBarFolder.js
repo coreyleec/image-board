@@ -135,10 +135,10 @@ transform: scale(2, 1);
 /* margin-top: 8%; */
 padding-right: 6px;
 /* padding-left: 6px; */
-height: 40px;
+height: 35px;
 margin-top: 0px;
 padding-top: 0px;
-padding-bottom: 4px;
+/* padding-bottom: 4px; */
 align-self: self-start;
 cursor: pointer;
 `
