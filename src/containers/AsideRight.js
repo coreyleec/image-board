@@ -204,6 +204,7 @@ const Sticky = styled.div`
   /* border-top-right-radius: 22px; */
   padding: 10px;
   transition: all 2.5s; 
+  z-index: 4;
   /* padding-inline: 10px; */
   /* padding-bottom: 10px; */
   /* z-index: 1; */
@@ -217,7 +218,7 @@ const Sticky = styled.div`
     transition: all 2s;
     /* padding-inline: 10px; */
     padding: 10px;
-    z-index: 1;
+    z-index: 4;
     /* transition: background-color 3s;
     transition: border-top-left-radius 2s ease-in-out;
     transition: border-bottom-left-radius 2s ease-in-out; */

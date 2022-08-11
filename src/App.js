@@ -3,7 +3,7 @@ import { Routes, Route, useLocation, Switch, useHistory, useRouteMatch, Redirect
 // import {withRouter} from 'react-router';
 
 // import { browserHistory } from 'react-router';
-// import styled from "styled-components";
+import styled from "styled-components";
 import Header from "./containers/Header";
 import SideBar from "./containers/SideBar";
 import AsideRight from "./containers/AsideRight";
@@ -908,15 +908,33 @@ const reorderSubmit = () => {
                 
 
               </main>
-              <footer></footer>
+              <Footer
+              edit={edit}
+              ></Footer>
             
             </div>
    </Switch>
   )}
   export default App
-  {/* </Router> */}
-{/*   </Router>  */}
-// </Routes>
+
+
+
+const Footer = styled.footer`
+  /* transition-delay: .2s; */
+  /* z-index: ${({edit}) => edit ? '3' : '2'}; */
+  ${({edit}) => edit ? 
+   `z-index: 3; transition-delay: .1s;` :
+   `z-index: 2; transition-delay: .05s;`
+  }
+  border-radius: 0px 0px 22px 22px;
+  grid-area: footer;
+  height: 118px;
+  background-color: gainsboro;
+  border-top-width: 6px;
+  border-right-width: 0px;
+  border-bottom-width: 0px;
+  border-left-width: 0px;
+`
 
 
 // useEffect(()=> {

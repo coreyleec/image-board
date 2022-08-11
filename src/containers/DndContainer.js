@@ -29,14 +29,23 @@ const DndContainer = (props) => {
   const match  = useRouteMatch();
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
+    let limitCount = 54 - photos.filter(photo => photo.dimensions === '135px').length 
+    console.log('limit', limitCount)
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
+    if (firstPhoto.dimensions !== '135px') {
     const firstIndex = firstPhoto.index; // declares variable value of first photo index
     firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
     secondPhoto.index = firstIndex; // then sets the second photo index to the first index
     setPhotos(newPhotos);
-    props.setReorderedPhotos(newPhotos)
+    props.setReorderedPhotos(newPhotos)}
+   else if (firstPhoto.dimensions === '135px' && secondPhoto.index < limitCount){
+    const firstIndex = firstPhoto.index; // declares variable value of first photo index
+    firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
+    secondPhoto.index = firstIndex; // then sets the second photo index to the first index
+    setPhotos(newPhotos);
+    props.setReorderedPhotos(newPhotos)}
   };
 
 const disableOnDrop = () => {
@@ -327,6 +336,7 @@ const nameArray = [], size = 3;
           </div>
       </>
       </DndProvider>
+      {/* <div className="bottom-curtain"></div> */}
       </article>
   );
 };
@@ -388,7 +398,7 @@ const GridWrapper = styled.div`
 const PictureFrame = styled.div`
 
     ${({highlight}) => highlight !== undefined && `border : solid 2px ${highlight};`}
-    
+    z-index: 3;
     position: relative;
     height: 100px;
     overflow: hidden;
@@ -410,7 +420,7 @@ const PictureFrame = styled.div`
     box-shadow: unset;
     } */
     /* -webkit-transition: box-shadow .3s linear, transform 0.3s ease-out, border-radius .4s linear, padding .3s linear; */
-    -webkit-transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .4s linear;
+    -webkit-transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .6s linear;
     transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .4s linear;
   .heart{  
     position: absolute;
@@ -476,12 +486,12 @@ const PictureFrame = styled.div`
   ${({ edit, url }) => !edit ? !!url 
   ? `
 
-  transition: box-shadow .3s linear, transform .3s ease-out,border-radius .4s linear, padding .3s linear;
+  transition: box-shadow .3s linear, transform .3s ease-out,border-radius .6s linear, padding .3s linear;
 
+  z-index: 4;
   // IMAGE TILE HOVER 
   &:hover {
     position: relative;
-    // z-index: 5;
     border-radius: 0px;
     // left: 50%; top: 50%;
     margin: -10px;
@@ -550,7 +560,7 @@ const PictureFrame = styled.div`
     transition: box-shadow .1s linear;
     }
   &:hover {
-    z-index: 3;
+    z-index: 2;
     box-shadow: -7px 7px 10px 4px #aaaaaa;
     transform: translate(1px, -1px); 
     // &:hover + button {
@@ -575,13 +585,11 @@ const PictureFrame = styled.div`
 // EMPTY BOX
   background: gainsboro;
   height: 100px;
-  // transition: box-shadow .2s linear, transform .2s ease-out;
-  transition: box-shadow .2s linear;
+  z-index: 2;
+  transition: box-shadow .2s linear, transform .2s ease-out;
   &:active {
     box-shadow: 0px 0px 1px 1px #aaaaaa !important;
     transition: box-shadow .1s linear;
-    // border-width: .5px;
-    // border: black;
     }
   &:hover {
     position: initial;
@@ -591,12 +599,10 @@ const PictureFrame = styled.div`
     transform: translate(2px, -2px); 
   }
   .photo {
-  // width: 100%; 
   position: initial;
   border-radius: 13px;
   width: 150px;
   height: 100px;
-  // box-shadow: -3px 3px 5px 2px #aaaaaa;
 }
   `
   }

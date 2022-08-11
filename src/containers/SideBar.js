@@ -169,7 +169,7 @@ const ButtonContainer = styled.div`
   button {
     position: sticky;
     transition: left 1s;
-    z-index: 5;
+    z-index: 4;
     ${({ sideBar }) => (sideBar ? `left : 25%` : `left: 0%`)};
   }
 `;
@@ -177,7 +177,7 @@ const ButtonContainer = styled.div`
 const Sticky = styled.div`
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 4;
 
   .side-bar {
     padding-inline: 5px;

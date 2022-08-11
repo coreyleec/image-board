@@ -159,7 +159,8 @@ const GridItemWrapper = styled.div `
   justify-content: center;
    ${({url, edit}) => !url && !edit ? 
    `z-index: -1; transition-delay: .1s;` :
-   `z-index: 0; transition-delay: .1s;`
+   `z-index: 3; transition-delay: .05s; 
+   &:hover {z-index: 3;}`
   }
    /* ${({url, edit}) => !url && !edit ? 
    `transition-delay: 0s;` :
