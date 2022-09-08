@@ -503,3 +503,22 @@ background-color: green;
 background-color:  #ccc; */
 /* } */
 `
+
+// padding-right: ${({details}) => details ? '50%': '3px';
+
+// &:hover .content-drawer {
+//     right: 0px;
+//     width: 73px;
+// }
+// &:hover .card-content {
+//   // right: 0px;
+//   display: block;
+//   // width: 3.5em;
+//   max-width: 40%;
+//   padding-inline: 5px;
+//   height: fit-content;
+//   // inline-size: 50px; 
+//   overflow-wrap: break-word;
+//   hyphens: manual;
+
+// }

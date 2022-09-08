@@ -29,23 +29,14 @@ const DndContainer = (props) => {
   const match  = useRouteMatch();
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
-    let limitCount = 54 - photos.filter(photo => photo.dimensions === '135px').length 
-    console.log('limit', limitCount)
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
-    if (firstPhoto.dimensions !== '135px') {
     const firstIndex = firstPhoto.index; // declares variable value of first photo index
     firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
     secondPhoto.index = firstIndex; // then sets the second photo index to the first index
     setPhotos(newPhotos);
-    props.setReorderedPhotos(newPhotos)}
-   else if (firstPhoto.dimensions === '135px' && secondPhoto.index < limitCount){
-    const firstIndex = firstPhoto.index; // declares variable value of first photo index
-    firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
-    secondPhoto.index = firstIndex; // then sets the second photo index to the first index
-    setPhotos(newPhotos);
-    props.setReorderedPhotos(newPhotos)}
+    props.setReorderedPhotos(newPhotos)
   };
 
 const disableOnDrop = () => {
@@ -265,6 +256,7 @@ const nameArray = [], size = 3;
               
                     edit={props.edit}
                     // key={photo.index}
+                    dimensions={photo.dimensions !== "100px" ? 'portrait' : 'landscape' }
                     url={photo.url}
                     photo={photo}
                     collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
@@ -280,16 +272,19 @@ const nameArray = [], size = 3;
                       highlight={photo.color}
                       contentSizing={!!photo.name || !!photo.details}
                       enableDelete={props.enableDelete}
-                      dimensions={photo.dimensions}
-                      style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : null
+                      
+                      details={!!photo.name || !!photo.details}
+                      style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : {height: '100px'}
                       }
                       >  
+                      <div className="center-image">
+                        
                       <img
                         className={"photo"}
                         alt="photo"
                         // ref={imgRef}
                         // key={photo.index}
-                        // key={!!photo.url &&photo.url}
+                        // key={!!photo.url && photo.url}
                         onLoad={() => props.edit && adjustFunction()}
                         // onLoad keeps tall images from overlapping the photo on the next line
                         
@@ -299,21 +294,25 @@ const nameArray = [], size = 3;
                         // style={{cursor: isDragging ? 'grabbing' : 'default' }}
                         style={photo.dimensions !== "100px"   
                         ? {minWidth:`${photo.dimensions}`, maxHeight: "220px"}
-                        : null }
+                        : {maxWidth: "135px" }}
                         // loading="lazy"
                         src={
                           !!photo.url
-                            ? photo.url
-                            : require('../assets/transparent-img.png')
+                          ? photo.url
+                          : require('../assets/100x135.png')
                         }
-                      />
+                        />
+                        </div>
+
                       {(photo.details || photo.name) 
-                      && <div className={"card-content"} >
+                      && <div className="content-drawer">
+                        <div className="card-content" >
                        
                           {photo.name.map(line =><h4>{line}</h4>)}
                           {/* <h4>{photo.name}</h4> */}
                         <p className={"card-details"} >{photo.details}</p>
                         {!!photo.username && <p className={"card-details"} >{photo.username.name}</p>}
+                      </div>
                       </div>}
 {/* FAVORITE BUTTON */}
                         {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && <button 
@@ -321,14 +320,14 @@ const nameArray = [], size = 3;
                         onClick={() => favoriteToggle
                         (photo)} >♥</button>}
   {/* DELETE BUTTON */}
-                        {props.enableDelete && !!photo.url && 
+                         
                         <div className="delete-cont">
                         <button
-                        className="delete-photo" 
+                        className="delete-photo-button" 
                         style={{display}}
                         onClick={() => props.deletePhoto(photo)} >+</button>
                         </div>
-                        }
+
                     </PictureFrame>
                   </DraggableGridItem>
                 ))}
@@ -396,216 +395,221 @@ const GridWrapper = styled.div`
         } */}
 
 const PictureFrame = styled.div`
-
-    ${({highlight}) => highlight !== undefined && `border : solid 2px ${highlight};`}
-    z-index: 3;
+    box-sizing: content-box;
     position: relative;
-    height: 100px;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    padding: 0px;
     overflow: hidden;
-    margin: 10px;
-    max-width: -webkit-fit-content;
-    max-width: -moz-fit-content;
-    max-width: fit-content;
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
+    background-color: ${({edit}) => edit ? 'gainsboro' : 'rgb(255 87 0 / 69%)'};
+    backdrop-filter: blur(6px);
+    /* height: 100%; */
+    /* width: 90%; */
+    /* ${({details}) => details ? 'width: 90%;' : 'width: fit-content; max-width: 90%;'} */
+
     display: flex;
-    -webkit-box-pack: center;
-    -webkit-justify-content: center;
-    -ms-flex-pack: center;
     justify-content: center;
     border-radius: 13px;
     box-shadow: -3px 3px 5px 2px #aaaaaa;
-    /* &:active {
-    box-shadow: unset;
-    } */
-    /* -webkit-transition: box-shadow .3s linear, transform 0.3s ease-out, border-radius .4s linear, padding .3s linear; */
-    -webkit-transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .6s linear;
-    transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .4s linear;
-  .heart{  
-    position: absolute;
-    bottom: -4px;
-    right: 4px;
-    font-family: 'Sawarabi Mincho', serif;
-    font-size: x-small;
-    color: ${props => (!!props.favorited ? `red` : `#aaa`)};
-    border-width: 0px;
-  
-    display: none;
-    width: 10px;
-    margin: ${props => (props.contentSizing ? `2px` : `5px`)};
-    aspect-ratio: 1;
-    background-color: transparent;
-    cursor: pointer;
-  }
-
-  .card-content {
-  display: none;
-  width: fit-content;
-  }
-  } 
-  .photo {
-    min-width: 150px;
-    /* 
-  max-height: 220px;
-  position: initial; */
-  border-radius: 13px;
-  height: inherit;
-  position: relative;
-  /* bottom: 2px; */
-  bottom: 0px;
+    /* border: solid 3px yellow; */
+    outline: ${({highlight}) => highlight !== undefined && ` solid 3px ${highlight}`};
+    width: fit-content; 
+    max-width: 90%;
+    transition: 
+      border-radius .5s ease-out, 
+      background-color 0s linear 1s, 
+      max-width .4s ease-in .1s,
+      padding-right .3s ease-out .2s, 
+      padding-left .3s ease-out .2s, 
+      padding-block .3s ease-out .2s, 
+      box-shadow .3s ease-in;
+      /* ${({edit}) => edit ? 'box-shadow .3s ease-in' : 'box-shadow .3s ease-in .7s'} */
     
-  ${({highlight}) => !!highlight ? `bottom : 2px;` : `bottom : 0px;`}
-
-
-  -webkit-transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .4s linear;
-  transition: box-shadow .3s linear,transform 0.3s ease-out, border-radius .4s linear;
+  }
+  /* padding-block .3s ease-out ${({details}) => details ? '.2s' : '0s' }, */
+  /* min-width .3s ease-in .3s,  */
+.center-image {
+    height: 100%;
+    position: relative;
+    z-index: 8;
+    /* overflow: visible; */
+    overflow-y: clip;
+    width: max-content;
 }
-.delete-cont{
+  .content-drawer {
     position: absolute;
-    ${({highlight}) => !!highlight ? `left: 83%; top: 13px;` : `left: 82%; top: 15px;`}
+    width: 100px;
+    /* transform: translateX(-100px); */
+    /* transition: transform .3s ease-in .3s; */
+    right: 0px;
+    padding-inline: 3px;
+    flex-grow: 1;
+    /* height: max-content; */
+    /* height: 100%; */
+    .card-content {
+      /* position: absolute; */
+      z-index: -4;
+      transition: z-index 0s ease .3s;
+      h4 {
+        font-size: small;
+        overflow: hidden;
+        white-space: pre;
+      }
+      p {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        /* overflow-wrap: break-word; */
+        /* hyphens: manual; */
+        text-overflow: ellipsis;
+        font-size: xx-small;
+        line-height: 9px;
+      }
+    }
+  }   
+
+  .photo {
+    position: relative;
+    /* object-fit: cover; */
+    border-radius: 13px;
+    transition: border-radius .5s ease-out;
+    z-index: 9;
+}
+/* height: 100%; */
+.delete-cont{
+    top: 14px;
+    right: 21px;
+    position: absolute;
+    ${({enableDelete, url}) => !!url && enableDelete 
+    ? 'opacity: 1; z-index: 8; transition: opacity .2s linear;' : 'opacity: 0; z-index: 0; transition: opacity .2s linear, z-index 0s linear .3s;'};
+      /* transition: opacity .2s linear; */
 }
 
-.delete-photo{
-  cursor: pointer;
+.delete-photo-button{
+      cursor: pointer;
       background-color: transparent;
       color: red;
       transform: rotate(-45deg);
       border: none;
       font-size: 2rem;
       line-height: 0px;
-      z-index: 0;
+      /* z-index: 0; */
       height: fit-content;
       padding: 0px;
       position: relative;
       width: 0px;
-      transition: transform .3s linear;
+      /* transition: transform .3s linear; */
   
 }
 
-  ${({ edit, url }) => !edit ? !!url 
+  ${({ edit, url, details, highlight }) => !edit ? !!url 
   ? `
 
-  transition: box-shadow .3s linear, transform .3s ease-out,border-radius .6s linear, padding .3s linear;
-
-  z-index: 4;
-  // IMAGE TILE HOVER 
+  // IMAGE HOVER 
+  // transition: box-shadow .3s ease-in .7s;
   &:hover {
-    position: relative;
+    z-index: 3;
+    ${details 
+      ? 'max-width: 200%; padding-right: 100px;' 
+      : 'max-width: 130%; padding-right: 3px;' }
     border-radius: 0px;
-    // left: 50%; top: 50%;
-    margin: -10px;
     box-shadow: none;
-    transform: scale(2,2);
-    // transform-origin: center center;
-    border-radius: 0px;
-    width: fit-content;
-    background-color: rgba(204, 204, 204, 0.75);
-    backdrop-filter: blur(6px);
-    height: -webkit-fill-available;
-    padding: 3px;
-    // margin: 0px;
-    overflow: hidden;
+    padding-block: 3px;
+    padding-left: 3px;
+    // padding-right: ${details ? "3px" : "100px" };
+    transition: 
+      border-radius .5s ease-out .4s, 
+      padding-block .4s ease-out .4s, 
+      padding-right .4s ease-out .4s, 
+      padding-left .4s ease-out .4s,
+      max-width .4s ease-in, 
+      box-shadow 0s, outline .3s linear .2s;
+    .content-drawer {
+    // transform: translateX(0px);
+}
     .heart{
     display: inline-block;
   }
-  
-} 
-&:hover .card-content {
-  display: block;
-  width: 3.5em;
-  // max-width: 40%;
-  padding-inline: 5px;
-  height: fit-content;
-  // inline-size: 50px; 
-  overflow-wrap: break-word;
-  hyphens: manual;
-  p {
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: xx-small;
-    line-height: 9px;
-  }
-  h4 {
-    font-size: x-small;
-  }
+  .card-content {
 }
+} 
+
 &:hover .photo{
-  // max-height: 220px;
-  height: auto;
-  // min-width: 150px;
   border-radius: 0px;
+  transition: border-radius .5s ease-out .4s;
   /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
-  position: initial;
+  // position: initial;
 }`
 : `
 // MISSING BOX
-  color: gainsboro;
-  flex: 0 0 100px;
-  position: relative;
-  box-shadow: none;
+  background-color: gainsboro;
+  box-shadow: 0px 0px 0px 0px #aaaaaa;
+
+  // background-color: rgb(255 87 0 / 69%);
+  
+    
 
   .photo {
-    position: relative;
-    border-radius: 13px;
+    width: 135px;
+
   }`
   : !!url ? `
   
-// PICTURE
+// DAGGABLE PICTURE
+    background-color: gainsboro;
+    transition: background-color 0s linear 1s, box-shadow .3s ease-in;
+&:hover {
   &:active {
     box-shadow: none !important;
     transition: box-shadow .1s linear;
     }
-  &:hover {
-    z-index: 2;
+&:hover {
+    z-index: 3;
     box-shadow: -7px 7px 10px 4px #aaaaaa;
-    transform: translate(1px, -1px); 
-    // &:hover + button {
-    //   transition: right .3s ease, top .3s ease transform .3s linear, font-size .3s linear;
-    //   right: 12px;
-    //   top: -98.5%;
-    //   transform: rotate(-45deg) translate(1px, -1px);
-    //   // font-size: 3rem;
-    // }
-  }
-
+    transition: box-shadow .3s ease-in;
+    }
 .photo{
-  
+  height: inherit;
+  border-radius: 13px;
   // min-width: 150px;
   // width: 150px;
-  max-height: 220px;
-  border-radius: 13px;
+  // max-height: 220px;
   /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
   // position: initial;
 }
+}
 }`:`
-// EMPTY BOX
-  background: gainsboro;
-  height: 100px;
-  z-index: 2;
-  transition: box-shadow .2s linear, transform .2s ease-out;
-  &:active {
-    box-shadow: 0px 0px 1px 1px #aaaaaa !important;
-    transition: box-shadow .1s linear;
-    }
-  &:hover {
-    position: initial;
-    border-radius: 13px;
-    box-shadow: -7px 7px 10px 4px #aaaaaa;
-    // , 0 0 10px -1px #aaaaaa inset
-    transform: translate(2px, -2px); 
-  }
+// DRAGGABLE EMPTY BOX
+
+transition: background-color 0s linear 1s, box-shadow .3s ease-in;
+background-color: gainsboro;
   .photo {
+  background-color: gainsboro;
   position: initial;
   border-radius: 13px;
-  width: 150px;
   height: 100px;
+  }
+  &:hover {
+  &:active {
+    box-shadow: 0px 0px 0px 0px #aaaaaa !important;
+    outline: #aaaaaa solid;
+    transition: box-shadow .1s linear;
+    }
+&:hover {
+    z-index: 3;
+    box-shadow: -7px 7px 10px 4px #aaaaaa ;
+    transition: box-shadow .2s ease-out;
+    }
+  }
+
 }
   `
   }
 `
 
+
+// box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+// box-shadow: 0px 0px 0px 0px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
 

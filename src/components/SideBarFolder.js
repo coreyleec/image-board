@@ -1,5 +1,6 @@
 import React from 'react'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
+import update from 'immutability-helper'
 import { DndProvider } from "react-dnd";
 import styled from "styled-components";
 import {  useHistory, Link , useLocation, useRouteMatch} from 'react-router-dom';
@@ -49,6 +50,19 @@ const updateFolder = (e, folderName, folder) => {
       );
     });
 };
+const [folders, setFolders] = useState()
+const moveFolder = useCallback((dragIndex, hoverIndex) => {
+  setFolders((prevFolders) =>
+    update(prevFolders, {
+      $splice: [
+        [dragIndex, 1],
+        [hoverIndex, 0, prevFolders[dragIndex]],
+      ],
+    }),
+  )
+}, [])
+
+
 // const inputRef = useRef()
 // useEffect(() => {
 //   !!newFolder && inputRef.current.focus();
@@ -80,6 +94,7 @@ const updateFolder = (e, folderName, folder) => {
                         id={"folderInput"}
                         type="text" edit={props.edit}
                         // ref={inputRef}
+                        
                         contentEditable={newFolder} 
                         placeholder={"add folder name"}
                         style={{"cursor": props.edit ? "text" : "default"}}
@@ -97,6 +112,8 @@ let path = location.pathname.split("/")[1] */}
                         <StyledEditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
                         // folderDetails={props.folderDetails}
+                        index={folder.index}
+                        moveFolder={moveFolder}
                         defaultValue={folder.name}
                         draggable={true}
                         onKeyDown={(e) => submitFolderEdit(e, folder)}
@@ -112,9 +129,9 @@ let path = location.pathname.split("/")[1] */}
                         </StyledEditableDiv>
 
 {/* </Link> */}
-                        {props.enableDelete === true  
-                        && <SubtractButton 
-                        onClick={() => props.deleteFolder(folder)} >-</SubtractButton>}
+                         <SubtractButton
+                        enableDelete={props.enableDelete} 
+                        onClick={() => props.deleteFolder(folder)} >-</SubtractButton>
                         </div>)}
         {/* </DndProvider> */}
                         <div className="sidebar-break"></div>
@@ -125,6 +142,8 @@ let path = location.pathname.split("/")[1] */}
 export default SideBarFolder
  
 const SubtractButton = styled.button`
+${({enableDelete}) => enableDelete ? 'opacity: 1;' : 'opacity: 0;'}
+transition: opacity .2s linear;
 background-color: transparent;
 border: none;
 font-size: 2rem;

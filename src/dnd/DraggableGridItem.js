@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useDrag, useDrop } from 'react-dnd';
 
-const DraggableGridItem = ({  photo, onDrop, children, edit, ...p }) => {
+const DraggableGridItem = ({  photo, onDrop, children, dimensions, edit, ...p }) => {
   // const { photo, onDrop, children, ...p } = props;
   // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
 // console.log("props", p)
@@ -50,8 +50,10 @@ const DraggableGridItem = ({  photo, onDrop, children, edit, ...p }) => {
   return <GridItemWrapper  
     {...p} ref={ref}  
     isDragging={isDragging}
+    dimensions={dimensions}
     // style={{ opacity }} 
     // style={{style}}
+    // style={{cursor: isDragging ? 'grabbing' : 'grab' }}
     edit={edit} 
     photo={photo}
     >
@@ -148,41 +150,33 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
 
 
 const GridItemWrapper = styled.div `
-/* transform: translate(0, 0); */
-   /* width: minmax(165px, 240px); */
-  /* width: 165px; */
-  /* &:active {
-    box-shadow: unset;
+  /* padding: 5px; */
+  padding-inline: 5px;
+
+  ${({url, edit, isDragging}) => edit 
+    ? `
+    z-index: 0;
+    transition: z-index .0s ease-in, transform .2s ease-in;
+    &:hover {transform: translate(1.5px,-1.5px); transition: transform .2s ease-in, z-index 0s ease-in .2s;}
+    cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
+    `
+    : !!url
+    ? `z-index: 0; 
+    transition: transform .3s ease-in .4s,
+                z-index 0s 1s;
+    &:hover {
+      transform: scale(2); 
+      z-index: 4; 
+      transition: z-index 0s .1s, 
+                  transform .4s ease-in;}`
+    : `z-index: -1; 
+      transition: transform .4s ease-in .3s, 
+                  z-index 0s linear .3s;`
+   }
+   /* :hover {
+    
+    transition: transform .4s ease-in;
+    z-index: 4;
   } */
-  /* transition: z-index 1s ease; */
-  
-  justify-content: center;
-   ${({url, edit}) => !url && !edit ? 
-   `z-index: -1; transition-delay: .1s;` :
-   `z-index: 3; transition-delay: .05s; 
-   &:hover {z-index: 3;}`
-  }
-   /* ${({url, edit}) => !url && !edit ? 
-   `transition-delay: 0s;` :
-   `transition-delay: .5s;`
-  } */
-  /* background-size: contain; */
-  // min-width: 240px;
-  // background-color: #fff, 0;
-/* padding: 10px; */
-  // opacity: 0;
-  
-  // padding-bottom: 10px;
-  // padding-right: 10px;
-  // border-radius: 5px;
-  // border: 1px solid #e0e0e0;
-  // line-height: 1.2em;
-  // word-wrap: break-word;
-  // user-select: none;
-  // box-sizing: border-box;
-  // padding-inline: 5px;
-  // boxes-per-row: 7;
-  // &:hover {
-  //     transform: scale(2,2);  
-  //   }
+  /* overflow: unset; */
 `;

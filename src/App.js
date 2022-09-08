@@ -922,10 +922,10 @@ const reorderSubmit = () => {
 const Footer = styled.footer`
   /* transition-delay: .2s; */
   /* z-index: ${({edit}) => edit ? '3' : '2'}; */
-  ${({edit}) => edit ? 
+  /* ${({edit}) => edit ? 
    `z-index: 3; transition-delay: .1s;` :
    `z-index: 2; transition-delay: .05s;`
-  }
+  } */
   border-radius: 0px 0px 22px 22px;
   grid-area: footer;
   height: 118px;
