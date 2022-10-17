@@ -47,6 +47,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   const gridRef = useRef(null);
   const imgRef = useRef(null)
   const [imagesLoaded, setImagesLoaded] = useState(false);
+  
  const adjustFunction = () => {
   const grid = gridRef.current;
   adjustGridItemsHeight(grid)
@@ -57,11 +58,11 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
     adjustGridItemsHeight(grid);
   }, [photos]);
   
-  const addPhoto = (e, formData, dimensions, photoName, photoDetails, photo) => {
+  const addPhoto = (e, formData, orientation, photoName, photoDetails, photo) => {
     e.preventDefault();
     
     const data = new FormData(formData)
-      dimensions !== undefined && dimensions !== null && data.append('dimensions', dimensions)        
+      orientation !== undefined && orientation !== true && data.append('orientation', orientation)        
       photoName !== undefined && photoName !== null && data.append('name', photoName)
       photoDetails !== undefined && photoDetails !== null && data.append('details', photoDetails)
       data.append('u_id', props.currentUserId)
@@ -99,7 +100,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
             name: null,
             url: null,
             details: null, 
-            demensions: null,
+            orientation: true,
             image_file: null, 
           }),
         })
@@ -249,14 +250,14 @@ const nameArray = [], size = 3;
           <div className="grid">
             <GridWrapper
               ref={gridRef}
-              // style={{ opacity: imagesLoaded ? 1 : 0 }}
+              style={{ opacity: imagesLoaded ? 1 : 0 }}
               // style={{ opacity }}
               >
               {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
               
                     edit={props.edit}
                     // key={photo.index}
-                    dimensions={photo.dimensions !== "100px" ? 'portrait' : 'landscape' }
+                    orientation={photo.orientation}
                     url={photo.url}
                     photo={photo}
                     collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
@@ -274,8 +275,10 @@ const nameArray = [], size = 3;
                       enableDelete={props.enableDelete}
                       
                       details={!!photo.name || !!photo.details}
-                      style={ (photo.url !== null && photo.dimensions !== "100px") ? {height: `220px`} : {height: '100px'}
-                      }
+                      orientation={photo.orientation}
+                      // orientation={!!photo.orientation ? 'portrait' : 'landscape' }
+                      // style={ (photo.url !== null && photo.orientation !== "100px") ? {height: `220px`} : {height: '100px'}
+                      // }
                       >  
                       <div className="center-image">
                         
@@ -285,16 +288,24 @@ const nameArray = [], size = 3;
                         // ref={imgRef}
                         // key={photo.index}
                         // key={!!photo.url && photo.url}
-                        onLoad={() => props.edit && adjustFunction()}
+                        onLoad={() => props.edit ? adjustFunction() : setImagesLoaded(true)}
                         // onLoad keeps tall images from overlapping the photo on the next line
                         
                         onClick={() => modalToggle(photo)}
                         // onMouseDown={setCursor("grabbing")}
                         // {cursor: `${cursor}`}
                         // style={{cursor: isDragging ? 'grabbing' : 'default' }}
-                        style={photo.dimensions !== "100px"   
-                        ? {minWidth:`${photo.dimensions}`, maxHeight: "220px"}
-                        : {maxWidth: "135px" }}
+                        // style={photo.orientation !== "100px"   
+                        // ? {minWidth:`${photo.orientation}`, maxHeight: "220px"}
+                        // : {maxWidth: "135px" }}
+// TRUE = LANDSCAPE && 100px === maxWidth: 135px
+// FALSE = PORTRIAT && 135px minWidth, maxHeight 220px
+// style={
+//   orientation = 
+// photo.orientation !== "100px" 
+// photo.orientation === "135px" 
+// ? {minWidth:`${photo.orientation}`, maxHeight: "220px"}     
+// : {maxWidth: "135px" }}
                         // loading="lazy"
                         src={
                           !!photo.url
@@ -308,17 +319,19 @@ const nameArray = [], size = 3;
                       && <div className="content-drawer">
                         <div className="card-content" >
                        
-                          {photo.name.map(line =><h4>{line}</h4>)}
-                          {/* <h4>{photo.name}</h4> */}
+                          {/* {photo.name.map(line =><h4>{line}</h4>)} */}
+                          <h4>{photo.name}</h4>
                         <p className={"card-details"} >{photo.details}</p>
                         {!!photo.username && <p className={"card-details"} >{photo.username.name}</p>}
                       </div>
                       </div>}
 {/* FAVORITE BUTTON */}
-                        {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && <button 
+{/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
+                        {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && <Heart 
+                        favorited={photo.favorites !== undefined && !!photo.favorites.length}
                         className="heart"
                         onClick={() => favoriteToggle
-                        (photo)} >♥</button>}
+                        (photo)} >♥</Heart>}
   {/* DELETE BUTTON */}
                          
                         <div className="delete-cont">
@@ -342,6 +355,30 @@ const nameArray = [], size = 3;
 export default DndContainer;
 
 const Heart = styled.button`
+    cursor: pointer;
+    z-index: 8;
+    opacity: 0%;
+    position: absolute;
+    bottom: -1px;
+    right: -1px;
+    font-family: 'Sawarabi Mincho', serif;
+    /* font-size: small; */
+    font-size: 13.5px;
+    background-color: transparent;
+    border-width: 0px;
+    color: ${favorited => !!favorited ? `#aaa` : `red`};
+    ${({favorited}) => !!favorited 
+    ? `color: red; text-shadow: none;`
+    : `color: transparent;
+    text-shadow: 0px 0px 0.35px hwb(16deg 33% 17% / 85%), 0px -0.75px 0.35px hwb(16deg 25% 43%), 0px 0.65px 0px hsl(16deg 100% 86% / 43%);`}
+    /* text-shadow: 0px 0px 0.35px rgb(229 123 84 / 80%), 0.25px 0.25px 0.5px rgb(249 183 160 / 50%), -0.85px -0.65px 0.35px rgb(194 98 64); 
+    0px 0px 0.35px hwb(16deg 33% 15% / 90%), -0.85px -0.65px 0.35px hwb(16deg 25% 43%), 0.3px 0.3px 0px hsl(16deg 100% 86% / 43%)
+    */
+
+    /* 
+    display: inline-block;
+    margin: 2px;
+    aspect-ratio: 1; */
    
 `;
 
@@ -394,7 +431,10 @@ const GridWrapper = styled.div`
             : "empty-box" // HAS NO IMAGE URL
         } */}
 
+
+        
 const PictureFrame = styled.div`
+
     box-sizing: content-box;
     position: relative;
     left: 50%;
@@ -407,13 +447,13 @@ const PictureFrame = styled.div`
     /* height: 100%; */
     /* width: 90%; */
     /* ${({details}) => details ? 'width: 90%;' : 'width: fit-content; max-width: 90%;'} */
-
+    height: ${({orientation}) => orientation ? '100px' : '220px' };
     display: flex;
     justify-content: center;
     border-radius: 13px;
     box-shadow: -3px 3px 5px 2px #aaaaaa;
     /* border: solid 3px yellow; */
-    outline: ${({highlight}) => highlight !== undefined && ` solid 3px ${highlight}`};
+    outline: ${({highlight, url}) => !!url && highlight !== undefined && ` solid 3px ${highlight}`};
     width: fit-content; 
     max-width: 90%;
     transition: 
@@ -423,16 +463,21 @@ const PictureFrame = styled.div`
       padding-right .3s ease-out .2s, 
       padding-left .3s ease-out .2s, 
       padding-block .3s ease-out .2s, 
-      box-shadow .3s ease-in;
-      /* ${({edit}) => edit ? 'box-shadow .3s ease-in' : 'box-shadow .3s ease-in .7s'} */
-    
+      box-shadow .3s ease-in
+      ;
+      /* ${({edit, url}) => edit && !!url ? 'box-shadow .3s ease-in' : 'box-shadow .3s ease-in .7s'} */
+      /* box-shadow .3s ease-in .7s */
+      /* !edit ? !!url  */
   }
   /* padding-block .3s ease-out ${({details}) => details ? '.2s' : '0s' }, */
   /* min-width .3s ease-in .3s,  */
+  .heart{
+    transition: opacity .3s ease .3s;
+  }
 .center-image {
     height: 100%;
     position: relative;
-    z-index: 8;
+    z-index: 7;
     /* overflow: visible; */
     overflow-y: clip;
     width: max-content;
@@ -454,7 +499,7 @@ const PictureFrame = styled.div`
       h4 {
         font-size: small;
         overflow: hidden;
-        white-space: pre;
+        /* white-space: pre; */
       }
       p {
         display: -webkit-box;
@@ -476,6 +521,8 @@ const PictureFrame = styled.div`
     border-radius: 13px;
     transition: border-radius .5s ease-out;
     z-index: 9;
+    ${({orientation}) => orientation ? 
+    'max-width: 135px;' : 'min-width: 135px; max-height: 220px;' }
 }
 /* height: 100%; */
 .delete-cont{
@@ -506,14 +553,22 @@ const PictureFrame = styled.div`
 
   ${({ edit, url, details, highlight }) => !edit ? !!url 
   ? `
-
+  transition: 
+      border-radius .5s ease-out, 
+      background-color 0s linear 1s, 
+      max-width .4s ease-in .1s,
+      padding-right .3s ease-out .2s, 
+      padding-left .3s ease-out .2s, 
+      padding-block .3s ease-out .2s, 
+      box-shadow .3s ease-in .7s
+      ;
   // IMAGE HOVER 
-  // transition: box-shadow .3s ease-in .7s;
   &:hover {
     z-index: 3;
     ${details 
       ? 'max-width: 200%; padding-right: 100px;' 
-      : 'max-width: 130%; padding-right: 3px;' }
+      : 'max-width: 130%; padding-right: 3px; z-index: 7; ' }
+      .heart{opacity: 70%;}
     border-radius: 0px;
     box-shadow: none;
     padding-block: 3px;
@@ -529,9 +584,9 @@ const PictureFrame = styled.div`
     .content-drawer {
     // transform: translateX(0px);
 }
-    .heart{
-    display: inline-block;
-  }
+  //   .heart{
+  //   display: inline-block;
+  // }
   .card-content {
 }
 } 

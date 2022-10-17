@@ -1,6 +1,10 @@
 * {
   font-family: Helvetica, sans-serif; 
+  box-sizing: border-box;
+  margin: 0;
+  /* padding: 0; */
 }
+
 html {
   height: 100%;
 }
@@ -28,7 +32,7 @@ body::-webkit-scrollbar {
 
 
 .cont {
-  display:grid;
+  display: grid;
   height: 100vh;
   grid-template-columns:  17% 1fr 17%;
   grid-template-rows: auto 1.5fr auto;
@@ -73,8 +77,7 @@ header {
 main {
   grid-area: main;
   background-color: gainsboro;
-  border-radius: 22px 22px 0px 0px;
-
+  border-radius: 22px 22px 22px 22px;
   /* max-height:inherit; */
   /* max-width: inherit; */
 
@@ -116,15 +119,15 @@ aside:nth-child(3) {
 }
 
 .footer {
-  border-radius: 0px 0px 22px 22px;
-  grid-area: footer;
-  /* z-index: 2; */
+  /* grid-area: footer; */
+  /* border-radius: 0px 0px 22px 22px;
   height: 118px;
   background-color: gainsboro;
   border-top-width: 6px;
   border-right-width: 0px;
   border-bottom-width: 0px;
-  border-left-width: 0px;
+  border-left-width: 0px; */
+  /* z-index: 2; */
   /* border-style: solid; */
 }
 
@@ -323,11 +326,7 @@ input:-webkit-autofill {
   }
 
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  /* padding: 0; */
-}
+
 
   .modal {
     padding:100px;

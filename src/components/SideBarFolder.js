@@ -15,7 +15,7 @@ const SideBarFolder = (props) => {
   const match = useRouteMatch()
   
   const submitNewFolder = (e, folder) => {
-  if (e.key === 'Enter' && e.shiftKey === false) {props.addFolder(e, folderName) 
+  if (e.key === 'Enter' && e.shiftKey === false) {props.createFolder(e, folderName) 
   e.currentTarget.blur();
   setNewFolder(!newFolder)
 }}
@@ -41,9 +41,9 @@ const updateFolder = (e, folderName, folder) => {
   })
     .then((res) => res.json())
     .then((folderObj) => {
-      console.log(folderObj);
-      props.setUserFolders(
-        props.userFolders.map((folder) => {
+      console.log("folderObj", folderObj);
+      props.setFolderDetails(
+        props.folderDetails.map((folder) => {
           if (folder.id === folderObj.id) return folderObj;
           else return folder;
         })
@@ -163,9 +163,15 @@ cursor: pointer;
 `
 const StyledEditableDiv = styled.div`
 font-size: 2rem;
-padding: 0px;
+
+/* padding: 0px;
 float: left;
-line-height: 1.1;
+line-height: 1.1; */
+
+padding-bottom: 10px;
+float: left;
+line-height: 1em;
+
 text-align: left;
 width: 100%; 
 color: black;

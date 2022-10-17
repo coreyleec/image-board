@@ -7,7 +7,7 @@ const ImageModal = (props) => {
   let openModal = props.openModal;
   let photo = props.photo;
   let modalToggle = props.modalToggle;
-  const [dimensions, setDimensions] = useState()
+  const [orientation, setOrientation] = useState(true)
   const [photoSrc, setPhotoSrc] = useState(photo.url)
   const [photoName, setPhotoName] = useState(props.photo.name)
   const [photoDetails, setPhotoDetails] = useState(props.photo.details)
@@ -50,8 +50,9 @@ const ImageModal = (props) => {
     img.src = image
     let height = img.onload = () => {
       console.log("width " + img.width + "px" + " height" + img.height);
-      const height = img.width !== null && img.width > img.height ? "100px" : "135px"
-      setDimensions(height)
+      // const height = img.width !== null && img.width > img.height ? "100px" : "135px"
+      // setOrientation(height)
+      img.width !== null && img.width < img.height && setOrientation(false)
     } 
   }
 
@@ -87,7 +88,7 @@ const ImageModal = (props) => {
 {/* Photo Preview and Edit */}
             <ModelContent>
               <form ref={form}
-                onSubmit={(e) => props.addPhoto(e, form.current, dimensions, photoName, photoDetails, props.photo, 
+                onSubmit={(e) => props.addPhoto(e, form.current, orientation, photoName, photoDetails, props.photo, 
                 console.log("photoName", photoName, "photoDetails", photoDetails),
                 props.setOpenModal(!openModal))}
               >
@@ -124,8 +125,8 @@ const ImageModal = (props) => {
                <StyledImageName 
                 type="text" contentEditable={props.edit}
                 onInput={e => setPhotoName(e.currentTarget.textContent)}
-                placeholder={(props.edit && !!photo.name.length) ? null : "add name"}>
-                    {photo.name.join(' ')}
+                placeholder={(props.edit && !!photo.name) ? null : "add name"}>
+                    {photo.name}
                 </StyledImageName>
 {/* DETAILS FORM EDIT AND PREVIEW */}
                   <StyledImageDetails

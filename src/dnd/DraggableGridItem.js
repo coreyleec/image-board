@@ -3,7 +3,7 @@ import React, { useRef, useEffect } from 'react';
 import styled from 'styled-components';
 import { useDrag, useDrop } from 'react-dnd';
 
-const DraggableGridItem = ({  photo, onDrop, children, dimensions, edit, ...p }) => {
+const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }) => {
   // const { photo, onDrop, children, ...p } = props;
   // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
 // console.log("props", p)
@@ -16,7 +16,7 @@ const DraggableGridItem = ({  photo, onDrop, children, dimensions, edit, ...p })
       }),
     });
     
-    console.log("payloadPhoto", payloadPhoto, "photo hover", photo.hover, "drag", drag, "isDragging", isDragging)
+    // console.log("payloadPhoto", payloadPhoto, "photo hover", photo.hover, "drag", drag, "isDragging", isDragging)
 
     // useDrop return value array - no props, drop function
     const [, drop] = useDrop({
@@ -50,7 +50,7 @@ const DraggableGridItem = ({  photo, onDrop, children, dimensions, edit, ...p })
   return <GridItemWrapper  
     {...p} ref={ref}  
     isDragging={isDragging}
-    dimensions={dimensions}
+    orientation={orientation}
     // style={{ opacity }} 
     // style={{style}}
     // style={{cursor: isDragging ? 'grabbing' : 'grab' }}
@@ -108,34 +108,9 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
     // this is where you would want to reorder your list
     // In case you wan't to use the whole object, don't forget to
     // make a deep copy, because we are mutating the object on the last line
-
-  // fetch(`http://localhost:3000/api/v1/photos/${currentPhoto.id}`, {
-  //       method: "PUT", 
-  //       headers: {
-  //       "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify({
-  //         index:otherPhoto.index
-  //     })
-  //   })
-  //   .then((r) => r.json())
-  //   .then((photoObjA) => {
-  //     console.log("photoObjA", photoObjA);
-  //   });
-  // fetch(`http://localhost:3000/api/v1/photos/${otherPhoto.id}`, {
-  //       method: "PUT", 
-  //       headers: {
-  //       "Content-Type": "application/json"
-  //       },
-  //       body: JSON.stringify({
-  //         index:currentPhoto.index
-  //     })
-  //   })
-  //   .then((r) => r.json())
-  //   .then((photoObjB) => {
-  //     console.log("photoObjB", photoObjB);
-  //   });
-  onDrop(otherPhoto.id, currentPhoto.id);
+    onDrop(otherPhoto.id, currentPhoto.id);
+  // onDrop(otherPhoto.index, currentPhoto.index);
+  // onDrop(otherObject.index, currentObject.index);
   // Note: we're mutating the monitor item here!
   // Generally it's better to avoid mutations,
   // but it's good here for the sake of performance
@@ -153,19 +128,19 @@ const GridItemWrapper = styled.div `
   /* padding: 5px; */
   padding-inline: 5px;
 
-  ${({url, edit, isDragging}) => edit 
+  ${({url, edit, isDragging, orientation}) => edit 
     ? `
     z-index: 0;
     transition: z-index .0s ease-in, transform .2s ease-in;
     &:hover {transform: translate(1.5px,-1.5px); transition: transform .2s ease-in, z-index 0s ease-in .2s;}
-    cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
+    cursor: ${isDragging ? 'grabbing !important' : 'pointer !important' };
     `
     : !!url
     ? `z-index: 0; 
     transition: transform .3s ease-in .4s,
                 z-index 0s 1s;
     &:hover {
-      transform: scale(2); 
+      transform: ${orientation ? 'scale(2.5)' : 'scale(2)'}; 
       z-index: 4; 
       transition: z-index 0s .1s, 
                   transform .4s ease-in;}`

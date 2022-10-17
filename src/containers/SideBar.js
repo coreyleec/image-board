@@ -26,24 +26,16 @@ const match = useRouteMatch()
 
   const [func, setFunc] = useState();
 
-  // useEffect(() => {
-  //   // (location.pathname === '/community' || '/login') 
-  //   (!props.currentUserId) 
-  //   ?  setFunc(props.landingFetch)
-  //   :  setFunc(props.profileFetch);
-  // }, [location.pathname]);
+const [follow, setFollow] = useState(false)
+    const [creative, setCreative] = useState(false)
+    const [lifestyle, setLifestyle] = useState(false)
 
-//   useEffect(() => {
-//     // (location.pathname === '/community' || '/login')
-//     (!!props.currentUserId) && (!!props.folderDetails)
-//     ? !!props.folderDetails && setPath(`/-/folders/${props.folderDetails[0].index}`)
-//     : !!props.folderDetails && setPath(`/home/folders/${props.folderDetails[0].index}`);
-//   }, [!!props.folderDetails]);
-// console.log('path 2', !!props.folderDetails && props.folderDetails[0].index)
 
   return (
     <aside>
-      <Sticky sideBar={sideBar}>
+      <Sticky sideBar={sideBar}
+      directory={props.directory}
+      >
         <>
           <ButtonContainer sideBar={sideBar}>
             <button onClick={() => setBar(!sideBar)}>
@@ -51,7 +43,50 @@ const match = useRouteMatch()
             </button>
           </ButtonContainer>
           <div className="side-bar">
+          <div className="follow-cont">
+{/* FOLLOW */}
+          {(props.directory === 'user'| props.directory === '-') ? 
+          <>
+            <Switch>
+            <label className="toggle-switch">
+            <input type="checkbox" 
+            checked={!!props.follow}
+            onChange={() => props.followToggle(props.userId)}
+            />
+            <span className="switch" />
+            </label>
+            <p>follow</p> 
+            </Switch>
+{/* ART/LIFESTYLE TOGGLE */}
+            {props.follow && 
+            <>
+            <Switch>
+            <label className="toggle-switch">
+            <input type="checkbox" 
+            checked={props.follow.creative_follow}
+            onChange={() => props.creativeFollow(props.follow.id)}
+            />
+            <span className="switch" />
+            </label>
+            <p>creative</p> 
+            </Switch>
+            <Switch>
+            <label className="toggle-switch">
+            <input type="checkbox" 
+            checked={props.follow.lifestyle_follow}
+            onChange={() => props.lifestyleFollow(props.follow.id)}
+            />
+            <span className="switch" />
+            </label>
+            <p>lifestyle</p> 
+            </Switch>
+            </>
+          }
+          </>
 
+            : null
+        }
+            </div>
             <div className="scrollable">
               <div className="break"></div>
               {/* {props.currentUser && props.userFolders && */}
@@ -61,7 +96,7 @@ const match = useRouteMatch()
                     {/* <AboutMe {...props} /> */}
                     <SideBarFolder 
                     setFolderPhotos={props.setFolderPhotos}
-                    addFolder={props.addFolder}
+                    createFolder={props.createFolder}
                     deleteFolder={props.deleteFolder}
                     // setUserFolders={props.setUserFolders}
                     edit={props.edit}
@@ -69,6 +104,7 @@ const match = useRouteMatch()
                     // setFolderShown={props.setFolderShown}
                     folderShown={props.folderShown}
                     folderDetails={props.folderDetails}
+                    setFolderDetails={props.setFolderDetails}
                     enableDelete={props.enableDelete}
                     directory={props.directory}
                     // key={props.userId} 
@@ -93,7 +129,9 @@ const match = useRouteMatch()
                   </>
                 )}
 {/* COMMUNITY */}
-<div style={{"width": "min-content"}}>
+<div 
+// onClick={() => setBar(!sideBar)} 
+style={{"width": "min-content"}}>
               {props.directory !== 'community' && (
                 <Link as={Link} to="/community" >
                   <div className="nav-bar-header-wrapper">
@@ -161,11 +199,14 @@ const ButtonContainer = styled.div`
   display: flex;
   padding-top: 5px;
   padding-inline: 5px;
-
   @media (max-width: 1200px) {
-    /* padding-right: 10px; */
-    width: 200px;
-  }
+      
+    transition: width 1s ease;
+      width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
+      
+      
+    }
+  
   button {
     position: sticky;
     transition: left 1s;
@@ -175,10 +216,15 @@ const ButtonContainer = styled.div`
 `;
 
 const Sticky = styled.div`
+    
+
   position: sticky;
   top: 0;
   z-index: 4;
-
+.follow-cont{
+  padding-top: 35px;
+  height: 130px;
+}
   .side-bar {
     padding-inline: 5px;
     /* height: 75%; */
@@ -198,62 +244,24 @@ const Sticky = styled.div`
 
     @media (max-width: 1200px) {
       position: fixed;
-      /* height: 50%; */
-      /* height: fit-content; */
       max-height: 75vh;
-      /* overflow-y: scroll; */
       top: 0%;
       width: 200px;
       transition: left 1s ease;
       ${({ sideBar }) => (sideBar ? `left : 0%` : `left: -30%`)};
-      /* background: gainsboro;  */
-      /* opacity: 51%; */
-      backdrop-filter: blur(6px);
+      ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')};
+      
       /* background: coral; */
       border-bottom-right-radius: 22px;
       &::-webkit-scrollbar {
         width: 0px;
       }
     }
-    /* .filter_cont{
-      width: 100%;
-      height: 100%;
-      position: relative;
-      padding-inline: 5px;
-    }
-    .background-filter{
-      padding-inline: 5px;
-      /* position: absolute; */
-    /* top: 0;
-      bottom: 0;
-      left: 0;
-      right: 0; */
-    /* backdrop-filter: blur(6px); */
-    /* overflow: hidden; */
-    /* width: 110%;
-    }
-    .background-filter:before {
-      background: url('../assets/transparent-img.png');
-      background-size: cover;
-      /* left: 0;
-      right: 0;
-      bottom: 0px; */
-    /* position: absolute; */
-    /* height: 20%; */
-    /* width: 110%; */
-    /* background-size: fill; */
-    /* -webkit-filter: blur(12px); */
-    /* filter: blur(12px); */
-    /* }  */
+ 
     .scrollable {
-      /* height: 700px; */
-      /* overflow-y: scroll; */
       display: block;
-      margin-top: 124px;
-      /* @media (max-width: 1200px) {
-      } */
       @media only screen and (max-width: 1200px) {
-        margin-top: 150px;
+        margin-top: 27px;
       }
     }
     a {
@@ -270,19 +278,63 @@ const StyledP = styled.p`
   cursor: pointer;
   /* text-decoration: none; */
 `;
-/* :nth-child(2) a {
-  overflow: hidden;
-} */
+  const Switch = styled.label`
+  @media (min-width: 1200px) {display:none;}
+  
+  display:flex;
+  margin-top: 0;
+  /* margin-bottom: 10px; */
+ p {
+  padding-left: 10px;
+  /* margin-top: 0.50rem; */
+  font-size: 19px;
+}
+&:nth-child(2){
+    margin-block: 10px;
+    /* margin-right: 10px; */
+  }
+&:nth-child(3){
+    margin-bottom: 10px;
+  }
+.toggle-switch {
 
-/* ::after {
-  opacity 1;
-  transform: translate3d(-100%, 0, 0);
+position: relative;
+display: inline-block;
+width: 50px;
+height: 25px;
+/* margin-block: 10px; */
+/* margin-top: 10px; */
+}
+.toggle-switch input[type="checkbox"] {
+display: none;
+}
+.toggle-switch .switch {
+position: absolute;
+cursor: pointer;
+background-color: #ccc;
+border-radius: 25px;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+transition: background-color 0.2s ease;
+}
+.toggle-switch .switch::before {
+position: absolute;
+content: "";
+margin: 2px;
+width: 21px;
+height: 21px;
+background-color: #ff0000;
+border-radius: 25px;
+transition: transform 0.3s ease;
+}
+.toggle-switch input[type="checkbox"]:checked + .switch::before {
+transform: translateX(25px);
+background-color: green;
+}
+.toggle-switch input[type="checkbox"]:checked + .switch {
+background-color: #ccc;
 }
 
-:hover::after,
-:focus::after{
-  transform: translate3d(0, 0, 0);
-} */
-/* @media (max-width: 1200px) {
-    .side-bar{width: 200px;background-color:coral;}
-  } */
+`

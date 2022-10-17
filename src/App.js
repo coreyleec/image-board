@@ -36,14 +36,13 @@ export const App = (props) => {
     setDirectory(root)
   }, [location.pathname])
   
-  
-  
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`https://memphis-project-api.herokuapp.com/api/v1`)
   const [dbVersion] = useState(`http://[::1]:3000/api/v1`)
+
 
   // OPEN LOGIN
  const [userProfile, setUserProfile] = useState(true);
@@ -58,7 +57,7 @@ const [uuid, setUuid] = useState(0)
 // COMMENTS //
 
 // FOLDERS //
-// const [folderDetais, setFolderDetails] = useState();
+// const [folderDescription, setFolderDetails] = useState();
 
 const [folders, setFolders] = useState();
 const [folderShown, setFolderShown] = useState(null);
@@ -128,6 +127,7 @@ const profileFetch = () => {
         setFolders(user.user.folders);
         setUserFavorites(user.user.favorite_folders)
         // setFolderPhotos(user.user.folders[0].index)
+        setFolderType(user.user.folders[0].creative)
         setFolderShown(user.user.folders[0].index)
         setFolderCollaborators(user.user.folders[0].collaborators)
         setPhotos(user.user.folders[0].photos)
@@ -139,8 +139,8 @@ const profileFetch = () => {
   })
 }
 
-const fetchUser = (user_id) => {
-  fetch(`http://[::1]:3000/api/v1/users/${user_id}/`, {
+const fetchUser = (userId) => {
+  fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -160,6 +160,7 @@ const fetchUser = (user_id) => {
       setFolderCollaborators(user.user.folders[0].collaborators)
       setUserLinks(user.user.links);
       setPhotos(user.user.folders[0].photos)
+      setFollow(user.user.follow)
       navigate(`/user/folders/${user.user.folders[0].index}`)
       
         // setUserComments(user.comments);
@@ -250,11 +251,14 @@ const condition = (currentUserId === userId)
 console.log("directory" , )
 
 const [favoriteShown, setFavoriteShown] = useState(null)
+
 const setFolderPhotos = (index) => {
   const folder = folders.find(folder => folder.index === index)
   console.log("folder", folder)
   setFolderShown(index)
   setFavoriteShown(null)
+  setFolderPrivacy(folder.public)
+  setFolderType(folder.creative)
   setFolderCollaborators(folder.collaborators)
   setPhotos(folder.photos)
   navigate(`/${directory}/folders/${index}`)
@@ -381,6 +385,7 @@ const landingFetch = () => {
         setUserFavorites(user.user.favorite_folders)
         setDemo(user.user.demo)
         setUuid(user.user.uuid)
+        setFolderType(user.user.folders[0].creative)
         // setFavoriteDetails(user.user.favorite_folders.map(favoriteFolder => (`{"name": "${favoriteFolder.name}", "id": ${favoriteFolder.id}}`)))
         // setFolderDetails(user.user.folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}}`)))
         setFolderCollaborators(user.user.folders[0].collaborators)
@@ -393,17 +398,15 @@ const landingFetch = () => {
   })
 }
 useEffect(() => {
-  // (directory === 'home' || directory === 'user' || directory === '-')
   if (directory === 'login' || 'community'){
     setEdit(false)
     setColorArr(colors)
     enableDelete === true && setEnableDelete(false)
-    // setDemo(false)
-    //   console.log('test')
+
   }
 
 
-}, [location.pathname])
+}, [directory])
 
 useEffect(() => {
   if (directory !== '-' && demo === true){
@@ -425,17 +428,51 @@ useEffect(() => {
 }, [userFavorites])
 
 useEffect(() => {
-  let details = !!folders && folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`))
+  let details = !!folders && folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`))
   let jsonDetails = !!details && details.map(detail => JSON.parse(detail))
   setFolderDetails(jsonDetails)
 }, [folders])
 
   // FOLDER FUNCTIONS
-
-
-
+  // const [folderType, setFolderType] = useState()
+  const [folderType, setFolderType] = useState()
+  // ${folder.id}
+const catagorize = (boolean) => {
+  console.log('catagorize')
+  folderType !== null && setFolderType(!folderType)
+  fetch(`http://[::1]:3000/api/v1/catagorize/${userId}`, {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+      }
+      ,
+      body: JSON.stringify({
+        index: folderShown,
+        catagory: boolean,
+        
+      })
+      ,
+    })
+      .then((res) => res.json())
+      .then((folderObj) => {
+        console.log("folderObj", folderObj);
+        setFolderType(folderObj.creative)
+        setFolders(
+          folders.map((folder) => {
+            if (folder.id === folderObj.id) 
+              
+              // console.log("folderObj", folderObj)
+            return folderObj;
+            else return folder;
+          })
+          
+        );
+      });
+}
 
   const updateFolder = (e, folderName, folder) => {
+    demo &&
     e.preventDefault();
     fetch(`http://[::1]:3000/api/v1/folders/${folder.id}`, {
       method: "PATCH",
@@ -445,7 +482,7 @@ useEffect(() => {
       },
       body: JSON.stringify({
         name: folderName,
-        // details: folderDetais,
+        // details: folderDescription,
         // link: folderLink,
         // user_id: currentUser.id
       }),
@@ -474,7 +511,7 @@ useEffect(() => {
       },
       body: JSON.stringify({
         uuid: uuid,
-        // details: folderDetais,
+        // details: folderDescription,
         // link: folderLink,
         // user_id: currentUser.id
       }),
@@ -504,7 +541,7 @@ useEffect(() => {
       },
       body: JSON.stringify({
         public: !folderPrivacy,
-        // details: folderDetais,
+        // details: folderDescription,
         // link: folderLink,
         // user_id: currentUser.id
       }),
@@ -520,8 +557,8 @@ useEffect(() => {
         );
       });
   };
-
-  const addFolder = (e, folderName) => {
+const [newFolder, setNewFolder] = useState(false)
+  const createFolder = (e, folderName) => {
     e.preventDefault();
     const nextIndex = folderDetails[folderDetails.length - 1].index + 1
     fetch(`http://[::1]:3000/api/v1/folders/`, {
@@ -542,11 +579,14 @@ useEffect(() => {
       .then((folderObj) => {
         console.log("folder", folderObj, "folder photos", folderObj.photos);
         setFolders([...folders, folderObj]);
-        // let newArray = [...photos, folderObj.photos]
-        // setPhotos(newArray.flat())
-        setFolderShown(folderObj.index)
+        setNewFolder(true)
+        setFolderType(folderObj.creative)
       });
   };
+  useEffect(() => {
+    !!folders && setFolderPhotos(folders[folders.length - 1].index)
+    setNewFolder(false)
+  }, [newFolder])
   
 
     const deleteFolder = (folderObj) => {
@@ -570,7 +610,8 @@ useEffect(() => {
         // console.log("previous folder", previousFolder)
         // THERE'S AN ISSUE WITH THE FETCH. RECIEVING ERROR: Uncaught (in promise) SyntaxError: Unexpected end of JSON input
         // SO FUNCTION IS OPTIMISTIC UNTIL RESOLVED
-      fetch(`http://[::1]:3000/api/v1/folders/${folderObj.index}/`, {method: "DELETE",
+      fetch(`http://[::1]:3000/api/v1/folders/${folderObj.index}/`, {
+      method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
     })
@@ -714,13 +755,13 @@ const deletePhoto = (photo) => {
       name: null,
       url: null,
       details: null, 
-      demensions: null,
+      orientation: true,
       image_file: null, 
     }),
   })
     .then((res) => res.json())
     .then((photoObj) => {
-      console.log(photoObj);
+      console.log("photoObj",photoObj);
       setPhotos(
         photos.map((photo) => {
           if (photo.id === photoObj.id) return photoObj;
@@ -735,20 +776,6 @@ const deletePhoto = (photo) => {
 const [reorderedPhotos, setReorderedPhotos] = useState()
 // console.log("reorderedPhotos", reorderedPhotos)
 const reorderSubmit = () => {
-//  console.log("folderShown", folderShown)
-//  FOR EACH PHOTO UPDATE THE INDEX VALUE
-// let path = (location.pathname === "/favorites") ? "favorite_photos" : "photos"
-// reorderedPhotos !== undefined && reorderedPhotos.forEach((photo) =>
-//     fetch(`http://[::1]:3000/api/v1/${path}/${photo.id}/`, {
-//       method: "PATCH",
-//       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
-//       body: JSON.stringify({
-//         index: photo.index,
-//       }),
-//     })
-//   )
-//   reorderedPhotos !== undefined &&  setReorderedPhotos(undefined)
-//   };
 
     fetch(`http://[::1]:3000/api/v1/reorder/`, {
       method: "PATCH",
@@ -765,13 +792,132 @@ const reorderSubmit = () => {
   const [openModal, setOpenModal] = useState(false);
   const [token, setToken] = useState(localStorage.getItem('token'));
   
+
+  const [follow, setFollow] = useState(null)
+    const [creative, setCreative] = useState(false)
+    const [lifestyle, setLifestyle] = useState(false)
+    
+useEffect(() => {
+
+    if(!!follow && follow.creative_follow !== undefined){
+    setCreative(follow.creative_follow)}
+    if(!!follow && follow.lifestyle_follow !== undefined){
+    setLifestyle(follow.lifestyle_follow)}
+}, [follow])
+
+
+  const followToggle = (uId) => {
+  // User uuid 
+    console.log("follow", follow, uId)
+    if (demo === true) {
+      setFollow(!follow) 
+      setTimeout(() => {
+        setCreative(!creative)
+      }, "50")}
+    else {
+
+    if (follow === null) {
+      fetch(`http://[::1]:3000/api/v1/follows/`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${localStorage.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          u_id: uId,
+        }),
+      })
+      .then((res) => res.json())
+      .then((followObj) => {
+        console.log("followObj", followObj);
+        setFollow(followObj)
+        setTimeout(() => {
+          creativeFollow(followObj.id)
+          }, "50")
+        
+      });
+    }
+    else {
+    fetch(`http://[::1]:3000/api/v1/follows/${follow.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+      },
+    })
+    .then((res) => res.json())
+    .then((followObj) => {
+      console.log("followObj", followObj);
+      setFollow(null)
+      setCreative(false)
+      setLifestyle(false)
+    });
+  }
+}
+}
+  // useEffect(() => {
+
+  //   follow !== false && setTimeout(() => {
+  //     creativeFollow(follow.id)
+  //     }, "50")
+  // }, [follow])
+  
+
+  const creativeFollow = (followId) => {
+    console.log("follow", follow, followId)
+    // setCreative(!creative)
+    fetch(`http://[::1]:3000/api/v1/creative_toggle/${followId}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${localStorage.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          creative: creative
+        }),
+      })
+        .then((res) => res.json())
+        .then((followObj) => {
+          console.log("followObj", followObj, followObj.creative_folders);
+          setCreative(followObj.creative_foollow)
+          setFollow(followObj)
+        });
+  }
+  const lifestyleFollow = (followId) => {
+    
+    console.log("follow", lifestyle)
+    // setLifestyle(!lifestyle)
+    fetch(`http://[::1]:3000/api/v1/lifestyle_toggle/${followId}`, {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${localStorage.token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          lifestyle: lifestyle,
+        }),
+      })
+        .then((res) => res.json())
+        .then((followObj) => {
+          console.log("followObj", followObj);
+          setLifestyle(followObj.lifestyle_follow)
+          setFollow(followObj)
+        });
+  }
+
+
     return (
       
       <Switch> 
-      <div 
-      className="cont">
+      <Cont directory={directory} >
          
         <SideBar
+          follow={follow}
+          creative={creative}
+          lifestyle={lifestyle}
+          followToggle={followToggle}
+          creativeFollow={creativeFollow}
+          lifestyleFollow={lifestyleFollow}
           demo={demo}
           fetch={!!currentUserId ? profileFetch : landingFetch}
           directory={directory}
@@ -781,13 +927,14 @@ const reorderSubmit = () => {
           setUserFavorites={setUserFavorites}
           favoriteDetails={favoriteDetails}
           folderDetails={folderDetails}
+          setFolderDetails={setFolderDetails}
           folderShown={folderShown}
           favoriteShown={favoriteShown}
           edit={edit}
           enableDelete={enableDelete}
           deleteLink={deleteLink}
           deleteFolder={deleteFolder}
-          addFolder={addFolder}
+          createFolder={createFolder}
           setFolderShown={setFolderShown}
           updateFolder={updateFolder}
           addLink={addLink}
@@ -803,18 +950,30 @@ const reorderSubmit = () => {
           useTemplate={useTemplate}
         />
         <Header
+          userId={userId}
+          follow={follow}
+          creative={creative}
+          lifestyle={lifestyle}
+          followToggle={followToggle}
+          creativeFollow={creativeFollow}
+          lifestyleFollow={lifestyleFollow}
           directory={directory}
           userName={userName}
           edit={!edit}
           nameSubmit={nameSubmit}
         />
         <AsideRight
-        demo={demo}
-        uuid={uuid}
-        directory={directory}
-        hiliteCollaborator={hiliteCollaborator}
+          catagorize={catagorize}
+          folderType={folderType}
+          setFolderType={setFolderType}
+          demo={demo}
+          uuid={uuid}
+          directory={directory}
+          hiliteCollaborator={hiliteCollaborator}
           updateFolderPrivacy={updateFolderPrivacy}
           folderPrivacy={folderPrivacy}
+          folderDetails={folderDetails}
+          folderType={folderType}
           folderCollaborators={folderCollaborators}
           deleteToggle={deleteToggle}
           enableDelete={enableDelete}
@@ -827,12 +986,16 @@ const reorderSubmit = () => {
           userId={userId}
           currentUserId={currentUserId}
         />
-        <main>
+        {/* if main state says community, overflow === hidden */}
+        <main
+        style={{overflow: directory === 'community' ? 'hidden' : 'unset'}}
+        
+        >
           {/* GRID STARTS HERE */}
           
       <Route path={[ '/-','/home', '/user' ]} 
       >
-        {/* component={withRouter( */}
+
           <DndRoutePrefix
               setBaseName={props.setBaseName}
               // navigate={navigate}
@@ -907,18 +1070,34 @@ const reorderSubmit = () => {
                 
                 
 
-              </main>
+              </main >
+              
               <Footer
               edit={edit}
               ></Footer>
             
-            </div>
+            </Cont>
    </Switch>
   )}
   export default App
 
+const Cont = styled.div`
+  display: grid;
+  height: 100vh;
+  grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '17% 1fr 17%'};
+  grid-template-rows: auto 1.5fr auto;
+  grid-template-areas: 
+  "leftbar header header"
+  "leftbar main rightbar"
+  "leftbar footer rightbar";
 
 
+@media only screen and (max-width: 1200px) {
+    grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '0% 1fr 0%'};
+}
+
+`
+  
 const Footer = styled.footer`
   /* transition-delay: .2s; */
   /* z-index: ${({edit}) => edit ? '3' : '2'}; */
@@ -926,19 +1105,21 @@ const Footer = styled.footer`
    `z-index: 3; transition-delay: .1s;` :
    `z-index: 2; transition-delay: .05s;`
   } */
-  border-radius: 0px 0px 22px 22px;
+  /* border-radius: 0px 0px 22px 22px; */
   grid-area: footer;
-  height: 118px;
-  background-color: gainsboro;
+  /* height: 118px; */
+  /* background-color: gainsboro;
   border-top-width: 6px;
   border-right-width: 0px;
   border-bottom-width: 0px;
-  border-left-width: 0px;
+  border-left-width: 0px; */
 `
-
+ 
 
 // useEffect(()=> {
 //   const grid = gridRef.current;
 //   const image = imgRef.current
 //   adjustGridItemsHeight(grid, image);
 // }, [props.photos])
+
+
