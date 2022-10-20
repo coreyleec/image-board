@@ -522,7 +522,7 @@ const PictureFrame = styled.div`
     transition: border-radius .5s ease-out;
     z-index: 9;
     ${({orientation}) => orientation ? 
-    'max-width: 135px;' : 'min-width: 135px; max-height: 220px;' }
+    'max-width: 150px; min-height: 100px;' : 'min-width: 135px; max-height: 220px;' }
 }
 /* height: 100%; */
 .delete-cont{
@@ -626,7 +626,7 @@ const PictureFrame = styled.div`
     transition: box-shadow .3s ease-in;
     }
 .photo{
-  height: inherit;
+  // height: inherit;
   border-radius: 13px;
   // min-width: 150px;
   // width: 150px;

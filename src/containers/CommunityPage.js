@@ -1,6 +1,7 @@
 import React from 'react'
 import { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
+import CommunityPanel from "../components/CommunityPanel";
 import styled from 'styled-components'
 
 
@@ -10,11 +11,13 @@ const CommunityPage = (props) => {
     const navigate = history.push
     
     console.log("path", location.pathname);
-const [users, setUsers] = useState()
-const [photos, setPhotos] = useState()
-const [folders, setFolders] = useState()
+// const [users, setUsers] = useState()
+// const [photos, setPhotos] = useState()
+// const [folders, setFolders] = useState()
+const [random, setRandom] = useState()
+const [following, setFollowing] = useState()
 const colorArr = [['red', 'green'], ['yellow', 'red'], ['blue', 'yellow'], ['green', 'coral'], ['coral', 'blue']]
-const [num, setNum] = useState(1)
+const [num, setNum] = useState(true)
 const setDegree = (n) => {
   setNum(n)
   console.log("color", n)
@@ -22,6 +25,61 @@ const setDegree = (n) => {
   // query db for users based on number 
 }
 console.log("color", num)
+
+const [randos, setRandos] = useState(false)
+const [friendos, setFriendos] = useState(false)
+
+const [community, setCommunity] = useState(false)
+
+const [content, setContent] = useState(true)
+const communityToggle = () => {
+
+}
+
+const contentToggle = (boolean) => {
+  setCommunity(boolean)
+  setNum(boolean)
+}
+
+
+// const fetchFriendos = () => {
+//   fetch("http://[::1]:3000/api/v1/community/", {
+//     method: "GET",
+//   headers: {
+//     Authorization: `Bearer ${localStorage.token}`,
+//     "Content-Type": "application/json",
+//   },
+// })
+// .then((res) => res.json())
+// .then((recentContent) => 
+// {console.log("recentContent", recentContent)
+// setUsers(recentContent.users)
+// setPhotos(recentContent.photos)
+// setFolders(recentContent.folders)
+// setFollowing(recentContent.following)
+// }
+// )  
+// }
+// const fetchRandos = () => {
+//   fetch("http://[::1]:3000/api/v1/community/", {
+//     method: "GET",
+//   headers: {
+//     Authorization: `Bearer ${localStorage.token}`,
+//     "Content-Type": "application/json",
+//   },
+// })
+// .then((res) => res.json())
+// .then((recentContent) => 
+// {console.log("recentContent", recentContent)
+// setUsers(recentContent.users)
+// setPhotos(recentContent.photos)
+// setFolders(recentContent.folders)
+// setFollowing(recentContent.following)
+// }
+// )  
+// }
+
+const [load, setLoad] = useState(false)
 useEffect(() => {
   !!props.userId &&
     fetch("http://[::1]:3000/api/v1/community/", {
@@ -33,10 +91,11 @@ useEffect(() => {
     })
     .then((res) => res.json())
     .then((recentContent) => 
-    {console.log("recentContent", recentContent)
-    setUsers(recentContent.users)
-    setPhotos(recentContent.photos)
-    setFolders(recentContent.folders)}
+    {console.log("recentContent", recentContent, recentContent.random, recentContent.random.photos)
+    setRandom(recentContent.random)
+    setFollowing(recentContent.following)
+    setLoad(true)
+  }
     )
 }, [])
 
@@ -67,17 +126,67 @@ const [search, setSearch] = useState([0])
     !!search && setSearch([0])
   }
 
-const [content, setContent] = useState(true)
+const spreadVar = community ? following : random
 
-const contentToggle = () => {
 
-}
     return (
         <Body>
           {/* make button a styled component and pass color or num */}
-              <ControlPanel>
+              <ControlPanel community={community}>
 
-            <>
+           
+
+            <div className='group-cont'>
+            <div className='block-cont'>
+            <p>creative</p> 
+            <Switch>
+            <label className="toggle-switch">
+            <input type="checkbox" 
+            checked={props.creative}
+            onChange={props.creativeFollow}
+            />
+            <span className="switch" />
+            </label>
+            </Switch>
+            </div>
+
+            <div className='block-cont'>
+            <p>lifestyle</p> 
+            <Switch>
+            <label className="toggle-switch">
+            <input type="checkbox" 
+            checked={props.lifestyle}
+            onChange={props.lifestyleFollow}
+            />
+            <span className="switch" />
+            </label>
+            </Switch>
+            </div>
+            </div>
+            <div className='group-cont'>
+                
+              
+
+                <div className='block-cont' style={{flexGrow: 1}}>
+                <p>degrees of separation</p>
+                
+                  <button onClick={() => contentToggle(false)} className='random-button'><span>random</span></button>
+                  <button onClick={() => contentToggle(true)} className='following-button'><span>following</span></button>
+
+                  <div className='button-container'>
+                {colorArr.map((color, n) => 
+                
+
+
+
+                <Button color={color} num={num} n={n+1} onClick={() => setDegree(n+1)}><span className="front" 
+                style={{background: `${color[0]}`, color:`${color[1]}` }}
+                >{n+2}</span></Button>)}
+                {/* </div> */}
+                </div>
+                </div>
+                </div>
+                <>
             <div className='group-cont'>
             <div className='block-cont'>
             <p>user</p> 
@@ -130,84 +239,38 @@ const contentToggle = () => {
             </div>
             </div>
             </>
-
-            <div className='group-cont'>
-            <div className='block-cont'>
-            <p>creative</p> 
-            <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={props.creative}
-            onChange={props.creativeFollow}
-            />
-            <span className="switch" />
-            </label>
-            </Switch>
-            </div>
-
-            <div className='block-cont'>
-            <p>lifestyle</p> 
-            <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={props.lifestyle}
-            onChange={props.lifestyleFollow}
-            />
-            <span className="switch" />
-            </label>
-            </Switch>
-            </div>
-            </div>
-            <div className='group-cont'>
-                <button className='random-button'><span>random</span></button>
-                <button className='following-button'><span>following</span></button>
-              
-
-                <div className='block-cont' style={{flexGrow: 1}}>
-                <p>degrees of separation</p>
-                <div >
-                {colorArr.map((color, n) => <Button color={color} num={num} n={n+1} onClick={() => setDegree(n+1)}><span className="front" 
-                style={{background: `${color[0]}`, color:`${color[1]}` }}
-                >{n+1}</span></Button>)}
-                {/* </div> */}
-                </div>
-                </div>
-                </div>
               </ControlPanel>
             <Cont>
-            <LeftCont
-            content={content}
-            >
+            <LeftCont>
+             { load && 
+             <>
+            {community ? 
+            <CommunityPanel
+              community={community}
+              setContent={setContent}
+              content={content}
+              // random={random}
+              // users={following.users}
+              // folders={following.folders}
+              // photos={following.photos}
+              following={following}
 
-            <span>
-              <p onClick={() => setContent(true)}>users</p>
-              <p onClick={() => setContent(false)}>folders</p>
-            </span>
-              
-           {content ? <div className="users">
-            {!!users && users.slice(0, 5).map(user => 
-                <UserCard onClick={() => props.fetchUser(user.uuid)}>
-                    {/* <img src={photo.url}/> */}
-                    <p>{user.name}</p>
-                    <p>{user.details}</p>
-                </UserCard>
-                )}
-                </div>
+              />
+            :  
+            <CommunityPanel
 
-               : <div className="folders">
-                {!!folders && folders.slice(0, 5).map(folder => 
-                <FolderCard
-                onClick={() => console.log(folder.id)}>
-                {/* <img src={photo.url}/> */}
-                <div className="text-cont">
-                <p className="photo-name" ><mark></mark>{folder.name}</p>
-                <p className="photo-details" >{folder.details}</p>
-                <p className="user-name" onClick={() => props.fetchUser(folder.user_id)} > {folder.user.name}</p>
-                {/* <p className="folder-name">{photo.folder.name}</p> */}
-                </div>
-                </FolderCard>)}
-                </div>
-                }
+              setContent={setContent}
+              content={content}
+              // random={random}
+              users={random.users}
+              folders={random.folders}
+              photos={random.photos}
+              following={following}
+
+              />
+             } 
+              </>
+              }
             </LeftCont>
             <RightCont>
               <p>photos</p>
@@ -216,13 +279,13 @@ const contentToggle = () => {
               <div className='coffin'>
               <div className='coffin-header'></div>
               <div className='coffin-footer'></div>
-            {!!photos && photos.slice(0, 5).map(photo => 
+            {!!random && random.photos.slice(0, 5).map(photo => 
                 <PhotoCard
                 onClick={() => console.log(photo.id)}>
                 <div className="text-cont">
                 {!!photo.name && <p className="photo-name" ><mark>{photo.name}</mark></p>}
                 {!!photo.details && <p className="photo-details" ><mark>{photo.details}</mark></p>}
-                <p className="user-name" onClick={() => props.fetchUser(photo.user_id)} ><mark>{photo.folder.user.name}</mark></p>
+                <p className="user-name" onClick={() => props.fetchUser(photo.user_id)} ><mark>{photo.user_name}</mark></p>
                 {/* <p className="folder-name">{photo.folder.name}</p> */}
                 </div>
                 <img src={photo.url}/>
@@ -262,7 +325,12 @@ const ControlPanel = styled.div`
     margin-top: 30px;
     margin-inline: 10px;
     height: max-content;
+    border-radius: 13px;
+    padding: 6px;
   }
+
+  .random-button{transform: translateY(${({community}) => community === false ? '0px' : '-8px' });
+  .following-button{transform: translateY(${({community}) => community === true ? '-8px' : '0px' });
 
   .block-cont{
     display: block;
@@ -555,31 +623,10 @@ const RightCont = styled.div`
         border-radius: 13px;
     } */
 `
-const FolderCard = styled.div`
-.text-cont {
-  display: flex;
-  flex-direction: column;
-  justify-content : space-between;
-  margin: 10px;
-  margin-left: 3px;
- .photo-name {
-  font-weight: bold;
- }
- .photo-details {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  
-  /* overflow: hidden; */
-  text-overflow: ellipsis;
- }
- .user-name {
-  cursor: pointer;
- }
- .folder-name {
-
- }
-}`
+const LeftCont = styled.div`
+   /* JUST FOR CLARITY */
+   width: 48%;
+`
 const PhotoCard = styled.div`
   flex-direction: column;
   height: fit-content;
@@ -706,158 +753,8 @@ const Heart = styled.button`
     cursor: pointer;
    
 `;
-const UserCard = styled.div`
-/* box-shadow: -3px 3px 5px 2px #aaaaaa;
-border-radius: 13px; */
-display: flex;
-height: fit-content;
-border-radius: 13px;
-margin-block: 10px;
-padding: 5px;
-background-color: gainsboro;
-box-shadow: -3px 3px 5px 2px #aaaaaa;
 
-:hover {
-  transition: transform 0.2s ease;
-  /* transform: scale(1.2,1.2); */
-  transform: translate(1px, -1px); 
-  /* box-shadow: none; */
-  box-shadow: -7px 7px 10px 4px #aaaaaa; 
-  
-}
 
-img {
-    height: 100px;
-    width: -webkit-fill-available;
-  /* overflow: hidden; */
-  margin: 10px;
-  /* ALLOWS FOR RESIZING WINDOW */
-  max-width: fit-content;
-  /* USE THIS TO KEEP IMAGE CENTER */
-  display: flex;
-  justify-content: center;
-  border-radius: 13px;
-  cursor: pointer;
-  /* box-shadow: -3px 3px 5px 2px #aaaaaa; */
-}
-.text-cont {
-  display: flex;
-  flex-direction: column;
-  justify-content : space-between;
-  margin: 10px;
-  margin-left: 3px;
-  /* p{
-    
-  } */
- .photo-name {
-  font-weight: bold;
- }
- .photo-details {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
- }
- .user-name {
-  /* color: white;
-  cursor: pointer; */
- }
- .folder-name {
-  /* color: white;
-  cursor: pointer; */
- }
-}
-
-`
-const LeftCont = styled.div`
-    background-color: gainsboro;
-    display: block;
-    width: 48%;
-    border-radius: 13px;
-    padding-inline: 15px;
-    span{
-      display: flex;
-      justify-content: space-evenly;
-    }
-    span p{
-      flex: 1;
-      padding: 10px;
-      border-top-color: initial;
-      border-top-style: solid;
-      border-top-width: initial;
-      border-right-color: initial;
-      border-right-style: solid;
-      border-left-style: solid;
-      border-right-width: initial;
-      border-left-color: initial;
-      border-left-width: initial;
-      border-top-left-radius: 13px;
-      border-top-right-radius: 13px;
-      ${({content}) => content ? 
-      `:nth-child(1) {
-        border-bottom-style: none;
-        
-      // border-left-style: solid;
-        }
-      :nth-child(2) {
-        border-left-style: none;
-        border-bottom-color: initial;
-        border-bottom-style: solid;
-        border-bottom-width: initial;
-        border-bottom-left-radius: 6px;}
-      `
-      :
-      `:nth-child(1) {
-        border-right-style: none;
-        border-bottom-color: initial;
-        border-bottom-style: solid;
-        border-bottom-width: initial;
-        border-bottom-right-radius: 6px;
-        :nth-child(2) {border-bottom-style: none;}
-
-      `}
-    }
-      
-      
-    }
-    .users {
-      width: 100%;
-      height: auto;
-      padding: 15px;
-      /* border: solid;
-      border-radius: 13px; */
-      border-right-color: initial;
-      border-right-style: solid;
-      border-right-width: initial;
-      border-bottom-color: initial;
-      border-bottom-style: solid;
-      border-bottom-width: initial;
-      border-left-color: initial;
-      border-left-style: solid;
-      border-left-width: initial;
-      border-bottom-right-radius: 13px;
-      border-bottom-left-radius: 13px;
-    }
-    .folders {
-      width: 100%;
-      height: auto;
-      padding: 15px;
-      border-right-color: initial;
-      border-right-style: solid;
-      border-right-width: initial;
-      border-bottom-color: initial;
-      border-bottom-style: solid;
-      border-bottom-width: initial;
-      border-left-color: initial;
-      border-left-style: solid;
-      border-left-width: initial;
-      border-bottom-right-radius: 13px;
-      border-bottom-left-radius: 13px;
-      /* margin-top: 15px; */
-    }
-
-`
 
 
 // const StyledP = styled.p`
