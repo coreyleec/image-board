@@ -143,9 +143,9 @@ const GridItemWrapper = styled.div `
       transform: ${orientation ? 'scale(2.5)' : 'scale(2)'}; 
       z-index: 4; 
       transition: z-index 0s .1s, 
-                  transform .4s ease-in;}`
+                  transform .3s ease-in;}`
     : `z-index: -1; 
-      transition: transform .4s ease-in .3s, 
+      transition: transform .3s ease-in .3s, 
                   z-index 0s linear .3s;`
    }
    /* :hover {

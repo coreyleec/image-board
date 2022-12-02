@@ -106,8 +106,9 @@ const moveFolder = useCallback((dragIndex, hoverIndex) => {
 let path = location.pathname.split("/")[1] */}
 {/* EDIT FOLDER NAME */}
 {/* <DndProvider> */}
+
             {!!props.folderDetails && props.folderDetails.sort((a, b) => a.index - b.index).map(folder => <div 
-                        className="subtract-item" key={folder.id} folder={folder}>
+                        className="title-cont" key={folder.id} folder={folder}>
 {/* <Link to={`/folders/${folder.id}`} >                           */}
                         <StyledEditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
@@ -147,31 +148,20 @@ transition: opacity .2s linear;
 background-color: transparent;
 border: none;
 font-size: 2rem;
-color: red;
-line-height: 6px;
+line-height: 0em;
 padding: 0;
+margin: auto;
+height: 0px;
+color: red;
 transform: scale(2, 1);
-/* margin-top: 8%; */
-padding-right: 6px;
-/* padding-left: 6px; */
-height: 35px;
-margin-top: 0px;
-padding-top: 0px;
-/* padding-bottom: 4px; */
 align-self: self-start;
 cursor: pointer;
 `
 const StyledEditableDiv = styled.div`
-font-size: 2rem;
-
-/* padding: 0px;
+font-size: 1.4rem;
+line-height: .85em;
+padding-left: 10px; 
 float: left;
-line-height: 1.1; */
-
-padding-bottom: 10px;
-float: left;
-line-height: 1em;
-
 text-align: left;
 width: 100%; 
 color: black;

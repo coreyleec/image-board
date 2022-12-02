@@ -91,7 +91,7 @@ const [follow, setFollow] = useState(false)
               <div className="break"></div>
               {/* {props.currentUser && props.userFolders && */}
               {/* (location.pathname === ("/" || "/home/" || "/user/" || "/community")) && */}
-              {!!props.folderDetails &&     (
+              {true &&     (
                   <>
                     {/* <AboutMe {...props} /> */}
                     <SideBarFolder 
@@ -130,7 +130,7 @@ const [follow, setFollow] = useState(false)
                 )}
 {/* COMMUNITY */}
 <div 
-// onClick={() => setBar(!sideBar)} 
+onClick={() => setBar(!sideBar)} 
 style={{"width": "min-content"}}>
               {props.directory !== 'community' && (
                 <Link as={Link} to="/community" >
@@ -199,7 +199,7 @@ const ButtonContainer = styled.div`
   display: flex;
   padding-top: 5px;
   padding-inline: 5px;
-  @media (max-width: 1200px) {
+  @media (max-width: 1300px) {
       
     transition: width 1s ease;
       width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
@@ -242,14 +242,15 @@ const Sticky = styled.div`
     transition: left 1s ease;
     ${({ sideBar }) => (sideBar ? `left : 0%` : `left: -30%`)}; */
 
-    @media (max-width: 1200px) {
+    @media (max-width: 1300px) {
       position: fixed;
       max-height: 75vh;
       top: 0%;
       width: 200px;
       transition: left 1s ease;
       ${({ sideBar }) => (sideBar ? `left : 0%` : `left: -30%`)};
-      ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')};
+      /* ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')}; */
+      backdrop-filter: blur(6px);
       
       /* background: coral; */
       border-bottom-right-radius: 22px;
@@ -260,7 +261,7 @@ const Sticky = styled.div`
  
     .scrollable {
       display: block;
-      @media only screen and (max-width: 1200px) {
+      @media only screen and (max-width: 1300px) {
         margin-top: 27px;
       }
     }
@@ -279,7 +280,7 @@ const StyledP = styled.p`
   /* text-decoration: none; */
 `;
   const Switch = styled.label`
-  @media (min-width: 1200px) {display:none;}
+  @media (min-width: 1300px) {display:none;}
   
   display:flex;
   margin-top: 0;
@@ -309,6 +310,8 @@ height: 25px;
 display: none;
 }
 .toggle-switch .switch {
+/* outline: solid;
+outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
@@ -320,9 +323,11 @@ left: 0;
 transition: background-color 0.2s ease;
 }
 .toggle-switch .switch::before {
+margin-block: 2.3px;
+margin-inline: 2px;
 position: absolute;
 content: "";
-margin: 2px;
+    /* margin: 2px; */
 width: 21px;
 height: 21px;
 background-color: #ff0000;

@@ -76,7 +76,7 @@ const SideBarLinks = (props) => {
             onKeyDown={(e) => submitUpdatedLink(e, linkName, linkUrl, link)}
             // onSubmit={(e) => props.updateLink(e, linkName, linkUrl)}
           >
-            <div className="subtract-item">
+            <div className="title-cont">
               {/* LINK NAME INPUT*/}
               <StyledInput
                 type="text"

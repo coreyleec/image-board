@@ -12,10 +12,10 @@ html {
   min-height: 100%;
 }
 body {
-  /* overflow: hidden; */
+  overflow: hidden;
   overflow-x: hidden;
   overflow-y: scroll;
-  /* width: 100vw; */
+  width: 100vw;
  background-color: black;
   margin: 0;
   /* font-family: "HelveticaNeue"; */
@@ -31,7 +31,7 @@ body::-webkit-scrollbar {
 } */
 
 
-.cont {
+/* .cont {
   display: grid;
   height: 100vh;
   grid-template-columns:  17% 1fr 17%;
@@ -41,12 +41,12 @@ body::-webkit-scrollbar {
   "leftbar main rightbar"
   "leftbar footer rightbar";
 
-}
-@media only screen and (max-width: 1200px) {
+} */
+@media only screen and (max-width: 1300px) {
   
-  .cont {
+  /* .cont {
     grid-template-columns:  0% 1fr 0%;
-  }
+  } */
   /* main{
     border-radius: 0px 0px 0px 0px;
 
@@ -115,7 +115,7 @@ aside:nth-child(3) {
   border-style: solid;
   /* overflow: hidden; */
   border-radius: 22px 0px 0px 22px;
-  /* @media only screen and (max-width: 1200px) {} */
+  /* @media only screen and (max-width: 1300px) {} */
 }
 
 .footer {
@@ -141,7 +141,7 @@ article {
   /* height: max-content; */
 }
 .grid{
-  /* height: 1200px; */
+  /* height: 1300px; */
   /* overflow: hidden; */
 }
 button {
@@ -153,12 +153,16 @@ button {
   justify-content: space-between;  
   /* max-height: 47.78;/ */
   /* width: max-content; */
+  padding-bottom: 10px;
 }
-.subtract-item {
+.title-cont {
   display:flex;
   justify-content: space-between;
   /* margin-right: 5; */
   width: 100%;
+  
+  padding-bottom: 15px;
+  padding-right: 10px;
 }
 .side-bar-add-button {
   background-color: transparent;

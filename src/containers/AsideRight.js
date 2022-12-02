@@ -173,7 +173,23 @@ const typeToggle = () => {
           </>
           : null
            }
-            
+
+{/* FOLDER FOLLOW */}
+            {(props.directory === 'user') &&
+            <CatagorySwitch
+          //  catagorized={props.folderType}
+           >
+           <label className="toggle-switch">
+           <input type="checkbox" 
+           checked={follow}
+           onChange={() => followToggle()}
+          //  checked={props.edit}
+           />
+           <span className="switch" />
+           </label>
+           <p>{follow ? "follow folder" : "unfollow folder"}</p> 
+           </CatagorySwitch>
+          }
 
             {props.edit === true && 
             <>
@@ -323,7 +339,7 @@ const Sticky = styled.div`
     position: absolute;
     border-top-left-radius: 13px;
     opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
-    @media (max-width: 1200px){
+    @media (max-width: 1300px){
       opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
       background-color: grey;
     }
@@ -340,14 +356,15 @@ const Sticky = styled.div`
     border-top-left-radius: 13px; 
     border-bottom-left-radius: 13px;
     opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
-    @media (max-width: 1200px){
+    @media (max-width: 1300px){
       opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
+      ${({catagorized}) => catagorized !== null && 'display : none' };
       background-color: grey;
     }
   }
 
   
-  @media (max-width: 1200px) {
+  @media (max-width: 1300px) {
     all: unset;
     transition: all 2s;
     padding: 10px;
@@ -391,6 +408,8 @@ height: 25px;
 display: none;
 }
 .toggle-switch .switch {
+/* outline: solid;
+outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
@@ -402,9 +421,11 @@ left: 0;
 transition: background-color 0.2s ease;
 }
 .toggle-switch .switch::before {
+margin-block: 2.3px;
+margin-inline: 2px;
 position: absolute;
 content: "";
-margin: 2px;
+    /* margin: 2px; */
 width: 21px;
 height: 21px;
 background-color: #aaa;
@@ -446,6 +467,8 @@ height: 25px;
 display: none;
 }
 .toggle-switch .switch {
+/* outline: solid;
+outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
@@ -457,9 +480,11 @@ left: 0;
 transition: background-color 0.2s ease;
 }
 .toggle-switch .switch::before {
+margin-block: 2.3px;
+margin-inline: 2px;
 position: absolute;
 content: "";
-margin: 2px;
+    /* margin: 2px; */
 width: 21px;
 height: 21px;
 background-color: green;
@@ -492,7 +517,7 @@ const CollabotorList = styled.div`
     background-color: #ccc;
     border-radius: 14px;
     /* width: 100%; */
-    @media (max-width: 1200px) {
+    @media (max-width: 1300px) {
     /* all: unset; */
     transition: all 2.5s;
     /* z-index: 1; */

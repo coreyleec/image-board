@@ -140,7 +140,9 @@ const profileFetch = () => {
 }
 
 const fetchUser = (userId) => {
-  fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
+  userId === currentUserId 
+  ? profileFetch()
+  : fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -428,6 +430,7 @@ useEffect(() => {
 }, [userFavorites])
 
 useEffect(() => {
+  console.log("folder", folders)
   let details = !!folders && folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`))
   let jsonDetails = !!details && details.map(detail => JSON.parse(detail))
   setFolderDetails(jsonDetails)
@@ -912,7 +915,7 @@ useEffect(() => {
       <Cont directory={directory} >
          
         <SideBar
-          follow={follow}
+          follow={!!follow}
           creative={creative}
           lifestyle={lifestyle}
           followToggle={followToggle}
@@ -1084,7 +1087,8 @@ useEffect(() => {
 const Cont = styled.div`
   display: grid;
   height: 100vh;
-  grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '17% 1fr 17%'};
+  /* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '17% 1fr 17%'}; */
+  grid-template-columns: 17% 1fr 17%;
   grid-template-rows: auto 1.5fr auto;
   grid-template-areas: 
   "leftbar header header"
@@ -1092,11 +1096,12 @@ const Cont = styled.div`
   "leftbar footer rightbar";
 
 
-@media only screen and (max-width: 1200px) {
-    grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '0% 1fr 0%'};
+  @media (max-width: 1300px) {
+  grid-template-columns:  0% 1fr 0%;
 }
 
 `
+/* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '0% 1fr 0%'}; */
   
 const Footer = styled.footer`
   /* transition-delay: .2s; */

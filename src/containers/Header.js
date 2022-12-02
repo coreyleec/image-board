@@ -119,7 +119,7 @@ const Sticky = styled.div`
 `
 const Switch = styled.label`
 
-@media only screen and (max-width: 1200px) {
+@media only screen and (max-width: 1300px) {
     display:none;
       }
   display:flex;
@@ -150,6 +150,8 @@ height: 25px;
 display: none;
 }
 .toggle-switch .switch {
+/* outline: solid;
+outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
@@ -161,9 +163,11 @@ left: 0;
 transition: background-color 0.2s ease;
 }
 .toggle-switch .switch::before {
+margin-block: 2.3px;
+margin-inline: 2px;
 position: absolute;
 content: "";
-margin: 2px;
+    /* margin: 2px; */
 width: 21px;
 height: 21px;
 background-color: #ff0000;

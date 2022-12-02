@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { BrowserRouter as Router, Route, useLocation } from 'react-router-dom';
 import App from './App';
+
 import * as serviceWorker from './serviceWorker';
 // import { getBaseUrlPath, setBase } from "./url-util";
 
@@ -12,18 +13,10 @@ import * as serviceWorker from './serviceWorker';
 
 const Root = () => {
   
-  // const [baseName, setBaseName] = useState('')
-  // const basename = `/${baseName}`
   return (
     <React.StrictMode>
-    <Router 
-    // basename={baseName} key={baseName}
-    >
-    {/* Current basename – {baseName} */}
-    <App
-    //  setBaseName={setBaseName} 
-    //  baseName={baseName}
-    />
+    <Router>
+    <App/>
   </Router>
   </React.StrictMode>
   );

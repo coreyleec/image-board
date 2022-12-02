@@ -8,6 +8,8 @@ import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
 import { DndProvider } from "react-dnd";
 import DraggableGridItem from "../dnd/DraggableGridItem";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
 import { render } from "@testing-library/react";
 
@@ -204,7 +206,9 @@ const favoriteToggle = (photo) => {
 
 
 const testFavorite = (photo) => {
-  !!photo.favorites.length ? console.log(photo, "favorited", !!photo.favorites.length, "user", photo.favorites[0].user_id, "photo", photo.id) : console.log("favorited", !!photo.favorites.length, "user", photo.user_id, "photo", photo.id )
+  !!photo.favorites.length 
+  ? console.log(photo, "favorited", !!photo.favorites.length, "user", photo.favorites[0].user_id, "photo", photo.id) 
+  : console.log("favorited", !!photo.favorites.length, "user", photo.user_id, "photo", photo.id)
 }
 // const threeWrap = (photoName) => {
 //     const nameArray = [], size = 3;
@@ -267,6 +271,7 @@ const nameArray = [], size = 3;
                   >
                     <PictureFrame
                     className="picture"
+                    onResize={() => console.log("hello")}
                       favorited={!!photo.favorites && photo.favorites.length} 
                       edit={props.edit}
                       url={photo.url}
@@ -434,8 +439,8 @@ const GridWrapper = styled.div`
 
         
 const PictureFrame = styled.div`
-
-    box-sizing: content-box;
+    /* ${({edit}) => edit && 'resize: auto;'} */
+    /* box-sizing: content-box; */
     position: relative;
     left: 50%;
     top: 50%;
@@ -456,7 +461,9 @@ const PictureFrame = styled.div`
     outline: ${({highlight, url}) => !!url && highlight !== undefined && ` solid 3px ${highlight}`};
     width: fit-content; 
     max-width: 90%;
-    transition: 
+    
+    transition: border-radius .5s ease-out, background-color 0s linear 1s, max-width .4s ease-in .1s, padding-right .2s ease-out, padding-left .2s ease-out, padding-top .2s ease-out, padding-bottom .2s ease-out, box-shadow .3s ease-in .7s;
+    /* transition: 
       border-radius .5s ease-out, 
       background-color 0s linear 1s, 
       max-width .4s ease-in .1s,
@@ -464,7 +471,7 @@ const PictureFrame = styled.div`
       padding-left .3s ease-out .2s, 
       padding-block .3s ease-out .2s, 
       box-shadow .3s ease-in
-      ;
+      ; */
       /* ${({edit, url}) => edit && !!url ? 'box-shadow .3s ease-in' : 'box-shadow .3s ease-in .7s'} */
       /* box-shadow .3s ease-in .7s */
       /* !edit ? !!url  */
@@ -481,6 +488,13 @@ const PictureFrame = styled.div`
     /* overflow: visible; */
     overflow-y: clip;
     width: max-content;
+    border-radius: 13px;
+    transition: border-radius .4s ease-out;
+}
+&:hover .center-image{
+  border-radius: 0px;
+  transition: border-radius .3s ease-out .4s;
+  
 }
   .content-drawer {
     position: absolute;
@@ -518,8 +532,8 @@ const PictureFrame = styled.div`
   .photo {
     position: relative;
     /* object-fit: cover; */
-    border-radius: 13px;
-    transition: border-radius .5s ease-out;
+    /* border-radius: 13px; */
+    
     z-index: 9;
     ${({orientation}) => orientation ? 
     'max-width: 150px; min-height: 100px;' : 'min-width: 135px; max-height: 220px;' }
@@ -553,15 +567,16 @@ const PictureFrame = styled.div`
 
   ${({ edit, url, details, highlight }) => !edit ? !!url 
   ? `
-  transition: 
-      border-radius .5s ease-out, 
-      background-color 0s linear 1s, 
-      max-width .4s ease-in .1s,
-      padding-right .3s ease-out .2s, 
-      padding-left .3s ease-out .2s, 
-      padding-block .3s ease-out .2s, 
-      box-shadow .3s ease-in .7s
-      ;
+  transition: border-radius .3s ease-out, padding-bottom .3s ease-out, padding-top .3s ease-out, padding-right .3s ease-out, padding-left .3s ease-out, max-width .4s ease-in, box-shadow 0s,outline .3s linear .2s;
+  // transition: 
+  //     border-radius .5s ease-out, 
+  //     background-color 0s linear 1s, 
+  //     max-width .4s ease-in .1s,
+  //     padding-right .3s ease-out .2s, 
+  //     padding-left .3s ease-out .2s, 
+  //     padding-block .3s ease-out .2s, 
+  //     box-shadow .3s ease-in .7s
+  //     ;
   // IMAGE HOVER 
   &:hover {
     z-index: 3;
@@ -571,7 +586,8 @@ const PictureFrame = styled.div`
       .heart{opacity: 70%;}
     border-radius: 0px;
     box-shadow: none;
-    padding-block: 3px;
+    padding-top: 2px;
+    padding-bottom: 3px;
     padding-left: 3px;
     // padding-right: ${details ? "3px" : "100px" };
     transition: 
@@ -591,12 +607,13 @@ const PictureFrame = styled.div`
 }
 } 
 
-&:hover .photo{
-  border-radius: 0px;
-  transition: border-radius .5s ease-out .4s;
-  /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
-  // position: initial;
-}`
+// &:hover .photo{
+//   border-radius: 0px;
+//   transition: border-radius .5s ease-out .4s;
+//   /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
+//   // position: initial;
+// }
+`
 : `
 // MISSING BOX
   background-color: gainsboro;

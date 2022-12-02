@@ -87,22 +87,3 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
     }
 }
 
-const GridItemWrapper = styled.div `
-  /* border : ${({color}) => color !== undefined ? `solid 1px ${color}`: 'solid 1px #aaa' }; */
-  width: 150px;
-  min-width: 240px;
-  background-color: #fff;
-  padding: 10px;
-  padding-bottom: 10px;
-  padding-right: 10px;
-  border-radius: 5px;
-  border: 1px solid #e0e0e0;
-  line-height: 1.2em;
-  word-wrap: break-word;
-  user-select: none;
-  box-sizing: border-box;
-
-//   &:hover {
-//     box-shadow: 0 1px 2px 0 rgba(60,64,67,0.302),0 1px 3px 1px rgba(60,64,67,0.149);
-  }
-`;

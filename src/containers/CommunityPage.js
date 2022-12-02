@@ -2,6 +2,7 @@ import React from 'react'
 import { useEffect, useState } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import CommunityPanel from "../components/CommunityPanel";
+import CommunityCont from "../components/CommunityCont";
 import styled from 'styled-components'
 
 
@@ -14,36 +15,135 @@ const CommunityPage = (props) => {
 // const [users, setUsers] = useState()
 // const [photos, setPhotos] = useState()
 // const [folders, setFolders] = useState()
-const [random, setRandom] = useState()
-const [following, setFollowing] = useState()
+
 const colorArr = [['red', 'green'], ['yellow', 'red'], ['blue', 'yellow'], ['green', 'coral'], ['coral', 'blue']]
-const [num, setNum] = useState(true)
-const setDegree = (n) => {
-  setNum(n)
-  console.log("color", n)
+// const [connected, setConnected] = useState(true)
+
+const [filters, setFilters] = useState({
+  catagory: true, 
+  connected: true,
+  creative: true,
+  lifestyle: false,
+  
+})
+
+const [load, setLoad] = useState(false)
+const [following, setFollowing] = useState(null)
+const [community, setCommunity] = useState(null)
+const [error, setError] = useState(false)
+
+
+
+const handleErrors = (response) => {
+  if (!response.ok) {
+      throw Error(response.statusText);
+  }
+  return response;
+}
+
+const setDegree = (degree) => {
+  const filter = {...filters}
+  filter.connected = degree
+  setFilters(filter)
+  console.log("color", degree)
+  if (!!degree)
+  {console.log("number")
+
+  fetch(`http://[::1]:3000/api/v1/degree/${degree}`, {
+    method: "GET",
+  headers: {
+    Authorization: `Bearer ${localStorage.token}`,
+    "Content-Type": "application/json",
+  },
+})
+// .then(handleErrors)
+.then((res) => {
+  if (!!res.ok){
+    res.json()
+  
+  .then((degreeReturned) => 
+  {console.log("degreeReturned ✚", degreeReturned)
+  setFollowing(degreeReturned)
+  setLoad(degree)
+  setError(false)
+}
+  )}
+  else 
+  res.json()
+ .then((degreeReturned) => {
+  //  setError(degreeReturned.error) 
+   console.log("degreeReturned ✚", degreeReturned.error)})
+
+}
+
+    )
+    
+} 
   // if color === name of color then button style is different
-  // query db for users based on number 
-}
-console.log("color", num)
-
-const [randos, setRandos] = useState(false)
-const [friendos, setFriendos] = useState(false)
-
-const [community, setCommunity] = useState(false)
-
-const [content, setContent] = useState(true)
-const communityToggle = () => {
-
+  // query db for users based on connectedber 
 }
 
-const contentToggle = (boolean) => {
-  setCommunity(boolean)
-  setNum(boolean)
+const setConnected = (connected) => {
+  const filter = {...filters}
+  filter.connected = connected
+  setFilters(filter)
+  console.log("color", connected)
 }
+const setCatagory = (catagory) => {
+  const filter = {...filters}
+  filter.catagory = catagory
+  setFilters(filter)
+  console.log("color", catagory)
+}
+const setCreative = (creative) => {
+  const filter = {...filters}
+  // filter.creative = creative
+  // setFilters(filter)
+  if (creative === false && filters.lifestyle === false) {
+    filter.lifestyle = true
+    filter.creative = creative
+    setFilters(filter)
+  }
+  else {
+    filter.creative = creative
+    setFilters(filter)
+  }
+  // setFilters(filter)
+  // console.log("color", creative)
+}
+const setLifestyle = (lifestyle) => {
+  const filter = {...filters}
+  if (lifestyle === false && filters.creative === false) {
+    filter.creative = true
+    filter.lifestyle = lifestyle
+    setFilters(filter)
+  }
+  else {
+    filter.lifestyle = lifestyle
+    setFilters(filter)
+  }
+
+}
+
+
+
+
+// console.log('filter', filters.connected)
+
+
+const connectedToggle = () => {
+
+}
+
+const [folders, setFolders] = useState()
+const [users, setUsers] = useState()
+
+
+
 
 
 // const fetchFriendos = () => {
-//   fetch("http://[::1]:3000/api/v1/community/", {
+//   fetch("http://[::1]:3000/api/v1/connected/", {
 //     method: "GET",
 //   headers: {
 //     Authorization: `Bearer ${localStorage.token}`,
@@ -56,12 +156,12 @@ const contentToggle = (boolean) => {
 // setUsers(recentContent.users)
 // setPhotos(recentContent.photos)
 // setFolders(recentContent.folders)
-// setFollowing(recentContent.following)
+
 // }
 // )  
 // }
 // const fetchRandos = () => {
-//   fetch("http://[::1]:3000/api/v1/community/", {
+//   fetch("http://[::1]:3000/api/v1/connected/", {
 //     method: "GET",
 //   headers: {
 //     Authorization: `Bearer ${localStorage.token}`,
@@ -79,7 +179,24 @@ const contentToggle = (boolean) => {
 // )  
 // }
 
-const [load, setLoad] = useState(false)
+
+// const [creative, setCreative] = useState(true)
+// const [lifestyle, setLifestyle] = useState(false)
+// const [catagory, setCatagory] = useState(true)
+
+// const filterCreative = () => {
+//   following.folders.filter((folder) => folder.creative === creative)
+// }
+// const filterLifestyle = () => {
+//   following.folders.filter((folder) => folder.lifestyle === lifestyle)
+// }
+
+// useEffect(() => {
+//   console.log("filters", filters, following)
+// }, [filters])
+
+
+
 useEffect(() => {
   !!props.userId &&
     fetch("http://[::1]:3000/api/v1/community/", {
@@ -91,13 +208,26 @@ useEffect(() => {
     })
     .then((res) => res.json())
     .then((recentContent) => 
-    {console.log("recentContent", recentContent, recentContent.random, recentContent.random.photos)
-    setRandom(recentContent.random)
+    {console.log("recentContent", recentContent)
+    setCommunity(recentContent.community)
     setFollowing(recentContent.following)
     setLoad(true)
   }
     )
 }, [])
+
+// useEffect(() => {
+//   // console.log("recent", following, following.users, community);
+//   !!load && !!following && !!community && filters.connected
+//   ? setUsers(following?.users)
+//   : setUsers(community?.users)
+//   !!load && filters.connected 
+//   ? setFolders(following?.folders)
+//   : setFolders(community?.folders)
+
+// }, [filters.connected, following, community ])
+
+
 
 
 const [search, setSearch] = useState([0])
@@ -126,13 +256,15 @@ const [search, setSearch] = useState([0])
     !!search && setSearch([0])
   }
 
-const spreadVar = community ? following : random
+
 
 
     return (
         <Body>
-          {/* make button a styled component and pass color or num */}
-              <ControlPanel community={community}>
+          {/* make button a styled component and pass color or connected */}
+              <ControlPanel filters={filters}
+              
+              >
 
            
 
@@ -142,8 +274,8 @@ const spreadVar = community ? following : random
             <Switch>
             <label className="toggle-switch">
             <input type="checkbox" 
-            checked={props.creative}
-            onChange={props.creativeFollow}
+            checked={filters.creative}
+            onChange={() => setCreative(!filters.creative)}
             />
             <span className="switch" />
             </label>
@@ -155,8 +287,8 @@ const spreadVar = community ? following : random
             <Switch>
             <label className="toggle-switch">
             <input type="checkbox" 
-            checked={props.lifestyle}
-            onChange={props.lifestyleFollow}
+            checked={filters.lifestyle}
+            onChange={() => setLifestyle(!filters.lifestyle)}
             />
             <span className="switch" />
             </label>
@@ -167,25 +299,27 @@ const spreadVar = community ? following : random
                 
               
 
+                <div className="inline-cont">
+                <div className="block-cont">
+                  <p></p>
+                <div className="button-container">
+                <button onClick={() => setDegree(false)} className="button community"><span>community</span></button>
+
+                </div>
+                </div>
                 <div className='block-cont' style={{flexGrow: 1}}>
                 <p>degrees of separation</p>
-                
-                  <button onClick={() => contentToggle(false)} className='random-button'><span>random</span></button>
-                  <button onClick={() => contentToggle(true)} className='following-button'><span>following</span></button>
-
                   <div className='button-container'>
+                  <button onClick={() => setDegree(true)} className="button following"><span>following</span></button>
                 {colorArr.map((color, n) => 
-                
-
-
-
-                <Button color={color} num={num} n={n+1} onClick={() => setDegree(n+1)}><span className="front" 
+                <Button color={color} filters={filters} n={n+2} onClick={() => setDegree(n+2)}><span className="front" 
                 style={{background: `${color[0]}`, color:`${color[1]}` }}
                 >{n+2}</span></Button>)}
-                {/* </div> */}
                 </div>
                 </div>
                 </div>
+                </div>
+
                 <>
             <div className='group-cont'>
             <div className='block-cont'>
@@ -239,62 +373,42 @@ const spreadVar = community ? following : random
             </div>
             </div>
             </>
-              </ControlPanel>
-            <Cont>
-            <LeftCont>
-             { load && 
-             <>
-            {community ? 
-            <CommunityPanel
-              community={community}
-              setContent={setContent}
-              content={content}
-              // random={random}
-              // users={following.users}
-              // folders={following.folders}
-              // photos={following.photos}
-              following={following}
-
-              />
-            :  
-            <CommunityPanel
-
-              setContent={setContent}
-              content={content}
-              // random={random}
-              users={random.users}
-              folders={random.folders}
-              photos={random.photos}
-              following={following}
-
-              />
-             } 
-              </>
-              }
-            </LeftCont>
-            <RightCont>
-              <p>photos</p>
-
-              <div className='coffin-cont'>
-              <div className='coffin'>
-              <div className='coffin-header'></div>
-              <div className='coffin-footer'></div>
-            {!!random && random.photos.slice(0, 5).map(photo => 
-                <PhotoCard
-                onClick={() => console.log(photo.id)}>
-                <div className="text-cont">
-                {!!photo.name && <p className="photo-name" ><mark>{photo.name}</mark></p>}
-                {!!photo.details && <p className="photo-details" ><mark>{photo.details}</mark></p>}
-                <p className="user-name" onClick={() => props.fetchUser(photo.user_id)} ><mark>{photo.user_name}</mark></p>
-                {/* <p className="folder-name">{photo.folder.name}</p> */}
-                </div>
-                <img src={photo.url}/>
-                </PhotoCard>)}
-                </div>
-              </div>
-            </RightCont>
+              </ControlPanel >
             
-            </Cont>
+            {load && 
+            <CommunityCont
+              // lifestyle={filters.lifestyle}
+              // creative={filters.creative}
+              // catagory={filters.catagory}
+              // connected={filters.connected}
+              community={community}
+              fetchUser={props.fetchUser}
+              following={following}
+              // users={users}
+              // folders={folders}
+              users={filters.connected 
+              ? following.users
+              :  community.users}
+              folders={filters.connected 
+              ? following.folders
+              : community.folders}
+              // usersFollowed={following.users}
+              // foldersFollowed={following.folders}
+              // photosFollowed={following.photos}
+              setCreative={setCreative}
+              setLifestyle={setLifestyle}
+              filters={filters}
+              load={load}
+              setLoad={setLoad}
+              error={error}
+              setError={setError}
+              setConnected={setConnected}
+              setCatagory={setCatagory}
+              
+            />
+            }
+           
+            
             <div></div>
         </Body>
     )
@@ -317,25 +431,73 @@ const ControlPanel = styled.div`
   padding-inline: 5%;
   align-items: start;
 
+  .button-container {
+    display: catagorys;
+}
+.inline-cont{
+  display: flex;
+}
   .group-cont{
     display: flex;
     justify-content: space-evenly;
   }
-  .random-button, .following-button{
-    margin-top: 30px;
-    margin-inline: 10px;
-    height: max-content;
+  .button{
+    /* margin-top: 3px; */
+    /* outline-style: solid;
+    outline-width: thin; */
+    display: block;
+    margin-inline: 5px;
+    height: -webkit-max-content;
+    height: -moz-max-content;
+    height: 40px;
+    background: #aaaaaa;
+    min-height: fit-content;
     border-radius: 13px;
-    padding: 6px;
+    border: none;
+    padding: 0;
+    /* box-shadow: 0px 0px 0px 1px black;  */
+   
+    /* border-style: solid;
+    border-width: thin; */
   }
 
-  .random-button{transform: translateY(${({community}) => community === false ? '0px' : '-8px' });
-  .following-button{transform: translateY(${({community}) => community === true ? '-8px' : '0px' });
+  .button.community{
+    height: ${({filters}) => filters.connected === false ? '28px' : '35px' };
+    margin-top: ${({filters}) => filters.connected === false ? '7px' : '0px' };
+  }
+  .button.following{
+    height: ${({filters}) => filters.connected === true ? '28px' : '35px' };
+    margin-top: ${({filters}) => filters.connected === true ? '7px' : '0px' };
+  }
+
+  .button span{
+    display: block;
+    border-radius: 13px;
+    /* font-size: large; */
+    /* background: gainsboro;
+    border: black;
+    border-style: solid;
+    border-width: thin; */
+    background: #ccc;
+    color: coral;
+    font-weight: 500;
+    font-size: initial;
+    padding: 5px;
+    min-height: fit-content;
+  
+  }
+  .button.community span{
+  transform: translateY(${({filters}) => filters.connected === false ? '0px' : '-8px' });
+  }
+
+  .button.following span{
+    transform: translateY(${({filters}) => filters.connected === true ? '0px' : '-8px' });}
 
   .block-cont{
     display: block;
     p{
       margin-inline: 10px;
+      height: 17px;
     }
     div{
   display: flex;
@@ -373,6 +535,8 @@ height: 25px;
 display: none;
 }
 .toggle-switch .switch {
+/* outline: solid;
+outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
@@ -384,9 +548,11 @@ left: 0;
 transition: background-color 0.2s ease;
 }
 .toggle-switch .switch::before {
+margin-block: 2.3px;
+margin-inline: 2px;
 position: absolute;
 content: "";
-margin: 2px;
+    /* margin: 2px; */
 width: 21px;
 height: 21px;
 background-color: #ff0000;
@@ -421,6 +587,8 @@ input {
     transition: width 1s ease;
   }
 .toggle-switch {
+  /* outline-style: solid;
+    outline-width: thin; */
   position: relative;
     display: inline-block;
     height: ${props => !!props.search[0] ? 'fit-content' : '26px'};
@@ -445,7 +613,7 @@ input {
 .checkbox {
   cursor: pointer;
     position: absolute;
-    content: ">";
+    catagory: ">";
     margin: 2px;
     width: 21px;
     height: 21px;
@@ -459,9 +627,11 @@ input {
 
 `
 const Button = styled.button`
+  margin-inline: 5px;
   display: block;
   padding: 0;
-  /* height: ${({num, n}) => num === n ? '30px' : '35px' }; */
+  height: ${({filters, n}) => filters.connected === n ? '30px' : '35px' };
+  margin-top: ${({filters, n}) => filters.connected === n ? '5px' : '0px' };
   width: 30px;
   background: #aaaaaa;
   border-radius: 14px;
@@ -469,7 +639,7 @@ const Button = styled.button`
   border: none;
   /* border-style: outset; */
   cursor: pointer;
-
+  box-shadow: 0px 0px 0px 1px black;
   span.front {
   display: block;
   /* padding: 12px 42px; */
@@ -483,7 +653,7 @@ const Button = styled.button`
   font-size: large;
   /* background: blue;
   color: yellow; */
-  transform: translateY(${({num, n}) => num === n ? '0px' : '-8px' });
+  transform: translateY(${({filters, n}) => filters.connected === n ? '0px' : '-8px' });
   }
 
   /* :active .front {
@@ -492,248 +662,9 @@ const Button = styled.button`
   `
 
 
-const Cont = styled.div`
-padding-inline: 5%;
-display: flex;
-justify-content: space-between;
 
-height: calc(100% - 100px);
-/* height: calc(75vh - 11vh); */
-/* margin-bottom: 15px; */
 
-/* height: 820px; */
 
-`
-
-const RightCont = styled.div`
-    background-color: gainsboro;
-    display: block;
-    width: 48%;
-    border-radius: 13px;
-    margin-inline: 15px;
-    
-    /* height: 805px; */
-    height: 100%;
-    max-height: -webkit-fill-available;
-    box-shadow: -3px 3px 5px 2px #aaaaaa;
-    overflow: hidden;
-    padding-top: 15px;
-    /* padding-right: 15px; */
-    /* padding-bottom: 15px; */
-    padding-left: 15px;
-    
-    /* border: solid;
-    padding: 15px; */
-    
-
-    .coffin-cont {
-    position: relative;
-    overflow: hidden;
-    top: 15px;
-    height: calc(100% - 50px);
-    /* height: -webkit-fill-available; */
-    /* height: 100%; */
-}
-.coffin::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.coffin {
-    /* box-sizing: content-box;  */
-    /* border-radius: 13px; */
-    overflow-y: scroll;
-    /* scrollbar-gutter: stable; */
-    /* width: fit-content; */
-    /* height: 29em; */
-    height: 100%;
-    padding-right: 15px;
-
-    /* box-sizing: content-box;
-    border-radius: 13px;
-    overflow-y: scroll;
-    scrollbar-gutter: stable;
-    width: fit-content;
-    height: 745px;
-    padding-right: 15px; */
-    /* ::-webkit-scrollbar-track {
-    background: gainsboro;
-} */
-}
-.coffin-header {
-    position: absolute;
-    height: 15px;
-    margin-right: 15px;
-    width: -webkit-fill-available;
-    /* margin-bottom: auto; */
-    z-index: 3;
-    /* background: gainsboro; */
-    border-radius: 25px 25px 0px 0;
-    /* top: -15px; */
-    /* &:before {
-        position: absolute;
-        content: " ";
-        background-color: transparent;
-        bottom: -40px;
-        right: 0;
-        width: -webkit-fill-available;
-        height: 40px;
-        border-top-right-radius: 13px;
-        border-top-left-radius: 13px;
-        box-shadow: 0 -25px 0 0 gainsboro;
-    } */
-  }
-    .coffin-header::before {
-        position: absolute;
-        content: " ";
-        background-color: transparent;
-        /* bottom: -40px; */
-        right: 0;
-        width: -webkit-fill-available;
-        height: 40px;
-        border-top-right-radius: 13px;
-        border-top-left-radius: 13px;
-        box-shadow: 0 -25px 0 0 gainsboro;
-}
-.coffin-footer {
-    position: absolute;
-    height: 15px;
-    /* top: 780px; */
-    /* top: calc(100% - 15px); */
-    margin-right: 15px;
-    bottom: calc(0% - 45px);
-    width: -webkit-fill-available;
-    z-index: 4;
-    border-radius: 0 0 25px 25px;
-    
-}
-.coffin-footer::before {
-    content: " ";
-    position: absolute;
-    background-color: transparent;
-    bottom: 50px;
-    /* right: 0; */
-    width: -webkit-fill-available;
-    height: 40px;
-    border-bottom-right-radius: 13px;
-    border-bottom-left-radius: 13px;
-    box-shadow: 0px 30px 0 0 gainsboro;
-}
-
-    /* img{
-        border-radius: 13px;
-    } */
-`
-const LeftCont = styled.div`
-   /* JUST FOR CLARITY */
-   width: 48%;
-`
-const PhotoCard = styled.div`
-  flex-direction: column;
-  height: fit-content;
-  border-radius: 13px;
-  margin-bottom: 15px;
-  background-color: gainsboro;
-
-/* display: flex;
-height: fit-content;
-border-radius: 13px;
-margin-block: 10px;
-padding: 5px;
-background-color: gainsboro;
-box-shadow: -3px 3px 5px 2px #aaaaaa; */
-
-&:hover .text-cont {
-  opacity: 1;
-}
-/* :hover {
-  transition: transform 0.2s ease;
-  transform: translate(1px, -1px); 
-  box-shadow: -7px 7px 10px 4px #aaaaaa; 
-} */
-
-img {
-    object-fit: cover;
-    position: relative;
-    width: 100%;
-    max-width: -webkit-fill-available;
-    /* display: flex; */
-    border-radius: 13px;
-
-    /* height: 100px;
-    width: -webkit-fill-available;
-    margin: 10px;
-    // ALLOWS FOR RESIZING WINDOW 
-    max-width: fit-content;
-    // USE THIS TO KEEP IMAGE CENTER 
-    display: flex;
-    justify-content: center;
-    border-radius: 13px; */
-}
-.text-cont {
-  transition: opacity 0.4s ease;
-  opacity: 0;
-  position: relative;
-  height: 0px;
-  z-index: 3;
-  top: 10px;
-  right: -10px;
-  display: flex;
-  width: 92%;
-  flex-direction: column;
-  justify-content : space-between;
-  /* margin: 10px; */
-  margin-left: 3px;
-
-  mark {
-    transition: background-color .3s ease-in-out, box-shadow .3s ease-in-out;
-    color: white;
-    overflow: hidden;
-    background-color:transparent;
-    box-shadow: 4px 0 0 transparent, -4px 0 0 transparent;
-    display: -webkit-inline-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    text-overflow: ellipsis;
-  }
-
-  &:hover mark {
-    background-color: black;
-    box-shadow: 4px 0 0 black, -4px 0 0 black;
-    /* background: black; */
-    transition: background-color .3s ease-in-out, box-shadow .3s ease-in-out;
-  }
-  p {
-    /* width: fit-content; */
-    width: 50%;
-    /* padding-inline: 4px; */
-    /* transition: background .3s ease-in-out; */
-  }
- .photo-name {
-  font-weight: bold;
-  color: white;
-
- }
- .photo-details {
-  /* display: inline; */
-  /* box-shadow: 4px 0 0 black, -4px 0 0 black; */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  text-overflow: ellipsis;
-  color: white;
-
-  
- }
- .user-name {
-  color: white;
-  cursor: pointer;
- }
- .folder-name {
-  color: white;
-  cursor: pointer;
- }
-}
-`
 const Heart = styled.button`
     z-index: 8;
     opacity: 0%;

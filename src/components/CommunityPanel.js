@@ -1,75 +1,103 @@
-import { useState, useEffect } from 'react'
 import React from 'react';
+import { useState, useEffect } from 'react'
+import { Parallax } from "react-scroll-parallax";
+import { ScrollSyncPane } from 'react-scroll-sync';
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
 
-const CommunityPanel = (props, users, folders, photos, setContent, content, community, following) => {
+const CommunityPanel = (props) => {
     const location = useLocation();
     
-    
-console.log("recent", "users", users, "folders", folders, "photos", photos)
+    // let args = {
+    //   y1: '-50%,50%',
+    //   y2: '50%,-50%',
+    // };
+    // const a = args.y1.split(',');
+    // const b = args.y2.split(',');
+// console.log("recent", "users", users, "folders", folders, "photos", photos)
     
 
     
 
         return (
             // <></>
-           <LeftCont content={props.content}>
-               <span>
-              <p onClick={() => props.setContent(true)}>users</p>
-              <p onClick={() => props.setContent(false)}>folders</p>
-              {/* <p onClick={() => setContent(false)}>following</p> */}
+            // <Parallax translateY={b} >
+           <LeftCont catagory={props.filters.catagory}>
+               <span className="space">
+              <p className="tab" onClick={() => props.setCatagory(true)}>users</p>
+              <p className="tab" onClick={() => props.setCatagory(false)}>folders</p>
+              {/* <p onClick={() => setContent(false)}>foldering</p> */}
             </span>
             
             
-{props.community ? 
+{/* {props.connected ?  */}
               <>
-           
-           {props.content ?    
+           {props.filters.catagory ?    
             <div className="users">
-            {props.following.map(user => 
             
-            <UserCard onClick={() => props.fetchUser(user.uuid)}>
-                   <ul><h4>{user.name}</h4>
-                {user.creative_folders.map(folder => 
-                    <li>{folder.name}
-                        <ul>
-                        {user.creative_folders.map(folder => folder.photos.map(photo => <li>{photo.name}</li>) )}
-                        </ul>
-                    </li> 
-                )}
-                   </ul>
-                   {/* <ul>
-                       <li>
-                       <h4>{user.name}</h4>
-                        {user.creative_folders.map(folder => 
-                        <ul>{folder.name}
-                        {user.creative_folders.map(folder => folder.photos.map(photo => <li>{photo.name}</li>
-                        ) )}
-                        </ul>
-                        )}
-
-
-                        </li>
-                   </ul> */}
-
+            {!!props.error ?
+              <div>
+              {props.error[0]}
+              </div> 
+            :
+            <>
+            {props.headers.map(user =>
+            // <ScrollSyncPane>
+              <ScrollSyncPane>
+            <UserCard identifier={user.uuid} onClick={() => props.fetchUser(user.uuid)}>
+                   <h4>{user.name}</h4>
+                   {/* <h4>{user.folders}</h4> */}
+                 {user.folders.map(folder => {
+                   return(
+                    <div className="space">
+                    <p>{folder.name}</p>
+                    <p className="notification">{folder.count}</p>
+                </div>)})} 
             </UserCard>
+                </ScrollSyncPane>
                 )}
+                </>
+              }
                 </div>
-             :   <div className="folders">
-                     {!!props.follows && props.follows.slice(0, 5).map(folder => 
-                     <FolderCard
+
+             : <ScrollSyncPane>
+               <div className="folders">
+               {!!props.error ?
+              <div>
+              {props.error[0]}
+              </div> 
+:
+<>
+{/* <Parallax translateY={b} > */}
+                     {props.headers.map(folder => 
+
+                     
+                     <FolderCard 
+                     identifier={folder.id}
+                     type={folder.creative}
                      onClick={() => console.log(folder.id)}>
                      {/* <img src={photo.url}/> */}
                      <div className="text-cont">
-                     <p className="photo-name" ><mark></mark>{folder.name}</p>
-                     <p className="photo-details" >{folder.details}</p>
-                     <p className="user-name" onClick={() => props.fetchUser(folder.user_id)} > {folder.user.name}</p>
-                     {/* <p className="folder-name">{photo.folder.name}</p> */}
+                     <div >
+                         <div className="space">
+                             <p>{folder.name}</p>
+                             {(folder.photos.length > 0) && <p className="notification">{folder.photos.length}</p>}
+                         </div>
+                         <p className="name" onClick={() => props.fetchUser(folder.u_id)}>{folder.user_name}</p>
+                         </div>
+                     
+                     
                      </div>
-                     </FolderCard>)}
-                     </div>}
+                     </FolderCard>
+                     )
+                     
+                    }
+                    {/* </Parallax> */}
+                     </>}
+                     </div>
+                     </ScrollSyncPane>
+                     } 
             {/* <img src={photo.url}/> */}
             
             
@@ -77,55 +105,13 @@ console.log("recent", "users", users, "folders", folders, "photos", photos)
              
                 </div>
             </>
-: <>
- {props.content ?  
- 
- <div className="users">
-                 {!!props.users && props.users.slice(0, 5).map(user => 
-                     <UserCard onClick={() => props.fetchUser(user.uuid)}>
-                         
-                         <ul><h4>{user.name}</h4>
-                {user.folders.map(folder => 
-                <li>{folder.name}
-                <ul>
-                    {user.folders.map(folder => folder.photos.map(photo => 
-                    <li>{photo.name}</li>) )}
-                </ul>
-                </li> 
-                )}
-                   </ul>
-                     </UserCard>
-                     )}
-                     </div>
-     
-                    : <div className="folders">
-                     {!!props.folders && props.folders.slice(0, 5).map(folder => 
-                     <FolderCard
-                     onClick={() => console.log(folder.id)}>
-                         <ul><h4>{folder.name}</h4>
-                {folder.photos.map(photo => 
-                    <li>{photo.name}
-                        {/* <ul>
-                        {user.creative_folders.map(folder => folder.photos.map(photo => <li>{photo.name}</li>) )}
-                        </ul> */}
-                    </li> 
-                )}
-                   </ul>
-                     {/* <img src={photo.url}/> */}
-                     <div className="text-cont">
-                     
-                     </div>
 
-                     
-                     </FolderCard>)}
-                     </div>
-                     }
-                     </>
- } 
+ 
            </LeftCont>
         )
-
-}
+        
+      }
+      {/* </Parallax> */}
 
 const LeftCont = styled.div`
     background-color: gainsboro;
@@ -133,11 +119,11 @@ const LeftCont = styled.div`
     /* width: 48%; */
     border-radius: 13px;
     padding-inline: 15px;
-    span{
+    .space{
       display: flex;
-      justify-content: space-evenly;
+      justify-content: space-between;
     }
-    span p{
+    .space .tab{
       flex: 1;
       padding: 10px;
       border-top-color: initial;
@@ -155,7 +141,7 @@ const LeftCont = styled.div`
         left: 3px;
         position: relative;
       }
-      ${({content}) => content ? 
+      ${({catagory}) => catagory ? 
       `:nth-child(1) {
         border-bottom-style: none;
         border-left-style: solid;
@@ -186,13 +172,23 @@ const LeftCont = styled.div`
       `}
     }
       
-      
+    .notification{
+    background: red;
+    padding: 1px;
+    font-size: 11px;
+    border-radius: 50%;
+    width: 17px;
+    text-align: center;
+    color: white;
+ }
     }
     .users {
       width: calc(100% - 3px);
       left: 3px;
       position: relative;
-      height: auto;
+      /* height: auto; */
+      height: 200px;
+      overflow: auto;
       padding: 15px;
       /* border: solid;
       border-radius: 13px; */
@@ -213,7 +209,9 @@ const LeftCont = styled.div`
       width: calc(100% - 3px);
       left: 3px;
       position: relative;
-      height: auto;
+      /* height: auto; */
+      height: 200px;
+      overflow: auto;
       padding: 15px;
       border-right-color: initial;
       border-right-style: solid;
@@ -232,6 +230,8 @@ const LeftCont = styled.div`
 `
 
 const UserCard = styled.div`
+position: sticky;
+  top: 0;
 /* box-shadow: -3px 3px 5px 2px #aaaaaa;
 border-radius: 13px; */
 display: flex;
@@ -276,7 +276,7 @@ img {
   /* p{
     
   } */
- .photo-name {
+ .name {
   font-weight: bold;
  }
  .photo-details {
@@ -300,15 +300,18 @@ img {
 
 
 const FolderCard = styled.div`
+position: sticky;
+  top: 0;
 .text-cont {
   display: flex;
   flex-direction: column;
   justify-content : space-between;
   margin: 10px;
   margin-left: 3px;
- .photo-name {
+ .name {
   font-weight: bold;
  }
+ 
  .photo-details {
   display: -webkit-box;
   -webkit-line-clamp: 2;

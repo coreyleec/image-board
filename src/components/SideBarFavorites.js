@@ -98,7 +98,7 @@ console.log("props.favoriteDetails", props.favoriteDetails)
 {/* EDIT FOLDER NAME */}
 <SlideDrawer condition={condition} >
             {!!props.favoriteDetails  && props.favoriteDetails.map(favorite => <div 
-                        className="subtract-item" key={favorite.id} favorite={favorite}>
+                        className="title-cont" key={favorite.id} favorite={favorite}>
                         <StyledEditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
                         favoriteShown={props.favoriteShown}
@@ -153,10 +153,9 @@ align-self: self-start;
 cursor: pointer;
 `
 const StyledEditableDiv = styled.div`
-font-size: 2rem;
-padding: 0px;
-float: left;
-line-height: 1.2;
+font-size: 1.4rem;
+line-height: .85em;
+padding-left: 10px; 
 text-align: left;
 width: 100%; 
 color: black;
