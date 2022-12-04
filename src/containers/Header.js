@@ -9,7 +9,17 @@ const Header = (props) => {
     
     const [newUserName, setNewUserName] = useState()
 
+    const [siteHeader, setSiteHeader] = useState()
+
+    useEffect(() => {
+        if (props.directory === 'community'){
+            setSiteHeader("Community")
+        } 
+        else 
+         {setSiteHeader("ImageBoard") }
+    }, [props.directory])
     
+
 
 
 
@@ -30,7 +40,7 @@ const Header = (props) => {
                             onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader >{(props.directory === 'home' | props.directory === '-' | props.directory === 'user') ? props.userName : "ImageBoard" }</TitleHeader> 
+                : <TitleHeader >{(props.directory === 'home' | props.directory === '-' | props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
                     }
 
 {(props.directory === 'user'| props.directory === '-') ? <Sticky>
@@ -119,7 +129,7 @@ const Sticky = styled.div`
 `
 const Switch = styled.label`
 
-@media only screen and (max-width: 1300px) {
+@media only screen and (max-width: 1100px) {
     display:none;
       }
   display:flex;
@@ -155,7 +165,10 @@ outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
+box-shadow: 0px 1px 0px 1px #aaaaaa inset;
 border-radius: 25px;
+padding-inline: 3px;
+padding-block: 4px;
 top: 0;
 right: 0;
 bottom: 0;
@@ -163,13 +176,12 @@ left: 0;
 transition: background-color 0.2s ease;
 }
 .toggle-switch .switch::before {
-margin-block: 2.3px;
-margin-inline: 2px;
+
 position: absolute;
 content: "";
     /* margin: 2px; */
-width: 21px;
-height: 21px;
+width: 18px;
+height: 18px;
 background-color: #ff0000;
 border-radius: 25px;
 transition: transform 0.3s ease;
@@ -177,6 +189,7 @@ transition: transform 0.3s ease;
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: green;
+box-shadow: 0px -1px 1px 0px hwb(120deg 0% 42%), 0px -1px 1px 1px hwb(120deg 0% 23%), 0px -1px 1px 1px hwb(120deg 0% 55%) inset;
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color: #ccc;

@@ -1,5 +1,7 @@
 import React from 'react'
 import { useSelector, useEffect, useState } from 'react'
+// import { ParallaxProvider } from "react-scroll-parallax";
+// import { ScrollSync } from 'react-scroll-sync';
 import CommunityPanel from "./CommunityPanel";
 // import ScrollCont from "./ScrollCont";
 import styled from 'styled-components'
@@ -253,7 +255,7 @@ const [photos, setPhotos] = useState()
     return (
       // <ParallaxProvider>
       // <ScrollSync>
-      <Body panel={props.panel} >
+      <Body>
 
       {/* {props.folders.map(folder => 
         folder.photos.map(photo => 
@@ -360,12 +362,7 @@ const [photos, setPhotos] = useState()
 export default CommunityBody;
 
 const Body = styled.div`
-  /* height: calc(100% - 100px); */
-  position: relative;
-  height: 100%;
-  /* top: -15%; */
-  top : ${({panel}) => panel ? `95px ` : `10px`};
-  transition: top .2s ease-in;
+  height: calc(100% - 100px);
 `
 
 

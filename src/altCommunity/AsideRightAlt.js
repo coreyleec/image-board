@@ -1,5 +1,6 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import ControlPanel from "../components/ControlPanel";
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
@@ -311,7 +312,24 @@ const typeToggle = () => {
             </>}
             </Sticky>
             } 
+            {/* props.directory === "community" */}
+             {false &&
+             <ControlPanel 
+             search={props.search}
+                filters={props.filters}
+                setDegree={props.setDegree}
+                setCreative={props.setCreative}
+                setLifestyle={props.setLifestyle}
+                searchUser={props.searchUser}
+                enableCollaborate={props.enableCollaborate}
+                searchToggle={props.searchToggle}
              
+             
+             
+             
+             />
+          
+             }
             
             
     </aside>
@@ -339,7 +357,7 @@ const Sticky = styled.div`
     position: absolute;
     border-top-left-radius: 13px;
     opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
-    @media (max-width: 1100px){
+    @media (max-width: 1300px){
       opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
       background-color: grey;
     }
@@ -356,7 +374,7 @@ const Sticky = styled.div`
     border-top-left-radius: 13px; 
     border-bottom-left-radius: 13px;
     opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
-    @media (max-width: 1100px){
+    @media (max-width: 1300px){
       opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
       ${({catagorized}) => catagorized !== null && 'display : none' };
       background-color: grey;
@@ -364,7 +382,7 @@ const Sticky = styled.div`
   }
 
   
-  @media (max-width: 1100px) {
+  @media (max-width: 1300px) {
     all: unset;
     transition: all 2s;
     padding: 10px;
@@ -524,7 +542,7 @@ const CollabotorList = styled.div`
     background-color: #ccc;
     border-radius: 14px;
     /* width: 100%; */
-    @media (max-width: 1100px) {
+    @media (max-width: 1300px) {
     /* all: unset; */
     transition: all 2.5s;
     /* z-index: 1; */

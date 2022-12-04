@@ -4,14 +4,14 @@ import { Routes, Route, useLocation, Switch, useHistory, useRouteMatch, Redirect
 
 // import { browserHistory } from 'react-router';
 import styled from "styled-components";
-import Header from "./containers/Header";
-import SideBar from "./containers/SideBar";
-import AsideRight from "./containers/AsideRight";
-import UserLoginSignup from "./containers/UserLoginSignup";
-import DndContainer from "./containers/DndContainer";
-import CommunityPage from "./containers/CommunityPage"
-import DndRoutePrefix from "./containers/DndRoutePrefix";
-import Dnd from "./containers/DndContainer";
+import Header from "../containers/Header";
+import SideBar from "../containers/SideBar";
+import AsideRight from "../containers/AsideRight";
+import UserLoginSignup from "../containers/UserLoginSignup";
+import DndContainer from "../containers/DndContainer";
+import CommunityPage from "../containers/CommunityPage"
+import DndRoutePrefix from "../containers/DndRoutePrefix";
+import Dnd from "../containers/DndContainer";
 // import { basename } from "path";
 // import urlJoin from "url-join"
 // import url-util from "./url-util";
@@ -27,22 +27,22 @@ export const App = (props) => {
   let navigate = history.push;
   const location = useLocation();
   const [directory, setDirectory] = useState()
-  const { url, path } = useRouteMatch();
-  const match = useRouteMatch()
-  console.log("url, path", url, path)
   useEffect(() => {
     const root = location.pathname.split('/')[1]
     console.log("path", root)
     setDirectory(root)
   }, [location.pathname])
+  const { url, path } = useRouteMatch();
+  const match = useRouteMatch()
+  console.log("url, path", url, path)
   
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
+  
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`https://memphis-project-api.herokuapp.com/api/v1`)
   const [dbVersion] = useState(`http://[::1]:3000/api/v1`)
-
 
   // OPEN LOGIN
  const [userProfile, setUserProfile] = useState(true);
@@ -99,8 +99,128 @@ const editToggle = () => {
    setUserProfile(!userProfile);
    navigate("/login")
  };
+//  COMMUNITY PAGE CONTROL PANEL STATE
+const [filters, setFilters] = useState({
+  catagory: true, 
+  connected: true,
+  creative: true,
+  lifestyle: false,
+  
+})
+const [load, setLoad] = useState(false)
+const [following, setFollowing] = useState(null)
+const [community, setCommunity] = useState(null)
+const [error, setError] = useState(false)
+const [search, setSearch] = useState([0])
+  const [enableCollaborate, setEnableCollaborate] = useState(false)
 
+  const searchUser = (input) => {
+    console.log(input)
+    // setSearch(...search, input)
+    fetch(`http://[::1]:3000/api/v1/search_results/`, {
+      method: "POST",
+      headers:  {"Content-Type": "application/json"}, 
+      body: JSON.stringify({
+        search: input
+      })
+    })
+    .then((res) => res.json())
+    .then((usersArray) => {
+      console.log(usersArray);
+      !!usersArray ? setSearch(usersArray) : setSearch(null) 
+      // setUserAboutMe(userObj.details);
+    });
+  }
+  
 
+  const searchToggle = () => {
+    setEnableCollaborate(!enableCollaborate)
+    !!search && setSearch([0])
+  }
+
+  const setDegree = (degree) => {
+    const filter = {...filters}
+    filter.connected = degree
+    setFilters(filter)
+    console.log("color", degree)
+    if (!!degree)
+    {console.log("number")
+  
+    fetch(`http://[::1]:3000/api/v1/degree/${degree}`, {
+      method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+  })
+  // .then(handleErrors)
+  .then((res) => {
+    if (!!res.ok){
+      res.json()
+    
+    .then((degreeReturned) => 
+    {console.log("degreeReturned ✚", degreeReturned)
+    setFollowing(degreeReturned)
+    setLoad(degree)
+    setError(false)
+  }
+    )}
+    else 
+    res.json()
+   .then((degreeReturned) => {
+    //  setError(degreeReturned.error) 
+     console.log("degreeReturned ✚", degreeReturned.error)})
+  
+  }
+  
+      )
+      
+  } 
+    // if color === name of color then button style is different
+    // query db for users based on connectedber 
+  }
+  
+  const setConnected = (connected) => {
+    const filter = {...filters}
+    filter.connected = connected
+    setFilters(filter)
+    console.log("color", connected)
+  }
+  const setCatagory = (catagory) => {
+    const filter = {...filters}
+    filter.catagory = catagory
+    setFilters(filter)
+    console.log("color", catagory)
+  }
+  const setCreate = (creative) => {
+    const filter = {...filters}
+    // filter.creative = creative
+    // setFilters(filter)
+    if (creative === false && filters.lifestyle === false) {
+      filter.lifestyle = true
+      filter.creative = creative
+      setFilters(filter)
+    }
+    else {
+      filter.creative = creative
+      setFilters(filter)
+    }
+    // setFilters(filter)
+    // console.log("color", creative)
+  }
+  const setLife = (lifestyle) => {
+    const filter = {...filters}
+    if (lifestyle === false && filters.creative === false) {
+      filter.creative = true
+      filter.lifestyle = lifestyle
+      setFilters(filter)
+    }
+    else {
+      filter.lifestyle = lifestyle
+      setFilters(filter)
+    }
+  
+  }
 
 
 
@@ -882,7 +1002,7 @@ useEffect(() => {
         .then((res) => res.json())
         .then((followObj) => {
           console.log("followObj", followObj, followObj.creative_folders);
-          setCreative(followObj.creative_foollow)
+          setCreative(followObj.creative_follow)
           setFollow(followObj)
         });
   }
@@ -988,6 +1108,19 @@ useEffect(() => {
           reorderSubmit={reorderSubmit}
           userId={userId}
           currentUserId={currentUserId}
+
+          load={load}
+          setLoad={setLoad}
+          search={search}
+          filters={filters}
+          setDegree={setDegree}
+          setCreative={setCreate}
+          setLifestyle={setLife}
+          searchUser={searchUser}
+          enableCollaborate={enableCollaborate}
+          searchToggle={searchToggle}
+
+
         />
         {/* if main state says community, overflow === hidden */}
         <main
@@ -1068,6 +1201,21 @@ useEffect(() => {
                 setUuid={setUuid}
                 dbVersion={dbVersion}
                 fetchUser={fetchUser}
+
+                search={search}
+                filters={filters}
+                setDegree={setDegree}
+                setCreative={setCreate}
+                setLifestyle={setLife}
+                searchUser={searchUser}
+                enableCollaborate={enableCollaborate}
+                searchToggle={searchToggle}
+                community={community}
+                following={following}
+                setCommunity={setCommunity}
+                setFollowing={setFollowing}
+                load={load}
+                setLoad={setLoad}
                 />
                 </Route>
                 
@@ -1087,8 +1235,8 @@ useEffect(() => {
 const Cont = styled.div`
   display: grid;
   height: 100vh;
-  /* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '17% 1fr 17%'}; */
-  grid-template-columns: 17% 1fr 17%;
+  grid-template-columns: ${props => props.directory === "community" ? '0% 1fr 25%' : '17% 1fr 17%'};
+  /* grid-template-columns: 17% 1fr 17%; */
   grid-template-rows: auto 1.5fr auto;
   grid-template-areas: 
   "leftbar header header"
@@ -1096,12 +1244,13 @@ const Cont = styled.div`
   "leftbar footer rightbar";
 
 
-  @media (max-width: 1100px) {
-  grid-template-columns:  0% 1fr 0%;
-}
+  @media (max-width: 1300px) {
+    grid-template-columns: ${props => props.directory === "community" ? '0% 1fr 25%' : '0% 1fr 0%'};
+  }
+  /* grid-template-columns:  0% 1fr 0%; */
 
+/* grid-template-columns: ${props => props.directory === "community" ? '0% 1fr 20%' : '0% 1fr 0%'}; */
 `
-/* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '0% 1fr 0%'}; */
   
 const Footer = styled.footer`
   /* transition-delay: .2s; */

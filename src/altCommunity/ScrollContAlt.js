@@ -68,11 +68,7 @@ const ScrollCont = (props) => {
         return (
           
             <Cont>
-              <div className='tabs'>
-              <div className='side-tab' onClick={() => props.setCatagory(true)} >users</div>
-              <div className='side-tab' onClick={() => props.setCatagory(false)} >folders</div>
-              </div>
-                
+            <p  >photos</p>
             {!!props.error ?
             <div>
               {props.error[1]}
@@ -162,7 +158,7 @@ const Heart = styled.button`
     ${({favorited}) => !!favorited 
     ? `color: red; text-shadow: none;`
     : `color: transparent;
-    text-shadow: 0px 0px 0.35px hwb(16deg 86% 13% / 85%), 0px -0.65px 2px hwb(0deg 35% 65%), 0px 0.85px 1px hsl(16deg 11% 98% / 43%);`}
+    text-shadow: 0px 0px 0.35px hwb(16deg 33% 17% / 85%), 0px -0.75px 0.35px hwb(16deg 25% 43%), 0px 0.65px 0px hsl(16deg 100% 86% / 43%);`}
     /* text-shadow: 0px 0px 0.35px rgb(229 123 84 / 80%), 0.25px 0.25px 0.5px rgb(249 183 160 / 50%), -0.85px -0.65px 0.35px rgb(194 98 64); 
     0px 0px 0.35px hwb(16deg 33% 15% / 90%), -0.85px -0.65px 0.35px hwb(16deg 25% 43%), 0.3px 0.3px 0px hsl(16deg 100% 86% / 43%)
     */
@@ -178,39 +174,23 @@ const Add = styled.button`
     cursor: pointer;
     background-color: gainsboro;
     border: none;
-    /* color: green; */
-    color: transparent;
+    color: green;
     font-size: xx-large;
-    text-shadow: 0px 0px 0.35px hwb(16deg 86% 13% / 85%), 0px -0.65px 2px hwb(0deg 35% 65%), 0px 0.85px 1px hsl(16deg 11% 98% / 43%);
     `
 
 const Cont = styled.div`
     background-color: gainsboro;
-    display: flex;
+    display: block;
     width: -webkit-fill-available;
     border-radius: 13px;
-    /* margin-inline: 5px; */
+    margin-inline: 15px;
     height: 100%;
     max-height: -webkit-fill-available;
-    /* box-shadow: -3px 3px 5px 2px #aaaaaa; */
+    box-shadow: -3px 3px 5px 2px #aaaaaa;
     overflow: hidden;
     padding-top: 15px;
     padding-left: 15px;
     
-  .tabs{
-    display: flex;
-    flex-direction: column;
-    transform: rotate(0deg);
-    justify-content: space-evenly;
-    width: 0px;
-    height: -webkit-fill-available;
-  }
-  .side-tab{
-    transform: rotate(-90deg);
-    /* height: 0; */
-}
-  }
-
     .coffin-cont {
     position: relative;
     top: 15px;

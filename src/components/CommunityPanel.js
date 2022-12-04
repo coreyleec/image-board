@@ -1,7 +1,7 @@
 import React from 'react';
 import { useState, useEffect } from 'react'
-import { Parallax } from "react-scroll-parallax";
-import { ScrollSyncPane } from 'react-scroll-sync';
+// import { Parallax } from "react-scroll-parallax";
+// import { ScrollSyncPane } from 'react-scroll-sync';
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
@@ -43,8 +43,7 @@ const CommunityPanel = (props) => {
             :
             <>
             {props.headers.map(user =>
-            // <ScrollSyncPane>
-              <ScrollSyncPane>
+
             <UserCard identifier={user.uuid} onClick={() => props.fetchUser(user.uuid)}>
                    <h4>{user.name}</h4>
                    {/* <h4>{user.folders}</h4> */}
@@ -55,13 +54,13 @@ const CommunityPanel = (props) => {
                     <p className="notification">{folder.count}</p>
                 </div>)})} 
             </UserCard>
-                </ScrollSyncPane>
+
                 )}
                 </>
               }
                 </div>
 
-             : <ScrollSyncPane>
+             : 
                <div className="folders">
                {!!props.error ?
               <div>
@@ -96,7 +95,7 @@ const CommunityPanel = (props) => {
                     {/* </Parallax> */}
                      </>}
                      </div>
-                     </ScrollSyncPane>
+
                      } 
             {/* <img src={photo.url}/> */}
             

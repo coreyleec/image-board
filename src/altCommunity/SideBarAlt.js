@@ -37,7 +37,9 @@ const [follow, setFollow] = useState(false)
       directory={props.directory}
       >
         <>
-          <ButtonContainer sideBar={sideBar}>
+          <ButtonContainer sideBar={sideBar}
+          directory={props.directory}
+          >
             <button onClick={() => setBar(!sideBar)}>
               {sideBar ? "x" : "open"}
             </button>
@@ -199,20 +201,29 @@ const ButtonContainer = styled.div`
   display: flex;
   padding-top: 5px;
   padding-inline: 5px;
-  @media (max-width: 1100px) {
+  @media (max-width: 1300px) {
       
     transition: width 1s ease;
       width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
-      
-      
     }
-  
   button {
     position: sticky;
     transition: left 1s;
     z-index: 4;
     ${({ sideBar }) => (sideBar ? `left : 25%` : `left: 0%`)};
   }
+
+  ${({ directory, sideBar }) => (directory === "community" && 
+    `transition: width 1s ease;
+    width: ${sideBar ? '200px' : '0px'};
+
+    `)}
+
+
+
+
+
+
 `;
 
 const Sticky = styled.div`
@@ -242,14 +253,25 @@ const Sticky = styled.div`
     transition: left 1s ease;
     ${({ sideBar }) => (sideBar ? `left : 0%` : `left: -30%`)}; */
 
-    @media (max-width: 1100px) {
+    ${({ directory, sideBar }) => (directory === "community" && 
+    `position: fixed; 
+    max-height: 75vh; 
+    top: 0%; width: 200px; 
+    transition: left 1s ease; 
+    left : ${sideBar ? `0%;` : `-30%`};
+    backdrop-filter: blur(6px);
+    border-bottom-right-radius: 22px;
+    &::-webkit-scrollbar {
+        width: 0px;
+      }
+    `)}
+    @media (max-width: 1300px) {
       position: fixed;
       max-height: 75vh;
       top: 0%;
       width: 200px;
       transition: left 1s ease;
       ${({ sideBar }) => (sideBar ? `left : 0%` : `left: -30%`)};
-      /* ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')}; */
       backdrop-filter: blur(6px);
       
       /* background: coral; */
@@ -261,7 +283,7 @@ const Sticky = styled.div`
  
     .scrollable {
       display: block;
-      @media only screen and (max-width: 1100px) {
+      @media only screen and (max-width: 1300px) {
         margin-top: 27px;
       }
     }
@@ -280,7 +302,7 @@ const StyledP = styled.p`
   /* text-decoration: none; */
 `;
   const Switch = styled.label`
-  @media (min-width: 1100px) {display:none;}
+  @media (min-width: 1300px) {display:none;}
   
   display:flex;
   margin-top: 0;

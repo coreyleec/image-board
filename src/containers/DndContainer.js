@@ -420,7 +420,7 @@ const GridWrapper = styled.div`
   justify-content: center;
   grid-gap: 2px;
   grid-auto-rows: 1px;
-  grid-template-columns: repeat(6,minmax(140px, 155px));
+  grid-template-columns: repeat(6,minmax(120px, 155px));
 
 `;
 // COMPASS 
@@ -567,7 +567,7 @@ const PictureFrame = styled.div`
 
   ${({ edit, url, details, highlight }) => !edit ? !!url 
   ? `
-  transition: border-radius .3s ease-out, padding-bottom .3s ease-out, padding-top .3s ease-out, padding-right .3s ease-out, padding-left .3s ease-out, max-width .4s ease-in, box-shadow 0s,outline .3s linear .2s;
+  // transition: border-radius .3s ease-out, padding-bottom .3s ease-out, padding-top .3s ease-out, padding-right .3s ease-out, padding-left .3s ease-out, max-width .4s ease-in, box-shadow 0s,outline .3s linear .2s;
   // transition: 
   //     border-radius .5s ease-out, 
   //     background-color 0s linear 1s, 

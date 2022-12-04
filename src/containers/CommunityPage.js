@@ -31,7 +31,7 @@ const [load, setLoad] = useState(false)
 const [following, setFollowing] = useState(null)
 const [community, setCommunity] = useState(null)
 const [error, setError] = useState(false)
-
+const [panel, setPanel] = useState(false)
 
 
 const handleErrors = (response) => {
@@ -262,11 +262,12 @@ const [search, setSearch] = useState([0])
     return (
         <Body>
           {/* make button a styled component and pass color or connected */}
-              <ControlPanel filters={filters}
-              
-              >
+          {/* <p style={{paddingLeft: '15px'}}>search filters</p> */}
 
-           
+              <ControlPanel filters={filters}
+              panel={panel}
+              >
+           <div className='panel-cont'>
 
             <div className='group-cont'>
             <div className='block-cont'>
@@ -373,6 +374,8 @@ const [search, setSearch] = useState([0])
             </div>
             </div>
             </>
+            </div>
+            <button className='open-button' onClick={() => setPanel(!panel)} ></button>
               </ControlPanel >
             
             {load && 
@@ -386,6 +389,7 @@ const [search, setSearch] = useState([0])
               following={following}
               // users={users}
               // folders={folders}
+              panel={panel}
               users={filters.connected 
               ? following.users
               :  community.users}
@@ -418,18 +422,112 @@ export default CommunityPage;
 const Body = styled.div` 
     /* flex: 1 0 auto; */
     /* padding-inline: max(10%); */
-    padding-top: 80px;
-    border-radius: 22px 22px 22px 22px;
-    background: gainsboro;
+    /* padding-top: 20px; */
+    /* border-radius: 22px 22px 22px 22px; */
+    /* background: gainsboro; */
     height: 100%;
     
 `
+
+const CatagorySwitch = styled.label`
+  display:flex;
+  z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
+   margin-top: 10px;
+  
+ p {
+  padding-left: 10px;
+  font-size: 19px;
+}
+
+  :first-child{
+    margin-block: 0px;
+  }
+
+.toggle-switch {
+
+position: relative;
+display: inline-block;
+width: 50px;
+height: 25px;
+/* margin-block: 10px; */
+/* margin-top: 10px; */
+}
+.toggle-switch input[type="checkbox"] {
+display: none;
+}
+.toggle-switch .switch {
+/* outline: solid;
+outline-width: thin; */
+position: absolute;
+cursor: pointer;
+background-color: #ccc;
+box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+border-radius: 25px;
+padding-inline: 3px;
+padding-block: 4px;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+transition: background-color 0.2s ease;
+}
+.toggle-switch .switch::before {
+
+position: absolute;
+content: "";
+    /* margin: 2px; */
+width: 18px;
+height: 18px;
+background-color: green;
+border-radius: 25px;
+transition: transform 0.3s ease;
+}
+.toggle-switch input[type="checkbox"]:checked + .switch::before {
+transform: translateX(25px);
+background-color: green;
+box-shadow: 0px -1px 1px 0px hwb(120deg 0% 42%), 0px -1px 1px 1px hwb(120deg 0% 23%), 0px -1px 1px 1px hwb(120deg 0% 55%) inset;
+}
+.toggle-switch input[type="checkbox"]:checked + .switch {
+background-color:  #ccc;
+box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+}
+`
 const ControlPanel = styled.div`
   display: flex;
+  flex-direction: column;
+
+  .panel-cont{
+    position: absolute;
+    z-index: 0;
+  /* top: 10px; */
+  /* top: -10%; */
+  top : ${({panel}) => panel ? `155px` : `50px`};
+  transition: top .2s ease-in;
+  display: flex;
+  flex-wrap: wrap;
   justify-content: space-evenly;
-  padding-bottom: 15px;
+  /* padding-bottom: 15px; */
   padding-inline: 5%;
   align-items: start;
+
+  
+
+}
+
+.open-button{
+    align-self: center;
+    /* top: 10px; */
+    top : ${({panel}) => panel ? `95px` : `10px`};
+    cursor : ${({panel}) => panel ? `grab` : `grabbing`};
+    transition: top .2s ease-in;
+    position: relative;
+    width: 40px;
+    height: 15px;
+    border-radius: 13px;
+    border-style: none;
+    box-shadow: 0px 2px 4px 2px #aaaaaa inset;
+    /* cursor: pointer; */
+  }
 
   .button-container {
     display: catagorys;
@@ -445,6 +543,7 @@ const ControlPanel = styled.div`
     /* margin-top: 3px; */
     /* outline-style: solid;
     outline-width: thin; */
+    box-shadow: 0px 0px 3px 1px hwb(0deg 45% 55%) inset;
     display: block;
     margin-inline: 5px;
     height: -webkit-max-content;
@@ -540,7 +639,10 @@ outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
+box-shadow: 0px 1px 0px 1px #aaaaaa inset;
 border-radius: 25px;
+padding-inline: 3px;
+padding-block: 4px;
 top: 0;
 right: 0;
 bottom: 0;
@@ -548,13 +650,12 @@ left: 0;
 transition: background-color 0.2s ease;
 }
 .toggle-switch .switch::before {
-margin-block: 2.3px;
-margin-inline: 2px;
+
 position: absolute;
 content: "";
     /* margin: 2px; */
-width: 21px;
-height: 21px;
+width: 18px;
+height: 18px;
 background-color: #ff0000;
 border-radius: 25px;
 transition: transform 0.3s ease;
@@ -562,6 +663,7 @@ transition: transform 0.3s ease;
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: green;
+box-shadow: 0px -1px 1px 0px hwb(120deg 0% 42%), 0px -1px 1px 1px hwb(120deg 0% 23%), 0px -1px 1px 1px hwb(120deg 0% 55%) inset;
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color: #ccc;
