@@ -66,7 +66,7 @@ useEffect(() => {
 
 
 
-  const [enableCollaborate, setEnableCollaborate] = useState(false)
+  const [expand, setExpand] = useState(false)
 
 const [photos, setPhotos] = useState()
 

@@ -1,5 +1,5 @@
 import React from 'react'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import CommunityPanel from "../components/CommunityPanel";
 import CommunityCont from "../components/CommunityCont";
@@ -26,6 +26,26 @@ const [filters, setFilters] = useState({
   lifestyle: false,
   
 })
+
+const panelRef = useRef()
+
+const [dimensions, setDimensions] = useState({
+  width: window.innerWidth,
+  height: window.innerHeight,
+});
+// console.log("dimensions", dimensions);
+const handleResize = () => {
+  setDimensions({
+    width: window.innerWidth,
+    height: window.innerHeight,
+  });
+}
+
+useEffect(() => {
+  window.addEventListener("resize", handleResize, false);
+}, []);
+// panelRef.current !== undefined && console.log("dimensions", panelRef.current.clientHeight);
+
 
 const [load, setLoad] = useState(false)
 const [following, setFollowing] = useState(null)
@@ -249,10 +269,10 @@ const [search, setSearch] = useState([0])
       // setUserAboutMe(userObj.details);
     });
   }
-  const [enableCollaborate, setEnableCollaborate] = useState(false)
+  const [expand, setExpand] = useState(false)
 
   const searchToggle = () => {
-    setEnableCollaborate(!enableCollaborate)
+    setExpand(!expand)
     !!search && setSearch([0])
   }
 
@@ -266,8 +286,9 @@ const [search, setSearch] = useState([0])
 
               <ControlPanel filters={filters}
               panel={panel}
+              panelHeight={panelRef}
               >
-           <div className='panel-cont'>
+           <div className='panel-cont' ref={panelRef}>
 
             <div className='group-cont'>
             <div className='block-cont'>
@@ -328,15 +349,15 @@ const [search, setSearch] = useState([0])
             <InputSwitch
             catagorized={!!props.folderType}
             search={search}
-            enableCollaborate={!enableCollaborate} >
+            expand={!expand} >
             <label className="toggle-switch">
             <span className="switch">
             <button className="checkbox" 
             onClick={() => searchToggle()}
             >
-            {/* {enableCollaborate && ">"} */}
+            {/* {expand && ">"} */}
             </button>
-            {!enableCollaborate && 
+            {!expand && 
             <input autoFocus="autofocus" type="text" onChange={(e) => searchUser(e.target.value)} placeholder="search user"/>}
             <ul>
               {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
@@ -353,15 +374,15 @@ const [search, setSearch] = useState([0])
             <InputSwitch
             catagorized={!!props.folderType}
             search={search}
-            enableCollaborate={!!enableCollaborate} >
+            expand={!!expand} >
             <label className="toggle-switch">
             <span className="switch">
             <button className="checkbox" 
             onClick={() => searchToggle()}
             >
-            {/* {enableCollaborate && ">"} */}
+            {/* {expand && ">"} */}
             </button>
-            {enableCollaborate && 
+            {expand && 
             <input autoFocus="autofocus" type="text" onChange={(e) => searchUser(e.target.value)} placeholder="search word"/>}
             <ul>
               {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
@@ -390,6 +411,7 @@ const [search, setSearch] = useState([0])
               // users={users}
               // folders={folders}
               panel={panel}
+              panelHeight={panelRef}
               users={filters.connected 
               ? following.users
               :  community.users}
@@ -461,10 +483,11 @@ outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
-box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+/* box-shadow: 0px 1px 0px 1px #aaaaaa inset; */
+box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 border-radius: 25px;
-padding-inline: 3px;
-padding-block: 4px;
+padding-inline: 6px;
+padding-block: 7px;
 top: 0;
 right: 0;
 bottom: 0;
@@ -476,8 +499,8 @@ transition: background-color 0.2s ease;
 position: absolute;
 content: "";
     /* margin: 2px; */
-width: 18px;
-height: 18px;
+width: 13px;
+height: 13px;
 background-color: green;
 border-radius: 25px;
 transition: transform 0.3s ease;
@@ -485,14 +508,16 @@ transition: transform 0.3s ease;
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: green;
-box-shadow: 0px -1px 1px 0px hwb(120deg 0% 42%), 0px -1px 1px 1px hwb(120deg 0% 23%), 0px -1px 1px 1px hwb(120deg 0% 55%) inset;
+box-shadow: 0px 0px 0px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 1px -1px 0px 2px hwb(120deg 0% 0%), -1px 1px 0px 2px hwb(120deg 0% 93%);
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color:  #ccc;
-box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+/* box-shadow: 0px 1px 0px 1px #aaaaaa inset; */
+box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 }
 `
 const ControlPanel = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
 
@@ -501,10 +526,11 @@ const ControlPanel = styled.div`
     z-index: 0;
   /* top: 10px; */
   /* top: -10%; */
-  top : ${({panel}) => panel ? `155px` : `50px`};
+  top : ${({panel}) => panel ? `10px` : `-130px`};
   transition: top .2s ease-in;
   display: flex;
   flex-wrap: wrap;
+  transition: all .2s;
   justify-content: space-evenly;
   /* padding-bottom: 15px; */
   padding-inline: 5%;
@@ -517,7 +543,7 @@ const ControlPanel = styled.div`
 .open-button{
     align-self: center;
     /* top: 10px; */
-    top : ${({panel}) => panel ? `95px` : `10px`};
+    top : ${({panel, panelHeight}) => panel ? `${panelHeight.current.clientHeight + 10}px` : `10px`};
     cursor : ${({panel}) => panel ? `grab` : `grabbing`};
     transition: top .2s ease-in;
     position: relative;
@@ -639,10 +665,11 @@ outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
-box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+/* box-shadow: 0px 1px 0px 1px #aaaaaa inset; */
+box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 border-radius: 25px;
-padding-inline: 3px;
-padding-block: 4px;
+padding-inline: 6px;
+padding-block: 7px;
 top: 0;
 right: 0;
 bottom: 0;
@@ -654,16 +681,17 @@ transition: background-color 0.2s ease;
 position: absolute;
 content: "";
     /* margin: 2px; */
-width: 18px;
-height: 18px;
+width: 13px;
+height: 13px;
 background-color: #ff0000;
+box-shadow: 0px 0px 0px 3px rgb(204 82 41 / 68%), 0px 0px 0px 1px #ff5b1a, 1px -1px 0px 2px hsl(49deg 100% 57%), -1px 1px 0px 2px hwb(0deg 0% 93%);
 border-radius: 25px;
 transition: transform 0.3s ease;
 }
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: green;
-box-shadow: 0px -1px 1px 0px hwb(120deg 0% 42%), 0px -1px 1px 1px hwb(120deg 0% 23%), 0px -1px 1px 1px hwb(120deg 0% 55%) inset;
+box-shadow: 0px 0px 0px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 1px -1px 0px 2px hwb(120deg 0% 0%), -1px 1px 0px 2px hwb(120deg 0% 93%);
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color: #ccc;
@@ -671,17 +699,17 @@ background-color: #ccc;
 
 `
 const InputSwitch = styled.label`
-  margin: 10px;
   display:flex;
   /* margin-top: 10px; */
+  margin: 10px;
   p {
-  display: ${props => !!props.enableCollaborate && 'none' };
+  display: ${props => !!props.expand && 'none' };
   padding-left: 10px;
   font-size: 19px;  
 }
 input {
-  ${({enableCollaborate})  => enableCollaborate && `z-index: 1;` }
-  width: ${props => props.enableCollaborate ? '90%' : '0%'};
+  ${({expand})  => expand && `z-index: 1;` }
+  width: ${props => props.expand ? '90%' : '0%'};
     font-size: 19px;
     margin-left: 4px;
     font-size: 19px;
@@ -692,12 +720,13 @@ input {
   /* outline-style: solid;
     outline-width: thin; */
   position: relative;
-    display: inline-block;
-    height: ${props => !!props.search[0] ? 'fit-content' : '26px'};
-    padding: .5px;
-    background-color: #ccc;
-    border-radius: ${props => !!props.search[0] ? '14px' : '25px'};
-    width: ${props => !props.enableCollaborate ? '50px' : '200px'};
+  display: inline-block;
+  height: ${props => !!props.search[0] ? 'fit-content' : '26px'};
+  /* padding: .5px; */
+  background-color: #ccc;
+  box-shadow: 0px 1px 0px 1px #9e9e9e inset;
+  border-radius: ${props => !!props.search[0] ? '14px' : '25px'};
+  width: ${props => !props.expand ? '50px' : '200px'};
 .switch {
     margin-bottom: 10px;
   }
@@ -715,16 +744,18 @@ input {
 .checkbox {
   cursor: pointer;
     position: absolute;
-    catagory: ">";
-    margin: 2px;
-    width: 21px;
-    height: 21px;
+    content: ">";
+    margin-block: 7px;
+    margin-inline: 5px;
+    width: 13px;
+    height: 13px;
     border-radius: 25px;
     border-width: 0;
     transition: background-color 0.5s ease;
     transition: right 0.5s ease;
-    right: ${props => !props.enableCollaborate ? '50%' : '0%'};
-    background-color: ${props => !props.enableCollaborate ? '#aaa' : 'green'}
+    right: ${props => !props.expand ? '50%' : '0%'};
+    background-color: ${props => !props.expand ? '#aaa' : 'green'};
+    box-shadow: ${props => !props.expand ? '0px 0px 0px 3px hwb(0deg 74% 26% / 75%), 0px 0px 0px 1px hwb(222deg 47% 52% / 76%), 1px -1px 0px 2px hsl(0deg 0% 100%), -1px 1px 0px 2px hsl(231deg 8% 1%)' : '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)'};
   }
 
 `
@@ -741,7 +772,8 @@ const Button = styled.button`
   border: none;
   /* border-style: outset; */
   cursor: pointer;
-  box-shadow: 0px 0px 0px 1px black;
+  /* box-shadow: 0px 0px 0px 1px black; */
+  box-shadow: 0px 0px 3px 1px hwb(0deg 45% 55%) inset;
   span.front {
   display: block;
   /* padding: 12px 42px; */

@@ -67,7 +67,10 @@ const ScrollCont = (props) => {
 
         return (
           
-            <Cont>
+            <Cont
+            panel={props.panel}
+            panelHeight={props.panelHeight}
+            >
               <div className='tabs'>
               <div className='side-tab' onClick={() => props.setCatagory(true)} >users</div>
               <div className='side-tab' onClick={() => props.setCatagory(false)} >folders</div>
@@ -133,6 +136,15 @@ const ScrollCont = (props) => {
                   </div>
               </PhotoCard> 
               )}
+                    <hr
+        style={{
+          position: 'relative',
+          background: 'black',
+          top: '-9px',
+          zIndex: 6,
+          height: '3px',
+        }}
+      />
               </>
               
               )
@@ -223,7 +235,9 @@ const Cont = styled.div`
 .coffin {
     padding-inline: 15px;
     overflow: scroll;
-    height: 100%;
+    /* height: 100%; */
+    transition: height .2s ease;
+    height: ${({panel, panelHeight}) => panel ? `calc(100% - ${panelHeight.current.clientHeight + 10}px)` : `100%`};
   }
 
 `
@@ -347,9 +361,9 @@ background-color: gainsboro;
     height: 100px;
     line-height: 20px;
     left: 1%;
-    top: 0;
+    /* top: 0; */
     background: gainsboro;
-    position: absolute;
+    /* position: absolute; */
     width: 50%;
 }
 .space{

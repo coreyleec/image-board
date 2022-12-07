@@ -72,15 +72,15 @@ const ControlPanel = (props) => {
            <InputSwitch
            catagorized={!!props.folderType}
            search={props.search}
-           enableCollaborate={!props.enableCollaborate} >
+           expand={!props.expand} >
            <label className="toggle-switch">
            <span className="switch">
            <button className="checkbox" 
            onClick={() => props.searchToggle()}
            >
-           {/* {enableCollaborate && ">"} */}
+           {/* {expand && ">"} */}
            </button>
-           {!props.enableCollaborate && 
+           {!props.expand && 
            <input autoFocus="autofocus" type="text" onChange={(e) => props.searchUser(e.target.value)} placeholder="search user"/>}
            <ul>
              {!!props.search && props.search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
@@ -97,15 +97,15 @@ const ControlPanel = (props) => {
            <InputSwitch
            catagorized={!!props.folderType}
            search={props.search}
-           enableCollaborate={!!props.enableCollaborate} >
+           expand={!!props.expand} >
            <label className="toggle-switch">
            <span className="switch">
            <button className="checkbox" 
            onClick={() => props.searchToggle()}
            >
-           {/* {enableCollaborate && ">"} */}
+           {/* {expand && ">"} */}
            </button>
-           {props.enableCollaborate && 
+           {props.expand && 
            <input autoFocus="autofocus" type="text" onChange={(e) => props.searchUser(e.target.value)} placeholder="search word"/>}
            <ul>
              {!!props.search && props.search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
@@ -244,10 +244,11 @@ outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
-box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+/* box-shadow: 0px 1px 0px 1px #aaaaaa inset; */
+box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 border-radius: 25px;
-padding-inline: 3px;
-padding-block: 4px;
+padding-inline: 6px;
+padding-block: 7px;
 top: 0;
 right: 0;
 bottom: 0;
@@ -259,16 +260,17 @@ transition: background-color 0.2s ease;
 position: absolute;
 content: "";
     /* margin: 2px; */
-width: 18px;
-height: 18px;
+width: 13px;
+height: 13px;
 background-color: #ff0000;
+box-shadow: 0px 0px 0px 3px rgb(204 82 41 / 68%), 0px 0px 0px 1px #ff5b1a, 1px -1px 0px 2px hsl(49deg 100% 57%), -1px 1px 0px 2px hwb(0deg 0% 93%);
 border-radius: 25px;
 transition: transform 0.3s ease;
 }
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: green;
-box-shadow: 0px -1px 1px 0px hwb(120deg 0% 42%), 0px -1px 1px 1px hwb(120deg 0% 23%), 0px -1px 1px 1px hwb(120deg 0% 55%) inset;
+box-shadow: 0px 0px 0px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 1px -1px 0px 2px hwb(120deg 0% 0%), -1px 1px 0px 2px hwb(120deg 0% 93%);
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color: #ccc;
@@ -280,13 +282,13 @@ const InputSwitch = styled.label`
   display:flex;
   /* margin-top: 10px; */
   p {
-  display: ${props => !!props.enableCollaborate && 'none' };
+  display: ${props => !!props.expand && 'none' };
   padding-left: 10px;
   font-size: 19px;  
 }
 input {
-  ${({enableCollaborate})  => enableCollaborate && `z-index: 1;` }
-  width: ${props => props.enableCollaborate ? '90%' : '0%'};
+  ${({expand})  => expand && `z-index: 1;` }
+  width: ${props => props.expand ? '90%' : '0%'};
     font-size: 19px;
     margin-left: 4px;
     font-size: 19px;
@@ -302,7 +304,7 @@ input {
     padding: .5px;
     background-color: #ccc;
     border-radius: ${props => !!props.search[0] ? '14px' : '25px'};
-    width: ${props => !props.enableCollaborate ? '50px' : '200px'};
+    width: ${props => !props.expand ? '50px' : '200px'};
 .switch {
     margin-bottom: 10px;
   }
@@ -320,16 +322,16 @@ input {
 .checkbox {
   cursor: pointer;
     position: absolute;
-    catagory: ">";
+    catagory: "";
     margin: 2px;
-    width: 21px;
-    height: 21px;
+    width: 13px;
+    height: 13px;
     border-radius: 25px;
     border-width: 0;
     transition: background-color 0.5s ease;
     transition: right 0.5s ease;
-    right: ${props => !props.enableCollaborate ? '50%' : '0%'};
-    background-color: ${props => !props.enableCollaborate ? '#aaa' : 'green'}
+    right: ${props => !props.expand ? '50%' : '0%'};
+    background-color: ${props => !props.expand ? '#aaa' : 'green'}
   }
 
 `

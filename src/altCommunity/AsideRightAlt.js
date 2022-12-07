@@ -33,10 +33,10 @@ const AsideRight = (props) => {
     });
   }
 
-const [enableCollaborate, setEnableCollaborate] = useState(false)
+const [expand, setExpand] = useState(false)
 
 const searchToggle = () => {
-  setEnableCollaborate(!enableCollaborate)
+  setExpand(!expand)
   !!search && setSearch([0])
 }
 console.log("path", location.pathname.split('/')[1])
@@ -265,15 +265,15 @@ const typeToggle = () => {
             <InputSwitch
             catagorized={!!props.folderType}
             search={search}
-            enableCollaborate={enableCollaborate} >
+            expand={expand} >
             <label className="toggle-switch">
             <span className="switch">
             <button className="checkbox" 
             onClick={() => searchToggle()}
             >
-            {/* {enableCollaborate && ">"} */}
+            {/* {expand && ">"} */}
             </button>
-            {enableCollaborate && 
+            {expand && 
             <input autoFocus="autofocus" type="text" onChange={(e) => searchUser(e.target.value)} placeholder="search user"/>}
             <ul>
               {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
@@ -321,7 +321,7 @@ const typeToggle = () => {
                 setCreative={props.setCreative}
                 setLifestyle={props.setLifestyle}
                 searchUser={props.searchUser}
-                enableCollaborate={props.enableCollaborate}
+                expand={props.expand}
                 searchToggle={props.searchToggle}
              
              
@@ -431,10 +431,11 @@ outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
-box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+/* box-shadow: 0px 1px 0px 1px #aaaaaa inset; */
+box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 border-radius: 25px;
-padding-inline: 3px;
-padding-block: 4px;
+padding-inline: 6px;
+padding-block: 7px;
 top: 0;
 right: 0;
 bottom: 0;
@@ -446,19 +447,22 @@ transition: background-color 0.2s ease;
 position: absolute;
 content: "";
     /* margin: 2px; */
-width: 18px;
-height: 18px;
+width: 13px;
+height: 13px;
 background-color: #aaa;
+box-shadow: 0px 0px 1px 3px rgb(189 189 189 / 71%), 0px 0px 0px 1px rgb(120 121 122 / 76%), 0px -1px 0px 2px rgb(255 255 255), 0px 1px 0px 2px rgb(2 2 3);
+/* box-shadow: 0px 0px 1px 3px rgb(189 189 189 / 70%), 0px 0px 0px 1px rgb(120 121 122 / 76%), 0px -1px 0px 2px rgb(255 255 255), 0px 1px 0px 2px rgb(2 2 3); */
 border-radius: 25px;
 transition: transform 0.3s ease;
 }
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: #ff0000;
-}
+box-shadow: 0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0);
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color:  #ccc;
-box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+/* box-shadow: 0px 1px 0px 1px #aaaaaa inset; */
+box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 }
 `
 const CatagorySwitch = styled.label`
@@ -493,10 +497,11 @@ outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
-box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+/* box-shadow: 0px 1px 0px 1px #aaaaaa inset; */
+box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 border-radius: 25px;
-padding-inline: 3px;
-padding-block: 4px;
+padding-inline: 6px;
+padding-block: 7px;
 top: 0;
 right: 0;
 bottom: 0;
@@ -508,8 +513,8 @@ transition: background-color 0.2s ease;
 position: absolute;
 content: "";
     /* margin: 2px; */
-width: 18px;
-height: 18px;
+width: 13px;
+height: 13px;
 background-color: green;
 border-radius: 25px;
 transition: transform 0.3s ease;
@@ -517,11 +522,12 @@ transition: transform 0.3s ease;
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: green;
-box-shadow: 0px -1px 1px 0px hwb(120deg 0% 42%), 0px -1px 1px 1px hwb(120deg 0% 23%), 0px -1px 1px 1px hwb(120deg 0% 55%) inset;
+box-shadow: 0px 0px 0px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 1px -1px 0px 2px hwb(120deg 0% 0%), -1px 1px 0px 2px hwb(120deg 0% 93%);
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color:  #ccc;
-box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+/* box-shadow: 0px 1px 0px 1px #aaaaaa inset; */
+box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 }
 `
 
@@ -565,8 +571,8 @@ const CollabotorList = styled.div`
     position: absolute;
     content: "";
     margin: 2px;
-    width: 21px;
-    height: 21px;
+    width: 13px;
+    height: 13px;
     background-color: #aaa;
     border-radius: 25px;
     transition: transform 0.3s ease;
@@ -644,7 +650,7 @@ const OpenSwitch = styled.label`
     font-size: 19px;  
   }
   input {
-    ${({enableCollaborate})  => enableCollaborate && `z-index: 1;` }
+    ${({expand})  => expand && `z-index: 1;` }
     width: ${props => props.controlDock ? '90%' : '0%'};
       font-size: 19px;
       margin-left: 4px;
@@ -687,13 +693,13 @@ const InputSwitch = styled.label`
   display:flex;
   margin-top: 10px;
   p {
-  display: ${props => !!props.enableCollaborate && 'none' };
+  display: ${props => !!props.expand && 'none' };
   padding-left: 10px;
   font-size: 19px;  
 }
 input {
-  ${({enableCollaborate})  => enableCollaborate && `z-index: 1;` }
-  width: ${props => props.enableCollaborate ? '90%' : '0%'};
+  ${({expand})  => expand && `z-index: 1;` }
+  width: ${props => props.expand ? '90%' : '0%'};
     font-size: 19px;
     margin-left: 4px;
     font-size: 19px;
@@ -707,7 +713,7 @@ input {
     padding: .5px;
     background-color: #ccc;
     border-radius: ${props => !!props.search[0] ? '14px' : '25px'};
-    width: ${props => !props.enableCollaborate ? '50px' : '100%'};
+    width: ${props => !props.expand ? '50px' : '100%'};
 .switch {
     margin-bottom: 10px;
   }
@@ -727,14 +733,14 @@ input {
     position: absolute;
     content: ">";
     margin: 2px;
-    width: 21px;
-    height: 21px;
+    width: 13px;
+    height: 13px;
     border-radius: 25px;
     border-width: 0;
     transition: background-color 0.5s ease;
     transition: right 0.5s ease;
-    right: ${props => !props.enableCollaborate ? '50%' : '0%'};
-    background-color: ${props => !props.enableCollaborate ? '#aaa' : 'green'}
+    right: ${props => !props.expand ? '50%' : '0%'};
+    background-color: ${props => !props.expand ? '#aaa' : 'green'}
   }
 
 `

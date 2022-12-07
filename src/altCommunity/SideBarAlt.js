@@ -337,10 +337,11 @@ outline-width: thin; */
 position: absolute;
 cursor: pointer;
 background-color: #ccc;
-box-shadow: 0px 1px 0px 1px #aaaaaa inset;
+/* box-shadow: 0px 1px 0px 1px #aaaaaa inset; */
+box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 border-radius: 25px;
-padding-inline: 3px;
-padding-block: 4px;
+padding-inline: 6px;
+padding-block: 7px;
 top: 0;
 right: 0;
 bottom: 0;
@@ -352,16 +353,17 @@ transition: background-color 0.2s ease;
 position: absolute;
 content: "";
     /* margin: 2px; */
-width: 18px;
-height: 18px;
+width: 13px;
+height: 13px;
 background-color: #ff0000;
+box-shadow: 0px 0px 0px 3px rgb(204 82 41 / 68%), 0px 0px 0px 1px #ff5b1a, 1px -1px 0px 2px hsl(49deg 100% 57%), -1px 1px 0px 2px hwb(0deg 0% 93%);
 border-radius: 25px;
 transition: transform 0.3s ease;
 }
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: green;
-box-shadow: 0px -1px 1px 0px hwb(120deg 0% 42%), 0px -1px 1px 1px hwb(120deg 0% 23%), 0px -1px 1px 1px hwb(120deg 0% 55%) inset;
+box-shadow: 0px 0px 0px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 1px -1px 0px 2px hwb(120deg 0% 0%), -1px 1px 0px 2px hwb(120deg 0% 93%);
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color: #ccc;

@@ -64,7 +64,7 @@ useEffect(() => {
 
 
 
-  const [enableCollaborate, setEnableCollaborate] = useState(false)
+  const [expand, setExpand] = useState(false)
 
 const [photos, setPhotos] = useState()
 
@@ -253,7 +253,7 @@ const [photos, setPhotos] = useState()
     return (
       // <ParallaxProvider>
       // <ScrollSync>
-      <Body panel={props.panel} >
+      <Body panel={props.panel} panelHeight={props.panelHeight}>
 
       {/* {props.folders.map(folder => 
         folder.photos.map(photo => 
@@ -325,6 +325,8 @@ const [photos, setPhotos] = useState()
             <ScrollCont
               fetchUser={props.fetchUser}
               // photos={photos} 
+              panel={props.panel}
+              panelHeight={props.panelHeight}
               catagory={props.filters.catagory
                 ? props.users
                 : props.folders}
@@ -364,7 +366,7 @@ const Body = styled.div`
   position: relative;
   height: 100%;
   /* top: -15%; */
-  top : ${({panel}) => panel ? `95px ` : `10px`};
+  top : ${({panel, panelHeight}) => panel ? `${panelHeight.current.clientHeight + 10}px` : `10px`};
   transition: top .2s ease-in;
 `
 

@@ -25,7 +25,7 @@ const CommunityPage = (props) => {
 // const [props.community, props.setCommunity] = useState(null)
 // const [error, setError] = useState(false)
 // const [search, setSearch] = useState([0])
-//   const [enableCollaborate, setEnableCollaborate] = useState(false)
+//   const [expand, setExpand] = useState(false)
 
 
 const handleErrors = (response) => {

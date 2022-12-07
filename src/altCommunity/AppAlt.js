@@ -112,7 +112,7 @@ const [following, setFollowing] = useState(null)
 const [community, setCommunity] = useState(null)
 const [error, setError] = useState(false)
 const [search, setSearch] = useState([0])
-  const [enableCollaborate, setEnableCollaborate] = useState(false)
+  const [expand, setExpand] = useState(false)
 
   const searchUser = (input) => {
     console.log(input)
@@ -134,7 +134,7 @@ const [search, setSearch] = useState([0])
   
 
   const searchToggle = () => {
-    setEnableCollaborate(!enableCollaborate)
+    setExpand(!expand)
     !!search && setSearch([0])
   }
 
@@ -1117,7 +1117,7 @@ useEffect(() => {
           setCreative={setCreate}
           setLifestyle={setLife}
           searchUser={searchUser}
-          enableCollaborate={enableCollaborate}
+          expand={expand}
           searchToggle={searchToggle}
 
 
@@ -1208,7 +1208,7 @@ useEffect(() => {
                 setCreative={setCreate}
                 setLifestyle={setLife}
                 searchUser={searchUser}
-                enableCollaborate={enableCollaborate}
+                expand={expand}
                 searchToggle={searchToggle}
                 community={community}
                 following={following}
