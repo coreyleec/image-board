@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect, useState, useRef } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import CommunityPanel from "../components/CommunityPanel";
-import CommunityCont from "../components/CommunityCont";
+import CommunityBody from "../components/CommunityBody";
 import styled from 'styled-components'
 
 
@@ -66,6 +66,9 @@ const setDegree = (degree) => {
   filter.connected = degree
   setFilters(filter)
   console.log("color", degree)
+  if (filters.connected === true && degree === true && !!following){
+
+    
   if (!!degree)
   {console.log("number")
 
@@ -99,9 +102,9 @@ const setDegree = (degree) => {
     )
     
 } 
-  // if color === name of color then button style is different
-  // query db for users based on connectedber 
-}
+}}
+// if color === name of color then button style is different
+// query db for users based on connectedber 
 
 const setConnected = (connected) => {
   const filter = {...filters}
@@ -110,6 +113,10 @@ const setConnected = (connected) => {
   console.log("color", connected)
 }
 const setCatagory = (catagory) => {
+  // if (catagory){
+  //   console.log("catagory", following)
+  // }
+  // else console.log("catagory", community)
   const filter = {...filters}
   filter.catagory = catagory
   setFilters(filter)
@@ -231,6 +238,7 @@ useEffect(() => {
     {console.log("recentContent", recentContent)
     setCommunity(recentContent.community)
     setFollowing(recentContent.following)
+    window.store = recentContent
     setLoad(true)
   }
     )
@@ -400,7 +408,7 @@ const [search, setSearch] = useState([0])
               </ControlPanel >
             
             {load && 
-            <CommunityCont
+            <CommunityBody
               // lifestyle={filters.lifestyle}
               // creative={filters.creative}
               // catagory={filters.catagory}
@@ -684,14 +692,14 @@ content: "";
 width: 13px;
 height: 13px;
 background-color: #ff0000;
-box-shadow: 0px 0px 0px 3px rgb(204 82 41 / 68%), 0px 0px 0px 1px #ff5b1a, 1px -1px 0px 2px hsl(49deg 100% 57%), -1px 1px 0px 2px hwb(0deg 0% 93%);
+box-shadow: 0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0);
 border-radius: 25px;
 transition: transform 0.3s ease;
 }
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: green;
-box-shadow: 0px 0px 0px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 1px -1px 0px 2px hwb(120deg 0% 0%), -1px 1px 0px 2px hwb(120deg 0% 93%);
+box-shadow: 0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%);
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color: #ccc;
@@ -726,6 +734,7 @@ input {
   background-color: #ccc;
   box-shadow: 0px 1px 0px 1px #9e9e9e inset;
   border-radius: ${props => !!props.search[0] ? '14px' : '25px'};
+  transition: width .3s linear;
   width: ${props => !props.expand ? '50px' : '200px'};
 .switch {
     margin-bottom: 10px;
@@ -755,7 +764,7 @@ input {
     transition: right 0.5s ease;
     right: ${props => !props.expand ? '50%' : '0%'};
     background-color: ${props => !props.expand ? '#aaa' : 'green'};
-    box-shadow: ${props => !props.expand ? '0px 0px 0px 3px hwb(0deg 74% 26% / 75%), 0px 0px 0px 1px hwb(222deg 47% 52% / 76%), 1px -1px 0px 2px hsl(0deg 0% 100%), -1px 1px 0px 2px hsl(231deg 8% 1%)' : '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)'};
+    box-shadow: ${props => !props.expand ? '0px 0px 1px 3px rgb(189 189 189 / 71%),0px 0px 0px 1px rgb(120 121 122 / 76%),0px -1px 0px 2px rgb(255 255 255),0px 1px 0px 2px rgb(2 2 3)' : '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)'};
   }
 
 `

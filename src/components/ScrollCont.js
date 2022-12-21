@@ -6,16 +6,9 @@ import styled from "styled-components";
 
 
 const ScrollCont = (props) => {
-    const scrollSize = useRef()
-    const photoSize = useRef()
-    console.log("photoSize", scrollSize.current)
     
-    const getOffsetSize = () => {
-      console.log("scrollSize", scrollSize.current.offsetHeight, scrollSize.current.offsetTop, "photoSize", photoSize.current.getBoundingClientRect(),  );  
-    }
-    const getOffsetHeight = () => {
-      console.log("scrollSize", scrollSize.current.offsetHeight, scrollSize.current.offsetTop);  
-    }
+    
+    
 
     const favoriteToggle = (photo) => {
       // const methodVar = !!favorite ? "DESTROY" : "CREATE"
@@ -57,23 +50,18 @@ const ScrollCont = (props) => {
                 // );
                 // })
       }
-  // let args = {
-  //   y1: '-50%,50%',
-  //   y2: '50%,-50%',
-  // };
-  // const a = args.y1.split(',');
-  // const b = args.y2.split(',');
-    
 
         return (
           
             <Cont
+            catagory={props.filters.catagory}
             panel={props.panel}
             panelHeight={props.panelHeight}
+
             >
               <div className='tabs'>
-              <div className='side-tab' onClick={() => props.setCatagory(true)} >users</div>
-              <div className='side-tab' onClick={() => props.setCatagory(false)} >folders</div>
+              <p className='side-tab' onClick={() => props.setCatagory(true)} ><mark className="true" >users</mark></p>
+              <p className='side-tab' onClick={() => props.setCatagory(false)} ><mark className="false" >folders</mark></p>
               </div>
                 
             {!!props.error ?
@@ -82,28 +70,34 @@ const ScrollCont = (props) => {
             </div>
             :
             <div className='coffin-cont'>
-            <div className='coffin' ref={scrollSize} onClick={getOffsetHeight} >
-            
+            <div className='coffin'  >
+            {props.filters.catagory ?
+            <>
+            {props?.catagory?.map((obj, n) => (
               
-            {props?.catagory?.map(obj => (
-               <>
+              
+              
+              <div className='user-cont' key={n} 
+              //  style={{'z-index': `${n}`}}
+              
+               >
+
                <UserCard identifier={obj.uuid} onClick={() => props.fetchUser(obj.uuid)}>
                    <div className="catagory"> 
                    <h4>{obj.name}</h4>
                    {/* <h4>{obj.folders}</h4> */}
-                 {obj.folders.map(folder => {
+                 {/* {obj.folders.map(folder => {
                    return(
                     <div className="space">
-                    <p>{folder.name}</p>
+                    <p>{folder.name}</p> */}
                     {/* <p className="notification">{folder.count}</p> */}
-                     </div>
-                )})} 
+                     {/* </div>
+                )})}  */}
                 </div>
+                
             </UserCard>
           {obj.photos.map(photo => 
-               <PhotoCard ref={photoSize}
-               onClick={getOffsetSize}
-               >
+               <PhotoCard >
               <div className="text-cont">
               {!!photo.name && <p className="photo-name" >{photo.name}</p>}
               {!!photo.details && <p className="photo-details" >{photo.details}</p>}
@@ -113,11 +107,10 @@ const ScrollCont = (props) => {
               <div className='photo-cont'>
                 <div className='photo-header'></div>
                 <PhotoCont
-                onClick={getOffsetHeight}
                 identifier={props.catagory
                   ? obj.uuid
                   : obj.id}
-                folder_id={photo.folder_id}
+                folderId={photo.folder_id}
                 onClick={() => console.log(photo.folder_id)}>
                     
                     <img src={photo.url}/>
@@ -136,19 +129,98 @@ const ScrollCont = (props) => {
                   </div>
               </PhotoCard> 
               )}
-                    <hr
-        style={{
-          position: 'relative',
-          background: 'black',
-          top: '-9px',
-          zIndex: 6,
-          height: '3px',
-        }}
-      />
-              </>
+                                     <hr
+                 style={{
+                   position: 'relative',
+                   background: 'gainsboro',
+                   borderStyle: 'none',
+                   borderTop: 'solid',
+                   borderTopWidth: '2px',
+                   top: '0px',
+                   zIndex: 6,
+                   height: '1px',
+                   paddingBottom: '18px',
+                 }}
+               />
+              </div>
               
               )
               )}
+            </>
+            : <>
+            {props?.catagory?.map((obj, n) => (
+               <div className='user-cont' key={n} 
+              //  style={{'z-index': `${n}`}}
+               >
+
+               <UserCard identifier={obj.uuid} onClick={() => props.fetchUser(obj.uuid)}>
+                   <div className="catagory"> 
+                   <h4>{obj.name}</h4>
+                   {/* <h4>{obj.folders}</h4> */}
+                 {/* {obj.folders.map(folder => {
+                   return(
+                    <div className="space">
+                     */}
+                    {/* <p className="notification">{folder.count}</p> */}
+                     {/* </div>
+                )})}  */}
+                <p>{obj.user_name}</p>
+                </div>
+                
+            </UserCard>
+          {obj.photos.map(photo => 
+               <PhotoCard >
+              <div className="text-cont">
+              {!!photo.name && <p className="photo-name" >{photo.name}</p>}
+              {!!photo.details && <p className="photo-details" >{photo.details}</p>}
+              <p className="obj-name" onClick={() => props.fetchUser(photo.u_id)} >{photo.obj_name}</p>
+              {/* <p className="folder-name">{photo.folder_name}</p> */}
+              </div>
+              <div className='photo-cont'>
+                <div className='photo-header'></div>
+                <PhotoCont
+                identifier={props.catagory
+                  ? obj.uuid
+                  : obj.id}
+                folderId={photo.folder_id}
+                onClick={() => console.log(photo.folder_id)}>
+                    
+                    <img src={photo.url}/>
+                  </PhotoCont>
+                  <div>
+              </div>
+              <div className='photo-footer'></div>
+              </div>
+                  <div className='button-cont'>
+                    <Heart 
+                      favorited={photo.favorites !== undefined && !!photo.favorites.length}
+                      className="heart"
+                      onClick={() => favoriteToggle
+                      (photo)} >♥</Heart>
+                    <Add>✚</Add>
+                  </div>
+              </PhotoCard> 
+              )}
+                                     <hr
+                 style={{
+                   position: 'relative',
+                   background: 'gainsboro',
+                   borderStyle: 'none',
+                   borderTop: 'solid',
+                   borderTopWidth: '2px',
+                   top: '0px',
+                   zIndex: 6,
+                   height: '1px',
+                   paddingBottom: '18px',
+                 }}
+               />
+              </div>
+              
+              )
+              )}
+
+              </>
+}
 
               </div>
             </div>
@@ -201,25 +273,35 @@ const Cont = styled.div`
     display: flex;
     width: -webkit-fill-available;
     border-radius: 13px;
-    /* margin-inline: 5px; */
     height: 100%;
     max-height: -webkit-fill-available;
-    /* box-shadow: -3px 3px 5px 2px #aaaaaa; */
     overflow: hidden;
     padding-top: 15px;
     padding-left: 15px;
     
   .tabs{
+    z-index: 1;
     display: flex;
     flex-direction: column;
     transform: rotate(0deg);
     justify-content: space-evenly;
     width: 0px;
     height: -webkit-fill-available;
+    cursor: pointer;
   }
   .side-tab{
     transform: rotate(-90deg);
-    /* height: 0; */
+    ${({catagory}) => catagory ? 
+    '.true {color: white; box-shadow: 6px 0 0 black, -4px 0 0 black; background-color: black;}'
+    : '.false {color: white; box-shadow: 6px 0 0 black, -4px 0 0 black; background-color: black;}'
+  }
+    mark {
+      color: black; 
+      background-color: gainsboro;
+      font-style: italic;
+      
+    
+  }
 }
   }
 
@@ -232,36 +314,51 @@ const Cont = styled.div`
     background: transparent;
 }
 
+& .user-cont:last-child hr{
+      display: none;
+      }
 .coffin {
     padding-inline: 15px;
     overflow: scroll;
     /* height: 100%; */
     transition: height .2s ease;
     height: ${({panel, panelHeight}) => panel ? `calc(100% - ${panelHeight.current.clientHeight + 10}px)` : `100%`};
-  }
+
+
+    & .user-cont:last-child{
+    min-height: 100%;
+      }
+
+}
 
 `
 
 const PhotoCard = styled.div`
   display: flex;
-  /* flex-direction: row; */
   position: relative;
   left: 25%;
   width: 75%;
 
   .photo-cont{
-  /* overflow: auto;
-  border-radius: 13px;
-  top: 0;
-  padding-left: 50%; */
   position: relative;
   border-radius: 13px;
   padding-left: 4%;
   flex-grow: 1;
   flex-basis: 100px;
   }
-
-
+/* .photo-name{
+  font-style:; */
+}
+.photo-details{
+  font-weight: lighter;
+  font-size: smaller;
+  margin-bottom: auto;
+}
+.folder-name {
+  /* color: white;
+  cursor: pointer; */
+  margin-top: auto;
+ }
   .text-cont{
     position: sticky;
     align-self: flex-start;
@@ -271,6 +368,10 @@ const PhotoCard = styled.div`
     flex-basis: 0%;
     overflow-y: auto;
     background: gainsboro;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 13vh;
     }
 
   .button-cont{
@@ -355,15 +456,12 @@ background-color: gainsboro;
 
 
 .catagory {
- /* position: absolute; */
  position: sticky;
     top: 0;
-    height: 100px;
+    padding-bottom: 100px;
     line-height: 20px;
     left: 1%;
-    /* top: 0; */
     background: gainsboro;
-    /* position: absolute; */
     width: 50%;
 }
 .space{
@@ -371,57 +469,6 @@ background-color: gainsboro;
       justify-content: space-between;
     }
 
-/* :hover {
-  transition: transform 0.2s ease;
-  /* transform: scale(1.2,1.2); */
-  /* transform: translate(1px, -1px);  */
-  /* box-shadow: none; */
-  /* box-shadow: -7px 7px 10px 4px #aaaaaa;  */
-  
-/* } */ 
-
-img {
-    height: 100px;
-    width: -webkit-fill-available;
-  /* overflow: hidden; */
-  margin: 10px;
-  /* ALLOWS FOR RESIZING WINDOW */
-  max-width: fit-content;
-  /* USE THIS TO KEEP IMAGE CENTER */
-  display: flex;
-  justify-content: center;
-  border-radius: 13px;
-  cursor: pointer;
-  /* box-shadow: -3px 3px 5px 2px #aaaaaa; */
-}
-.text-cont {
-  display: flex;
-  flex-direction: column;
-  justify-content : space-between;
-  margin: 10px;
-  margin-left: 3px;
-  /* p{
-    
-  } */
- .name {
-  font-weight: bold;
- }
- .photo-details {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  text-overflow: ellipsis;
- }
- .obj-name {
-  /* color: white;
-  cursor: pointer; */
- }
- .folder-name {
-  /* color: white;
-  cursor: pointer; */
- }
-}
 
 `
 const PhotoCont = styled.div`

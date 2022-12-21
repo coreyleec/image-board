@@ -8,27 +8,13 @@ const AsideRight = (props) => {
 
   const panelRef = useRef()
   const drawerRef = useRef()
-
-  const [dimensions, setDimensions] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
-  const handleResize = () => {
-    setDimensions({
-      width: window.innerWidth,
-      height: window.innerHeight,
-    });
-    // !!panelRef.current && console.log("dimensions", panelRef.current.clientWidth);
-    !!drawerRef.current && console.log("dimensions", drawerRef.current.clientHeight);
-  }
-  
-  useEffect(() => {
-    window.addEventListener("resize", handleResize, false);
-  }, []);
+  const listRef = useRef()
+  const inputRef = useRef();
+  const asideRef = useRef();
+  !!asideRef.current && console.log("asideRef", asideRef.current.clientWidth)
+  window.store = props
 
 
-  
-  
 
   const editToggle = () => {
     props.editToggle(!props.edit)
@@ -37,7 +23,7 @@ const AsideRight = (props) => {
     props.reorderSubmit()
   };
 
-  const [search, setSearch] = useState([0])
+  const [search, setSearch] = useState([])
   console.log("props.directory", props.directory)
   const searchUser = (input) => {
     console.log(input)
@@ -61,10 +47,21 @@ const [expand, setExpand] = useState(false)
 
 const searchToggle = () => {
   setExpand(!expand)
-  !!search && setSearch([0])
+  !!search && setSearch([])
+  if (!expand) {
+    inputRef.current.focus();
+  } else {
+    inputRef.current.blur();
+  }
 }
-console.log("path", location.pathname.split('/')[1])
-let path = location.pathname.split('/')[1]
+const [flexStart, setFlexStart] = useState(false)
+
+const changeFlex = (bool) => {
+  console.log("flexStart", bool)
+  setFlexStart(!bool)
+}
+
+
 
 // const [isCollabor, setIsCollabor] = useEffect(false)
 useEffect(() => {
@@ -80,29 +77,58 @@ const controlDockToggle = () => {
   // !!search && setSearch([0])
 }
 const [drawerHeight, setDrawerHeight] = useState(0)
+const [editDrawerWidth, setEditDrawerWidth] = useState(0)
 
 useEffect(() => {
   !!drawerRef?.current && setDrawerHeight(drawerRef.current.clientHeight)
 })
 
-// const drawerHeightRef = useCallback((drawerNode) => {
-//     !!drawerNode && console.log("drawerNode", drawerNode, drawerNode?.clientHeight);
-//     setDrawerHeight(drawerNode?.getBoundingClientRect());
-//   }, [controlDock]);
-//   console.log("drawerHeight", drawerHeight.height);
 
-// useEffect(() => {
-//   !!drawerRef.current && console.log("dimensions", drawerRef.current.clientHeight);
-//   let height = drawerRef.current
-//   !!drawerRef.current && setDrawerHeight(height.clientHeight)
+const [height, setHeight] = useState(26)
 
-// }, [controlDock])
+const [searchLi, setSearchLi] = useState(0)
+useEffect(() => {
+  console.log("searchLi", searchLi, search)
+  let length = search.length * 20
+  !!search.length ? setSearchLi(length + 6) : setSearchLi([])
+}, [search])
 
-// const [skinny, setSkinny] = useState(false)
+const [inputWidth, setInputWidth] = useState()
+
+useEffect(() => {
+  expand ? setInputWidth('83%') : setInputWidth('0%')
+}, [expand])
+
+
+let drawer = 35 + 16 + (props.folderCollaborators.length * 29.5)
+console.log("drawer", drawer, props.folderCollaborators.length * 31)
+
+
+
+
+
+
+  useEffect(() => {
+    // let open = 26
+    let edit = 25
+    let editDrawer = 141
+    let collabDrawer = props.folderCollaborators.length * 25
+    if (controlDock){
+      let open = 26 + edit + collabDrawer
+      console.log("open", open)
+      setHeight(open)
+      if (props.edit){
+       let open = 26 + edit + collabDrawer + editDrawer
+       console.log("open", open)
+       setHeight(open)
+      }
+      
+    }
+    else {setHeight(26)}
+  }, [props.edit, controlDock])
+
+
 const [skinny, setSkinny] = useState(false);
-// useEffect(() => {
-//   window.innerWidth < 1100 ? setSkinny(true) : setSkinny(false)
-// }, [])
 
 
 useEffect(() => {
@@ -110,7 +136,6 @@ useEffect(() => {
     setSkinny(true)
     setControlDock(false)
   } else {
-    // controlDock && controlDockToggle()
     setSkinny(false)
     setControlDock(true)
   }
@@ -119,20 +144,19 @@ useEffect(() => {
     if (window.innerWidth < 1100) {
       setSkinny(true)
       setControlDock(false)
+      
     } else {
       // controlDock && controlDockToggle()
+      console.log("pain")
       setSkinny(false)
       setControlDock(true)
+      !!asideRef.current && setEditDrawerWidth(asideRef.current.clientWidth)
+      
     }
   };
   window.addEventListener('resize', updateMedia);
   return () => window.removeEventListener('resize', updateMedia);
 }, []);
-// useEffect(() => {
-//   skinny ? setControlDock(false) : setControlDock(true)
-// }, [skinny])
-
-// console.log("test", (props.currentUserId === props.userId) ,!!props.folderCollaborators.length && props.folderCollaborators.map((collaborator) => {if (collaborator.uuid === props.uuid) return true}) , props.demo)
 
 // if folder is creative type is set to true
 
@@ -148,15 +172,24 @@ const typeToggle = () => {
 
 
   return (
-    <aside>
+    <aside ref={asideRef}>
 
       {(((props.directory === 'home' || props.directory === '-' || props.directory === 'user'))) &&  
             <Sticky
-            // drawerRef={drawerHeightRef}
+            asideRef={asideRef}
+            edit={props.edit}
+            skinny={skinny}
+            controlDock={controlDock}
+            drawer={drawer}
             drawerHeight={drawerHeight}
             ref={panelRef}
+            contHeight={height}
+            collabLength={props.folderCollaborators.length} 
+            expand={expand}
+            searchLi={searchLi}
+            flexStart={flexStart}
             catagorized={props.folderType}
-            collabLength={props.folderCollaborators.length} skinny={skinny} controlDock={controlDock}
+            
             >
               {skinny  && <OpenSwitch 
               controlDock={controlDock}
@@ -173,12 +206,13 @@ const typeToggle = () => {
               </label>
               {/* <p>open</p>  */}
               </OpenSwitch>}
+              
 {/* FOLDER TYPE */}
             {/* {controlDock  
             &&  */}
             <div className="drawer-cont">
             <div ref={drawerRef} className="drawer" >
-          
+            
             
 {/* THIS SECTION ROTATES THE EDIT AND CATAGORIZE TO HIDE EDIT IF A NEW FOLDER HAS NOT YET BEEN CATAGORIZED */}
 
@@ -209,23 +243,28 @@ const typeToggle = () => {
            {/* <p>{props.folderType ? "creative" : "lifestyle"}</p>  */}
            <p>lifestyle</p> 
            </CatagorySwitch>
-           {/* <div className="cover-1"></div> */}
           </>
            : 
            <>
-           <Switch>
+           
+           <Switch className="edit">
 {/* EDIT */}
-           <label className="toggle-switch">
+           <label className="toggle-switch edit">
            <input type="checkbox" checked={props.edit}
             onChange={editToggle}/>
            <span className="switch" />
            </label>
            <p>edit</p>
            </Switch>
-           {/* <div className="cover-1"></div> */}
+           
            {/* ENABLE DELETE */}
-            {props.edit === true && 
-            <Switch>
+
+
+
+
+            <div className="edit-drawer">
+            
+            <Switch className="delete">
               <label className="toggle-switch">
               <input type="checkbox" 
               checked={props.enableDelete}
@@ -234,37 +273,13 @@ const typeToggle = () => {
               <span className="switch" />
               </label>
               <p>enable delete</p> 
-           </Switch>}
-          </>
-          : null
-           }
-
-{/* FOLDER FOLLOW */}
-            {(props.directory === 'user') &&
-            <CatagorySwitch
-          //  catagorized={props.folderType}
-           >
-           <label className="toggle-switch">
-           <input type="checkbox" 
-           checked={follow}
-           onChange={() => followToggle()}
-          //  checked={props.edit}
-           />
-           <span className="switch" />
-           </label>
-           <p>{follow ? "follow folder" : "unfollow folder"}</p> 
-           </CatagorySwitch>
-          }
-
-            {props.edit === true && 
-            <>
+           </Switch> 
 {/* CATAGORIZE */}           
 {((props.directory === 'home' || props.directory === '-') && props.folderType === null) 
              ? 
              <>
-           {/* <div className="cover-1"></div> */}
-           <div className="cover-2"></div>
-           <Switch>
+           <div className="cover"></div>
+           <Switch className="edit" >
            {/* EDIT */}
           <label className="toggle-switch">
           <input type="checkbox" checked={props.edit}
@@ -277,10 +292,10 @@ const typeToggle = () => {
           </>
            : 
            <>
-           {/* <div className="cover-1"></div> */}
-           <div className="cover-2"></div>
-           {props.edit === true && 
+           <div className="cover"></div>
+           {/* {props.edit === true &&  */}
            <CatagorySwitch
+           className="catagory"
            catagorized={props.folderType}>
            <label className="toggle-switch">
            <input type="checkbox" 
@@ -291,14 +306,16 @@ const typeToggle = () => {
            <span className="switch" />
            </label>
            <p>{props.folderType ? "creative" : "lifestyle"}</p> 
-           </CatagorySwitch>}
+           </CatagorySwitch>
+           {/* } */}
           </>
 }
 
-             {/* <div className="cover-2"></div> */}
+             {/* <div className="cover"></div> */}
 {/* TOGGLE PRIVACY */}
             {/* {!!props.folderPrivacy &&  */}
             <Switch
+            className="public"
             catagorized={!!props.folderType}
             >
             <label className="toggle-switch">
@@ -314,39 +331,75 @@ const typeToggle = () => {
              
   {/* ENABLE COLLABORATION */}
             <InputSwitch
+            className="input"
+            inputWidth={inputWidth}
             panelRef={panelRef}
             skinny={skinny}
             catagorized={!!props.folderType}
             search={search}
             expand={expand} >
+              <div className="input-cont">
             <label className="toggle-switch">
-            <span className="switch">
+            {/* <span className="switch"> */}
+            
             <button className="checkbox" 
             onClick={() => searchToggle()}
             >
-            {/* {expand && ">"} */}
             </button>
-            {/* {expand && } */}
-            <input autoFocus="autofocus" type="text" onChange={(e) => searchUser(e.target.value)} placeholder="search user"/>
+
+           {/* {expand &&  */}
+           <input
+             ref={inputRef}
+             autoFocus="autofocus" 
+             type="text" onChange={(e) => searchUser(e.target.value)} 
+             onFocus={() => changeFlex(true)}
+             onBlur={() => changeFlex(false)} placeholder="search user"/>
+             {/* } */}
             <ul>
               {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
                 {user.name}
               </li>))}
             </ul>
-            </span>
+            {/* </span> */}
             </label>
+            
             <p>collaborate</p> 
+            </div>
             </InputSwitch>
             
-      </>
-      }
+      </div>
+          </>
+          : null
+           }
+
+{/* FOLDER FOLLOW */}
+            {(props.directory === 'user') &&
+            <CatagorySwitch
+            className="folder-follow"
+          //  catagorized={props.folderType}
+           >
+           <label className="toggle-switch">
+           <input type="checkbox" 
+           checked={follow}
+           onChange={() => followToggle()}
+          //  checked={props.edit}
+           />
+           <span className="switch" />
+           </label>
+           <p>{follow ? "follow folder" : "unfollow folder"}</p> 
+           </CatagorySwitch>
+          }
+
+            {/* {props.edit === true && 
+           
+      } */}
 
             {!!props.folderCollaborators.length &&
             props.folderCollaborators.length >= 2 &&
             <CollabotorList >
-            <div >
-              <span className="switch" >
-              <ul>
+            <div  >
+              <div className="switch" >
+              <ul ref={listRef} >
                 
               {!!props.folderCollaborators.length && props.folderCollaborators.map((collaborator) => (
               <CollabLi 
@@ -359,12 +412,13 @@ const typeToggle = () => {
               </SubtractButton>}
               </CollabLi>))}
               </ul>
-              </span>
+              </div>
               </div>
               </CollabotorList>}
             </div>
             </div>
             {/* } */}
+
             </Sticky>
             } 
              
@@ -377,44 +431,90 @@ export default AsideRight;
 
 
 const Sticky = styled.div`
+
+overflow: hidden;
   position: sticky;
   top: 0;
   border-top-left-radius: 22px;
   border-bottom-left-radius: 0px;
   /* border-top-right-radius: 22px; */
   padding: 10px;
-  transition: all 2.5s; 
+  /* padding-top: 10px;
+    padding-right: 30px;
+    padding-bottom: 10px;
+    padding-left: 10px; */
+  /* transition: all 2.5s; */
+  transition: border-bottom-left-radius .5s linear, border-top-left-radius .5s linear .5s linear, transform 0s; 
   z-index: 4;
+  height: min-content;
   /* background-color: gainsboro; */
 
   .drawer-cont{
+    /* margin-top: 10px; */
+    height: max-content;
+    border-radius: 13px;
+    overflow: hidden;
     position: relative;
+    z-index: 0;
     transition: right .3s linear, width .2s linear, height .3s linear .4s;
     overflow: hidden;
-    transition: ${props => !props.controlDock ? 'height .3s linear, width .3s linear .3s' : 'height .3s linear .3s, width 0s linear .3s;'};
+    /* width: 250px; */
     /* right: ${props => !props.controlDock ? '-260px' : '0px'}; */
     
-    height: ${props => !props.controlDock ? '0px' : `${props.drawerHeight}px`};
-    /* width: ${props => !props.controlDock ? '0px' : '250px'}; */
+    
+    /* height: min-content; */
+    /* ${props => !!props.edit ? '280' : !props.controlDock ? '0px' : `${props.drawerHeight}px`}; */
+    
     
     /* width: ${props => !props.controlDock ? '0px' : '250px'}; */
   }
-
-  .cover-1{
-    background-color: gainsboro;
-    z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
-    width: 100%;
-    height: 35px;
-    position: absolute;
-    border-top-left-radius: 13px;
-    opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
+  .drawer{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    /* justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'}; */
+    justify-content: flex-start;
+    /* top: 0; */
+    border-radius: 13px;
+    overflow: hidden;
+    /* transition: ${props => !props.controlDock ? 'height .3s linear, width .3s linear .3s' : 'height .3s linear .3s, width 0s linear .3s;'}; */
+    transition: ${props => !props.controlDock ? props.edit ? 'height .3s linear' : 'height .3s linear' : !props.controlDock ? 'height .3s linear .3s' : 'height .3s linear'};
+    /* transition: transform .3s linear; */
+    /* transform: ${props => !props.controlDock ? `translateY(-${props.drawerHeight}px)` : 'translateY(0px)'}; */
+    /* height: ${props => props.edit ? 200 + props.drawer + 'px' : props.drawer + 'px' }; */
+    height: 50vw;
+    max-height: fit-content;
     @media (max-width: 1100px){
-      opacity: ${({catagorized}) => catagorized === null ? '50%' : '0%'  };
-      background-color: grey;
+    justify-content: flex-end;
+    height: ${props => !props.controlDock ? '0px' : props.edit ? 140 + props.drawer + props.searchLi + 'px' : props.drawer + 'px' };
+    width: inherit;
     }
-
   }
-  .cover-2{
+  
+  .edit-drawer{
+    /* background-color: blue; */
+    border-radius: 13px;
+    display: flex;
+    flex-direction: column;
+    justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'};
+    z-index: 0;
+    vertical-align: bottom;
+    width: ${props => props.asideRef.current.clientWidth - 20 + 'px'};
+    /* margin-top: 10px; */
+    overflow: hidden;
+    transition: max-height .3s linear;
+    /* transform: ${props => !props.edit ? 'translateY(-131px)' : 'translateY(0px)'}; */
+    max-height: ${props => props.edit ? '100%' : '0%'};
+    @media (max-width: 1100px){
+    /* justify-content: flex-end; */
+    max-height: unset;
+    height: ${props => props.edit ? 140 + props.searchLi + 'px' : '0px' };
+    width: inherit;
+    transition: height .3s linear;
+    }
+  }
+
+  .cover{
     background-color: gainsboro;
     cursor: not-allowed;
     z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
@@ -434,22 +534,50 @@ const Sticky = styled.div`
     }
   }
 
+
+  
   
   @media (max-width: 1100px) {
     all: unset;
+    white-space: nowrap;
+    right: 0px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: min-content;
+    /* height: ${props => props.contHeight + 'px'}; */
     /* transition: all 2s; */
-    transition: ${props => !props.controlDock ? 'right .2s linear .4s' : 'right .3s linear 0s'};
-    padding: 10px;
+    /* transition: transform 0s; */
+    /* padding: 10px; */
+    padding-top: 10px;
+    padding-right: 10px;
+    padding-bottom: 10px;
+    padding-left: 10px;
     z-index: 4;
     position: fixed;
-    right: 0px;
-    right: ${props => !props.controlDock ? '-120px' : '0px'};
+    /* width: 250px; */
+    width: ${props => !props.controlDock ? '50px' : '250px'};
+    /* right: 0px; */
+    
+    /* transform: translateX(${props => !props.controlDock ? '-75px' : '-275px'}); */
     background-color: coral;
     border-top-left-radius: 22px;
     border-bottom-left-radius: 22px;
+    /* height: ${props => props.edit ? '314px' : !props.controlDock ? '26px' : `${props.drawerHeight + 36}px`
+    }; */
+
+    transition: ${props => !props.controlDock ? 'width .3s linear .3s' : 'width .3s linear'};
+    
+/* .edit{margin-block: 10px} */
   }
   
-  
+  .edit{
+    z-index: 1;
+  }
+
+  .delete{
+    /* width: min-content; */
+  }
 
 
 `
@@ -457,7 +585,7 @@ const Sticky = styled.div`
 const Switch = styled.label`
   display:flex;
   z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
-  margin-top: 10px;
+  margin-bottom: 10px;
   
   p {
     padding-left: 10px;
@@ -465,9 +593,14 @@ const Switch = styled.label`
   }
 
   :first-child {
-    margin-block: 0px;
+    margin-bottom: 10px;
   }
-
+  :second-child {
+    margin-bottom: 10px;
+  }
+  .toggle-switch.edit{
+    z-index: 4;
+  }
   .toggle-switch {
   position: relative;
   display: inline-block;
@@ -512,13 +645,14 @@ const Switch = styled.label`
   .toggle-switch input[type="checkbox"]:checked + .switch {
   background-color:  #ccc;
   }
+  
 `
 
 
 const CatagorySwitch = styled.label`
   display:flex;
   z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
-   margin-top: 10px;
+   margin-bottom: 10px;
   
  p {
   padding-left: 10px;
@@ -566,14 +700,14 @@ content: "";
 width: 13px;
 height: 13px;
 background-color: green;
-box-shadow: 0px 0px 0px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 1px -1px 0px 2px hwb(120deg 0% 0%), -1px 1px 0px 2px hwb(120deg 0% 93%);
+box-shadow: 0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%);
 border-radius: 25px;
 transition: transform 0.3s ease;
 }
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
 background-color: green;
-box-shadow: 0px 0px 0px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 1px -1px 0px 2px hwb(120deg 0% 0%), -1px 1px 0px 2px hwb(120deg 0% 93%);
+box-shadow: 0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%);
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color:  #ccc;
@@ -582,7 +716,7 @@ background-color:  #ccc;
 `
 
 const CollabotorList = styled.div` 
-  margin-top: 10px;
+  /* margin-top: 10px; */
 .collaborator-cont {
   position: relative;
     display: inline-block;
@@ -602,8 +736,8 @@ const CollabotorList = styled.div`
     /* z-index: 1; */
     position: relative;
     display: inline-block;
-    /* width:91%; */
-    width: -webkit-fill-available;
+    width: inherit;
+    /* width: -webkit-fill-available; */
     /* width: 50px; */
     /* min-height: 25px; */
     height: fit-content;
@@ -689,11 +823,14 @@ cursor: pointer;
 `
 
 const OpenSwitch = styled.label`
-    display:flex;
-    margin-top: 0;
-    margin-bottom: 10px;
+    /* display:flex; */
+    /* margin-top: 0; */
+    /* margin-bottom: 10px; */
+    height: 25px;
+    margin-bottom: ${props => !!props.controlDock ? '10px' : '0px'};
+    transition: margin-bottom ${props => !!props.controlDock ? '0s' : '0s linear .3s'};
     /* p {
-    display: ${props => !!props.controlDock ? 'none' : 'block'};
+    
     padding-left: 10px;
     font-size: 19px;  
   } */
@@ -707,6 +844,7 @@ const OpenSwitch = styled.label`
       transition: width 4s linear;
     }
   .toggle-switch {
+    z-index: 5;
     position: relative;
     display: inline-block;
     /* padding-inline: 0px; */
@@ -717,7 +855,7 @@ const OpenSwitch = styled.label`
     box-shadow: 0px 1px 0px 1px #9e9e9e inset;
     border-radius: 25px;
     /* transition: width 0.5s cubic-bezier(0.75, 0.75, 0.75, 0.75) 0s; */
-    transition: width  ${props => !props.controlDock ? '0.3s linear .3s' : '0.5s linear 0s'};
+    transition: width  ${props => !props.controlDock ? '0.3s linear .3s' : '0.3s linear'};
     width: ${props => !props.controlDock ? '50px' : '250px'};
     min-width: 50px;
   .switch {margin-bottom: 10px;}
@@ -725,7 +863,10 @@ const OpenSwitch = styled.label`
   
   .checkbox {
     /* padding: 2px; */
-    text-indent: -1px;
+    display: flex;
+    /* align-items: center; */
+    justify-content: center;
+    /* text-indent: -1px; */
     cursor: pointer;
     position: absolute;
     /* margin: 2px; */
@@ -736,24 +877,34 @@ const OpenSwitch = styled.label`
     /* color: ${props => !props.controlDock ? '#154813' : '#824949' };
     color: ${props => !props.controlDock ? '#154813' : '#824949' }; */
     /* transition: width  ${props => !props.controlDock ? '0.3s linear .3s' : '0.5s linear 0s'}; */
-    transition: background-color 0.4s linear, box-shadow 0.4s linear, ${props => !props.controlDock ? '0.3s linear' : '0.5s linear 0s'};
+    transition: background-color 0.4s linear, box-shadow 0.4s linear, transform ${props => !props.controlDock ? '0.3s linear' : '0.5s linear 0s'};
       
       /* transition: right 0.5s ease; */
-      left: ${props => !props.controlDock ? '6px' : '232px'};
+      /* left: ${props => !props.controlDock ? '6px' : '232px'}; */
+      transform: translateX(${props => !props.controlDock ? '0px' : '225px'});
       /* color: ${props => !props.controlDock ? 'white' : '#9d6b6b' } */
       background-color: ${props => !props.controlDock ? 'green' : '#ff0000' };
       box-shadow: ${props => !props.controlDock ? '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)' : '0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0)' };
     }
     .checkbox .arrow{
+      /* line-height: 12px;
+      font-size: 13px; */
+      margin-block: auto;
+      line-height: 11px;
+      font-size: 16px;
       transition: top .3s linear, transform .3s ease, text-shadow .3s ease;
       transform: ${props => !props.controlDock ? 'rotate(0deg)' : 'rotate(-180deg)'};
-      text-shadow: ${props => !props.controlDock ? '0px -1px 1px #0000008a' : '0px 1px 0px #0000008a;'};
+      text-shadow: ${props => !props.controlDock ? '0px -1px 0px #0000008a' : '0px 1px 0px #0000008a;'};
+      /* margin-block: auto; */
       position: relative;
-      font-size: large;
-      text-indent: -5px;
-      color: rgb(255 255 255 / 46%);
-      opacity: 43%;
-      top: ${props => !props.controlDock ? '-6px' : '-3.5px'};
+      /* font-size: large; */
+      /* text-indent: -5px; */
+      /* color: rgb(255 255 255 / 46%);
+      opacity: 43%; */
+      color: #ccc;
+      opacity: 100%;
+      vertical-align: middle;
+      /* top: ${props => !props.controlDock ? '-6px' : '-3.5px'}; */
       /* text-shadow: 0px -1px 1px #0000008a; */
 
       
@@ -761,8 +912,13 @@ const OpenSwitch = styled.label`
     `
 const InputSwitch = styled.label`
   display:flex;
-  margin-top: 10px;
-  width: min-content;
+  margin-bottom: 10px;
+  width: fit-content;
+
+  .input-cont{
+  overflow: hidden;
+  display: flex;
+  }
 
   p {
   /* left: ${props => !!props.expand && 'none' }; */
@@ -770,9 +926,9 @@ const InputSwitch = styled.label`
   font-size: 19px;  
   ${({expand, skinny, panelRef})  => 
   skinny && `
-  position: absolute;
-  transition: left .3s linear;
-  ${expand ? 'left: 260px;' : 'left: 60px;'}
+  position: relative;
+  transition: left .3s linear; left: 0px;
+  }
   `
   }
 
@@ -780,42 +936,58 @@ const InputSwitch = styled.label`
 
 }
 input {
-  /* ${({expand, panelRef})  => expand && `z-index: 1;` } */
-  width: ${props => props.expand ? `150px` : '0px'};
+  margin-left: 9px;
+  margin-top: 2px;
+  font-size: 19px;
+  transition: width .3s linear;
+  width: ${props => props.inputWidth};
+  background-color: transparent;
+  z-index: 0;
+  position: relative;
+  z-index: ${props => props.expand ? '0' : '-1'};
+
+}
+  /* @media (max-width: 1100px) {
+  
     font-size: 19px;
-    margin-left: 9px;
-    margin-top: 2px;
     transition: width .3s linear;
-  }
+  } */
+
 .toggle-switch {
   position: relative;
+  overflow: hidden;
   display: inline-block;
-  height: ${props => !!props.search[0] ? 'fit-content' : '26px'};
+  z-index: 0;
+  height: ${props => !!props.search.length ? 'fit-content' : '25px'};
   /* padding: .5px; */
   background-color: #ccc;
   box-shadow: 0px 1px 0px 1px #9e9e9e inset;
-  border-radius: ${props => !!props.search[0] ? '14px' : '25px'};
+  border-radius: ${props => !!props.search[0] ? '13px' : '25px'};
   /* width: ${props => !props.expand ? '50px' : '100%'}; */
   transition: width 0.3s linear;
   width: ${({expand, skinny, panelRef})  => 
   skinny ? 
   expand ? '250px' : '50px'
-  : expand ? `${panelRef.current.clientWidth - 18}px` : '50px'};
+  : expand ? `${panelRef.current.clientWidth - 21}px` : '50px'};
 
 
-.switch {
+/* .switch {
     margin-bottom: 10px;
-  }
-.switch ul li {
+  } */
+ul li {
     list-style-type: none;
     cursor: pointer;
+    line-height: 20px;
+    font-size: 17px;
   }
-.switch ul {
+ ul {
     background-color: #aaa;
     border-radius: 10px;
     margin: 3px;
+    /* padding-block: 3px; */
   }
 }
+
 
 .checkbox {
   cursor: pointer;
@@ -833,14 +1005,16 @@ input {
     left: ${({expand, skinny, panelRef})  => 
   skinny ? 
   expand ? '225px' : '0px'
-  : expand ? `${panelRef.current.clientWidth - 41}px` : '0px'};
+  : expand ? `${panelRef.current.clientWidth - 45}px` : '1px'};
     
     
     
     
     /* ${props => !props.expand ? 'left: 0%; right: unset' : 'right: 0%; left: unset'}; */
     background-color: ${props => !props.expand ? '#aaa' : 'green'};
-    box-shadow: ${props => !props.expand ? '0px 0px 0px 3px hwb(0deg 74% 26% / 75%), 0px 0px 0px 1px hwb(222deg 47% 52% / 76%), 1px -1px 0px 2px hsl(0deg 0% 100%), -1px 1px 0px 2px hsl(231deg 8% 1%)' : '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)'};
+    box-shadow: ${props => !props.expand ? '0px 0px 1px 3px rgb(189 189 189 / 71%), 0px 0px 0px 1px rgb(120 121 122 / 76%), 0px -1px 0px 2px rgb(255 255 255), 0px 1px 0px 2px rgb(2 2 3)' : '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)'};
   }
+
+
 
 `

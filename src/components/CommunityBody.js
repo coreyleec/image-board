@@ -324,13 +324,14 @@ const [photos, setPhotos] = useState()
             {/* {!!props.following && props.connected ?  */}
             <ScrollCont
               fetchUser={props.fetchUser}
-              // photos={photos} 
+              // photos={photos}
+              setCatagory={props.setCatagory} 
               panel={props.panel}
               panelHeight={props.panelHeight}
               catagory={props.filters.catagory
                 ? props.users
                 : props.folders}
-              
+              filters={props.filters}
 
               />
             {/* :  

@@ -142,7 +142,7 @@ const GridItemWrapper = styled.div `
     &:hover {
       transform: ${orientation ? 'scale(2.5)' : 'scale(2)'}; 
       z-index: 4; 
-      transition: z-index 0s .1s, 
+      transition: z-index 0s linear , 
                   transform .3s ease-in;}`
     : `z-index: -1; 
       transition: transform .3s ease-in .3s, 

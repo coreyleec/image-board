@@ -439,53 +439,53 @@ const GridWrapper = styled.div`
 
         
 const PictureFrame = styled.div`
-    /* ${({edit}) => edit && 'resize: auto;'} */
-    /* box-sizing: content-box; */
+
     position: relative;
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
     padding: 0px;
     overflow: hidden;
+    /* height: min-content; */
+    height: ${({orientation}) => orientation ? '100px' : '220px' };
     background-color: ${({edit}) => edit ? 'gainsboro' : 'rgb(255 87 0 / 69%)'};
     backdrop-filter: blur(6px);
-    /* height: 100%; */
-    /* width: 90%; */
-    /* ${({details}) => details ? 'width: 90%;' : 'width: fit-content; max-width: 90%;'} */
-    height: ${({orientation}) => orientation ? '100px' : '220px' };
     display: flex;
     justify-content: center;
     border-radius: 13px;
     box-shadow: -3px 3px 5px 2px #aaaaaa;
     /* border: solid 3px yellow; */
     outline: ${({highlight, url}) => !!url && highlight !== undefined && ` solid 3px ${highlight}`};
-    width: fit-content; 
-    max-width: 90%;
+    /* width: fit-content; 
+    max-width: 90%; */
     
-    transition: border-radius .5s ease-out, background-color 0s linear 1s, max-width .4s ease-in .1s, padding-right .2s ease-out, padding-left .2s ease-out, padding-top .2s ease-out, padding-bottom .2s ease-out, box-shadow .3s ease-in .7s;
-    /* transition: 
-      border-radius .5s ease-out, 
-      background-color 0s linear 1s, 
-      max-width .4s ease-in .1s,
-      padding-right .3s ease-out .2s, 
-      padding-left .3s ease-out .2s, 
-      padding-block .3s ease-out .2s, 
-      box-shadow .3s ease-in
-      ; */
-      /* ${({edit, url}) => edit && !!url ? 'box-shadow .3s ease-in' : 'box-shadow .3s ease-in .7s'} */
-      /* box-shadow .3s ease-in .7s */
-      /* !edit ? !!url  */
+    width: min-content;
+    max-width: 90%;
+    transition: 
+    border-radius .2s ease-out, 
+    background-color 0s linear 1s, 
+    max-width .3s ease-out .2s, 
+    padding-right .2s ease-out .1s, 
+    padding-left .2s ease-out .1s, 
+    padding-block .2s ease-out .1s, 
+    box-shadow .2s ease-in .6s;
+    
+    /* transition: border-radius .5s ease-out 0ms, background-color 0s linear, max-width 0.5s ease-in, padding-right 0.5s ease-in, box-shadow .2s ease-out .4s; */
+
   }
-  /* padding-block .3s ease-out ${({details}) => details ? '.2s' : '0s' }, */
-  /* min-width .3s ease-in .3s,  */
+
   .heart{
     transition: opacity .3s ease .3s;
   }
 .center-image {
+    display: flex;
+    align-self: center;
+    align-items: center;
     height: 100%;
     position: relative;
     z-index: 7;
     /* overflow: visible; */
+    /* margin: 0px; */
     overflow-y: clip;
     width: max-content;
     border-radius: 13px;
@@ -493,7 +493,8 @@ const PictureFrame = styled.div`
 }
 &:hover .center-image{
   border-radius: 0px;
-  transition: border-radius .3s ease-out .4s;
+  transition: border-radius .3s ease-out .6s;
+  /* margin: 3px; */
   
 }
   .content-drawer {
@@ -530,7 +531,12 @@ const PictureFrame = styled.div`
   }   
 
   .photo {
-    position: relative;
+    /* position: relative; */
+    /* margin-block: auto; */
+    /* top: -8px; */
+    /* left: 0; */
+    /* position: relative; */
+    /* z-index: 9;
     /* object-fit: cover; */
     /* border-radius: 13px; */
     
@@ -565,46 +571,56 @@ const PictureFrame = styled.div`
   
 }
 
-  ${({ edit, url, details, highlight }) => !edit ? !!url 
+  ${({ edit, url, details, orientation }) => !edit ? !!url 
   ? `
-  // transition: border-radius .3s ease-out, padding-bottom .3s ease-out, padding-top .3s ease-out, padding-right .3s ease-out, padding-left .3s ease-out, max-width .4s ease-in, box-shadow 0s,outline .3s linear .2s;
-  // transition: 
-  //     border-radius .5s ease-out, 
-  //     background-color 0s linear 1s, 
-  //     max-width .4s ease-in .1s,
-  //     padding-right .3s ease-out .2s, 
-  //     padding-left .3s ease-out .2s, 
-  //     padding-block .3s ease-out .2s, 
-  //     box-shadow .3s ease-in .7s
-  //     ;
+  
   // IMAGE HOVER 
   &:hover {
     z-index: 3;
     ${details 
-      ? 'max-width: 200%; padding-right: 100px;' 
-      : 'max-width: 130%; padding-right: 3px; z-index: 7; ' }
-      .heart{opacity: 70%;}
+    ? 'max-width: 250%; padding-right: 100px;' 
+    : 'max-width: 145%; padding-right: 3px; z-index: 7; ' }
+    // max-height: ${orientation ? '150px' : '227px' };
     border-radius: 0px;
     box-shadow: none;
-    padding-top: 2px;
-    padding-bottom: 3px;
+    padding-block: 3px;
     padding-left: 3px;
-    // padding-right: ${details ? "3px" : "100px" };
+    
+    // transition: 
+    // padding-left .2s ease-in .6s, 
+    // padding-block .2s ease-in .6s, 
+    // padding-right .2s ease-in .6s, 
+    // border-radius .3s ease-out .6s, 
+    // max-width .3s ease-in .1s, 
+    // max-height .5s ease-in, 
+    // box-shadow 0s,
+    // outline .3s linear .2s;
+
     transition: 
-      border-radius .5s ease-out .4s, 
-      padding-block .4s ease-out .4s, 
-      padding-right .4s ease-out .4s, 
-      padding-left .4s ease-out .4s,
-      max-width .4s ease-in, 
-      box-shadow 0s, outline .3s linear .2s;
+    padding-left .2s linear .4s, 
+    padding-block .2s linear .4s, 
+    padding-right .2s linear .4s, 
+    border-radius .3s ease-out .6s, 
+    max-width .3s linear .1s, 
+    max-height .5s linear, 
+    box-shadow 0s,
+    outline .3s linear .2s;
+
+
+    // transition: 
+    // border-radius .5s ease-out .4s, 
+    // padding-block .4s ease-out .4s, 
+    // padding-right .4s ease-out .4s, 
+    // padding-left .4s ease-out .4s,
+    // max-width .4s ease-in, 
+    // box-shadow 0s, 
+    // outline .3s linear .2s;
+    
+    .heart{opacity: 70%;}
     .content-drawer {
     // transform: translateX(0px);
 }
-  //   .heart{
-  //   display: inline-block;
-  // }
-  .card-content {
-}
+
 } 
 
 // &:hover .photo{
@@ -685,3 +701,16 @@ background-color: gainsboro;
 // box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
 // box-shadow: 0px 0px 0px 0px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
 
+
+
+
+// transition: border-radius .3s ease-out, padding-bottom .3s ease-out, padding-top .3s ease-out, padding-right .3s ease-out, padding-left .3s ease-out, max-width .4s ease-in, box-shadow 0s,outline .3s linear .2s;
+  // transition: 
+  //     border-radius .5s ease-out, 
+  //     background-color 0s linear 1s, 
+  //     max-width .4s ease-in .1s,
+  //     padding-right .3s ease-out .2s, 
+  //     padding-left .3s ease-out .2s, 
+  //     padding-block .3s ease-out .2s, 
+  //     box-shadow .3s ease-in .7s
+  //     ;
