@@ -119,13 +119,17 @@ const Sticky = styled.div`
     padding-bottom: 10px;
     padding-left: 10px;
     padding-right: 10px;
-    padding-top: 35px;
+    padding-top: 25px;
     /* position: relative;
     top: 0;
     right: 0;
     float: right;
     padding: 10px;
     display: flex; */
+    /* .follow-cont{
+  padding-top: 25px;
+  height: 130px;
+} */
 `
 const Switch = styled.label`
 

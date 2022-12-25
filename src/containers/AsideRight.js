@@ -1,13 +1,14 @@
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from 'react-router-dom';
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 
 const AsideRight = (props) => {
   const location = useLocation();
 
   const panelRef = useRef()
   const drawerRef = useRef()
+  const editDrawerRef = useRef()
   const listRef = useRef()
   const inputRef = useRef();
   const asideRef = useRef();
@@ -15,10 +16,28 @@ const AsideRight = (props) => {
   window.store = props
 
 
+const [delay, setDelay] = useState('height .3s linear .3s')
+
 
   const editToggle = () => {
     props.editToggle(!props.edit)
+    if (props.edit) {
+      // props.editToggle(true)
+      setDelay('height .3s linear')
+      setTimeout(() => {
+        setDelay('height .3s linear .3s');
+      }, 500)
+    }
+    else {
+      // props.editToggle(false)
+      setDelay('height .3s linear .3s')
+      setTimeout(() => {
+        setDelay('height .3s linear');
+      }, 500)
+    }
     // props.edit && props.loggedIn && 
+    // first click is delay .3s
+    // second click is delay 0s
     props.edit === true && 
     props.reorderSubmit()
   };
@@ -57,6 +76,19 @@ const searchToggle = () => {
 const [flexStart, setFlexStart] = useState(false)
 
 const changeFlex = (bool) => {
+  // if (props.edit) {
+
+  //   setDelay('height .3s linear')
+  //   setTimeout(() => {
+  //     setDelay('height .3s linear .3s');
+  //   }, 500)
+  // }
+  // else {
+  //   setDelay('height .3s linear .3s')
+  //   setTimeout(() => {
+  //     setDelay('height .3s linear');
+  //   }, 500)
+  // }
   console.log("flexStart", bool)
   setFlexStart(!bool)
 }
@@ -100,32 +132,25 @@ useEffect(() => {
 }, [expand])
 
 
-let drawer = 35 + 16 + (props.folderCollaborators.length * 29.5)
-console.log("drawer", drawer, props.folderCollaborators.length * 31)
+const [drawer, setDrawer] = useState(0)
+
+useEffect(() => {
+  // let height = 35 + 16 + (props.folderCollaborators.length * 28.8)  
+  let height = !!listRef.current && 35 + listRef.current.clientHeight  
+  skinny ? controlDock ? setDrawer(height) :  setDrawer(0) : props.edit ? setDrawer(height + 140) : setDrawer(height)
+  console.log("drawer", drawer, height, props.folderCollaborators.length * 28.8)
+}, [props.folderCollaborators, controlDock, props.edit])
+console.log("drawer", drawer, 35 + 16 + (props.folderCollaborators.length * 28.8))
 
 
 
 
 
 
-  useEffect(() => {
-    // let open = 26
-    let edit = 25
-    let editDrawer = 141
-    let collabDrawer = props.folderCollaborators.length * 25
-    if (controlDock){
-      let open = 26 + edit + collabDrawer
-      console.log("open", open)
-      setHeight(open)
-      if (props.edit){
-       let open = 26 + edit + collabDrawer + editDrawer
-       console.log("open", open)
-       setHeight(open)
-      }
-      
-    }
-    else {setHeight(26)}
-  }, [props.edit, controlDock])
+
+
+
+
 
 
 const [skinny, setSkinny] = useState(false);
@@ -182,8 +207,10 @@ const typeToggle = () => {
             controlDock={controlDock}
             drawer={drawer}
             drawerHeight={drawerHeight}
+            delay={delay}
             ref={panelRef}
             contHeight={height}
+            listRef={listRef}
             collabLength={props.folderCollaborators.length} 
             expand={expand}
             searchLi={searchLi}
@@ -251,7 +278,10 @@ const typeToggle = () => {
 {/* EDIT */}
            <label className="toggle-switch edit">
            <input type="checkbox" checked={props.edit}
-            onChange={editToggle}/>
+            onChange={editToggle}
+            // onFocus={() => changeFlex(true)}
+            // onBlur={() => changeFlex(false)} 
+            />
            <span className="switch" />
            </label>
            <p>edit</p>
@@ -262,7 +292,7 @@ const typeToggle = () => {
 
 
 
-            <div className="edit-drawer">
+            <div className="edit-drawer" ref={editDrawerRef}>
             
             <Switch className="delete">
               <label className="toggle-switch">
@@ -396,10 +426,7 @@ const typeToggle = () => {
 
             {!!props.folderCollaborators.length &&
             props.folderCollaborators.length >= 2 &&
-            <CollabotorList >
-            <div  >
-              <div className="switch" >
-              <ul ref={listRef} >
+            <CollabotorList ref={listRef}>
                 
               {!!props.folderCollaborators.length && props.folderCollaborators.map((collaborator) => (
               <CollabLi 
@@ -411,9 +438,7 @@ const typeToggle = () => {
                 -
               </SubtractButton>}
               </CollabLi>))}
-              </ul>
-              </div>
-              </div>
+              
               </CollabotorList>}
             </div>
             </div>
@@ -456,7 +481,7 @@ overflow: hidden;
     overflow: hidden;
     position: relative;
     z-index: 0;
-    transition: right .3s linear, width .2s linear, height .3s linear .4s;
+    transition: right .3s linear, width .2s linear;
     overflow: hidden;
     /* width: 250px; */
     /* right: ${props => !props.controlDock ? '-260px' : '0px'}; */
@@ -472,20 +497,22 @@ overflow: hidden;
     position: relative;
     display: flex;
     flex-direction: column;
+    /* align-content: start;
+    flex: 1; */
     /* justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'}; */
     justify-content: flex-start;
-    /* top: 0; */
+    top: 0;
     border-radius: 13px;
     overflow: hidden;
     /* transition: ${props => !props.controlDock ? 'height .3s linear, width .3s linear .3s' : 'height .3s linear .3s, width 0s linear .3s;'}; */
-    transition: ${props => !props.controlDock ? props.edit ? 'height .3s linear' : 'height .3s linear' : !props.controlDock ? 'height .3s linear .3s' : 'height .3s linear'};
-    /* transition: transform .3s linear; */
-    /* transform: ${props => !props.controlDock ? `translateY(-${props.drawerHeight}px)` : 'translateY(0px)'}; */
-    /* height: ${props => props.edit ? 200 + props.drawer + 'px' : props.drawer + 'px' }; */
-    height: 50vw;
+    transition: ${props => props.flexStart ?  !props.controlDock ? props.edit ? 'height .3s linear' :  'height .3s linear' : props.edit ? 'height .3s linear .3s' : props.delay : 'height .1s linear'};
+    /* transition: ${props => !props.controlDock ? props.edit ? 'height .3s linear' : 'height .3s linear' : !props.controlDock ? 'height .3s linear .3s' : 'height .3s linear'}; */
+    
+    height: ${props => props.edit ? 140 + props.drawer + props.searchLi + 'px' : props.drawer + 'px'};
     max-height: fit-content;
     @media (max-width: 1100px){
-    justify-content: flex-end;
+    justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'};
+    /* justify-content: flex-end; */
     height: ${props => !props.controlDock ? '0px' : props.edit ? 140 + props.drawer + props.searchLi + 'px' : props.drawer + 'px' };
     width: inherit;
     }
@@ -496,7 +523,9 @@ overflow: hidden;
     border-radius: 13px;
     display: flex;
     flex-direction: column;
-    justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'};
+    /* justify-content: flex-end; */
+    ${props => props.flexStart ? 'flex-end' : 'flex-start'};
+    /* margin-bottom: auto; */
     z-index: 0;
     vertical-align: bottom;
     width: ${props => props.asideRef.current.clientWidth - 20 + 'px'};
@@ -510,15 +539,15 @@ overflow: hidden;
     max-height: unset;
     height: ${props => props.edit ? 140 + props.searchLi + 'px' : '0px' };
     width: inherit;
-    transition: height .3s linear;
+    transition: ${props => props.flexStart ? 'height .3s linear' : 'height .1s linear'};
     }
   }
 
   .cover{
     background-color: gainsboro;
     cursor: not-allowed;
-    z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
-    /* display : ${({catagorized}) => catagorized === null ? 'block' : 'none'  }; */
+    /* z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  }; */
+    ${({catagorized}) => catagorized !== null && 'display : none;'  }
     width: 100%;
     transition: z-index .2s ease, display 0s ease .2s;
     height: 131px;
@@ -715,55 +744,8 @@ background-color:  #ccc;
 }
 `
 
-const CollabotorList = styled.div` 
-  /* margin-top: 10px; */
-.collaborator-cont {
-  position: relative;
-    display: inline-block;
-    /* width:91%; */
-    width: -webkit-fill-available;
-    /* width: 50px; */
-    /* min-height: 25px; */
-    height: fit-content;
-    /* margin-top: 10px; */
-    padding: .5px;
-    background-color: #ccc;
-    border-radius: 14px;
-    /* width: 100%; */
-    @media (max-width: 1100px) {
-    /* all: unset; */
-    transition: all 2.5s;
-    /* z-index: 1; */
-    position: relative;
-    display: inline-block;
-    width: inherit;
-    /* width: -webkit-fill-available; */
-    /* width: 50px; */
-    /* min-height: 25px; */
-    height: fit-content;
-    /* margin-top: 10px; */
-    padding: .5px;
-    background-color: #ccc;
-    border-radius: 14px;
-  
-  }
+const CollabotorList = styled.ul` 
 
-    .switch{
-    width: 100%;
-    position: absolute;
-    content: "";
-    margin: 2px;
-    width: 13px;
-    height: 13px;
-    background-color: #aaa;
-    border-radius: 25px;
-    transition: transform 0.3s ease;
-}
-
-    
-    
-  }
-.switch ul {
     background-color: #aaa;
     border-radius: 14px;
     /* margin: 3px; */
@@ -772,7 +754,7 @@ const CollabotorList = styled.div`
     padding-inline: 10px;
     padding-block: 8px;
     line-height: 1.3;
-  }
+  
 `
 const CollabLi = styled.li`
     list-style-type: none;
@@ -828,7 +810,7 @@ const OpenSwitch = styled.label`
     /* margin-bottom: 10px; */
     height: 25px;
     margin-bottom: ${props => !!props.controlDock ? '10px' : '0px'};
-    transition: margin-bottom ${props => !!props.controlDock ? '0s' : '0s linear .3s'};
+    transition: margin-bottom ${props => !!props.controlDock ? '.3s linear' : '.4s linear .2s'};
     /* p {
     
     padding-left: 10px;
@@ -892,7 +874,9 @@ const OpenSwitch = styled.label`
       margin-block: auto;
       line-height: 11px;
       font-size: 16px;
-      transition: top .3s linear, transform .3s ease, text-shadow .3s ease;
+      transition: top .3s linear, transform .6s ease, text-shadow .3s ease;
+      /* transform: ${props => !props.controlDock ? 'scaleX(-1)' : 'scaleX(1)'};
+      text-shadow: ${props => !props.controlDock ? '0px -1px 0px #0000008a' : '0px -1px 0px #0000008a;'}; */
       transform: ${props => !props.controlDock ? 'rotate(0deg)' : 'rotate(-180deg)'};
       text-shadow: ${props => !props.controlDock ? '0px -1px 0px #0000008a' : '0px 1px 0px #0000008a;'};
       /* margin-block: auto; */

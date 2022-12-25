@@ -276,7 +276,7 @@ const Cont = styled.div`
     height: 100%;
     max-height: -webkit-fill-available;
     overflow: hidden;
-    padding-top: 15px;
+    /* padding-top: 15px; */
     padding-left: 15px;
     
   .tabs{

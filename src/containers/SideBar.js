@@ -222,8 +222,12 @@ const Sticky = styled.div`
   top: 0;
   z-index: 4;
 .follow-cont{
-  padding-top: 35px;
-  height: 130px;
+  padding-top: 0px;
+  height: 115px;
+  @media (max-width: 1100px) {
+    padding-top: 25px;
+    height: 130px;
+  }
 }
   .side-bar {
     padding-inline: 5px;
@@ -234,6 +238,7 @@ const Sticky = styled.div`
     position: relative;
     transition: right 1s ease;
     ${({ sideBar }) => (sideBar ? `right : 0%` : `right: 100%`)};
+    /* transform: ${({ sideBar }) => (sideBar ? 'translateX(5px)' : 'translateX(-198px)')}; */
     /* -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
     mask-image: linear-gradient(to bottom, black 50%, transparent 100%); */
 
@@ -247,8 +252,10 @@ const Sticky = styled.div`
       max-height: 75vh;
       top: 0%;
       width: 200px;
-      transition: left 1s ease;
-      ${({ sideBar }) => (sideBar ? `left : 0%` : `left: -30%`)};
+      transition: transform 1s ease;
+      left : 0%;
+      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
+       
       /* ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')}; */
       backdrop-filter: blur(6px);
       
@@ -262,7 +269,7 @@ const Sticky = styled.div`
     .scrollable {
       display: block;
       @media only screen and (max-width: 1100px) {
-        margin-top: 27px;
+        margin-top: 10px;
       }
     }
     a {

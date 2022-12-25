@@ -91,6 +91,8 @@ main {
 aside:nth-child(1) {
   /* padding-top: 5px; */
   /* padding-inline: 5px; */
+  z-index: 2;
+  margin-right: 5px;
   grid-area: leftbar;
   background-color: gainsboro;
   border-top-width: 0px;
@@ -99,7 +101,7 @@ aside:nth-child(1) {
   border-left-width: 0px;
   /* border-style: solid; */
   box-shadow: -3px 3px 5px 2px #aaaaaa;
-  margin-right: 6px;
+  /* margin-right: 6px; */
   border-bottom-right-radius: 22px;
 }
 
@@ -305,10 +307,10 @@ input:-webkit-autofill {
   cursor: pointer;
   /* text-shadow: 0px 0px #212529; */
   text-shadow: 0px 0px #212529;
-    transition: all 0.4s cubic-bezier(.25,.8,.25,1)
+    transition: all 0.5s ease-in .2s;
 }
 .nav-bar-header:hover {
-    transition: all 0.3s ease-in-out;
+    transition: all 0.2s ease-out;
     /* transform: scale(1.2,1.2); */
     transform: translate(3px, -3px); 
     text-shadow:
