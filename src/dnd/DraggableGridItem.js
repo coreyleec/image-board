@@ -1,5 +1,5 @@
 import React, { useRef, useEffect } from 'react';
-// import { useDragAndDrop } from './useDragAndDrop';
+import { useDragAndDrop } from './useDragAndDrop';
 import styled from 'styled-components';
 import { useDrag, useDrop } from 'react-dnd';
 
@@ -140,7 +140,7 @@ const GridItemWrapper = styled.div `
     transition: transform .3s ease-in .4s,
                 z-index 0s 1s;
     &:hover {
-      transform: ${orientation ? 'scale(2.5)' : 'scale(2)'}; 
+      transform: ${orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
       z-index: 4; 
       transition: z-index 0s linear , 
                   transform .3s ease-in;}`

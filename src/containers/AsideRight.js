@@ -43,7 +43,7 @@ const [delay, setDelay] = useState('height .3s linear .3s')
   };
 
   const [search, setSearch] = useState([])
-  console.log("props.directory", props.directory)
+  
   const searchUser = (input) => {
     console.log(input)
     // setSearch(...search, input)
@@ -103,6 +103,9 @@ useEffect(() => {
 
 
 const [controlDock, setControlDock] = useState(false)
+const [skinny, setSkinny] = useState(false);
+
+
 const controlDockToggle = () => {
   setControlDock(!controlDock)
   !!drawerRef.current && console.log("dimensions", drawerRef.current.clientHeight);
@@ -110,50 +113,11 @@ const controlDockToggle = () => {
 }
 const [drawerHeight, setDrawerHeight] = useState(0)
 const [editDrawerWidth, setEditDrawerWidth] = useState(0)
+const [editDrawerHeight, setEditDrawerHeight] = useState(0)
 
 useEffect(() => {
   !!drawerRef?.current && setDrawerHeight(drawerRef.current.clientHeight)
 })
-
-
-const [height, setHeight] = useState(26)
-
-const [searchLi, setSearchLi] = useState(0)
-useEffect(() => {
-  console.log("searchLi", searchLi, search)
-  let length = search.length * 20
-  !!search.length ? setSearchLi(length + 6) : setSearchLi([])
-}, [search])
-
-const [inputWidth, setInputWidth] = useState()
-
-useEffect(() => {
-  expand ? setInputWidth('83%') : setInputWidth('0%')
-}, [expand])
-
-
-const [drawer, setDrawer] = useState(0)
-
-useEffect(() => {
-  // let height = 35 + 16 + (props.folderCollaborators.length * 28.8)  
-  let height = !!listRef.current && 35 + listRef.current.clientHeight  
-  skinny ? controlDock ? setDrawer(height) :  setDrawer(0) : props.edit ? setDrawer(height + 140) : setDrawer(height)
-  console.log("drawer", drawer, height, props.folderCollaborators.length * 28.8)
-}, [props.folderCollaborators, controlDock, props.edit])
-console.log("drawer", drawer, 35 + 16 + (props.folderCollaborators.length * 28.8))
-
-
-
-
-
-
-
-
-
-
-
-
-const [skinny, setSkinny] = useState(false);
 
 
 useEffect(() => {
@@ -176,12 +140,140 @@ useEffect(() => {
       setSkinny(false)
       setControlDock(true)
       !!asideRef.current && setEditDrawerWidth(asideRef.current.clientWidth)
+      !!editDrawerRef.current && setEditDrawerHeight(editDrawerRef.current.clientHeight)
       
     }
   };
   window.addEventListener('resize', updateMedia);
   return () => window.removeEventListener('resize', updateMedia);
 }, []);
+
+const [height, setHeight] = useState(26)
+
+const [searchUl, setSearchUl] = useState([])
+useEffect(() => {
+  console.log("searchUl", searchUl, search)
+  let length = search.length * 20
+  !!search.length ? setSearchUl(length + 6) : 
+  setSearchUl([])
+}, [search])
+
+const [inputWidth, setInputWidth] = useState()
+
+useEffect(() => {
+  expand ? setInputWidth('83%') : setInputWidth('0%')
+}, [expand])
+
+
+const [drawer, setDrawer] = useState(0)
+
+useEffect(() => {
+  // let openSwitch = controlDock ? 25 : 35
+  let editSwitch = !skinny ? 45 : controlDock ? 25 : 0
+  let editDrawer = (!skinny && editDrawerHeight !== 0) ? editDrawerHeight : props.edit ? 140 : 0
+  let collabUl = (!!listRef.current) ? (listRef.current.clientHeight) + 10 : 0
+  // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
+  let length = search.length * 20
+  // let searchList = (!!search.length) ? length + 6 : 0
+  // !!search.length ? setSearchUl(length + 6) : 
+  // setSearchUl([])
+  let catagoryPrompt = 60
+  let searchList = (!!search.length) ? (search.length * 20 + 6) : 0
+  !!search.length ? setSearchUl(length + 6) : 
+  setSearchUl([])
+
+  console.log("editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
+  if (skinny){
+    // WINDOW IS SKINNY
+    if (!controlDock) {
+      // CLOSED CONTROL DOCK
+      let drawerMath = editSwitch
+      setDrawer(drawerMath)
+      console.log("editSwitch", editSwitch)
+    }
+    else if (controlDock && !!props.folderType){
+      // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
+      let drawerMath = catagoryPrompt
+      console.log("catagoryPrompt", catagoryPrompt)
+      setDrawer(drawerMath)
+    }
+    else if (!controlDock && !!props.folderType){
+      setDrawer(0)
+      // CLOSED CONTROL DOCK AND UNCATAGORIZED FOLDER
+      console.log("")
+    }
+    else if(controlDock && !props.edit) {
+      // OPEN CONTROL DOCK WITH EDIT BUTTON AND COLLABORATOR DRAWER
+      let drawerMath = editSwitch + collabUl
+      setDrawer(drawerMath)
+      console.log("editSwitch", editSwitch, "collabUl", collabUl )
+    }
+    else if(controlDock && props.edit && !search.length) {
+      let drawerMath = editSwitch + collabUl + editDrawer
+      setDrawer(drawerMath)
+      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
+    }
+    else if (controlDock && props.edit && !!search.length) {
+      let drawerMath = editSwitch + collabUl + editDrawer + searchList 
+      setDrawer(drawerMath)
+      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
+    }
+    else if (!controlDock) {setDrawer(0)}
+  //   let height = (!!props.folderType) ? 60 : (props.folderCollaborators.length >= 2 && !!listRef.current) ? (35 + listRef.current.clientHeight) : 25
+  // skinny ? 
+  //   controlDock ? 
+  //     setDrawer(height) 
+  //     : setDrawer(0) 
+  // : props.edit ? 
+  //   setDrawer(height + 150) 
+  //   : setDrawer(height)
+  // console.log("drawer", drawer, height, props.folderCollaborators.length * 28.8, drawerHeight)
+  }
+  else {
+    
+    if (props.folderType !== 0){
+      
+      
+      if(!props.edit) {
+        // OPEN CONTROL DOCK WITH EDIT BUTTON AND COLLABORATOR DRAWER
+        let drawerMath = editSwitch + collabUl
+        setDrawer(drawerMath)
+      console.log("editSwitch", editSwitch, "collabUl", collabUl )
+    }
+    else if(props.edit && !search.length) {
+      let drawerMath = editSwitch + collabUl + editDrawer
+      setDrawer(drawerMath)
+      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
+    }
+    else if (props.edit && !!search.length) {
+      let drawerMath = editSwitch + collabUl + editDrawer + searchList 
+      setDrawer(drawerMath)
+      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
+    }
+  }
+  // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
+  else if (!!props.folderType){
+    let drawerMath = catagoryPrompt
+      console.log("")
+      setDrawer(drawerMath)
+  }
+  }
+}, [props.folderType, props.folderCollaborators, controlDock, props.edit, search, skinny])
+
+console.log("drawer", drawer, !!editDrawerRef.current && editDrawerRef.current.clientHeight, !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight)
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // if folder is creative type is set to true
 
@@ -195,6 +287,15 @@ const typeToggle = () => {
   props.setType(!props.folderType)
 }
 
+useEffect(() => {
+  if (props.directory === 'login' || 'community'){
+    setExpand(false)
+    setControlDock(false)
+    setSearch([])
+  }
+
+
+}, [props.directory])
 
   return (
     <aside ref={asideRef}>
@@ -213,7 +314,7 @@ const typeToggle = () => {
             listRef={listRef}
             collabLength={props.folderCollaborators.length} 
             expand={expand}
-            searchLi={searchLi}
+            searchUl={searchUl}
             flexStart={flexStart}
             catagorized={props.folderType}
             
@@ -245,10 +346,10 @@ const typeToggle = () => {
 
  {/* CATAGORIZE */}           
              {(props.directory === 'home' || props.directory === '-') 
-             ? (props.folderType === null) 
+             ? (!!props.folderType && !!props.folderType) 
              ? 
              <>
-           <CatagorySwitch catagorized={props.folderType}>
+           <CatagorySwitch catagorized={props.folderType} className="catagory first">
            <label className="toggle-switch">
            <input type="checkbox" 
            checked={props.folderType === true}
@@ -259,7 +360,9 @@ const typeToggle = () => {
            {/* <p>{props.folderType ? "creative" : "lifestyle"}</p>  */}
            <p>creative</p> 
            </CatagorySwitch>
-           <CatagorySwitch catagorized={props.folderType}>
+           <CatagorySwitch catagorized={props.folderType}
+           className="catagory second"
+           >
            <label className="toggle-switch">
            <input type="checkbox" 
            checked={props.folderType === false}
@@ -276,7 +379,7 @@ const typeToggle = () => {
            
            <Switch className="edit">
 {/* EDIT */}
-           <label className="toggle-switch edit">
+           <label className="toggle-switch edit-switch">
            <input type="checkbox" checked={props.edit}
             onChange={editToggle}
             // onFocus={() => changeFlex(true)}
@@ -293,6 +396,7 @@ const typeToggle = () => {
 
 
             <div className="edit-drawer" ref={editDrawerRef}>
+            {/* <div className="child-height-total"> */}
             
             <Switch className="delete">
               <label className="toggle-switch">
@@ -305,7 +409,7 @@ const typeToggle = () => {
               <p>enable delete</p> 
            </Switch> 
 {/* CATAGORIZE */}           
-{((props.directory === 'home' || props.directory === '-') && props.folderType === null) 
+{((props.directory === 'home' || props.directory === '-') && !!props.folderType) 
              ? 
              <>
            <div className="cover"></div>
@@ -361,7 +465,7 @@ const typeToggle = () => {
              
   {/* ENABLE COLLABORATION */}
             <InputSwitch
-            className="input"
+            className="collaborate"
             inputWidth={inputWidth}
             panelRef={panelRef}
             skinny={skinny}
@@ -397,6 +501,7 @@ const typeToggle = () => {
             </div>
             </InputSwitch>
             
+      {/* </div> */}
       </div>
           </>
           : null
@@ -426,17 +531,24 @@ const typeToggle = () => {
 
             {!!props.folderCollaborators.length &&
             props.folderCollaborators.length >= 2 &&
-            <CollabotorList ref={listRef}>
+            <CollabotorList ref={listRef} className="collabUl" 
+            onMouseEnter={() => changeFlex(true)}
+            onMouseLeave={() => changeFlex(false)}
+            >
                 
               {!!props.folderCollaborators.length && props.folderCollaborators.map((collaborator) => (
               <CollabLi 
               collaborator={collaborator}
               onClick={() => props.hiliteCollaborator(collaborator)}
-              >{collaborator.name}
+              ><p className="li-name">{collaborator.name}</p>
+              <div className="li-button-cont" >
+
               {(collaborator.uuid !== props.userId) &&<SubtractButton
               enableDelete={props.enableDelete} >
                 -
               </SubtractButton>}
+              <p>✉</p>
+              </div>
               </CollabLi>))}
               
               </CollabotorList>}
@@ -476,6 +588,7 @@ overflow: hidden;
 
   .drawer-cont{
     /* margin-top: 10px; */
+    margin-bottom: auto;
     height: max-content;
     border-radius: 13px;
     overflow: hidden;
@@ -499,8 +612,8 @@ overflow: hidden;
     flex-direction: column;
     /* align-content: start;
     flex: 1; */
-    /* justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'}; */
-    justify-content: flex-start;
+    justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'};
+    /* justify-content: flex-start; */
     top: 0;
     border-radius: 13px;
     overflow: hidden;
@@ -508,40 +621,77 @@ overflow: hidden;
     transition: ${props => props.flexStart ?  !props.controlDock ? props.edit ? 'height .3s linear' :  'height .3s linear' : props.edit ? 'height .3s linear .3s' : props.delay : 'height .1s linear'};
     /* transition: ${props => !props.controlDock ? props.edit ? 'height .3s linear' : 'height .3s linear' : !props.controlDock ? 'height .3s linear .3s' : 'height .3s linear'}; */
     
-    height: ${props => props.edit ? 140 + props.drawer + props.searchLi + 'px' : props.drawer + 'px'};
+    height: ${props => props.drawer + 'px'};
     max-height: fit-content;
+    /* height: ${props => props.edit ? 140 + props.drawer + props.searchUl + 'px' : props.drawer + 'px'}; */
+
+
+
+
+
+    
+    
+    
     @media (max-width: 1100px){
-    justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'};
-    /* justify-content: flex-end; */
-    height: ${props => !props.controlDock ? '0px' : props.edit ? 140 + props.drawer + props.searchLi + 'px' : props.drawer + 'px' };
-    width: inherit;
+      justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'};
+      /* justify-content: ${props => props.flexStart ? 'flex-start' : 'flex-end' }; */
+      /* justify-content: flex-end; */
+      /* height: ${props => !props.controlDock ? 
+      '0px'  
+      : !!((!!props.folderType) === true) ? 60 : (!!props.edit) ? 
+      (140 + props.drawer + props.searchUl + 'px') 
+      : (props.drawer + 'px') }; */
+      height: ${props => props.drawer + 'px'};
+      width: inherit;
     }
+  
+    .catagory.first{
+      margin-top: 10px;
+    }
+  
   }
+  /* .drawer > * { */
+  /* display: block; */
+  /* .drawer > *:first-child {
+    margin-bottom: 10px;
+  }
+
+  .drawer > *:last-child {
+    margin-top: 10px;
+  } */
   
   .edit-drawer{
     /* background-color: blue; */
     border-radius: 13px;
+    z-index: 0;
     display: flex;
     flex-direction: column;
-    /* justify-content: flex-end; */
-    ${props => props.flexStart ? 'flex-end' : 'flex-start'};
-    /* margin-bottom: auto; */
-    z-index: 0;
-    vertical-align: bottom;
+    /* vertical-align: bottom; */
     width: ${props => props.asideRef.current.clientWidth - 20 + 'px'};
     /* margin-top: 10px; */
     overflow: hidden;
-    transition: max-height .3s linear;
-    /* transform: ${props => !props.edit ? 'translateY(-131px)' : 'translateY(0px)'}; */
+    transition: margin-block .3s linear, max-height .3s linear;
+    justify-content: ${props => !props.flexStart ? 'flex-start' : 'flex-end' };
     max-height: ${props => props.edit ? '100%' : '0%'};
+    /* margin-block: ${props => props.edit ? '10px' : '5px'}; */
     @media (max-width: 1100px){
     /* justify-content: flex-end; */
+    justify-content: ${props => !props.flexStart ? 'flex-start' : 'flex-end' };
     max-height: unset;
-    height: ${props => props.edit ? 140 + props.searchLi + 'px' : '0px' };
+    height: ${props => props.edit ? 140 + props.searchUl + 'px' : '0px' };
     width: inherit;
     transition: ${props => props.flexStart ? 'height .3s linear' : 'height .1s linear'};
     }
   }
+
+  .edit-drawer > * {
+    /* display: block; */
+    margin-bottom: 10px;
+  }
+
+  /* .edit-drawer > *:first-child {
+    margin-top: 0px;
+  } */
 
   .cover{
     background-color: gainsboro;
@@ -551,7 +701,7 @@ overflow: hidden;
     width: 100%;
     transition: z-index .2s ease, display 0s ease .2s;
     height: 131px;
-    bottom: 10px; 
+    /* bottom: 10px;  */
     position: absolute;
     border-top-left-radius: 13px; 
     border-bottom-left-radius: 13px;
@@ -597,11 +747,19 @@ overflow: hidden;
 
     transition: ${props => !props.controlDock ? 'width .3s linear .3s' : 'width .3s linear'};
     
-/* .edit{margin-block: 10px} */
+    /* .edit{margin-bottom: ${({edit}) => !!edit ? '0px' : '0px'  }} */
   }
+  /* .edit{margin-bottom: 10px; } */
   
   .edit{
     z-index: 1;
+    margin-bottom: 10px;
+  }
+  .delete{
+    /* margin-block: 10px; */
+  }
+  .collaborate{
+    /* margin-bottom: 0px; */
   }
 
   .delete{
@@ -614,20 +772,24 @@ overflow: hidden;
 const Switch = styled.label`
   display:flex;
   z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   
   p {
     padding-left: 10px;
     font-size: 19px;
   }
-
+  /* @media (max-width: 1100px) {
   :first-child {
-    margin-bottom: 10px;
+    margin-bottom: ${({edit}) => !!edit ? '10px' : '0px'  };
+  } */
+  :nth-child(n+2) {
+    /* margin-bottom: 10px; */
   }
-  :second-child {
-    margin-bottom: 10px;
-  }
-  .toggle-switch.edit{
+}
+  /* :last-child {
+    margin-bottom: 0px;
+  } */
+  .toggle-switch.edit-switch{
     z-index: 4;
   }
   .toggle-switch {
@@ -681,15 +843,15 @@ const Switch = styled.label`
 const CatagorySwitch = styled.label`
   display:flex;
   z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
-   margin-bottom: 10px;
+   /* margin-bottom: 10px; */
   
  p {
   padding-left: 10px;
   font-size: 19px;
 }
 
-  :first-child{
-    margin-block: 0px;
+  :second-child{
+    margin-top: 10px;
   }
 
 .toggle-switch {
@@ -745,51 +907,66 @@ background-color:  #ccc;
 `
 
 const CollabotorList = styled.ul` 
-
+    margin-bottom: auto;
     background-color: #aaa;
     border-radius: 14px;
-    /* margin: 3px; */
+    /* margin-top: 10px; */
     /* padding: 4px;
     padding: 10px; */
     padding-inline: 10px;
     padding-block: 8px;
-    line-height: 1.3;
   
 `
 const CollabLi = styled.li`
+    /* white-space: nowrap; */
     list-style-type: none;
-    cursor: pointer;
     border : ${({collaborator}) => collaborator.color !== undefined ? `solid 1px ${collaborator.color}` :
     'solid 1px #aaa' };
     border-radius: 8px;
-    padding-top: 2px;
-    padding-inline: 4px;
+    
     /* border: solid 1px red; */
     margin-block: 3px;
     /* padding-left: 0px; */
     transition: padding-left 0.3s ease;
     display: flex;
     justify-content: space-between;
+.li-name{
+      cursor: pointer;
+      padding-top: 2px;
+      padding-inline: 4px;
+      line-height: 1.3;
+    }
+.li-button-cont{
+  display: flex;
+  justify-content: space-between;
+  line-height: 0;
+  margin-block: auto;
 
+  p{
+    cursor: pointer;
+      padding-inline: 4px;
+      line-height: 0;
+  }
+}
     :hover {
       /* transition: padding-left 0.7s ease; */
       /* box-shadow: -1px 1px 5px -2px #000000;
       transform: translate(.5px, -.5px);  */
       padding-left: 7px;}
-      &:after{
+      /* &:after{
         content: '✉';
-      }
+      } */
     `
 const SubtractButton = styled.button`
 ${({enableDelete}) => enableDelete ? 'opacity: 1;' : 'opacity: 0;'}
 transition: opacity .2s linear;
 background-color: transparent;
 border: none;
-font-size: 2rem;
+font-size: 1.5rem;
 color: red;
 line-height: 0px;
 padding-top: 0px;
-padding-bottom: 4px;
+/* padding-bottom: 4px; */
 /* padding: 0; */
 transform: scale(2, 1);
 /* margin-top: 8%; */
@@ -896,7 +1073,7 @@ const OpenSwitch = styled.label`
     `
 const InputSwitch = styled.label`
   display:flex;
-  margin-bottom: 10px;
+  /* margin-bottom: 10px; */
   width: fit-content;
 
   .input-cont{

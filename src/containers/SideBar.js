@@ -39,7 +39,7 @@ const [follow, setFollow] = useState(false)
         <>
           <ButtonContainer sideBar={sideBar}>
             <button onClick={() => setBar(!sideBar)}>
-              {sideBar ? "x" : "open"}
+              {sideBar ? "close" : "open"}
             </button>
           </ButtonContainer>
           <div className="side-bar">
@@ -88,7 +88,7 @@ const [follow, setFollow] = useState(false)
         }
             </div>
             <div className="scrollable">
-              <div className="break"></div>
+
               {/* {props.currentUser && props.userFolders && */}
               {/* (location.pathname === ("/" || "/home/" || "/user/" || "/community")) && */}
               {true &&     (
@@ -118,22 +118,22 @@ const [follow, setFollow] = useState(false)
                     // key={props.userId}
                     edit={props.edit}
                     />
-                    <SideBarLinks
+                    {(!!props.userLinks || props.edit) && <SideBarLinks
                       updateLink={props.updateLink}
-                      addLink={props.addLink}
+                      createLink={props.createLink}
                       userLinks={props.userLinks}
                       edit={props.edit}
                       enableDelete={props.enableDelete}
                       deleteLink={props.deleteLink}
-                    />
+                    />}
                   </>
                 )}
 {/* COMMUNITY */}
-<div 
-onClick={() => setBar(!sideBar)} 
-style={{"width": "min-content"}}>
+            <div 
+            onClick={() => setBar(!sideBar)} 
+            style={{"width": "min-content"}}>
               {props.directory !== 'community' && (
-                <Link as={Link} to="/community" >
+                <Link as={Link} to="/community" className="community-href">
                   <div className="nav-bar-header-wrapper">
                     {"community".split("").map((n) => (
                       <p className="nav-bar-header">{n}</p>
@@ -156,13 +156,9 @@ style={{"width": "min-content"}}>
                   </div>
 
               )}
-</div>
+            </div>
 
-              <br></br>
-              <br></br>
-              <br></br>
-              <br></br>
-              {/* <p>Welcome :)</p> */}
+
 {/* LOGIN */}              
               {!!props.currentUserId ? (
                 <Button
@@ -170,7 +166,7 @@ style={{"width": "min-content"}}>
               ) : (
                 <Button 
                  onClick={() => props.useTemplate(setBar(!sideBar))}>
-                  use template
+                  use ImageBoard
                 </Button>
               )}
               {/* props.setLoggedIn(false) */}
@@ -188,7 +184,8 @@ style={{"width": "min-content"}}>
 export default SideBar;
 
 const Button = styled.button`
-  align-items: flex-end;
+    margin-top: 80px;
+    /* float: right; */
   a {
     font-size: inherit;
     text-decoration: none;
@@ -272,8 +269,9 @@ const Sticky = styled.div`
         margin-top: 10px;
       }
     }
-    a {
+    .community-href {
       text-decoration-line: none;
+      
     }
   }
 `;

@@ -70,7 +70,7 @@ const [folderCollaborators, setFolderCollaborators] = useState([])
 const [folderDetails, setFolderDetails] = useState()
 
 // LINKS //
-const [userLinks, setUserLinks] = useState();
+const [userLinks, setUserLinks] = useState([]);
 
 // EDIT USER INFO
 // const [userEmail, setUserEmail] = useState("");
@@ -429,6 +429,73 @@ useEffect(() => {
   setFavoriteDetails(jsonDetails)
 }, [userFavorites])
 
+const [newFolder, setNewFolder] = useState(false)
+const createFolder = (e, folderName) => {
+    e.preventDefault();
+    const nextIndex = folderDetails[folderDetails.length - 1].index + 1
+    if (demo) {
+
+    
+    // let imgObjs = 
+    let folder = {}
+    folder.id = folders[folders.length - 1].id + 1
+    folder.name = folderName
+    folder.u_id = userId
+    folder.index = nextIndex
+    folder.photos = []
+    folder.creative = null
+    folder.details = null
+    folder.followers = []
+    folder.link = null
+    folder.public = true
+    folder.creative = null
+    folder.collaborators = []
+    
+    for(let i = 0; i < 60; i++) {
+      let photo = {}
+      // let img = new Image()
+      photo.index = i + 1
+      photo.url = null
+      photo.name = null
+      photo.details = null
+      photo.url = null
+      photo.u_id = userId
+      photo.folder_id = folder.id
+      photo.orientation = true
+      folder.photos.push(photo)
+    }
+    console.log("folder", folder)
+    setFolders([...folders, folder])
+    setNewFolder(true)
+    setFolderType(folder.creative)
+    }
+    else {fetch(`http://[::1]:3000/api/v1/folders/`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: folderName,
+        // details: null,
+        // link: folderLink,
+        index: nextIndex,
+        u_id: currentUserId,
+      }),
+    })
+      .then((res) => res.json())
+      .then((folderObj) => {
+        console.log("folder", folderObj, "folder photos", folderObj.photos);
+        setFolders([...folders, folderObj]);
+        setNewFolder(true)
+        setFolderType(folderObj.creative)
+      });
+  };}
+  useEffect(() => {
+    !!folders && setFolderPhotos(folders[folders.length - 1].index)
+    setNewFolder(false)
+  }, [newFolder])
+
 useEffect(() => {
   console.log("folder", folders)
   let details = !!folders && folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`))
@@ -438,7 +505,7 @@ useEffect(() => {
 
   // FOLDER FUNCTIONS
   // const [folderType, setFolderType] = useState()
-  const [folderType, setFolderType] = useState()
+  const [folderType, setFolderType] = useState(0)
   // ${folder.id}
 const catagorize = (boolean) => {
   console.log('catagorize')
@@ -475,9 +542,15 @@ const catagorize = (boolean) => {
 }
 
   const updateFolder = (e, folderName, folder) => {
-    demo &&
     e.preventDefault();
-    fetch(`http://[::1]:3000/api/v1/folders/${folder.id}`, {
+    if (demo) {
+    folders.map((folder) => {
+      if (folder.id === folder.id) 
+      { folder.name = folderName
+      return folder}
+    })
+  }
+    else fetch(`http://[::1]:3000/api/v1/folders/${folder.id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -560,36 +633,8 @@ const catagorize = (boolean) => {
         );
       });
   };
-const [newFolder, setNewFolder] = useState(false)
-  const createFolder = (e, folderName) => {
-    e.preventDefault();
-    const nextIndex = folderDetails[folderDetails.length - 1].index + 1
-    fetch(`http://[::1]:3000/api/v1/folders/`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${localStorage.token}`,
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: folderName,
-        // details: null,
-        // link: folderLink,
-        index: nextIndex,
-        u_id: currentUserId,
-      }),
-    })
-      .then((res) => res.json())
-      .then((folderObj) => {
-        console.log("folder", folderObj, "folder photos", folderObj.photos);
-        setFolders([...folders, folderObj]);
-        setNewFolder(true)
-        setFolderType(folderObj.creative)
-      });
-  };
-  useEffect(() => {
-    !!folders && setFolderPhotos(folders[folders.length - 1].index)
-    setNewFolder(false)
-  }, [newFolder])
+
+
   
 
     const deleteFolder = (folderObj) => {
@@ -622,13 +667,13 @@ const [newFolder, setNewFolder] = useState(false)
 
 // LINK FUNCTIONS
 
-const addLink = (e, linkName, linkUrl) => {
+const createLink = (e, linkName, linkUrl) => {
   e.preventDefault();
   console.log("hello");
   console.log(e)
   console.log(linkName)
   console.log(linkUrl)
-
+  const nextIndex = !!userLinks.length ? userLinks[userLinks.length - 1].index + 1 : 1
   fetch(`http://[::1]:3000/api/v1/links/`, {
       method: 'POST'
       , headers: {
@@ -637,9 +682,8 @@ const addLink = (e, linkName, linkUrl) => {
       },
       body: JSON.stringify({
         name: linkName,
-        details: "add a description" ,
-        url: linkUrl ,
-        user_id: currentUserId
+        url: linkUrl, 
+        index: nextIndex
     })
   })
   .then(res => res.json())
@@ -652,14 +696,14 @@ const addLink = (e, linkName, linkUrl) => {
 
   const deleteLink = (e, linkObj) => {
       e.preventDefault()
-    let updatedLinksArr = userLinks.filter((link) => link.id !== linkObj.id);
-    setUserLinks(updatedLinksArr)
+    const updatedLinksArr = userLinks.filter((link) => link.index !== linkObj.index);
     
+    setUserLinks(updatedLinksArr)
+
     fetch(`http://[::1]:3000/api/v1/links/${linkObj.id}/`, { method: "DELETE", headers: {
       Authorization: `Bearer ${localStorage.token}`
   }, })
-      .then((resp) => resp.json())
-      .then(() => console.log("updatedLinksArr", updatedLinksArr, "linkObj", linkObj))
+      
     };
 
 
@@ -780,7 +824,7 @@ const [reorderedPhotos, setReorderedPhotos] = useState()
 // console.log("reorderedPhotos", reorderedPhotos)
 const reorderSubmit = () => {
 
-    fetch(`http://[::1]:3000/api/v1/reorder/`, {
+    !demo && fetch(`http://[::1]:3000/api/v1/reorder/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -940,7 +984,7 @@ useEffect(() => {
           createFolder={createFolder}
           setFolderShown={setFolderShown}
           updateFolder={updateFolder}
-          addLink={addLink}
+          createLink={createLink}
           userLinks={userLinks}
           updateLink={updateLink}
 
@@ -976,7 +1020,6 @@ useEffect(() => {
           updateFolderPrivacy={updateFolderPrivacy}
           folderPrivacy={folderPrivacy}
           folderDetails={folderDetails}
-          folderType={folderType}
           folderCollaborators={folderCollaborators}
           deleteToggle={deleteToggle}
           enableDelete={enableDelete}
@@ -988,6 +1031,7 @@ useEffect(() => {
           reorderSubmit={reorderSubmit}
           userId={userId}
           currentUserId={currentUserId}
+          // options={{unmountOnBlur: true}}
         />
         {/* if main state says community, overflow === hidden */}
         <main
@@ -1012,7 +1056,7 @@ useEffect(() => {
               userId={userId}
               uuid={uuid}
               currentUserId={currentUserId}
-              folderCollaborators={folderCollaborators}
+              demo={demo}
               setReorderedPhotos={setReorderedPhotos}
               // addPhoto={addPhoto}
               deletePhoto={deletePhoto}
@@ -1042,7 +1086,7 @@ useEffect(() => {
                 setUserName={setUserName}
                   // loggedIn={loggedIn}
                   navigate={navigate}
-                  setUserProfile={setUserProfile} 
+
                   useTemplate={useTemplate} 
 
 

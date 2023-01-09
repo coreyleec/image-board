@@ -33,8 +33,8 @@ const loginSubmit = (e, name, password) => {
   fetch(`http://[::1]:3000/api/v1/login`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${localStorage.token}`,
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
+       Accept: 'application/json'
     },
     body: JSON.stringify({
       name: name,

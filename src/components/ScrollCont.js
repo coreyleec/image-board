@@ -303,7 +303,7 @@ const Cont = styled.div`
     
   }
 }
-  }
+  
 
     .coffin-cont {
     position: relative;
@@ -348,7 +348,7 @@ const PhotoCard = styled.div`
   }
 /* .photo-name{
   font-style:; */
-}
+/* } */
 .photo-details{
   font-weight: lighter;
   font-size: smaller;
@@ -357,7 +357,8 @@ const PhotoCard = styled.div`
 .folder-name {
   /* color: white;
   cursor: pointer; */
-  margin-top: auto;
+  /* margin-top: auto; */
+  margin-bottom: auto;
  }
   .text-cont{
     position: sticky;
@@ -431,7 +432,12 @@ const PhotoCard = styled.div`
   /* bottom: 50px;
   box-shadow: 0px 30px 0 0 gainsboro; */
 }
-
+.heart{
+  ${({favorited}) => !!favorited 
+    ? `color: red; text-shadow: none;`
+    : `color: transparent;
+    text-shadow: 0px 0px 0.35px hwb(16deg 86% 13% / 85%), 0px -0.65px 2px hwb(0deg 35% 65%), 0px 0.85px 1px hsl(16deg 11% 98% / 43%);`}
+}
 
 `
 
@@ -463,6 +469,9 @@ background-color: gainsboro;
     left: 1%;
     background: gainsboro;
     width: 50%;
+}
+h4{
+  cursor: pointer;
 }
 .space{
       display: flex;

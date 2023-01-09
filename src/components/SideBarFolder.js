@@ -1,8 +1,9 @@
 import React from 'react'
-import { useState, useRef, useEffect, useCallback } from 'react'
+import { useState, useRef, useEffect, useCallback, useLayoutEffect } from 'react'
 import update from 'immutability-helper'
 import { DndProvider } from "react-dnd";
 import styled from "styled-components";
+import { EditableDiv, SubtractButton, AddButton } from '../My.styled'
 import {  useHistory, Link , useLocation, useRouteMatch} from 'react-router-dom';
 
 const SideBarFolder = (props) => {
@@ -13,7 +14,30 @@ const SideBarFolder = (props) => {
   let history = useHistory()
   let navigate = history.push;
   const match = useRouteMatch()
+  const inputRef = useRef(null);
+
+
   
+// useLayoutEffect(() => {
+//   console.log("hi")
+//   if (!!inputRef.current) {
+//     if (newFolder) {
+//     inputRef.current.focus();
+//   } else {
+//     inputRef.current.blur();
+//   }  
+// }
+// }, [!!inputRef.current])
+
+// const newFolderToggle = () => {
+//   setNewFolder(!newFolder)
+//   if (!newFolder) {
+//     inputRef.current.focus();
+//   } else {
+//     inputRef.current.blur();
+//   }
+// }
+
   const submitNewFolder = (e, folder) => {
   if (e.key === 'Enter' && e.shiftKey === false) {props.createFolder(e, folderName) 
   e.currentTarget.blur();
@@ -75,33 +99,31 @@ const moveFolder = useCallback((dragIndex, hoverIndex) => {
     return (
         <div>
 {/* FOLDER TOGGLE */}
-                    <div className="add-item" >
+                    <div className="sidebar-catagory" >
                     <div className="nav-bar-header-wrapper" >
                   {("folders").split('').map(n => (<p className="nav-bar-header">
                       {n}
                     </p>))
                     }
                     </div>
-            {props.edit && 
-                        <button className="side-bar-add-button" onClick={() => {setNewFolder(!newFolder)
-                          // openNewFolderForm()
-                          }} >+</button>}
+
+                        <AddButton edit={props.edit} onClick={() => setNewFolder(!newFolder)} >+</AddButton>
                     </div>
 {/* NEW FOLDER */}
-                <div>
+
             {newFolder && props.edit && 
-                        <StyledEditableDiv 
+                        <EditableDiv 
                         id={"folderInput"}
                         type="text" edit={props.edit}
-                        // ref={inputRef}
+                        ref={inputRef}
                         
                         contentEditable={newFolder} 
                         placeholder={"add folder name"}
                         style={{"cursor": props.edit ? "text" : "default"}}
                         onKeyDown={(e) => submitNewFolder(e)}
                         onInput={(e) => setFolderName(e.currentTarget.textContent)}>
-                        </StyledEditableDiv> }
-</div>
+                        </EditableDiv> }
+
 {/* (location.pathname == "/home/" || "/" || "" || "/user" ) || (path !== "folders") ? "ImageBoard" : props.userName 
 let path = location.pathname.split("/")[1] */}
 {/* EDIT FOLDER NAME */}
@@ -110,7 +132,7 @@ let path = location.pathname.split("/")[1] */}
             {!!props.folderDetails && props.folderDetails.sort((a, b) => a.index - b.index).map(folder => <div 
                         className="title-cont" key={folder.id} folder={folder}>
 {/* <Link to={`/folders/${folder.id}`} >                           */}
-                        <StyledEditableDiv
+                        <EditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
                         // folderDetails={props.folderDetails}
                         index={folder.index}
@@ -127,7 +149,7 @@ let path = location.pathname.split("/")[1] */}
                         onInput={e => setFolderName(e.currentTarget.textContent)}
                         >
                         {folder.name}
-                        </StyledEditableDiv>
+                        </EditableDiv>
 
 {/* </Link> */}
                          <SubtractButton
@@ -135,58 +157,15 @@ let path = location.pathname.split("/")[1] */}
                         onClick={() => props.deleteFolder(folder)} >-</SubtractButton>
                         </div>)}
         {/* </DndProvider> */}
-                        <div className="sidebar-break"></div>
+
         </div>
     )
 }
 
 export default SideBarFolder
  
-const SubtractButton = styled.button`
-${({enableDelete}) => enableDelete ? 'opacity: 1;' : 'opacity: 0;'}
-transition: opacity .2s linear;
-background-color: transparent;
-border: none;
-font-size: 2rem;
-line-height: 0em;
-padding: 0;
-margin: auto;
-height: 0px;
-color: red;
-transform: scale(2, 1);
-align-self: self-start;
-cursor: pointer;
-`
-const StyledEditableDiv = styled.div`
-font-size: 1.4rem;
-line-height: .85em;
-padding-left: 10px; 
-float: left;
-text-align: left;
-width: 100%; 
-color: black;
-cursor: pointer;
-${({ edit }) => edit && `
-    color: #757575;
-    cursor: text;
-  `}
-:empty::before {
-  content:attr(placeholder);
-}
-:nth-child(2) a {
-  overflow: hidden;
-} */
 
- ::after {
-  opacity 1;
-  transform: translate3d(-100%, 0, 0);
-}
 
-:hover::after,
-:focus::after{
-  transform: translate3d(0, 0, 0);
-} 
-`
 
 // const StyledP = styled.p`
 // font-size: 2rem;

@@ -1,0 +1,529 @@
+
+.grid:hover .picture:not(:hover) .photo {
+    /* height:50%;
+    width: 50%;
+    transition: all .5s ease; */
+  }
+  /* .grid {
+    display: flex;
+    flex-direction: column; 
+  } */
+  .picture {
+    max-height: 220px; 
+    margin: 10px;
+  
+    /* flex: 0 0 100px;   */
+    /* margin: 7px; */
+    overflow: hidden;
+    /* align-items: center;
+    justify-content: center; */
+    border-radius: 13px;
+    box-shadow: -3px 3px 5px 2px #aaaaaa;
+  }
+  .picture .photo{
+    overflow: hidden;
+    position: relative;
+    justify-content: center;
+    
+    /* width: 150px;  */
+  
+  /* padding: 0px; */
+  /* min-height: 100px; */
+  /* max-height: 240px;   */
+  /* width: 135px; */
+  
+  
+  
+  /* transition: all .4s ease; */
+  }
+  /* .picture .photo:hover{
+  border-radius: 13px;
+  } */
+  .photo {
+    position: relative;
+    /* width: 100%; */
+    overflow: hidden;
+    /* min-width: 150px; */
+    /* max-width: 220px; */
+    min-height: 100px;
+    align-items: center;
+  }
+  /* .picture :hover {
+    height: auto;
+    box-shadow: -3px 3px 5px 2px #aaaaaa,
+  } */
+  /* transform: scale(1.5); */
+  /* width:145px; */
+  /* transform: scale(2,2); */
+  .emptyBox {
+    color: gainsboro;
+    flex: 0 0 100px;
+    width: 130px; 
+    height: 100px;
+    margin: 10px;
+    /* margin: 7px; */
+    /* height: auto; */
+  }
+  .emptyBox .photo {
+    border-radius: 13px;
+    width: 135px; 
+    height: 100px;
+    box-shadow: -3px 3px 5px 2px #aaaaaa;
+  }
+  .emptyBox .photo:hover {
+    border-radius: 13px;
+    box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+    /* transform: translateX(2px), translateY(2px); */
+  }
+
+  {props.edit !== false 
+    ? photo.details === null ? "add details" : photo.details
+    : photo.details}
+    {props.edit !== false 
+      ? photo.name === null ? "add name" : photo.name
+      : photo.name
+       }
+
+
+
+       {/* NEW FOLDER */}
+       <div>
+       { newFolder && props.edit && 
+         <form onSubmit={(e) => submitCloseForm(e)}
+         > 
+         <StyledInput autoFocus="autofocus" type="text" placeholder="folder name" 
+         onChange={(e) => setFolderName(e.target.value)}></StyledInput> </form>}
+</div>
+
+{/* EDIT FOLDER NAME */}
+{props.userFolders != null && props.edit 
+     ? props.userFolders.map(folder =>   
+     <div className="title-cont" key={folder.id} folder={folder}>
+         
+                 {/* <EditableDiv
+                 onKeyDown={(e) => submitFolderEdit(e, folder)}
+                 contentEditable={props.edit} type="text" 
+                 defaultValue={folder.name} 
+                 // placeholder={folder.name == null ? "folder name" : folder.name}
+                 onInput={(e) => setFolderName(e.currentTarget.textContent)}
+                 >
+                 {folder.name}
+                 </EditableDiv> */}
+
+         {props.enableDelete === true  
+         && <SubtractButton 
+         onClick={() => props.deleteFolder(folder)} >-</SubtractButton>
+         }
+         </div>
+)
+     : props.currentUser && props.userFolders && props.userFolders.map(folder => 
+     <StyledP 
+     key={folder.id} 
+     style={ props.folderShown != undefined && folder.id === props.folderShown ? {textDecoration: "underline"} : null} 
+          onClick={(event) => {props.setFolderShown(folder.id); underlineFolder(folder.id)}} >{folder.name}</StyledP>)
+         }
+
+
+        
+
+
+
+.picture {
+  height: 100px;
+  /* max-height: 220px;  */
+  overflow: hidden;
+  margin: 10px;
+  /* ALLOWS FOR RESIZING WINDOW */
+  max-width: fit-content;
+  /* USE THIS TO KEEP IMAGE CENTER */
+   display: flex;
+  justify-content: center;
+  border-radius: 13px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
+}
+.image-tile {
+  height: 100px;
+  /* max-height: 220px; */
+  overflow: hidden;
+  margin: 10px;
+  /* ALLOWS FOR RESIZING WINDOW */
+  max-width: fit-content;
+  /* USE THIS TO KEEP IMAGE CENTER */
+  display: flex;
+  justify-content: center;
+  border-radius: 13px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
+}
+
+.picture .photo{
+  max-height: 220px;
+  min-width: 150px;
+  /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
+  position: initial;
+ 
+}
+.image-tile .photo{
+  max-height: 220px;
+  min-width: 150px;
+  /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
+  position: initial;
+ 
+}
+/* .picture .photo:hover{
+border-radius: 13px;
+} */
+/* display: block;
+margin: auto;
+max-width: 100%;
+max-height: 100%; */
+.photo {
+  /* position: relative; */
+  /* overflow: hidden; */
+  /* min-height: 100px; */
+  
+}
+.img-wrapper:not(:hover) {
+  /* grid-template-columns: repeat(6,170px); */
+}
+ .image-tile:hover {
+  all: unset;
+  box-shadow: none;
+  transition: transform 0.2s ease;
+  transform: scale(1.2,1.2);
+  border-radius: 0px;
+  /* transition: border-radius 0.2s ease; */
+  /* transform-origin: left bottom; */
+  width: fit-content;
+  display: flex;
+  background-color: rgba(204, 204, 204, 0.75);
+  height: fit-content;
+  max-width: fit-content;
+  padding: 5px;
+  margin: 0px;
+  /* padding-bottom: 5px; */
+  overflow: visible;
+} 
+/* .card-content {
+  display: none;
+} */
+.card-name{
+  font-size: 20px;
+}
+.card-details{
+  font-size: 15px;
+  overflow-y: scroll;
+}
+.image-tile:hover .card-content {
+display: block;
+max-width: 30%;
+padding-inline: 5px;
+height: fit-content;
+}
+.image-tile:hover .photo {
+  /* object-fit: contain; */
+}
+.image-tile:hover img {
+  /* height:fit-content; */
+}
+/* .image-tile img {
+  height: 100px;
+} */
+.img-wrapper {
+  /* display: flex; */
+  
+}
+
+.missing-box {
+  color: gainsboro;
+  flex: 0 0 100px;
+  width: 150px; 
+  margin: 7px;
+  height: auto;
+  /* z-index: -1; */
+}
+
+.missing-box .photo {
+  z-index: -2;
+  border-radius: 13px;
+  width: 150px; 
+  height: 112px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
+}
+/* .img-wrapper:not(:hover) + .card-content {
+  display: none;
+}
+*/
+.card-content {
+display: none;
+width: fit-content;
+} 
+
+.empty-box {
+  color: gainsboro;
+  height: 100px;
+  margin: 10px; 
+}
+.empty-box .photo {
+  position: initial;
+  border-radius: 13px;
+  width: 100%; 
+  /* width: 135px;  */
+  height: 100px;
+  box-shadow: -3px 3px 5px 2px #aaaaaa;
+}
+:is(.empty-box, .picture):hover {
+  border-radius: 13px;
+  box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
+  transform: translate(1px, 1px);
+  
+}
+
+/* SWITCH CONTAINER */
+    background-color: coral;
+    border-top-left-radius: 23%;
+    border-bottom-left-radius: 23%;
+
+
+
+const Button = styled.button`
+align-items: flex-end;
+`;
+
+const ButtonContainer = styled.div`
+display: flex;  
+padding-inline: 5px;
+padding-top: 5px;
+@media (max-width: 1100px) {
+  /* all: unset; */
+  width: 200px;
+  /* background: coral; */
+}
+button {
+  position: sticky;
+  transition: left 1s;
+  
+  ${({sideBar})  => sideBar ? `left : 20%` : `left: 0%` };
+ /* float: ${({sideBar})  => sideBar ? 'right' : 'left'}; */
+}
+
+` 
+
+const Sticky = styled.div`
+position: sticky;
+top: 0;
+z-index: 1;
+
+.side-bar {
+  position: relative;
+  transition: right 1s ease;
+  ${({sideBar})  => sideBar ? `right : 0%` : `right: 100%` };
+  @media (max-width: 1100px) {
+  /* all: unset; */
+  width: 200px;
+  
+  background: coral;
+}
+
+
+}
+/* @media (max-width: 1100px) {
+  .side-bar{width: 200px;background-color:coral;}
+} */
+
+`  
+
+
+return (
+  <aside>
+    <Sticky sideBar={sideBar}>
+    
+    <ButtonContainer sideBar={sideBar}>
+    <button 
+        // className={sideBar ? "slide-button-right" : "slide-button-left"}
+        onClick={() => setBar(!sideBar)}
+      >
+        {sideBar ? "x" : "open"}
+      </button>
+        </ButtonContainer>  
+        <div className={"side-bar"} sideBar={sideBar}>
+        <div className="scrollable" sideBar={sideBar} >
+        <div className="break"></div>
+          {props.currentUser && props.userFolders &&
+          <>
+          <AboutMe {...props} />
+          <SideBarFolder {...props} key={props.folder_id} />
+          <SideBarLinks {...props} />
+          </>}
+
+          <br></br>
+          <br></br>
+          <br></br>
+          <br></br>
+          {/* <p>Welcome :)</p> */}
+          {props.currentUser === "" ? (
+            <Button onClick={() => props.useTemplate(setBar(!sideBar))}>
+              use template
+            </Button>
+          ) : (
+            <Button onClick={() => logout()}>log out</Button>
+          )}
+          {/* <p>image board is a visual tool for image curation, as well as a digital portfolio template</p> */}
+        </div>
+      </div>
+    </Sticky>
+  </aside>
+);
+};
+
+export default SideBar;
+
+const Button = styled.button`
+align-items: flex-end;
+`;
+
+const ButtonContainer = styled.div`
+display: flex;  
+padding-inline: 5px;
+padding-top: 5px;
+@media (max-width: 1100px) {
+  /* all: unset; */
+  width: 200px;
+  /* background: coral; */
+}
+button {
+  position: sticky;
+  transition: left 1s;
+  
+  ${({sideBar})  => sideBar ? `left : 20%` : `left: 0%` };
+ /* float: ${({sideBar})  => sideBar ? 'right' : 'left'}; */
+}
+
+` 
+
+const Sticky = styled.div`
+position: sticky;
+top: 0;
+z-index: 1;
+
+.side-bar {
+  position: relative;
+  transition: right 1s ease;
+  ${({sideBar})  => sideBar ? `right : 0%` : `right: 100%` };
+  @media (max-width: 1100px) {
+  /* all: unset; */
+  /* width: 200px; */
+  transition: width 1s ease;
+  ${({sideBar})  => sideBar ? `width: 200px` : `width: 0px` };
+  background: coral;
+}
+
+
+}
+/* @media (max-width: 1100px) {
+  .side-bar{width: 200px;background-color:coral;}
+} */
+
+`  
+scrollable {
+  height: 700px;
+  overflow-y: scroll;
+  display: block;
+  padding-inline: 5px;
+  @media (max-width: 1100px) {
+  /* all: unset; */
+  width: 200px;
+  /* background: coral; */
+}
+:-webkit-scrollbar {
+  width: 0px;
+}
+
+aws:
+   access_key_id: AKIA4UGASS6JO7XQU7RV
+   secret_access_key: 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
+   region: "us-east-1"
+   bucket: "memphis-project-development"
+   
+# Used as the base secret for all MessageVerifiers in Rails, including the one protecting cookies.
+secret_key_base: 03630a20ea5b72d2641190332b72eb2d34cfdb4e71d87ea303bd264743e81f83ac3ca961ab91ea375ec4c643e13ddc61740edc255d28f05957ba6406bc195fb9
+
+picture frame
+height: 100px;
+    overflow: hidden;
+    margin: 10px;
+    max-width: -webkit-fit-content;
+    max-width: -moz-fit-content;
+    max-width: fit-content;
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -webkit-justify-content: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    border-radius: 13px;
+    box-shadow: -3px 3px 5px 2px #aaaaaa;
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+}
+
+photo{
+  min-width: 150px;
+  max-height: 220px;
+  position: initial;
+}
+.deletebutton
+cursor: pointer;
+    background-color: transparent;
+    color: red;
+    transform: rotate(-45deg);
+    border: none;
+    font-size: 2rem;
+    line-height: 0px;
+    z-index: 0;
+    float: right;
+    position: relative;
+    right: 13px;
+    top: -100%;
+    padding-right: 8px;
+    padding-top: 17px;
+
+
+
+    .delete-photo {
+      cursor: pointer;
+      background-color: transparent;
+      color: red;
+      transform: rotate(-45deg);
+      border: none;
+      font-size: 2rem;
+      line-height: 0px;
+      z-index: 0;
+      height: fit-content;
+      padding: 0px;
+      position: relative;
+      width: 0px;
+      transition: transform .3s linear;
+    }
+
+
+    <img src={"IMAGE SOURCE"}> 
+    {photo.details.index !== null && {
+      <h1>name</h1>
+      <p>details</p>
+      <h4>folder name</h4>
+      <h4>username</h4>
+    }
+    }
+
+    <div>
+    <img src={"IMAGE SOURCE"}> 
+    </div>
+    
+    <div>
+    <h1>name</h1>
+    <p>details</p>
+    <h4>folder name</h4>
+    <h4>username</h4>
+    </div>

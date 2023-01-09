@@ -160,12 +160,12 @@ button {
   background-color: gainsboro;
   
 }
-.add-item {
+.sidebar-catagory {
   display:flex;
   justify-content: space-between;  
   /* max-height: 47.78;/ */
   /* width: max-content; */
-  padding-bottom: 10px;
+  /* padding-bottom: 5px; */
 }
 .title-cont {
   display:flex;
@@ -173,17 +173,17 @@ button {
   /* margin-right: 5; */
   width: 100%;
   
-  padding-bottom: 15px;
+  padding-bottom: 5px;
   padding-right: 10px;
 }
-.side-bar-add-button {
-  background-color: transparent;
-  border: none;
-  font-size: 2rem;
-  line-height: 6px;
-  padding-bottom: 5px;
-  cursor: pointer;
+
+.asterisc{
+  color: #757575;
+  padding-left: 10px;
+  font-size: .75rem;
+  padding-top: 20px;
 }
+
 .close-modal-button {
   cursor: pointer;
   background-color: transparent;

@@ -1,9 +1,8 @@
 import React from "react";
 import { useEffect, useState, useRef} from "react";
 import { useLocation, useRouteMatch } from 'react-router-dom';
-import {withRouter} from 'react-router';
-// import styled, { createGlobalStyle } from "styled-components/macro";
 import styled from "styled-components";
+import { Heart } from '../My.styled'
 import MultiBackend from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
 import { DndProvider } from "react-dnd";
@@ -49,7 +48,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   const gridRef = useRef(null);
   const imgRef = useRef(null)
   const [imagesLoaded, setImagesLoaded] = useState(false);
-  
+  const [imgUrl, setImgUrl] = useState(null)
  const adjustFunction = () => {
   const grid = gridRef.current;
   adjustGridItemsHeight(grid)
@@ -60,10 +59,24 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
     adjustGridItemsHeight(grid);
   }, [photos]);
   
-  const addPhoto = (e, formData, orientation, photoName, photoDetails, photo) => {
+  const addPhoto = (e, formData, orientation, photoName, photoDetails, photo, photoUrl) => {
     e.preventDefault();
     
-    const data = new FormData(formData)
+    if (props.demo) {
+      e.preventDefault();
+      const updatedPhoto = Object.create(photo)
+      updatedPhoto.name = photoName
+      updatedPhoto.details = photoDetails
+      updatedPhoto.orientation = orientation
+      updatedPhoto.url = imgUrl
+      console.log("updatedPhoto", updatedPhoto)
+      setPhotos(photos.map((photo) => {
+        if (photo.index === updatedPhoto.index) return updatedPhoto;
+        else return photo;}))
+    }
+
+    else {
+      const data = new FormData(formData)
       orientation !== undefined && orientation !== true && data.append('orientation', orientation)        
       photoName !== undefined && photoName !== null && data.append('name', photoName)
       photoDetails !== undefined && photoDetails !== null && data.append('details', photoDetails)
@@ -87,7 +100,8 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
         else return photo;})
       );
     });
-      };
+    }
+    };
 
       const deletePhoto = (photo) => {
 
@@ -185,8 +199,8 @@ const favoriteToggle = (photo) => {
           "Content-Type": "application/json",},
           body: JSON.stringify({
             favoritable_id: photo.id,
-            favoritable_type: "Photo", 
-            user_id: photo.user_id, 
+            favoritable_type: "Photo",
+            u_id: props.userId,
           }),
             
         })
@@ -234,6 +248,7 @@ const nameArray = [], size = 3;
       {/* <button onClick={adjustFunction}>adjust</button> */}
       {openModal && (
         <ImageModal
+        setImgUrl={setImgUrl}
         setPhotos={props.setPhotos}
         addPhoto={addPhoto}
         ImageopenModal={props.ImageopenModal}
@@ -249,7 +264,9 @@ const nameArray = [], size = 3;
         />
       )}
 
-      <DndProvider backend={MultiBackend} options={HTML5toTouch}>
+      <DndProvider backend={MultiBackend} 
+      options={HTML5toTouch}
+      >
         <>
           <div className="grid">
             <GridWrapper
@@ -258,9 +275,9 @@ const nameArray = [], size = 3;
               // style={{ opacity }}
               >
               {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
-              
+                    className="grid-item"
                     edit={props.edit}
-                    // key={photo.index}
+                    key={photo.index}
                     orientation={photo.orientation}
                     url={photo.url}
                     photo={photo}
@@ -359,36 +376,10 @@ const nameArray = [], size = 3;
 };
 export default DndContainer;
 
-const Heart = styled.button`
-    cursor: pointer;
-    z-index: 8;
-    opacity: 0%;
-    position: absolute;
-    bottom: -1px;
-    right: -1px;
-    font-family: 'Sawarabi Mincho', serif;
-    /* font-size: small; */
-    font-size: 13.5px;
-    background-color: transparent;
-    border-width: 0px;
-    color: ${favorited => !!favorited ? `#aaa` : `red`};
-    ${({favorited}) => !!favorited 
-    ? `color: red; text-shadow: none;`
-    : `color: transparent;
-    text-shadow: 0px 0px 0.35px hwb(16deg 33% 17% / 85%), 0px -0.75px 0.35px hwb(16deg 25% 43%), 0px 0.65px 0px hsl(16deg 100% 86% / 43%);`}
-    /* text-shadow: 0px 0px 0.35px rgb(229 123 84 / 80%), 0.25px 0.25px 0.5px rgb(249 183 160 / 50%), -0.85px -0.65px 0.35px rgb(194 98 64); 
-    0px 0px 0.35px hwb(16deg 33% 15% / 90%), -0.85px -0.65px 0.35px hwb(16deg 25% 43%), 0.3px 0.3px 0px hsl(16deg 100% 86% / 43%)
-    */
 
-    /* 
-    display: inline-block;
-    margin: 2px;
-    aspect-ratio: 1; */
-   
-`;
 
 const adjustGridItemsHeight = (grid, photo) => {
-  console.log("testing grid function")
+
   // set all grid photos to vairable "photos"
   
   const photos = grid.children; // set all grid photo to vairable "photos"
@@ -406,10 +397,18 @@ const adjustGridItemsHeight = (grid, photo) => {
       (photo.firstChild.getBoundingClientRect().height + rowGap) /
         (rowHeight + rowGap)) <= 40 ? 40 : 80
 
-    console.log("rowSpan", rowSpan)
+    // console.log("rowSpan", rowSpan)
     photo.style.gridRowEnd = "span " + rowSpan;
   
+    let gridItem = photo.getBoundingClientRect();
+    console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
+    let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
 
+    let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
+  	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
+  
+
+	photo.style.transformOrigin = `${originX}% ${originY}%`;
   } return 
 };
 
@@ -422,6 +421,7 @@ const GridWrapper = styled.div`
   grid-auto-rows: 1px;
   grid-template-columns: repeat(6,minmax(120px, 155px));
 
+  
 `;
 // COMPASS 
  {/* className={
@@ -472,9 +472,13 @@ const PictureFrame = styled.div`
     
     /* transition: border-radius .5s ease-out 0ms, background-color 0s linear, max-width 0.5s ease-in, padding-right 0.5s ease-in, box-shadow .2s ease-out .4s; */
 
-  }
+  
 
   .heart{
+    ${({favorited}) => !!favorited 
+    ? `color: red; text-shadow: none;`
+    : `color: transparent;
+    text-shadow: 0px 0px 0.35px hwb(16deg 33% 17% / 85%), 0px -0.75px 0.35px hwb(16deg 25% 43%), 0px 0.65px 0px hsl(16deg 100% 86% / 43%);`}
     transition: opacity .3s ease .3s;
   }
 .center-image {
@@ -489,7 +493,7 @@ const PictureFrame = styled.div`
     overflow-y: clip;
     width: max-content;
     border-radius: 13px;
-    transition: border-radius .4s ease-out;
+    transition: border-radius .2s ease-out;
 }
 &:hover .center-image{
   border-radius: 0px;
@@ -579,7 +583,7 @@ const PictureFrame = styled.div`
     z-index: 3;
     ${details 
     ? 'max-width: 250%; padding-right: 100px;' 
-    : 'max-width: 145%; padding-right: 3px; z-index: 7; ' }
+    : 'max-width: 156%; padding-right: 3px; z-index: 7; ' }
     // max-height: ${orientation ? '150px' : '227px' };
     border-radius: 0px;
     box-shadow: none;
@@ -669,6 +673,7 @@ const PictureFrame = styled.div`
 }
 }
 }`:`
+
 // DRAGGABLE EMPTY BOX
 
 transition: background-color 0s linear 1s, box-shadow .3s ease-in;
@@ -694,23 +699,6 @@ background-color: gainsboro;
 
 }
   `
-  }
-`
+}
+  `
 
-
-// box-shadow: -7px 7px 10px 4px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-// box-shadow: 0px 0px 0px 0px #aaaaaa, 0 0 10px -1px #aaaaaa inset;
-
-
-
-
-// transition: border-radius .3s ease-out, padding-bottom .3s ease-out, padding-top .3s ease-out, padding-right .3s ease-out, padding-left .3s ease-out, max-width .4s ease-in, box-shadow 0s,outline .3s linear .2s;
-  // transition: 
-  //     border-radius .5s ease-out, 
-  //     background-color 0s linear 1s, 
-  //     max-width .4s ease-in .1s,
-  //     padding-right .3s ease-out .2s, 
-  //     padding-left .3s ease-out .2s, 
-  //     padding-block .3s ease-out .2s, 
-  //     box-shadow .3s ease-in .7s
-  //     ;

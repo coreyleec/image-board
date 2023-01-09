@@ -1,6 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import styled from "styled-components";
+import { EditableDiv, SubtractButton, AddButton } from '../My.styled'
 
 const SideBarLinks = (props) => {
   // ADD LINK STATE TOGGLE
@@ -10,42 +11,47 @@ const SideBarLinks = (props) => {
     setLinkName(linkName);
   };
   const [linkUrl, setLinkUrl] = useState();
+
   const submitUpdatedLink = (e, linkName, linkUrl, link) => {
     if (e.key === "Enter" && e.shiftKey === false) {
       props.updateLink(e, linkName, linkUrl, link);
     }
   };
-  const submitLinkCloseForm = (e) => {
-    props.addLink(e, linkName, linkUrl);
-    setNewLink(!newLink);
+  const submitLink = (e) => {
+    if (e.key === "Enter" && e.shiftKey === false) {
+      props.createLink(e, linkName, linkUrl);
+      setNewLink(!newLink);
+    }
   };
 
   return (
     <>
       {/* LINK FORM TOGGLE */}
-      <div className="add-item">
-        {(!!props.userLinks || props.edit) && 
+      <div className="sidebar-catagory">
+        {(props.edit || !!props.userLinks.length) && 
         <> 
-        <p
-          className="nav-bar-header"
-        >
-          links
-        </p>
-        {props.edit && (
-          <button
-            className="side-bar-add-button"
+         <div className="nav-bar-header-wrapper" >
+                  {("links").split('').map(n => (<p className="nav-bar-header">
+                      {n}
+                    </p>))
+                    }
+                    </div>
+
+          <AddButton
+          edit={props.edit}
             onClick={() => {setNewLink(!newLink)}}
           >
             +
-          </button>)}
+          </AddButton>
           </>
         }
       </div>
       {/* NEW LINK FORM */}
+      
       {newLink && props.edit && (
         <form
           type="submit"
-          onSubmit={(e) => submitLinkCloseForm(e)}
+          // onSubmit={(e) => submitLink(e)}
           //   onKeyDown={(e) => submitLink(e)}
         >
           <StyledInput
@@ -54,14 +60,17 @@ const SideBarLinks = (props) => {
             autoFocus="autofocus"
             onChange={(e) => setLinkName(e.target.value)}
           ></StyledInput>
-          <StyledUrl
+          <StyledUrlInput
             type="text"
             placeholder="link url"
             onChange={(e) => setLinkUrl(e.target.value)}
-          ></StyledUrl>
+            onKeyDown={(e) => submitLink(e, linkName, 
+              linkUrl)}
+              
+          ></StyledUrlInput>
           <input
             type="submit"
-            value="submit"
+            // value="submit"
             style={{ display: "none" }}
           ></input>
         </form>
@@ -69,46 +78,56 @@ const SideBarLinks = (props) => {
       
       {/* EDIT LINK */}
       {!!props.userLinks && props.edit ? (
+
         props.userLinks.map((link) => (
           <form
-            link={link}
             key={link.id}
-            onKeyDown={(e) => submitUpdatedLink(e, linkName, linkUrl, link)}
+            
             // onSubmit={(e) => props.updateLink(e, linkName, linkUrl)}
           >
             <div className="title-cont">
               {/* LINK NAME INPUT*/}
               <StyledInput
                 type="text"
+                link={link}
                 defaultValue={link.name}
                 onChange={(e) => changeLinkName(e.target.value)}
+                onKeyDown={(e) => submitUpdatedLink(e, linkName, linkUrl, link)}
               ></StyledInput>
 
-              {props.enableDelete === true && (
-                <SubtractButton onClick={(e) => props.deleteLink(e, link)}>
+
+                <SubtractButton 
+                enableDelete={props.enableDelete} 
+                onClick={(e) => props.deleteLink(e, link)}>
                   -
                 </SubtractButton>
-              )}
+
             </div>
             {/* LINK URL INPUT */}
-            <StyledUrl
+            <StyledUrlInput
               type="text"
               defaultValue={link.url}
               // className="sidebar-form"
               // value={link.url}
+              link={link}
+              onKeyDown={(e) => submitUpdatedLink(e, linkName, linkUrl, link)}
               onChange={(e) => {
                 setLinkUrl(e.target.value);
               }}
-            ></StyledUrl>
+            ></StyledUrlInput>
           </form>
-        ))
-      ) : (
-        <LinkCont>
+            )
+            )
+            
+
+            ) : (
+              <LinkCont>
           {!!props.userLinks && props.userLinks.map((link) => (
-            <a href={link.url}> {link.name} </a>
-          ))}
+            <a target="_blank" rel="noopener noreferrer" href={`${link.url}`}> {link.name} </a>
+            ))}
         </LinkCont>
       )}
+      {props.edit && ( <p className="asterisc">*include the associated Hypertext Transfer Protocol</p>)}
     </>
   );
 };
@@ -118,32 +137,29 @@ const LinkCont = styled.div`
 a {
     display: block;
     color: blue;
+    font-size: 1.4rem;
+    line-height: .85em;
+    padding-left: 10px;
+    padding-bottom: 7px;
   }
 `
 
-const SubtractButton = styled.button`
-  background-color: transparent;
-  border: none;
-  font-size: 2rem;
-  color: red;
-  line-height: 0px;
-  padding: 0;
-  transform: scale(2, 1);
-  cursor: pointer;
-`;
+
 const StyledInput = styled.input`
-  font-size: 2rem;
+  font-size: 1.4rem;
   padding: 0px;
+  padding-left: 10px;
   text-align: left;
-  width: 85%;
+  width: 100%;
   color: #757575;
 `;
 
-const StyledUrl = styled.textarea`
+const StyledUrlInput = styled.textarea`
   background-color: inherit;
   resize: none;
   overflow: overlay;
   padding: 0;
+  padding-left: 10px;
   padding-right: 1px;
   border-width: 0;
   font-size: 1rem;

@@ -46,6 +46,7 @@ const ImageModal = (props) => {
   
   const imageHandler = (image) => {
      setPhotoSrc(image)
+     props.setImgUrl(image)
     let img = new Image()
     img.src = image
     let height = img.onload = () => {

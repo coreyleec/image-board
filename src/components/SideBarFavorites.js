@@ -2,6 +2,7 @@ import React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { DndProvider } from "react-dnd";
 import styled from "styled-components";
+import { EditableDiv, SubtractButton, AddButton } from '../My.styled'
 import {  useHistory } from 'react-router-dom';
 
 const SideBarFavorites = (props) => {
@@ -68,22 +69,23 @@ console.log("props.favoriteDetails", props.favoriteDetails)
     return (
         <div>
 {/* FOLDER TOGGLE */}
-                    <div className="add-item" >
+                    <div className="sidebar-catagory" >
                     <div className="nav-bar-header-wrapper" onClick={() => setCondition(!condition)}>
                   {("favorites").split('').map(n => (<p className="nav-bar-header">
                       {n}
                     </p>))
                     }
                     </div>
-            {props.edit && 
-                        <button className="side-bar-add-button" onClick={() => {setNewFavorites(!newFavorites)
+
+                        <AddButton edit={props.edit} 
+                        onClick={() => {setNewFavorites(!newFavorites)
                           // openNewFavorites()
-                          }} >+</button>}
+                          }} >+</AddButton>
                     </div>
 {/* NEW FOLDER */}
                 <div>
             {newFavorites && props.edit && 
-                        <StyledEditableDiv 
+                        <EditableDiv 
                         id={"favoriteInput"}
                         type="text" edit={props.edit}
                         // ref={inputRef}
@@ -92,14 +94,14 @@ console.log("props.favoriteDetails", props.favoriteDetails)
                         style={{"cursor": props.edit ? "text" : "default"}}
                         onKeyDown={(e) => submitNewFavorites(e)}
                         onInput={(e) => setUserFavorites(e.currentTarget.textContent)}>
-                        </StyledEditableDiv> }
+                        </EditableDiv> }
 </div>
 
 {/* EDIT FOLDER NAME */}
 <SlideDrawer condition={condition} >
             {!!props.favoriteDetails  && props.favoriteDetails.map(favorite => <div 
                         className="title-cont" key={favorite.id} favorite={favorite}>
-                        <StyledEditableDiv
+                        <EditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
                         favoriteShown={props.favoriteShown}
                         defaultValue={favorite.name}
@@ -115,10 +117,11 @@ console.log("props.favoriteDetails", props.favoriteDetails)
                         onInput={e => setUserFavorites(e.currentTarget.textContent)}
                         >
                         {favorite.name}
-                        </StyledEditableDiv>
-                        {props.enableDelete === true  
-                        && <SubtractButton 
-                        onClick={() => props.deleteFavorites(favorite)} >-</SubtractButton>}
+                        </EditableDiv>
+
+                        <SubtractButton 
+                        enableDelete={props.enableDelete}
+                        onClick={() => props.deleteFavorites(favorite)} >-</SubtractButton>
                         </div>
                         )}
                         </SlideDrawer>
@@ -134,53 +137,7 @@ export default SideBarFavorites
  transition: height 1s ease-in-out;
  ${({ condition }) => (condition ? `max-height: 0px; overflow: hidden;` : `height: min-content;`)}`
 //  (sideBar ? `left : 0%` : `left: -30%`)}
-const SubtractButton = styled.button`
-background-color: transparent;
-border: none;
-font-size: 2rem;
-color: red;
-line-height: 0px;
-padding: 0;
-transform: scale(2, 1);
-margin-top: 8%;
-padding-right: 6px;
-/* padding-left: 6px; */
-height: 35px;
-margin-top: 0px;
-padding-top: 0px;
-/* padding-bottom: 4px; */
-align-self: self-start;
-cursor: pointer;
-`
-const StyledEditableDiv = styled.div`
-font-size: 1.4rem;
-line-height: .85em;
-padding-left: 10px; 
-text-align: left;
-width: 100%; 
-color: black;
-cursor: pointer;
-${({ edit }) => edit && `
-    color: #757575;
-    cursor: text;
-  `}
-:empty::before {
-  content:attr(placeholder);
-}
-:nth-child(2) a {
-  overflow: hidden;
-} */
 
- ::after {
-  opacity 1;
-  transform: translate3d(-100%, 0, 0);
-}
-
-:hover::after,
-:focus::after{
-  transform: translate3d(0, 0, 0);
-} 
-`
 
 // const StyledP = styled.p`
 // font-size: 2rem;

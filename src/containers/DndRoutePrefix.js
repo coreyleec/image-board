@@ -47,7 +47,7 @@ return (
               uuid={props.uuid}
               userId={props.userId}
               currentUserId={props.currentUserId}
-
+              demo={props.demo}
               setReorderedPhotos={props.setReorderedPhotos}
               deletePhoto={props.deletePhoto}
               enableDelete={props.enableDelete}
