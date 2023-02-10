@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import React from "react";
 import { Link, useHistory, useLocation, useRouteMatch } from "react-router-dom";
 import SideBarLinks from "../components/SideBarLinks";
@@ -15,6 +15,7 @@ const SideBar = (props) => {
   console.log("new props", !!props.userState && props.userState.openModal);
   let history = useHistory();
   let navigate = history.push;
+  const sideBarRef = useRef()
   // LOGOUT
   const logout = () => {
     navigate("/");
@@ -32,9 +33,24 @@ const [follow, setFollow] = useState(false)
     const [lifestyle, setLifestyle] = useState(false)
 
 // const [hover, setHover] = useState(false)
-
-const [demoText, setDemoText] = useState("")
+const folderRef = useRef()
+const folderDemo = [!!folderRef.current && folderRef.current.offsetTop + 22, 'these folders can be used to organize photos as you develope bodies of work']
+const favoriteRef = useRef()
+const favoriteDemo = [!!favoriteRef.current && favoriteRef.current.offsetTop + 22, "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
+const linkRef = useRef()
+const linkDemo = [!!linkRef.current && linkRef.current.offsetTop + 22, "here you can add external links to projects or any relevant content you would like to share. i've added my GitHub and LinkedIn for example"]
+const communityRef = useRef()
+const communityDemo = [!!communityRef.current && communityRef.current.offsetTop + 22, "the community page allows you to explore the site and see what other people are taking photos of"]
+const aboutRef = useRef()
+const aboutDemo = [!!aboutRef.current && aboutRef.current.offsetTop + 22, "click here for more information on the project, myself, and projects to come!"]
+const [demoText, setDemoText] = useState(folderDemo)
 const [demoArrow, setDemoArrow] = useState("16px")
+const [editDemoVar, setEditDemoVar] = useState()
+useEffect(() => {
+
+}, [props.edit])
+
+
 
 useEffect(() => {
     setSideBar(props.edit)
@@ -42,24 +58,15 @@ useEffect(() => {
 
 useEffect(() => {
   if(props.tutorial){
-    // setSideBar(props.edit)
-    // if(props.edit){
-    // }
-    // else{
-
-    // }
+    setDemoText(folderDemo)
   }
 }, [props.tutorial, props.edit, props.enableDelete])
 
-const folderDemo = ['135px', 'these folders can be used to organize photos as you develope bodies of work ']
-const favoriteDemo = ['208px', "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
-const LinkDemo = ['281px', "here you can add external links to projects or any relevant content you would like to share. i've added my GitHub and LinkedIn for example"]
-const communityDemo = ['375px', "the community page allows you to explore the site and see what other people are taking photos of"]
-// top: ;
+
 const showTip = () => {
   
 }
-
+console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidth)
 
   return (
     <aside>
@@ -73,6 +80,7 @@ const showTip = () => {
             </button>
           </ButtonContainer>
           <div className="side-bar" 
+          ref={sideBarRef}
           onMouseEnter={() => props.setHover(false)}>
           <div className="follow-cont">
 {/* FOLLOW */}
@@ -125,7 +133,11 @@ const showTip = () => {
               {true &&     (
                   <>
                     {/* <AboutMe {...props} /> */}
+                    <div onMouseOver={() => setDemoText(folderDemo)}
+                    ref={folderRef}
+                    >
                     <SideBarFolder 
+                    
                     setFolderPhotos={props.setFolderPhotos}
                     createFolder={props.createFolder}
                     deleteFolder={props.deleteFolder}
@@ -141,9 +153,11 @@ const showTip = () => {
                     // key={props.userId} 
                     dbVersion={props.dbVersion}
                     />
-
+                    </div>
                     {(props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
-
+                    <div onMouseOver={() => setDemoText(favoriteDemo)}
+                    ref={favoriteRef}
+                    >
                     <SideBarFavorites  
                     directory={props.directory}
                     setFavoritePhotos={props.setFavoritePhotos}
@@ -153,10 +167,15 @@ const showTip = () => {
                     // key={props.userId}
                     edit={props.edit}
                     dbVersion={props.dbVersion}
-                    />}
+                    />
+                    </div>}
 
                     {(!!props.userLinks || props.edit) && (props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
+                    <div onMouseOver={() => setDemoText(linkDemo)}
+                    ref={linkRef}
+                    >
                     <SideBarLinks
+                      
                       updateLink={props.updateLink}
                       createLink={props.createLink}
                       userLinks={props.userLinks}
@@ -164,7 +183,9 @@ const showTip = () => {
                       enableDelete={props.enableDelete}
                       deleteLink={props.deleteLink}
                       dbVersion={props.dbVersion}
-                    />}
+                    />
+                    </div>
+                    }
 
                   </>
                 )}
@@ -173,7 +194,10 @@ const showTip = () => {
             onClick={() => setSideBar(!sideBar)} 
             style={{"width": "min-content"}}>
               {props.directory !== 'community' && (
-                <Link as={Link} to="/community" className="community-href">
+                <Link as={Link} to="/community" 
+                onMouseOver={() => setDemoText(communityDemo)}
+                ref={communityRef}
+                className="community-href">
                   <div className="nav-bar-header-wrapper">
                     {"community".split("").map((n) => (
                       <p className="nav-bar-header">{n}</p>
@@ -181,6 +205,17 @@ const showTip = () => {
                   </div>
                 </Link>
               )}
+
+              <Link as={Link} to="/about" 
+                onMouseOver={() => setDemoText(aboutDemo)}
+                ref={aboutRef}
+                className="community-href">
+                  <div className="nav-bar-header-wrapper">
+                    {"about".split("").map((n) => (
+                      <p className="nav-bar-header">{n}</p>
+                    ))}
+                  </div>
+                </Link>
 
               {/* location.pathname !== "/user" && */}
 {/* HOME */}
@@ -216,14 +251,17 @@ const showTip = () => {
           {/* </div>
         </div> */}
         </>
+        {(props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial &&
         <TutorialTip 
           sideBar={sideBar} 
+          sideBarWidth={!!sideBarRef.current && sideBarRef.current.clientWidth}
           hover={props.hover}
+          demoTop={demoText[0]}
           onMouseEnter={() => {props.setHover(true)}}
-            >these folders can be used to organize photos as you develope bodies of work 
+            >{demoText[1]} 
             <div className="arrow"></div>
             </TutorialTip>
-            
+        }
       </Sticky>
     </aside>
   );
@@ -241,24 +279,28 @@ const Button = styled.button`
 `;
 
 const TutorialTip = styled.div`
-  top: 135px;
+  top: ${({demoTop}) => demoTop + 'px'};
+  max-height: fit-content;
   position: absolute;
+  // ${({ sideBar }) => (sideBar ? `right : 0%` : `right: 100%`)};
+  transform: translateX(${({ sideBar, sideBarWidth }) => (sideBar ? (sideBarWidth + 5 + 'px') : '-298px')});
+  
   white-space: normal;
   cursor: default;
   padding: 15px;
-  min-height: 100%;
   background: #ff7f5080;
   backdrop-filter: blur(6px);
   border-radius: 16px;
   color: blue;
   opacity: 100%;
   width: 168px;
+  transition: transform 1s ease, top .3s ease;
+  
   ${({hover}) => hover && 
 `visibility: hidden; opacity: 0%; transition: opacity .2s linear .1s;
 }` }
   @media (max-width: 1100px) {
-    transition: transform 1s ease;
-    transform: ${({ sideBar }) => (sideBar ? 'translateX(205px)' : 'translateX(-100px)')};
+    transform: ${({ sideBar }) => (sideBar ? 'translateX(205px)' : 'translateX(-200px)')};
   }
   .arrow {
     &:after {

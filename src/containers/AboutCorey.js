@@ -4,32 +4,21 @@ import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
 
-const Header = (props) => {
+const AboutCorey = (props) => {
     const location = useLocation();
-    
     const [newUserName, setNewUserName] = useState()
 
     const [siteHeader, setSiteHeader] = useState()
-
-    useEffect(() => {
-        if (props.directory === 'community'){
-            setSiteHeader("Community")
-        } 
-        else 
-         {setSiteHeader("ImageBoard") }
-    }, [props.directory])
     
 
-
-
-
         return (
-            <header>
+            <div>
                
                  {!props.edit  
                 ?  <form 
                     // name={props.userName} 
-                    onSubmit={(e) => props.nameSubmit(e, newUserName)}>
+                    // onSubmit={(e) => props.nameSubmit(e, newUserName)}
+                    >
                         <NameInput
                         type="name"
                         name="name" 
@@ -37,16 +26,16 @@ const Header = (props) => {
                         defaultValue={props.userName} 
                         className="name-form" 
                             // value={currentUser.name}
-                            onChange={(e) => setNewUserName(e.target.value)}
+                            // onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader >{(props.directory === 'home' | props.directory === 'by_Corey_Lee' | props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
+                : <TitleHeader >
+                    {/* {(props.directory === 'home' | props.directory === 'by_Corey_Lee' | props.directory === 'user') ? props.userName : siteHeader } */}
+                    </TitleHeader> 
                     }
 
-<Sticky>
+{(props.directory === 'user'| props.directory === 'by_Corey_Lee') ? <Sticky>
 {/* FOLLOW */}
-{(props.directory === 'user') && 
-        <>
             <Switch>
             <label className="toggle-switch">
             <input type="checkbox" 
@@ -82,27 +71,15 @@ const Header = (props) => {
             </Switch>
             </>
             }
-            </>
-}
-    {(props.directory === 'home' | props.directory === 'by_Corey_Lee') &&           
-        <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={!!props.tutorial}
-            onChange={() => props.setTutorial(!props.tutorial)}
-            />
-            <span className="switch" />
-            </label>
-            <p>tutorial</p> 
-            </Switch>
-        }
             </Sticky>
-            </header>
+            : null
+        }
+            </div>
         )
 
 }
 
-export default Header
+export default AboutCorey
 const NameInput = styled.input`
     font-size: 3.5rem;
     font-family: "HelveticaNeue-Light";

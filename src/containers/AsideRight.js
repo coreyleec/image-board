@@ -343,14 +343,15 @@ useEffect(() => {
           setDemoArrow("83px")
         }
   }}      
-        else if (!props.edit){
+        else {
+        if (!props.edit){
             (props.directory === 'by_Corey_Lee') && setDemoText("feel free to explore the site as if you were me. use the edit switch to edit my account") ||
             (props.directory === 'home') && setDemoText("use the edit switch to edit your projects. all personal information will become editable.")
             setDemoArrow("16px")}
           else {
             setDemoText("the switches shown here will allow you to do things such as add, edit, and organize photos, add collaborators, as well as enable you to add, edit and delete elements in the left sidebar.")
             setDemoArrow("49px")
-            }
+            }}
 }
 }, [props.tutorial, skinny, controlDock, props.directory, props.edit])
 
@@ -617,7 +618,7 @@ console.log("deleteDemoArrow", deleteDemoArrow)
               </CollabotorList>}
             </div>
             </div>
-            {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&
+            {(props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial &&
           <TutorialTip 
           asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={skinny}
           flexStart={flexStart} edit={props.edit} delay={delay}
@@ -709,15 +710,23 @@ ${({hover}) => hover &&
     border-color: transparent transparent transparent #ff7f5080;
     transition: ${({flexStart, controlDock, edit, delay}) => flexStart ?  !controlDock ? edit ? 'top .3s linear' :  'top .3s linear' : edit ? 'top .3s linear' : 'top ' + delay : 'top .1s linear'};
   }}
- .arrow.cat {
+ .cat {
   &:after {
-  top: ${({edit, arrowTopDistance, controlDock}) => controlDock ? edit ? 
+  
+  @media (max-width: 1100px) {
+    border-color: transparent transparent transparent ${({edit, controlDock}) => controlDock ? edit ? '#ff7f5080' : 'transparent' : 'transparent'};
+    top: ${({edit, arrowTopDistance, controlDock}) => controlDock ? edit ? 
+    118 - (35 - arrowTopDistance) + 'px' 
+      : 83 - (35 - arrowTopDistance) + 'px'
+    : 83 - (35 - arrowTopDistance) + 'px'};  
+  }
+  @media (min-width: 1100px) {
+    border-color: transparent transparent transparent ${({edit}) =>  edit ? '#ff7f5080' : 'transparent'};
+    top: ${({edit, arrowTopDistance}) => edit ? 
   118 - (35 - arrowTopDistance) + 'px' 
     : 83 - (35 - arrowTopDistance) + 'px'
-  : 83 - (35 - arrowTopDistance) + 'px'};
-  
-  border-color: transparent transparent transparent ${({edit, controlDock}) => controlDock ? edit ? '#ff7f5080' : 'transparent' : 'transparent'};
-  
+  };
+  }
   transition: ${({edit, controlDock}) => controlDock ? 
     edit ? 
     'border-color .15s linear .05s, top .2s linear .075s'
@@ -727,15 +736,24 @@ ${({hover}) => hover &&
   }
 }
 
-  .arrow.pub {
+  .pub {
     &:after {
 
-      top: ${({edit, arrowTopDistance, controlDock}) => controlDock ? 
-      edit ? 153 - (35 - arrowTopDistance) + 'px' 
-        : 118 - (35 - arrowTopDistance) + 'px'
-      : 118 - (35 - arrowTopDistance) + 'px'};
+      
 
-      border-color: transparent transparent transparent ${({edit, controlDock}) => controlDock ? edit ? '#ff7f5080' : 'transparent' : 'transparent'};
+      @media (max-width: 1100px) {
+        border-color: transparent transparent transparent ${({edit, controlDock}) => controlDock ? edit ? '#ff7f5080' : 'transparent' : 'transparent'};
+        top: ${({edit, arrowTopDistance, controlDock}) => controlDock ? 
+          edit ? 153 - (35 - arrowTopDistance) + 'px' 
+            : 118 - (35 - arrowTopDistance) + 'px'
+          : 118 - (35 - arrowTopDistance) + 'px'};
+        }
+      @media (min-width: 1100px) {
+        border-color: transparent transparent transparent ${({edit}) =>  edit ? '#ff7f5080' : 'transparent'};
+        top: ${({edit, arrowTopDistance}) => 
+        edit ? 153 - (35 - arrowTopDistance) + 'px' 
+          : 118 - (35 - arrowTopDistance) + 'px'};
+        }
 
       transition: ${({edit, controlDock}) => controlDock ? 
     edit ? 
@@ -747,13 +765,23 @@ ${({hover}) => hover &&
 
 
 
- .arrow.collab {
+ .collab {
   &:after {
-    top: ${({edit, arrowTopDistance, controlDock}) => controlDock ? 
-     edit ? 188 - (35 - arrowTopDistance) + 'px' 
-      : 153 - (35 - arrowTopDistance) + 'px'
-    : 153 - (35 - arrowTopDistance) + 'px'};
-    border-color: transparent transparent transparent ${({edit, controlDock}) => controlDock ? edit ? '#ff7f5080' : 'transparent' : 'transparent'};
+    
+    @media (max-width: 1100px) {
+      border-color: transparent transparent transparent ${({edit, controlDock}) => controlDock ? edit ? '#ff7f5080' : 'transparent' : 'transparent'};
+      top: ${({edit, arrowTopDistance, controlDock}) => controlDock ? 
+      edit ? 188 - (35 - arrowTopDistance) + 'px' 
+        : 153 - (35 - arrowTopDistance) + 'px'
+      : 153 - (35 - arrowTopDistance) + 'px'};
+      }
+    @media (min-width: 1100px) {
+      border-color: transparent transparent transparent ${({edit}) =>  edit ? '#ff7f5080' : 'transparent'};
+      top: ${({edit, arrowTopDistance}) => 
+      edit ? 188 - (35 - arrowTopDistance) + 'px' 
+       : 153 - (35 - arrowTopDistance) + 'px'
+    };
+    }
     transition: ${({edit, controlDock}) => controlDock ? 
     edit ? 
     'border-color .15s linear .05s, top .2s linear .075s'

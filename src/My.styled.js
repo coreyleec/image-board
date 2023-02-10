@@ -4,7 +4,7 @@ export const EditableDiv = styled.div`
 font-size: 1.4rem;
 line-height: .85em;
 padding-left: 10px; 
-padding-bottom: 7px;
+padding-top: 3px;
 float: left;
 text-align: left;
 width: 100%; 
@@ -34,7 +34,7 @@ ${({ edit }) => edit && `
   justify-content: space-between;
   width: 100%;
   
-  padding-bottom: 5px;
+  // padding-bottom: 5px;
   padding-right: 10px;
 } 
 `

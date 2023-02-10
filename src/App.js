@@ -7,6 +7,7 @@ import AsideRight from "./containers/AsideRight";
 import UserLoginSignup from "./containers/UserLoginSignup";
 import CommunityPage from "./containers/CommunityPage"
 import DndRoutePrefix from "./containers/DndRoutePrefix";
+import AboutCorey from "./containers/AboutCorey";
 
 
  
@@ -90,7 +91,7 @@ const editToggle = () => {
 // DEMO STATE
 const [hover, setHover] = useState(false)
 
-
+const [tutorial, setTutorial] = useState(false)
 
 
 
@@ -264,7 +265,7 @@ const hiliteCollaborator = (user) => {
 
 
 
-const [tutorial, setTutorial] = useState(false)
+
 const landingFetch = () => {
   fetch(`${dbVersion}/landing_page`, {
         method: "GET",
@@ -945,6 +946,8 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <Header
+          tutorial={tutorial}
+          setTutorial={setTutorial}
           userId={userId}
           follow={follow}
           creative={creative}
@@ -1068,6 +1071,10 @@ useEffect(() => {
                 setUuid={setUuid}
                 dbVersion={dbVersion}
                 fetchUser={fetchUser}
+                />
+                </Route>
+                <Route path="/about" >
+                  <AboutCorey
                 />
                 </Route>
                 
