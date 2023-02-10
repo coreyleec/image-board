@@ -44,16 +44,19 @@ return (
               openModal={props.openModal}
               setOpenModal={props.setOpenModal}
               folderShown={props.folderShown}
+              
               uuid={props.uuid}
               userId={props.userId}
               currentUserId={props.currentUserId}
-              demo={props.demo}
+              tutorial={props.tutorial}
               setReorderedPhotos={props.setReorderedPhotos}
               deletePhoto={props.deletePhoto}
               enableDelete={props.enableDelete}
               edit={props.edit}
               reorderSubmit={props.reorderSubmit}
-              // addPhoto={addPhoto}
+              updateUserFavorites={props.updateUserFavorites}
+              directory={props.directory}
+              dbVersion={props.dbVersion}
               /> 
 
               </Route> 

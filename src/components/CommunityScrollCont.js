@@ -6,15 +6,17 @@ import styled from 'styled-components'
 import ScrollCont from './ScrollCont';
 
 
-const CommunityBody = (props) => {
+const CommunityScrollCont = (props) => {
   
   const [catagory, setBodyent] = useState(true)
   // const [users, setUsers] = useState()
   window.store = props.users
 
+  
+
 
 // const fetchFriendos = () => {
-//   fetch("http://[::1]:3000/api/v1/connected/", {
+//   fetch("${props.dbVersion}/connected/", {
 //     method: "GET",
 //   headers: {
 //     Authorization: `Bearer ${localStorage.token}`,
@@ -32,7 +34,7 @@ const CommunityBody = (props) => {
 // )  
 // }
 // const fetchRandos = () => {
-//   fetch("http://[::1]:3000/api/v1/connected/", {
+//   fetch("${props.dbVersion}/connected/", {
 //     method: "GET",
 //   headers: {
 //     Authorization: `Bearer ${localStorage.token}`,
@@ -323,6 +325,7 @@ const [photos, setPhotos] = useState()
              <>
             {/* {!!props.following && props.connected ?  */}
             <ScrollCont
+            
               fetchUser={props.fetchUser}
               // photos={photos}
               setCatagory={props.setCatagory} 
@@ -360,7 +363,7 @@ const [photos, setPhotos] = useState()
     )
 }
             {/* // </ParallaxProvider> */}
-export default CommunityBody;
+export default CommunityScrollCont;
 
 const Body = styled.div`
   /* height: calc(100% - 100px); */

@@ -6,15 +6,14 @@ import styled from "styled-components";
 
 
 const ScrollCont = (props) => {
-    
-    
+
     
 
     const favoriteToggle = (photo) => {
       // const methodVar = !!favorite ? "DESTROY" : "CREATE"
       !!photo.favorites.length ? console.log(photo, "favorited", !!photo.favorites.length, "user", photo.favorites[0].user_id, "photo", photo.id) : console.log("favorited", !!photo.favorites.length, "user", photo.user_id, "photo", photo.id )
       !!photo.favorites.length 
-          ? fetch(`http://[::1]:3000/api/v1/favorites/${photo.favorites[0].id}`, {
+          ? fetch(`${props.dbVersion}/favorites/${photo.favorites[0].id}`, {
             method: "DELETE",
             headers: {
               Authorization: `Bearer ${localStorage.token}`,
@@ -25,7 +24,7 @@ const ScrollCont = (props) => {
               // .then((photosArray) => {
               //   console.log("photosArray", photosArray);
               //   setPhotos(photosArray)} )
-            : fetch(`http://[::1]:3000/api/v1/favorites/`, {
+            : fetch(`${props.dbVersion}/favorites/`, {
               method: "POST",
               headers: {
                 Authorization: `Bearer ${localStorage.token}`,
@@ -50,6 +49,8 @@ const ScrollCont = (props) => {
                 // );
                 // })
       }
+
+      
 
         return (
           
@@ -113,7 +114,7 @@ const ScrollCont = (props) => {
                 folderId={photo.folder_id}
                 onClick={() => console.log(photo.folder_id)}>
                     
-                    <img src={photo.url}/>
+                    <img src={photo.url} onClick={() => props.modalToggle(photo)}/>
                   </PhotoCont>
                   <div>
               </div>
@@ -185,7 +186,7 @@ const ScrollCont = (props) => {
                 folderId={photo.folder_id}
                 onClick={() => console.log(photo.folder_id)}>
                     
-                    <img src={photo.url}/>
+                    <img src={photo.url} onClick={() => props.modalToggle(photo)}/>
                   </PhotoCont>
                   <div>
               </div>

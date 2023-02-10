@@ -50,7 +50,7 @@ const submitFolderEdit = (e, folder) => {
 
 const updateFolder = (e, folderName, folder) => {
   e.preventDefault();
-  fetch(`http://[::1]:3000/api/v1/folders/${folder.id}`, {
+  fetch(`${props.dbVersion}/folders/${folder.id}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,

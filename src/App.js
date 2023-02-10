@@ -1,38 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { Routes, Route, useLocation, Switch, useHistory, useRouteMatch, Redirect } from 'react-router-dom';
-// import {withRouter} from 'react-router';
-
-// import { browserHistory } from 'react-router';
+import { Route, useLocation, Switch, useHistory, useRouteMatch, Redirect } from 'react-router-dom';
 import styled from "styled-components";
 import Header from "./containers/Header";
 import SideBar from "./containers/SideBar";
 import AsideRight from "./containers/AsideRight";
 import UserLoginSignup from "./containers/UserLoginSignup";
-import DndContainer from "./containers/DndContainer";
 import CommunityPage from "./containers/CommunityPage"
 import DndRoutePrefix from "./containers/DndRoutePrefix";
-import Dnd from "./containers/DndContainer";
-// import { basename } from "path";
-// import urlJoin from "url-join"
-// import url-util from "./url-util";
-// import MultiBackend from "react-dnd-multi-backend";
-// import HTML5toTouch from "./dnd/HTML5toTouch";
+
 
  
 
 export const App = (props) => {
   require("events").EventEmitter.defaultMaxListeners = 20;
-  const [user, setUser] = useState()
   let history = useHistory()
   let navigate = history.push;
   const location = useLocation();
   const [directory, setDirectory] = useState()
-  const { url, path } = useRouteMatch();
-  const match = useRouteMatch()
-  console.log("url, path", url, path)
+
   useEffect(() => {
     const root = location.pathname.split('/')[1]
-    console.log("path", root)
     setDirectory(root)
   }, [location.pathname])
   
@@ -40,15 +27,15 @@ export const App = (props) => {
     window.scrollTo(0, 0);
   }
   // SWITCH DATABASE VERSION
-  // const [dbVersion, setDbVersion] = useState(`https://memphis-project-api.herokuapp.com/api/v1`)
-  const [dbVersion] = useState(`http://[::1]:3000/api/v1`)
+  const [dbVersion, setDbVersion] = useState(`http://[::1]:3000/api/v1/`)
+  // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1/`)
+  
 
 
   // OPEN LOGIN
  const [userProfile, setUserProfile] = useState(true);
  
  // LOGIN
-// const [currentUser, setCurrentUser] = useState();
 const [currentUserId, setCurrentUserId] = useState(0);
 const [userId, setUserId] = useState(0);
 const [uuid, setUuid] = useState(0)
@@ -100,8 +87,8 @@ const editToggle = () => {
    navigate("/login")
  };
 
-
-
+// DEMO STATE
+const [hover, setHover] = useState(false)
 
 
 
@@ -109,7 +96,7 @@ const editToggle = () => {
 
 const profileFetch = () => {
   
-  fetch(`http://[::1]:3000/api/v1/profile/`, {
+  fetch(`${dbVersion}/profile/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -125,15 +112,17 @@ const profileFetch = () => {
       setUserAboutMe(user.details);
         setUserLinks(user.user.links);
         setFolders(user.user.folders);
+        setFavorites(user.user.favorites);
         setUserFavorites(user.user.favorite_folders)
         // setFolderPhotos(user.user.folders[0].index)
         setFolderType(user.user.folders[0].creative)
         setFolderShown(user.user.folders[0].index)
+        setFavoriteShown(null)
         setFolderCollaborators(user.user.folders[0].collaborators)
         setPhotos(user.user.folders[0].photos)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
-        
+        setTutorial(user.user.tutorial)
         navigate(`/home/folders/${user.user.folders[0].index}`)
         
   })
@@ -142,7 +131,7 @@ const profileFetch = () => {
 const fetchUser = (userId) => {
   userId === currentUserId 
   ? profileFetch()
-  : fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
+  : fetch(`${dbVersion}/users/${userId}/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -159,6 +148,7 @@ const fetchUser = (userId) => {
       setUserAboutMe(user.user.details);
       setFolders(user.user.folders);
       setFolderShown(user.user.folders[0].index)
+      setFavoriteShown(null)
       setFolderCollaborators(user.user.folders[0].collaborators)
       setUserLinks(user.user.links);
       setPhotos(user.user.folders[0].photos)
@@ -170,89 +160,20 @@ const fetchUser = (userId) => {
   })
 }
 
-console.log("location.pathname", location.pathname)
+
  useEffect(() => {
-  //  directory === 'home' && 
-  console.log('test useEffect')
-  !!currentUserId && userId === currentUserId && profileFetch()
+  !!currentUserId && userId === currentUserId && profileFetch(userId)
    
 }, [currentUserId])
 
-// useEffect(() => {
-//   location.pathname === '/community' && setUserId(null)
-// }, [props.baseName])
 
+useEffect(() => {
+  (directory !== 'home' || directory !== 'by_Corey_Lee') &&setTutorial(false)
+}, [directory])
 
-//  useEffect(() => {
-//    (location.pathname === '/user') && 
-//    (userId !== currentUserId) && fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
-//     method: "GET",
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-// })
-// .then((res) => res.json())
-// .then((user) => 
-// {
-//   console.log("user", user)
-//   setUserName(user.user.name);
-//   setUserAboutMe(user.user.details);
-//   setFolders(user.user.folders);
-//   setFolderShown(user.user.folders[0].id)
-//   setUserLinks(user.user.links);
-//   navigate(`/user/folders/${user.user.folders[0].index}`)
-//   // (user.id === props.currentUserId) ? navigate(`/home/folders/${user.user.folders[0].index}`) : navigate(`/user/folders/${user.user.folders[0].index}`)
-//     // setUserComments(user.comments);
-//     // setUserEmail(user.user.email);
-        
-//   })
-// }, [location.pathname, userId])
-
-
-
-
-
-// useEffect(() => {
-//   const folder = !!folders && folders.find(folder => folder.index === folderShown)
-//   console.log("collab", folder.collaborators, folder)
-//   !!folder && setFolderCollaborators(folder.collaborators) && console.log("collaborators", folder.collaborators)
-// }, [folderShown, userId ])
-
-
-
-const condition = (currentUserId === userId)
-//   useEffect(() => {
-// console.log("use", (currentUserId === userId))
-//     //  || (!!folderCollaborators.currentUserId) 
-//     // setFolderShown(folder.id)
-//     if (condition && !!folderShown && !favoriteShown) 
-//       {const folder = folders.filter(folder => folder.id === folderShown)[0]
-//       setPhotos(folder.photos) 
-//       console.log("folder.photos", folder.photos)
-//       // setGeneralState({photos: folder.photos}) 
-//       // setFolderPrivacy(folder.public)
-//       // setFolderCollaborators(folder.collaborators)
-//       // navigate(`/home/folders/${favoriteShown}`)
-//       navigate(`/home/folders/${folder.id}`)
-//     }
-      
-    
-//   }, [folderShown])
-  // console.log("folderShown", folderShown, "folderCollaborator", folderCollaborator)
-// useEffect(() => {
-//   if (condition && !folderShown && !!favoriteShown)
-//       {const favorite = userFavorites.filter(favorite => favorite.id === favoriteShown)[0]
-//         setFolderShown(null)
-//         // setFavoriteshown(favorite.id)
-//         setPhotos(favorite.photos) 
-//         navigate(`/favorites/${favorite.id}`)
-//       // setFavoritePrivacy(favorite.public)
-//       // setFavoriteCollaborators(favorite.collaborators)
-//     }
-// }, [favoriteShown])
-console.log("directory" , )
 
 const [favoriteShown, setFavoriteShown] = useState(null)
+const [favorites, setFavorites] = useState(null)
 
 const setFolderPhotos = (index) => {
   const folder = folders.find(folder => folder.index === index)
@@ -265,6 +186,7 @@ const setFolderPhotos = (index) => {
   setPhotos(folder.photos)
   navigate(`/${directory}/folders/${index}`)
 }
+
 const setFavoritePhotos = (index) => {
   const favoriteFolder = userFavorites.filter(favorites => favorites.index === index)
   setFavoriteShown(index)
@@ -342,34 +264,9 @@ const hiliteCollaborator = (user) => {
 
 
 
-
-// useEffect(() => {
-//   directory === '/user' && !currentUserId && (userId !== currentUserId)  && fetch(`http://[::1]:3000/api/v1/users/${userId}/`, {
-//         method: "GET",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//     })
-//     .then((res) => res.json())
-//     .then((user) => 
-//     {
-//       console.log("User", user)
-//       // setUserId(user.id)
-//       setUserName(user.user.name);
-//       setUserAboutMe(user.user.details);
-//         setUserLinks(user.user.links);
-//         setFolders(user.user.folders);
-//         // console.log("user folders", user.user.folders)
-//         setFolderShown(user.user.folders[0].index)
-//         setPhotos(user.user.folders[0].photos)
-//         navigate(`/user/folders/${user.user.folders[0].index}`)
-//         // setUserComments(user.comments);
-//         // setUserEmail(user.user.email);
-//   })
-// }, [userId])
-const [demo, setDemo] = useState(false)
+const [tutorial, setTutorial] = useState(false)
 const landingFetch = () => {
-  fetch("http://[::1]:3000/api/v1/landing_page/", {
+  fetch(`${dbVersion}/landing_page`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
@@ -378,50 +275,74 @@ const landingFetch = () => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("adminUser", user)
+      console.log("tutorialUser", user)
       setUserId(user.user.id)
       setUserName(user.user.name);
       setUserAboutMe(user.user.details);
         setUserLinks(user.user.links);
         setFolders(user.user.folders);
+        setFavorites(user.user.favorites);
         setUserFavorites(user.user.favorite_folders)
-        setDemo(user.user.demo)
+
+        setTutorial(user.user.tutorial)
         setUuid(user.user.uuid)
         setFolderType(user.user.folders[0].creative)
         // setFavoriteDetails(user.user.favorite_folders.map(favoriteFolder => (`{"name": "${favoriteFolder.name}", "id": ${favoriteFolder.id}}`)))
         // setFolderDetails(user.user.folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}}`)))
         setFolderCollaborators(user.user.folders[0].collaborators)
         setFolderShown(user.user.folders[0].index)
+        setFavoriteShown(null)
         // console.log("user folders", user.user.folders)
         setPhotos(user.user.folders[0].photos)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
-        navigate(`/-/folders/${user.user.folders[0].index}`)
+        navigate(`/by_Corey_Lee/folders/${user.user.folders[0].index}`)
   })
 }
+
 useEffect(() => {
   if (directory === 'login' || 'community'){
     setEdit(false)
     setColorArr(colors)
     enableDelete === true && setEnableDelete(false)
-
   }
-
-
 }, [directory])
 
 useEffect(() => {
-  if (directory !== '-' && demo === true){
-    setDemo(false)
+  if (directory !== 'by_Corey_Lee' && tutorial === true){
+    setTutorial(false)
   }
-  console.log('test')
 }, [directory])
 
 
  useEffect(() => {
-  location.pathname === '/-' && location.pathname !== '/login' && location.pathname !== '/community' && landingFetch()
+  location.pathname === '/by_Corey_Lee' && location.pathname !== '/login' && location.pathname !== '/community' && landingFetch()
 }, [location.pathname])
-// console.log("parse", !!favoriteDetails && favoriteDetails.map(detail => JSON.parse(detail)))
+
+            
+
+const updateUserFavorites = (photo) => {
+  console.log("favoriteObj", photo)
+  const favoriteFolders = [...userFavorites]
+  let favoriteFolder = favoriteFolders.find((fFolder) => fFolder.id === photo.favorite_folder_id)
+
+  console.log("favoriteFolder", favoriteFolder)
+  window.store = favoriteFolder
+  
+  let updatedFavoritePhotos = favoriteFolder.favorite_photos.map((fPhoto) => {
+    if (fPhoto.id === photo.id) return photo
+    else return fPhoto;
+  })
+  favoriteFolder.favorite_photos = updatedFavoritePhotos
+  console.log("updatedFavoritePhotos", favoriteFolder)
+
+  setUserFavorites(userFavorites.map((fFolder) => {
+    console.log("favoriteFolder", fFolder)
+    if (fFolder.id === favoriteFolder.id) return favoriteFolder
+    else return fFolder;
+  }))
+}
+
 
 useEffect(() => {
   let details = !!userFavorites && userFavorites.map(favoriteFolder => (`{"name": "${favoriteFolder.name}", "id": ${favoriteFolder.id}, "index": ${favoriteFolder.index}}`))
@@ -429,11 +350,18 @@ useEffect(() => {
   setFavoriteDetails(jsonDetails)
 }, [userFavorites])
 
+
+
+
+
+
+
+
 const [newFolder, setNewFolder] = useState(false)
 const createFolder = (e, folderName) => {
     e.preventDefault();
     const nextIndex = folderDetails[folderDetails.length - 1].index + 1
-    if (demo) {
+    if (tutorial) {
 
     
     // let imgObjs = 
@@ -455,6 +383,7 @@ const createFolder = (e, folderName) => {
       let photo = {}
       // let img = new Image()
       photo.index = i + 1
+      photo.id = i + 1
       photo.url = null
       photo.name = null
       photo.details = null
@@ -469,7 +398,7 @@ const createFolder = (e, folderName) => {
     setNewFolder(true)
     setFolderType(folder.creative)
     }
-    else {fetch(`http://[::1]:3000/api/v1/folders/`, {
+    else {fetch(`${dbVersion}/folders/`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -505,12 +434,25 @@ useEffect(() => {
 
   // FOLDER FUNCTIONS
   // const [folderType, setFolderType] = useState()
-  const [folderType, setFolderType] = useState(0)
+  const [folderType, setFolderType] = useState(null)
   // ${folder.id}
 const catagorize = (boolean) => {
-  console.log('catagorize')
-  folderType !== null && setFolderType(!folderType)
-  fetch(`http://[::1]:3000/api/v1/catagorize/${userId}`, {
+  console.log('catagorizeFolder', boolean)
+  let updatedFolder = folders.find((folder) => folder.id === folderShown)
+  updateFolder.creative = boolean
+  setFolders(
+    folders.map((folder) => {
+      if (folder.id === updatedFolder.id) 
+      return updatedFolder;
+      else return folder;
+    })
+    );
+console.log("updatedFolder", updatedFolder)
+  folderType !== null ? 
+  setFolderType(!folderType)
+  : setFolderType(boolean)
+
+  tutorial && fetch(`${dbVersion}/catagorize/${userId}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -543,14 +485,14 @@ const catagorize = (boolean) => {
 
   const updateFolder = (e, folderName, folder) => {
     e.preventDefault();
-    if (demo) {
+    if (tutorial) {
     folders.map((folder) => {
       if (folder.id === folder.id) 
       { folder.name = folderName
       return folder}
     })
   }
-    else fetch(`http://[::1]:3000/api/v1/folders/${folder.id}`, {
+    else fetch(`${dbVersion}/folders/${folder.id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -579,7 +521,7 @@ const catagorize = (boolean) => {
     // e.preventDefault();
     console.log("id", userId, "folder", folderShown)
     const folder = folders.find(folder => folder.index === folderShown)
-    fetch(`http://[::1]:3000/api/v1/add_collaborator/${folder.id}`, {
+    fetch(`${dbVersion}/add_collaborator/${folder.id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -609,7 +551,7 @@ const catagorize = (boolean) => {
 
   const updateFolderPrivacy = (e) => {
     e.preventDefault();
-    fetch(`http://[::1]:3000/api/v1/folders/${folderShown}`, {
+    fetch(`${dbVersion}/folders/${folderShown}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -658,7 +600,7 @@ const catagorize = (boolean) => {
         // console.log("previous folder", previousFolder)
         // THERE'S AN ISSUE WITH THE FETCH. RECIEVING ERROR: Uncaught (in promise) SyntaxError: Unexpected end of JSON input
         // SO FUNCTION IS OPTIMISTIC UNTIL RESOLVED
-      fetch(`http://[::1]:3000/api/v1/folders/${folderObj.index}/`, {
+      fetch(`${dbVersion}/folders/${folderObj.index}/`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
@@ -674,7 +616,7 @@ const createLink = (e, linkName, linkUrl) => {
   console.log(linkName)
   console.log(linkUrl)
   const nextIndex = !!userLinks.length ? userLinks[userLinks.length - 1].index + 1 : 1
-  fetch(`http://[::1]:3000/api/v1/links/`, {
+  fetch(`${dbVersion}/links/`, {
       method: 'POST'
       , headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -700,7 +642,7 @@ const createLink = (e, linkName, linkUrl) => {
     
     setUserLinks(updatedLinksArr)
 
-    fetch(`http://[::1]:3000/api/v1/links/${linkObj.id}/`, { method: "DELETE", headers: {
+    fetch(`${dbVersion}/links/${linkObj.id}/`, { method: "DELETE", headers: {
       Authorization: `Bearer ${localStorage.token}`
   }, })
       
@@ -713,7 +655,7 @@ const createLink = (e, linkName, linkUrl) => {
         console.log(linkUrl);
         console.log(link.id);
         console.log(linkName);
-        fetch(`http://[::1]:3000/api/v1/links/${link.id}`, {
+        fetch(`${dbVersion}/links/${link.id}`, {
           method: "PATCH",
           headers: {
             Authorization: `Bearer ${localStorage.token}`,
@@ -743,7 +685,7 @@ const createLink = (e, linkName, linkUrl) => {
 const updateUserAboutMe = (e, aboutMe) => {
   e.preventDefault();
   console.log("about me", aboutMe)
-  fetch(`http://[::1]:3000/api/v1/users/${currentUserId}`, {
+  fetch(`${dbVersion}/users/${currentUserId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -764,7 +706,7 @@ const nameSubmit = (e, newName) => {
   e.preventDefault();
   // console.log(e, newName);
   // !loggedIn ? 
-    fetch(`http://[::1]:3000/api/v1/users/${currentUserId}`, {
+    fetch(`${dbVersion}/users/${currentUserId}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -792,7 +734,7 @@ const nameSubmit = (e, newName) => {
 const deletePhoto = (photo) => {
 
   console.log(photo);
-  fetch(`http://[::1]:3000/api/v1/photos/${photo.id}/`, {
+  fetch(`${dbVersion}/photos/${photo.id}/`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -823,8 +765,15 @@ const deletePhoto = (photo) => {
 const [reorderedPhotos, setReorderedPhotos] = useState()
 // console.log("reorderedPhotos", reorderedPhotos)
 const reorderSubmit = () => {
-
-    !demo && fetch(`http://[::1]:3000/api/v1/reorder/`, {
+!!folderShown ?
+    !tutorial && fetch(`${dbVersion}/reorder_folder/`, {
+      method: "PATCH",
+      headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
+      body: JSON.stringify({
+        reordered_photos: reorderedPhotos,
+      }),
+    })
+    : !tutorial && fetch(`${dbVersion}/reorder_favorite/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -832,7 +781,7 @@ const reorderSubmit = () => {
       }),
     })
   // )
-  reorderedPhotos !== undefined &&  setReorderedPhotos(undefined)
+  reorderedPhotos !== undefined && setReorderedPhotos(undefined)
   };
 
   /// MODAL
@@ -856,7 +805,7 @@ useEffect(() => {
   const followToggle = (uId) => {
   // User uuid 
     console.log("follow", follow, uId)
-    if (demo === true) {
+    if (tutorial === true) {
       setFollow(!follow) 
       setTimeout(() => {
         setCreative(!creative)
@@ -864,7 +813,7 @@ useEffect(() => {
     else {
 
     if (follow === null) {
-      fetch(`http://[::1]:3000/api/v1/follows/`, {
+      fetch(`${dbVersion}/follows/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -885,7 +834,7 @@ useEffect(() => {
       });
     }
     else {
-    fetch(`http://[::1]:3000/api/v1/follows/${follow.id}`, {
+    fetch(`${dbVersion}/follows/${follow.id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -902,18 +851,13 @@ useEffect(() => {
   }
 }
 }
-  // useEffect(() => {
 
-  //   follow !== false && setTimeout(() => {
-  //     creativeFollow(follow.id)
-  //     }, "50")
-  // }, [follow])
   
 
   const creativeFollow = (followId) => {
     console.log("follow", follow, followId)
     // setCreative(!creative)
-    fetch(`http://[::1]:3000/api/v1/creative_toggle/${followId}`, {
+    fetch(`${dbVersion}/creative_toggle/${followId}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -934,7 +878,7 @@ useEffect(() => {
     
     console.log("follow", lifestyle)
     // setLifestyle(!lifestyle)
-    fetch(`http://[::1]:3000/api/v1/lifestyle_toggle/${followId}`, {
+    fetch(`${dbVersion}/lifestyle_toggle/${followId}`, {
         method: "PATCH",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -952,26 +896,28 @@ useEffect(() => {
         });
   }
 
-
+  // window.store = state 
     return (
       
       <Switch> 
       <Cont directory={directory} >
          
         <SideBar
+          hover={hover} 
+          setHover={setHover}
           follow={!!follow}
           creative={creative}
           lifestyle={lifestyle}
           followToggle={followToggle}
           creativeFollow={creativeFollow}
           lifestyleFollow={lifestyleFollow}
-          demo={demo}
+          tutorial={tutorial}
           fetch={!!currentUserId ? profileFetch : landingFetch}
           directory={directory}
           setFavoritePhotos={setFavoritePhotos}
           setFolderPhotos={setFolderPhotos}
           setFolders={setFolders}
-          setUserFavorites={setUserFavorites}
+          updateUserFavorites={updateUserFavorites}
           favoriteDetails={favoriteDetails}
           folderDetails={folderDetails}
           setFolderDetails={setFolderDetails}
@@ -995,6 +941,8 @@ useEffect(() => {
           updateUserAboutMe={updateUserAboutMe}
           userAboutMe={userAboutMe}
           useTemplate={useTemplate}
+
+          dbVersion={dbVersion}
         />
         <Header
           userId={userId}
@@ -1008,12 +956,15 @@ useEffect(() => {
           userName={userName}
           edit={!edit}
           nameSubmit={nameSubmit}
+          dbVersion={dbVersion}
         />
         <AsideRight
+          hover={hover} 
+          setHover={setHover}
           catagorize={catagorize}
           folderType={folderType}
           setFolderType={setFolderType}
-          demo={demo}
+          tutorial={tutorial}
           uuid={uuid}
           directory={directory}
           hiliteCollaborator={hiliteCollaborator}
@@ -1032,6 +983,7 @@ useEffect(() => {
           userId={userId}
           currentUserId={currentUserId}
           // options={{unmountOnBlur: true}}
+          dbVersion={dbVersion}
         />
         {/* if main state says community, overflow === hidden */}
         <main
@@ -1040,7 +992,7 @@ useEffect(() => {
         >
           {/* GRID STARTS HERE */}
           
-      <Route path={[ '/-','/home', '/user' ]} 
+      <Route path={[ '/by_Corey_Lee','/home', '/user' ]} 
       >
 
           <DndRoutePrefix
@@ -1056,24 +1008,27 @@ useEffect(() => {
               userId={userId}
               uuid={uuid}
               currentUserId={currentUserId}
-              demo={demo}
+              tutorial={tutorial}
               setReorderedPhotos={setReorderedPhotos}
               // addPhoto={addPhoto}
+              updateUserFavorites={updateUserFavorites}
               deletePhoto={deletePhoto}
               enableDelete={enableDelete}
               edit={edit}
               reorderSubmit={reorderSubmit}
+              dbVersion={dbVersion}
+              directory={directory}
               /> 
               {/* />  */}
               {/* )} */}
               </Route>    
-              <Redirect from="/" to="/-" />
+              <Redirect from="/" to="/by_Corey_Lee" />
  
 
          
               <Route exact path='/login' >
                 <UserLoginSignup 
-                setDemo={setDemo}
+                setTutorial={setTutorial}
                 setUuid={setUuid}
                 userProfile={userProfile}
                 setUserProfile={setUserProfile}
@@ -1081,7 +1036,7 @@ useEffect(() => {
                 setUserLinks={setUserLinks}
                 setFolders={setFolders}
                 setFolderShown={setFolderShown}
-                dbVersion={dbVersion}
+
                 setPhotos={setPhotos}
                 setUserName={setUserName}
                   // loggedIn={loggedIn}
@@ -1093,6 +1048,7 @@ useEffect(() => {
                   setUserId={setUserId}
                   setCurrentUserId={setCurrentUserId}
                   // useTemplate={useTemplate} 
+                  dbVersion={dbVersion}
                 />
                 </Route>
 
@@ -1165,10 +1121,5 @@ const Footer = styled.footer`
 `
  
 
-// useEffect(()=> {
-//   const grid = gridRef.current;
-//   const image = imgRef.current
-//   adjustGridItemsHeight(grid, image);
-// }, [props.photos])
 
 

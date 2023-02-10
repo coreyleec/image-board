@@ -40,10 +40,10 @@ const Header = (props) => {
                             onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader >{(props.directory === 'home' | props.directory === '-' | props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
+                : <TitleHeader >{(props.directory === 'home' | props.directory === 'by_Corey_Lee' | props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
                     }
 
-{(props.directory === 'user'| props.directory === '-') ? <Sticky>
+{(props.directory === 'user'| props.directory === 'by_Corey_Lee') ? <Sticky>
 {/* FOLLOW */}
             <Switch>
             <label className="toggle-switch">

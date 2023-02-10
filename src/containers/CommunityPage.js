@@ -1,8 +1,8 @@
 import React from 'react'
 import { useEffect, useState, useRef } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
-import CommunityPanel from "../components/CommunityPanel";
-import CommunityBody from "../components/CommunityBody";
+import CommunityScrollCont from "../components/CommunityScrollCont";
+import ImageModal from '../components/ImageModal';
 import styled from 'styled-components'
 
 
@@ -12,6 +12,14 @@ const CommunityPage = (props) => {
     const navigate = history.push
     
     console.log("path", location.pathname);
+
+    const [photo, setPhoto] = useState();
+    const [openModal, setOpenModal] = useState(false);
+    const modalToggle = (photo) => {
+    console.log("photo", photo)
+    setPhoto(photo);
+    setOpenModal(!openModal);
+  };
 // const [users, setUsers] = useState()
 // const [photos, setPhotos] = useState()
 // const [folders, setFolders] = useState()
@@ -72,7 +80,7 @@ const setDegree = (degree) => {
   if (!!degree)
   {console.log("number")
 
-  fetch(`http://[::1]:3000/api/v1/degree/${degree}`, {
+  fetch(`${props.dbVersion}/degree/${degree}`, {
     method: "GET",
   headers: {
     Authorization: `Bearer ${localStorage.token}`,
@@ -85,7 +93,7 @@ const setDegree = (degree) => {
     res.json()
   
   .then((degreeReturned) => 
-  {console.log("degreeReturned ✚", degreeReturned)
+  {console.log("degreeReturned", degreeReturned)
   setFollowing(degreeReturned)
   setLoad(degree)
   setError(false)
@@ -95,7 +103,7 @@ const setDegree = (degree) => {
   res.json()
  .then((degreeReturned) => {
   //  setError(degreeReturned.error) 
-   console.log("degreeReturned ✚", degreeReturned.error)})
+   console.log("degreeReturned", degreeReturned.error)})
 
 }
 
@@ -155,6 +163,7 @@ const setLifestyle = (lifestyle) => {
 
 
 
+
 // console.log('filter', filters.connected)
 
 
@@ -170,7 +179,7 @@ const [users, setUsers] = useState()
 
 
 // const fetchFriendos = () => {
-//   fetch("http://[::1]:3000/api/v1/connected/", {
+//   fetch("${props.dbVersion}/connected/", {
 //     method: "GET",
 //   headers: {
 //     Authorization: `Bearer ${localStorage.token}`,
@@ -188,7 +197,7 @@ const [users, setUsers] = useState()
 // )  
 // }
 // const fetchRandos = () => {
-//   fetch("http://[::1]:3000/api/v1/connected/", {
+//   fetch("${props.dbVersion}/connected/", {
 //     method: "GET",
 //   headers: {
 //     Authorization: `Bearer ${localStorage.token}`,
@@ -226,7 +235,7 @@ const [users, setUsers] = useState()
 
 useEffect(() => {
   !!props.userId &&
-    fetch("http://[::1]:3000/api/v1/community/", {
+    fetch(`${props.dbVersion}/community/`, {
         method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -238,11 +247,22 @@ useEffect(() => {
     {console.log("recentContent", recentContent)
     setCommunity(recentContent.community)
     setFollowing(recentContent.following)
+    recentContent.following.folders.length === 0 && setDegree(false)
     window.store = recentContent
     setLoad(true)
   }
     )
 }, [])
+
+useEffect(() => {
+  // let followedFolders = following.folders.length
+  // let followedUsers = following.users.length
+  // following.folders === 0 &&
+  // !!following && console.log("total", following.folders + following.users)
+  // if(followedFolders + followedUsers === 0){
+  //   setDegree(false)
+  // }
+}, [following])
 
 // useEffect(() => {
 //   // console.log("recent", following, following.users, community);
@@ -263,7 +283,7 @@ const [search, setSearch] = useState([0])
   const searchUser = (input) => {
     console.log(input)
     // setSearch(...search, input)
-    fetch(`http://[::1]:3000/api/v1/search_results/`, {
+    fetch(`${props.dbVersion}/search_results/`, {
       method: "POST",
       headers:  {"Content-Type": "application/json"}, 
       body: JSON.stringify({
@@ -289,6 +309,16 @@ const [search, setSearch] = useState([0])
 
     return (
         <Body>
+          {props.openModal && (<ImageModal
+          photo={photo}
+          setPhoto={setPhoto}
+          // photos={props.photos}
+          setOpenModal={setOpenModal}
+          openModal={openModal}
+          modalToggle={modalToggle}
+          // previousPhoto={previousPhoto}
+          // nextPhoto={nextPhoto}
+          ></ImageModal>)}
           {/* make button a styled component and pass color or connected */}
           {/* <p style={{paddingLeft: '15px'}}>search filters</p> */}
 
@@ -355,7 +385,7 @@ const [search, setSearch] = useState([0])
             <div className='block-cont'>
             <p>user</p> 
             <InputSwitch
-            catagorized={!!props.folderType}
+            catagorized={props.folderType === null}
             search={search}
             expand={!expand} >
             <label className="toggle-switch">
@@ -380,7 +410,7 @@ const [search, setSearch] = useState([0])
             <div className='block-cont'>
             <p>word</p> 
             <InputSwitch
-            catagorized={!!props.folderType}
+            catagorized={props.folderType === null}
             search={search}
             expand={!!expand} >
             <label className="toggle-switch">
@@ -408,7 +438,7 @@ const [search, setSearch] = useState([0])
               </ControlPanel >
             
             {load && 
-            <CommunityBody
+            <CommunityScrollCont
               // lifestyle={filters.lifestyle}
               // creative={filters.creative}
               // catagory={filters.catagory}

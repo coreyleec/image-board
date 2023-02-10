@@ -2,6 +2,9 @@
   "name": "image-board",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": "6.11.1"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.5.0",
@@ -14,6 +17,7 @@
     "lodash": "^4.17.21",
     "react": "^16.13.1",
     "react-bootstrap": "^1.6.1",
+    "react-devtools": "^4.27.1",
     "react-dnd": "^10.0.2",
     "react-dnd-html5-backend": "^10.0.2",
     "react-dnd-multi-backend": "^6.0.1",
@@ -24,11 +28,11 @@
     "react-router": "^3.2.6",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^5.0.1",
+    "react-tooltip": "^4.5.1",
     "styled-components": "^5.1.0"
   },
   "scripts": {
-    "start": "PORT=9000 react-scripts start",
-    "build": "react-scripts build",
+    "start": "PORT=9100 react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },

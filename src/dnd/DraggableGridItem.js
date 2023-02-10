@@ -1,5 +1,5 @@
-import React, { useRef, useEffect } from 'react';
-import { useDragAndDrop } from './useDragAndDrop';
+import React, { useRef} from 'react';
+// import { useDragAndDrop } from './useDragAndDrop';
 import styled from 'styled-components';
 import { useDrag, useDrop } from 'react-dnd';
 
@@ -45,7 +45,7 @@ const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }
 
 
 
-  const opacity = isDragging ? 0 : 1;
+  // const opacity = isDragging ? 0 : 1;
 // const style = (photo.url === null) && {zIndex : '-1'}
   return <GridItemWrapper  
     {...p} ref={ref}  
@@ -108,6 +108,7 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
     // this is where you would want to reorder your list
     // In case you wan't to use the whole object, don't forget to
     // make a deep copy, because we are mutating the object on the last line
+    console.log("otherPhoto", otherPhoto, "currentPhoto", currentPhoto)
     onDrop(otherPhoto.id, currentPhoto.id);
   // onDrop(otherPhoto.index, currentPhoto.index);
   // onDrop(otherObject.index, currentObject.index);
@@ -116,8 +117,7 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
   // but it's good here for the sake of performance
   // to avoid expensive index searches.
   otherPhoto.index = currentPhoto.index;
-  console.log("otherPhoto", otherPhoto)
-  console.log("currentPhoto", currentPhoto)
+  
     
  
   }
@@ -130,10 +130,10 @@ const GridItemWrapper = styled.div `
 
   ${({url, edit, isDragging, orientation}) => edit 
     ? `
-    z-index: 0;
+    z-index: 1;
     transition: z-index .0s ease-in, transform .2s ease-in;
     &:hover {transform: translate(1.5px,-1.5px); transition: transform .2s ease-in, z-index 0s ease-in .2s;}
-    cursor: ${isDragging ? 'grabbing !important' : 'pointer !important' };
+    cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
     `
     : !!url
     ? `z-index: 0; 

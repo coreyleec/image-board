@@ -70,7 +70,7 @@ const ControlPanel = (props) => {
            <div className='block-cont'>
            <p>user</p> 
            <InputSwitch
-           catagorized={!!props.folderType}
+           catagorized={props.folderType === null}
            search={props.search}
            expand={!props.expand} >
            <label className="toggle-switch">
@@ -95,7 +95,7 @@ const ControlPanel = (props) => {
            <div className='block-cont'>
            <p>word</p> 
            <InputSwitch
-           catagorized={!!props.folderType}
+           catagorized={props.folderType === null}
            search={props.search}
            expand={!!props.expand} >
            <label className="toggle-switch">

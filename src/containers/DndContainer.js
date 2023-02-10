@@ -16,27 +16,24 @@ const DndContainer = (props) => {
   const location = useLocation();
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState()
-
+  const [updPhoto, setUpdPhoto] = useState(null)
   // useEffect(() => {
   //   setPhotos(photos)
   // }, [props.colorArr])
   
-  useEffect(() => {    
-    !!props.photos && setPhotos([...props.photos])
-    const grid = gridRef.current;
-    adjustGridItemsHeight(grid);
-  }, [props.photos, props.colorArr])
-
+  
   const match  = useRouteMatch();
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
+    console.log("firstPhotoId", firstPhotoId, "secondPhotoId", secondPhotoId)
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
+    console.log("firstPhoto", firstPhoto, "secondPhoto", secondPhoto, firstPhotoId, secondPhotoId)
     const firstIndex = firstPhoto.index; // declares variable value of first photo index
     firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
     secondPhoto.index = firstIndex; // then sets the second photo index to the first index
-    setPhotos(newPhotos);
+    props.setPhotos(newPhotos);
     props.setReorderedPhotos(newPhotos)
   };
 
@@ -49,15 +46,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   const imgRef = useRef(null)
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [imgUrl, setImgUrl] = useState(null)
- const adjustFunction = () => {
-  const grid = gridRef.current;
-  adjustGridItemsHeight(grid)
- }
-  useEffect(() => {
-    console.log("testing grid adjustment", photos)
-    const grid = gridRef.current;
-    adjustGridItemsHeight(grid);
-  }, [photos]);
+
   
   const addPhoto = (e, formData, orientation, photoName, photoDetails, photo, photoUrl) => {
     e.preventDefault();
@@ -68,9 +57,11 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
       updatedPhoto.name = photoName
       updatedPhoto.details = photoDetails
       updatedPhoto.orientation = orientation
+      updatedPhoto.index = photo.index
+      updatedPhoto.id = photo.id
       updatedPhoto.url = imgUrl
       console.log("updatedPhoto", updatedPhoto)
-      setPhotos(photos.map((photo) => {
+      props.setPhotos(photos.map((photo) => {
         if (photo.index === updatedPhoto.index) return updatedPhoto;
         else return photo;}))
     }
@@ -84,7 +75,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
   
     for(let [key, value] of data){console.log("data", `${key}:${value}`)}
   
-  fetch(`http://[::1]:3000/api/v1/photos/${photo.id}`, {
+  fetch(`${props.dbVersion}/photos/${photo.id}`, {
   method: "PUT",
   headers: {
     Authorization: `Bearer ${localStorage.token}`,
@@ -106,7 +97,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
       const deletePhoto = (photo) => {
 
         console.log(photo);
-        fetch(`http://[::1]:3000/api/v1/photos/${photo.id}/`, {
+        fetch(`${props.dbVersion}/photos/${photo.id}/`, {
           method: "PUT",
           headers: {
             Authorization: `Bearer ${localStorage.token}`,
@@ -123,7 +114,7 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
           .then((res) => res.json())
           .then((photoObj) => {
             console.log(photoObj);
-            setPhotos(
+            props.setPhotos(
               photos.map((photo) => {
                 if (photo.id === photoObj.id) return photoObj;
                 else return photo;
@@ -176,23 +167,45 @@ const onDropVariable = props.edit ? onDrop : disableOnDrop
 
   const opacity = imagesLoaded ? 1 : 0
   const display = openModal ? "none" : "inline"
+
+  const setFavoritedPhotos = (photoObj) => {
+    setUpdPhoto(photoObj)
+    console.log("photoObj", photoObj)
+    console.log("photoObj", props.photos.map((photo) => {
+      if (photo.id === photoObj.id) return photoObj
+      else return photo;
+    }))
+    setPhotos(photos.map((photo) => {
+      if (photo.id === photoObj.id) return photoObj
+      else return photo;
+    })
+      )
+  }
   
 const favoriteToggle = (photo) => {
 // const methodVar = !!favorite ? "DESTROY" : "CREATE"
 !!photo.favorites.length ? console.log(photo, "favorited", !!photo.favorites.length, "user", photo.favorites[0].user_id, "photo", photo.id) : console.log("favorited", !!photo.favorites.length, "user", photo.user_id, "photo", photo.id )
 !!photo.favorites.length 
-    ? fetch(`http://[::1]:3000/api/v1/favorites/${photo.favorites[0].id}`, {
+    ? fetch(`${props.dbVersion}/favorites/${photo.favorites[0].id}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
-        "Content-Type": "application/json",}
+        "Content-Type": "application/json",},
+        body: JSON.stringify({
+          favorite_photo: photo,
+        }),
         })
         // .catch(e => console.error(e))
         .then((res) => res.json())
-        .then((photosArray) => {
-          console.log("photosArray", photosArray);
-          setPhotos(photosArray)})
-      : fetch(`http://[::1]:3000/api/v1/favorites/`, {
+        .then((favoriteObj) => {
+          
+          console.log("favoriteObj", favoriteObj);
+          props.folderShown !== null ? 
+          setFavoritedPhotos(favoriteObj.photo)
+          : setFavoritedPhotos(favoriteObj.unfavorited_photo)
+          props.updateUserFavorites(favoriteObj.unfavorited_photo)
+        })
+      : fetch(`${props.dbVersion}/favorites/`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -207,14 +220,11 @@ const favoriteToggle = (photo) => {
         // .catch(e => console.error(e))
         .then((res) => res.json())
         .then((favoriteObj) => {
+          props.folderShown !== null ? 
+          setFavoritedPhotos(favoriteObj.photo)
+          : setFavoritedPhotos(favoriteObj.favorite_photo)
           console.log("favoriteObj", favoriteObj);
-          setPhotos(
-            photos.map((photo) => {
-              if (photo.id === favoriteObj.photo.id) return favoriteObj.photo
-              // photo.favorites[0] = favoriteObj.photo.favorites[0];
-              else return photo;
-            })
-          );
+          props.updateUserFavorites(favoriteObj.favorite_photo)
           })
 }
 
@@ -238,11 +248,69 @@ const testFavorite = (photo) => {
 // }
 // console.log("test", threeWrap())
 
+const onLoadFunc = () => {
+  adjustFunction()
+  setImagesLoaded(true)
+}
+
+const adjustFunction = () => {
+  const grid = gridRef.current;
+  adjustGridItemsHeight(grid, updPhoto)
+  const photos = grid.children
+  for (let i = 0; i < photos.length; i++) {
+    let photo = photos[i]; // each square is "photo"
+  
+    let gridItem = photo.getBoundingClientRect();
+    console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
+
+    let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
+
+    let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
+  	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
+  
+
+	photo.style.transformOrigin = `${originX}% ${originY}%`;
+  } return 
+ }
+  useEffect(() => {
+    console.log("testing grid adjustment", photos)
+    const grid = gridRef.current;
+    adjustGridItemsHeight(grid, updPhoto);
+  }, [photos]);
+
+useEffect(() => {    
+  console.log("photos", props.photos)
+  !!props.photos && setPhotos([...props.photos])
+  const grid = gridRef.current;
+  adjustGridItemsHeight(grid, updPhoto);
+}, [props.photos, props.colorArr])
+
+useEffect(() => {
+  const grid = gridRef.current;
+  const photos = grid.children
+  for (let i = 0; i < photos.length; i++) {
+    let photo = photos[i]; // each square is "photo"
+  
+    let gridItem = photo.getBoundingClientRect();
+    console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
+
+    let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
+
+    let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
+  	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
+  
+
+	photo.style.transformOrigin = `${originX}% ${originY}%`;
+  } return 
+
+}, [])
+
+
 const [drag, setDrag] = useState(false)
 const dragging = () => {
   setDrag()
 }
-const nameArray = [], size = 3;
+
   return (
     <article>
       {/* <button onClick={adjustFunction}>adjust</button> */}
@@ -251,7 +319,6 @@ const nameArray = [], size = 3;
         setImgUrl={setImgUrl}
         setPhotos={props.setPhotos}
         addPhoto={addPhoto}
-        ImageopenModal={props.ImageopenModal}
           edit={props.edit}
           photo={photo}
           setPhoto={setPhoto}
@@ -277,8 +344,9 @@ const nameArray = [], size = 3;
               {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
                     className="grid-item"
                     edit={props.edit}
+                    alt={photo.id}
                     key={photo.index}
-                    orientation={photo.orientation}
+                    orientation={+photo.orientation}
                     url={photo.url}
                     photo={photo}
                     collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
@@ -288,8 +356,8 @@ const nameArray = [], size = 3;
                   >
                     <PictureFrame
                     className="picture"
-                    onResize={() => console.log("hello")}
-                      favorited={!!photo.favorites && photo.favorites.length} 
+                    // onResize={() => console.log("hello")}
+                      // favorited={!!photo.favorites && photo.favorites.length} 
                       edit={props.edit}
                       url={photo.url}
                       highlight={photo.color}
@@ -297,7 +365,7 @@ const nameArray = [], size = 3;
                       enableDelete={props.enableDelete}
                       
                       details={!!photo.name || !!photo.details}
-                      orientation={photo.orientation}
+                      orientation={+photo.orientation}
                       // orientation={!!photo.orientation ? 'portrait' : 'landscape' }
                       // style={ (photo.url !== null && photo.orientation !== "100px") ? {height: `220px`} : {height: '100px'}
                       // }
@@ -306,11 +374,11 @@ const nameArray = [], size = 3;
                         
                       <img
                         className={"photo"}
-                        alt="photo"
+                        // alt="photo"
                         // ref={imgRef}
                         // key={photo.index}
                         // key={!!photo.url && photo.url}
-                        onLoad={() => props.edit ? adjustFunction() : setImagesLoaded(true)}
+                        onLoad={() => props.edit ? adjustFunction() : onLoadFunc() }
                         // onLoad keeps tall images from overlapping the photo on the next line
                         
                         onClick={() => modalToggle(photo)}
@@ -349,7 +417,8 @@ const nameArray = [], size = 3;
                       </div>}
 {/* FAVORITE BUTTON */}
 {/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
-                        {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && <Heart 
+                        {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && 
+                        <Heart 
                         favorited={photo.favorites !== undefined && !!photo.favorites.length}
                         className="heart"
                         onClick={() => favoriteToggle
@@ -377,8 +446,11 @@ const nameArray = [], size = 3;
 export default DndContainer;
 
 
+// const adjustHover = (grid) => {
 
-const adjustGridItemsHeight = (grid, photo) => {
+// }
+
+const adjustGridItemsHeight = (grid, updPhoto) => {
 
   // set all grid photos to vairable "photos"
   
@@ -393,22 +465,21 @@ const adjustGridItemsHeight = (grid, photo) => {
     let rowGap = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-row-gap")
     );
+    let height = +getComputedStyle(photo.firstChild).height.slice(0, -2)
     let rowSpan = Math.ceil(
-      (photo.firstChild.getBoundingClientRect().height + rowGap) /
+      (height + rowGap) /
         (rowHeight + rowGap)) <= 40 ? 40 : 80
 
-    // console.log("rowSpan", rowSpan)
+if(updPhoto !== null) {if(parseInt(photo.getAttribute("alt")) === updPhoto.id){
+  console.log("issue", height, getComputedStyle(photo.firstChild).height, `{Math.ceil(
+    (` + `${photo.firstChild.getBoundingClientRect().height}`+ '+' + `${rowGap}` + `) /
+      (` + `${rowHeight}`+ `+` + `${rowGap})` +   `) <= 40 ? 40 : 80`)}
+}
+
+    // console.log("rowSpan", rowSpan, parseInt(photo.getAttribute("alt")), i, updPhoto.id)
     photo.style.gridRowEnd = "span " + rowSpan;
   
-    let gridItem = photo.getBoundingClientRect();
-    console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
-    let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
-
-    let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
-  	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
-  
-
-	photo.style.transformOrigin = `${originX}% ${originY}%`;
+    
   } return 
 };
 
@@ -424,7 +495,7 @@ const GridWrapper = styled.div`
   
 `;
 // COMPASS 
- {/* className={
+ /* className={
           !props.edit
           EDIT = TRUE
             ? photo.url !== null
@@ -434,7 +505,7 @@ const GridWrapper = styled.div`
             : photo.url !== null
             ? "picture"  // HAS IMAGE URL
             : "empty-box" // HAS NO IMAGE URL
-        } */}
+        } */
 
 
         
@@ -474,13 +545,7 @@ const PictureFrame = styled.div`
 
   
 
-  .heart{
-    ${({favorited}) => !!favorited 
-    ? `color: red; text-shadow: none;`
-    : `color: transparent;
-    text-shadow: 0px 0px 0.35px hwb(16deg 33% 17% / 85%), 0px -0.75px 0.35px hwb(16deg 25% 43%), 0px 0.65px 0px hsl(16deg 100% 86% / 43%);`}
-    transition: opacity .3s ease .3s;
-  }
+  
 .center-image {
     display: flex;
     align-self: center;

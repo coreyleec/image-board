@@ -4,6 +4,8 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { BrowserRouter as Router, Route, useLocation } from 'react-router-dom';
 import App from './App';
+// import 'react-tooltip/dist/react-tooltip.css'
+
 
 import * as serviceWorker from './serviceWorker';
 // import { getBaseUrlPath, setBase } from "./url-util";

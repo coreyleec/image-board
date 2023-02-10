@@ -66,11 +66,13 @@ font-family: 'Sawarabi Mincho', serif;
 font-size: 13.5px;
 background-color: transparent;
 border-width: 0px;
-color: ${favorited => !!favorited ? `#aaa` : `red`};
+// color: ${favorited => favorited ? `#aaa` : `red`};
 ${({favorited}) => !!favorited 
 ? `color: red; text-shadow: none;`
 : `color: transparent;
-text-shadow: 0px 0px 0.35px hwb(16deg 33% 17% / 85%), 0px -0.75px 0.35px hwb(16deg 25% 43%), 0px 0.65px 0px hsl(16deg 100% 86% / 43%);`}
+text-shadow: 0px 0px 0.35px hwb(16deg 33% 17% / 85%), 0px -0.75px 0.35px hwb(16deg 25% 43%), 0px 0.65px 0px hsl(16deg 100% 86% / 43%);`}`;
+
+
 /* text-shadow: 0px 0px 0.35px rgb(229 123 84 / 80%), 0.25px 0.25px 0.5px rgb(249 183 160 / 50%), -0.85px -0.65px 0.35px rgb(194 98 64); 
 0px 0px 0.35px hwb(16deg 33% 15% / 90%), -0.85px -0.65px 0.35px hwb(16deg 25% 43%), 0.3px 0.3px 0px hsl(16deg 100% 86% / 43%)
 */
@@ -79,9 +81,6 @@ text-shadow: 0px 0px 0.35px hwb(16deg 33% 17% / 85%), 0px -0.75px 0.35px hwb(16d
 display: inline-block;
 margin: 2px;
 aspect-ratio: 1; */
-
-`;
-
 export const AddButton = styled.button`
   opacity: ${({edit}) => edit ? '1' : '0'};
   transition: opacity .2s linear;
@@ -89,6 +88,7 @@ export const AddButton = styled.button`
   border: none;
   font-size: 2rem;
   line-height: 6px;
+  // color: green;
   padding-bottom: 5px;
   cursor: pointer;
 `

@@ -1,3 +1,199 @@
+APP
+
+
+// import { basename } from "path";
+// import urlJoin from "url-join"
+// import url-util from "./url-util";
+// import MultiBackend from "react-dnd-multi-backend";
+// import HTML5toTouch from "./dnd/HTML5toTouch";
+
+
+
+//  useEffect(() => {
+//    (location.pathname === '/user') && 
+//    (userId !== currentUserId) && fetch(`${dbVersion}/users/${userId}/`, {
+//     method: "GET",
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+// })
+// .then((res) => res.json())
+// .then((user) => 
+// {
+//   console.log("user", user)
+//   setUserName(user.user.name);
+//   setUserAboutMe(user.user.details);
+//   setFolders(user.user.folders);
+//   setFolderShown(user.user.folders[0].id)
+//   setUserLinks(user.user.links);
+//   navigate(`/user/folders/${user.user.folders[0].index}`)
+//   // (user.id === props.currentUserId) ? navigate(`/home/folders/${user.user.folders[0].index}`) : navigate(`/user/folders/${user.user.folders[0].index}`)
+//     // setUserComments(user.comments);
+//     // setUserEmail(user.user.email);
+        
+//   })
+// }, [location.pathname, userId])
+
+
+
+
+
+// useEffect(() => {
+//   const folder = !!folders && folders.find(folder => folder.index === folderShown)
+//   console.log("collab", folder.collaborators, folder)
+//   !!folder && setFolderCollaborators(folder.collaborators) && console.log("collaborators", folder.collaborators)
+// }, [folderShown, userId ])
+
+
+
+
+//   useEffect(() => {
+// console.log("use", (currentUserId === userId))
+//     //  || (!!folderCollaborators.currentUserId) 
+//     // setFolderShown(folder.id)
+//     if (condition && !!folderShown && !favoriteShown) 
+//       {const folder = folders.filter(folder => folder.id === folderShown)[0]
+//       setPhotos(folder.photos) 
+//       console.log("folder.photos", folder.photos)
+//       // setGeneralState({photos: folder.photos}) 
+//       // setFolderPrivacy(folder.public)
+//       // setFolderCollaborators(folder.collaborators)
+//       // navigate(`/home/folders/${favoriteShown}`)
+//       navigate(`/home/folders/${folder.id}`)
+//     }
+      
+    
+//   }, [folderShown])
+  // console.log("folderShown", folderShown, "folderCollaborator", folderCollaborator)
+// useEffect(() => {
+//   if (condition && !folderShown && !!favoriteShown)
+//       {const favorite = userFavorites.filter(favorite => favorite.id === favoriteShown)[0]
+//         setFolderShown(null)
+//         // setFavoriteshown(favorite.id)
+//         setPhotos(favorite.photos) 
+//         navigate(`/favorites/${favorite.id}`)
+//       // setFavoritePrivacy(favorite.public)
+//       // setFavoriteCollaborators(favorite.collaborators)
+//     }
+// }, [favoriteShown])
+
+
+
+
+
+// useEffect(() => {
+//   directory === '/user' && !currentUserId && (userId !== currentUserId)  && fetch(`${dbVersion}/users/${userId}/`, {
+//         method: "GET",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//     })
+//     .then((res) => res.json())
+//     .then((user) => 
+//     {
+//       console.log("User", user)
+//       // setUserId(user.id)
+//       setUserName(user.user.name);
+//       setUserAboutMe(user.user.details);
+//         setUserLinks(user.user.links);
+//         setFolders(user.user.folders);
+//         // console.log("user folders", user.user.folders)
+//         setFolderShown(user.user.folders[0].index)
+//         setPhotos(user.user.folders[0].photos)
+//         navigate(`/user/folders/${user.user.folders[0].index}`)
+//         // setUserComments(user.comments);
+//         // setUserEmail(user.user.email);
+//   })
+// }, [userId])
+
+
+
+// console.log("parse", !!favoriteDetails && favoriteDetails.map(detail => JSON.parse(detail)))
+
+// const favoriteToggle = (photo) => {
+//   // const methodVar = !!favorite ? "DESTROY" : "CREATE"
+//   !!photo.favorites.length ? console.log(photo, "favorited", !!photo.favorites.length, "user", photo.favorites[0].user_id, "photo", photo.id) : console.log("favorited", !!photo.favorites.length, "user", photo.user_id, "photo", photo.id )
+//   !!photo.favorites.length 
+//       ? fetch(`${props.dbVersion}/favorites/${photo.favorites[0].id}`, {
+//         method: "DELETE",
+//         headers: {
+//           Authorization: `Bearer ${localStorage.token}`,
+//           "Content-Type": "application/json",},
+//           body: JSON.stringify({
+//             favorite_photo: photo,
+//           }),
+//           })
+//           // .catch(e => console.error(e))
+//           .then((res) => res.json())
+//           .then((favoriteObj) => {
+//             console.log("favoriteObj", favoriteObj);
+//             setPhotos(
+//               photos.map((photo) => {
+//                 if (photo.id === favoriteObj.photo.id) return favoriteObj.photo
+//                 // photo.favorites[0] = favoriteObj.photo.favorites[0];
+//                 else return photo;
+//               }))
+//           })
+//         : fetch(`${props.dbVersion}/favorites/`, {
+//           method: "POST",
+//           headers: {
+//             Authorization: `Bearer ${localStorage.token}`,
+//             "Content-Type": "application/json",},
+//             body: JSON.stringify({
+//               favoritable_id: photo.id,
+//               favoritable_type: "Photo",
+//               u_id: props.userId,
+//             }),
+              
+//           })
+//           // .catch(e => console.error(e))
+//           .then((res) => res.json())
+//           .then((favoriteObj) => {
+//             console.log("favoriteObj", favoriteObj);
+//             setPhotos(
+//               photos.map((photo) => {
+//                 if (photo.id === favoriteObj.photo.id) return favoriteObj.photo
+//                 // photo.favorites[0] = favoriteObj.photo.favorites[0];
+//                 else return photo;
+//               }))
+//             })
+//           }
+
+
+  // useEffect(() => {
+
+  //   follow !== false && setTimeout(() => {
+  //     creativeFollow(follow.id)
+  //     }, "50")
+  // }, [follow])
+
+
+
+  // useEffect(()=> {
+//   const grid = gridRef.current;
+//   const image = imgRef.current
+//   adjustGridItemsHeight(grid, image);
+// }, [props.photos])
+
+
+//  transition: ${({edit, controlDock}) => controlDock ? 
+//     edit ? 
+//     'border-color .15s linear .05s, top .2s linear .075s'
+//     : 'border-color .05s linear .05s, top .1s linear'
+//     : 'border-color .05s linear .05s, top .1s linear'};
+//   }
+
+setDemoArrow("16px")
+setDemoArrow("-38px")
+
+
+setDemoArrow("49px")
+setDemoArrow("-60px")
+
+setDemoArrow("83px")
+setDemoArrow("-35px")
+
+
 import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from 'react-router-dom';
@@ -331,25 +527,25 @@ useEffect(() => {
   if (props.tutorial){
     if (skinny) {
       if (controlDock === false){
-      setDemoText("flip this switch to edit the profile settings")
-      setDemoArrow("16px")
+      setDemoText("flip this switch to edit profile settings")
+      setDemoArrow("-38px")
       } 
       else if (controlDock){
         if (!props.edit) {(props.directory === 'by_Corey_Lee') && setDemoText("feel free to explore the site as if you were me. use the edit switch to edit my account") ||
         (props.directory === 'home') && setDemoText("use the edit switch to edit your projects. all personal information will become editable.")
-        setDemoArrow("49px")}
+        setDemoArrow("-60px")}
         else if (props.edit){
           setDemoText("these switches will allow you to do things such as add, edit, and currate photos, add collaborators, as well as enable you to add, edit and delete elements in the left sidebar.")
-          setDemoArrow("83px")
+          setDemoArrow("-120px")
         }
   }}      
         else if (!props.edit){
             (props.directory === 'by_Corey_Lee') && setDemoText("feel free to explore the site as if you were me. use the edit switch to edit my account") ||
             (props.directory === 'home') && setDemoText("use the edit switch to edit your projects. all personal information will become editable.")
-            setDemoArrow("16px")}
+            setDemoArrow("-38px")}
           else {
             setDemoText("the switches shown here will allow you to do things such as add, edit, and organize photos, add collaborators, as well as enable you to add, edit and delete elements in the left sidebar.")
-            setDemoArrow("49px")
+            setDemoArrow("-60px")
             }
 }
 }, [props.tutorial, skinny, controlDock, props.directory, props.edit])
@@ -357,14 +553,14 @@ useEffect(() => {
 let deleteDemoArrow = !!editDrawerRef.current && (editDrawerRef.current.childNodes[0].clientHeight !== 25) ? 19 : 0
 console.log("deleteDemoArrow", deleteDemoArrow)
 
-// const [hover, setHover] = useState(false)
+const [hover, setHover] = useState(false)
 
 
   return (
     <aside ref={asideRef}  >
      
       <Sticky>
-      <SideWrapper skinny={skinny} asideRef={asideRef} onMouseEnter={() => props.setHover(false)}>
+      <SideWrapper skinny={skinny} asideRef={asideRef} onMouseEnter={() => setHover(false)}>
       {(((props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user'))) &&  
             <Container
             controlDock={controlDock}
@@ -618,21 +814,24 @@ console.log("deleteDemoArrow", deleteDemoArrow)
             </div>
             </div>
             {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&
-          <TutorialTip 
-          asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={skinny}
+          <TutorialTip asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={skinny}
           flexStart={flexStart} edit={props.edit} delay={delay}
           arrowTopDistance={skinny ? 35 : deleteDemoArrow}
-          hover={props.hover}
+          hover={hover}
+          
+          // onMouseOut={() => {
+          //   setHover(false)
+          // }}
           onMouseEnter={() => {
-            props.setHover(true)
+            setHover(true)
           }}
           // deleteSwitchHeight={!!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight }
           >{demoText}
            {/* <div className="content"></div> */}
             <div className="arrow"></div>
             <div className="arrow cat"></div>
-            <div className="arrow pub"></div>
-            <div className="arrow collab"></div>
+            {/* <div className="arrow pub"></div>
+            <div className="arrow collab"></div> */}
           </TutorialTip>}
             </Container>
             } 
@@ -661,7 +860,7 @@ const SideWrapper = styled.div`
 
 const TutorialTip = styled.div`
 
-  position: absolute;
+
   white-space: normal;
   cursor: default;
   padding: 15px;
@@ -671,22 +870,26 @@ const TutorialTip = styled.div`
   border-radius: 16px;
   color: blue;
   opacity: 100%;
-  width: 168px;
-  top: 0;
   // background: rgb(167 165 165 / 50%);
 
 @media (min-width: 1100px){
+  position: absolute;
   right: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth + 5 + 'px'}
   }
   // width: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth + 'px'};
-  
+  width: 168px;
+  top: 0;
   transition: ${({controlDock})  => 
   controlDock ? 'right 0.3s linear' : 'right 0.3s linear 0.3s'}, opacity .2s linear, z-index .2s linear, top .3s linear, min-height .4s linear, visibility 0s;
 };
 @media (max-width: 1100px){
-  right: ${({controlDock, skinny, panelRef})  => 
-  controlDock ? '280px' : '80px'};
-  // transform: translateX(-198px); transition: transform 1s ease;
+  position: absolute;
+  // right:  
+  
+  transform: translateX(-189px); 
+  transition: transform 1s ease;
+  top: 0;
+  width: 168px;
   transition: ${({controlDock})  => 
   controlDock ? 'right 0.3s linear' : 'right 0.3s linear 0.3s'}, opacity .2s linear, z-index .2s linear, top .0s linear,  min-height .4s linear, visibility 0s;
   }
@@ -700,7 +903,8 @@ ${({hover}) => hover &&
     &:after {
     content: "";
     position: relative;
-    top: ${({demoArrow}) => demoArrow};
+    // top: ${({demoArrow}) => demoArrow};
+    transform: translateY(${({demoArrow}) => demoArrow});
     position: absolute;
     right: -20px;
     margin-left: -5px;
@@ -709,25 +913,25 @@ ${({hover}) => hover &&
     border-color: transparent transparent transparent #ff7f5080;
     transition: ${({flexStart, controlDock, edit, delay}) => flexStart ?  !controlDock ? edit ? 'top .3s linear' :  'top .3s linear' : edit ? 'top .3s linear' : 'top ' + delay : 'top .1s linear'};
   }}
- .arrow.cat {
+ .cat {
   &:after {
-  top: ${({edit, arrowTopDistance, controlDock}) => controlDock ? edit ? 
-  118 - (35 - arrowTopDistance) + 'px' 
-    : 83 - (35 - arrowTopDistance) + 'px'
-  : 83 - (35 - arrowTopDistance) + 'px'};
+    transform: translateY(${({edit, arrowTopDistance, controlDock}) => controlDock ? edit ? 
+    ((-35 + arrowTopDistance) - 46  + 'px') 
+    : (-85 - (35 - arrowTopDistance) + 'px')
+  : (-85 - (35 - arrowTopDistance) + 'px')});
   
   border-color: transparent transparent transparent ${({edit, controlDock}) => controlDock ? edit ? '#ff7f5080' : 'transparent' : 'transparent'};
   
   transition: ${({edit, controlDock}) => controlDock ? 
     edit ? 
-    'border-color .15s linear .05s, top .2s linear .075s'
-    : 'border-color .05s linear .05s, top .1s linear'
-    : 'border-color .05s linear .05s, top .1s linear'};
+    'border-color .15s linear .05s, transform .2s linear .075s'
+    : 'border-color .05s linear .05s, transform .1s linear'
+    : 'border-color .05s linear .05s, transform .1s linear'};
   }
   }
 }
 
-  .arrow.pub {
+  .pub {
     &:after {
 
       top: ${({edit, arrowTopDistance, controlDock}) => controlDock ? 
@@ -747,7 +951,7 @@ ${({hover}) => hover &&
 
 
 
- .arrow.collab {
+ .collab {
   &:after {
     top: ${({edit, arrowTopDistance, controlDock}) => controlDock ? 
      edit ? 188 - (35 - arrowTopDistance) + 'px' 
@@ -1204,12 +1408,8 @@ const OpenSwitch = styled.label`
       /* line-height: 12px;
       font-size: 13px; */
       margin-block: auto;
-      // line-height: 11px;
-      // font-size: 16px;
-      margin-block: auto;
-      line-height: 16px;
+      line-height: 11px;
       font-size: 16px;
-      color: #bc29298a;
       transition: top .3s linear, transform .6s ease, text-shadow .3s ease;
       /* transform: ${props => !props.controlDock ? 'scaleX(-1)' : 'scaleX(1)'};
       text-shadow: ${props => !props.controlDock ? '0px -1px 0px #0000008a' : '0px -1px 0px #0000008a;'}; */
@@ -1221,7 +1421,7 @@ const OpenSwitch = styled.label`
       /* text-indent: -5px; */
       /* color: rgb(255 255 255 / 46%);
       opacity: 43%; */
-      // color: #ccc;
+      color: #ccc;
       opacity: 100%;
       vertical-align: middle;
       /* top: ${props => !props.controlDock ? '-6px' : '-3.5px'}; */

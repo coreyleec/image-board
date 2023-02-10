@@ -7,6 +7,7 @@ const UserLoginSignup = (props) => {
 const [name, setName] = useState();
 const [email, setEmail] = useState();
 const [password, setPassword] = useState();
+const [betaCode, setBetaCode] = useState();
 const [userLogin, setUserLogin] = useState(false);
 
   const login = () => {
@@ -30,7 +31,7 @@ const [userLogin, setUserLogin] = useState(false);
 const loginSubmit = (e, name, password) => {
   e.preventDefault();
   // console.log("name", name, "password", password)
-  fetch(`http://[::1]:3000/api/v1/login`, {
+  fetch(`${props.dbVersion}/login`, {
     method: "POST",
     headers: {
       'Content-Type': 'application/json',
@@ -49,7 +50,7 @@ const loginSubmit = (e, name, password) => {
       props.setUserId(user.user.id);
       props.setCurrentUserId(user.user.id)
       // props.setUuid(user.user.uuid)
-      props.setDemo(false)
+      props.setTutorial(false)
       // props.setUserName(user.user.name);
       // props.setUserAboutMe(user.user.details);
       // props.setUserFolders(user.user.folders);
@@ -64,9 +65,9 @@ const loginSubmit = (e, name, password) => {
 
 // console.log("token", localStorage.token)
 // USER SIGNUP
-const signupSubmit = (e, name, email, password) => {
+const signupSubmit = (e, name, email, password, betaCode) => {
   e.preventDefault();
-  fetch(`http://[::1]:3000/api/v1/users/`, {
+  fetch(`${props.dbVersion}/users/`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -75,28 +76,28 @@ const signupSubmit = (e, name, email, password) => {
       name: name,
       email: email,
       password: password,
+      beta_code: betaCode,
     }),
   })
     .catch(e => alert(e))
-    .then((res) => res.json())
+    .then((res) => {
+    if (!!res.ok){  
+      res.json()
+      .then((user) => {
+        console.log("user signup", user );
+        localStorage.token = user.user.token;
+        console.log("token", localStorage.token)
+        props.setUserId(user.user.id);
+        props.setCurrentUserId(user.user.id)
+        
+      });
+    }
+    else
+    res.json()
     .then((user) => {
-      console.log("user signup", user );
-      // props.setUserProfile(!props.userProfile);
-      localStorage.token = user.user.token;
-      console.log("token", localStorage.token)
-      props.setUserId(user.user.id);
-      props.setCurrentUserId(user.user.id)
-      // props.setCurrentUser(user.user);
-      // props.setUserName(user.user.name);
-      // props.setUserAboutMe(user.user.details);
-      // props.setUserFolders(user.user.folders);
-      // console.log("user.folders", user.user.folders)
-      // props.setFolderShown(user.user.folders[0].id)
-      // props.setUserLinks(user.links);
-      // console.log("user folders", user.user.folders)
-      // props.setBaseName("home")
-      // navigate(`/home/folders/${user.user.folders[0].index}`)
-    });
+      //  setError(degreeReturned.error) 
+      alert(user.error)})
+    })
 };
 
   // const handleChange = e => {
@@ -127,7 +128,7 @@ const signupSubmit = (e, name, email, password) => {
         </form>
       ) : null}
       {userSignUp ? (
-        <form onSubmit={e => signupSubmit(e, name, email,  password)}>
+        <form onSubmit={e => signupSubmit(e, name, email,  password, betaCode)}>
           {/* <button onClick={() => setUserSignUp(!userSignUp)} className="closeSidebar">X</button> */}
           {/* <p>sign up</p> */}
           <input
@@ -145,10 +146,16 @@ const signupSubmit = (e, name, email, password) => {
             placeholder="password"
             onChange={(e) => setPassword(e.target.value)}
           />
+          <input
+            type="beta-code"
+            placeholder="beta code"
+            onChange={(e) => setBetaCode(e.target.value)}
+          />
 
           <button 
           // onMouseOver={() => props.setBaseName('home')} onMouseOut={() => props.setBaseName('')}
-          type="submit">submit</button>
+          type="submit"
+          >submit</button>
         </form>
       ) : null}
       </article>

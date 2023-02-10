@@ -117,13 +117,15 @@ font-size: 2rem;
 
 aside:nth-child(3) {
   grid-area: rightbar;
+  /* position: sticky;
+  top: 0; */
   background-color: gainsboro;
   border-top-width: 0px;
   border-right-width: 0px;
   border-bottom-width: 0px;
   border-left-width: 6px;
   /* border-style: solid; */
-  overflow: hidden;
+  /* overflow: hidden; */
   border-radius: 22px 0px 0px 22px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
   margin-left: 6px;

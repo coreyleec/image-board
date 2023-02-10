@@ -25,7 +25,7 @@ const submitFavorites = (e, favorite) => {
 
 const updateFavorites = (e, favoriteName, favorite) => {
   e.preventDefault();
-  fetch(`http://[::1]:3000/api/v1/favorites/${favorite.id}`, {
+  fetch(`${props.dbVersion}/favorites/${favorite.id}`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -59,11 +59,11 @@ const updateFavorites = (e, favoriteName, favorite) => {
 // }
 // }
 const [condition, setCondition] = useState()
-useEffect(() => {
-  (props.directory === 'home' || props.directory === '-') ?
-  setCondition(false)
-  : setCondition(true)
-}, [props.directory])
+// useEffect(() => {
+//   (props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') ?
+//   setCondition(false)
+//   : setCondition(true)
+// }, [props.directory])
 
 console.log("props.favoriteDetails", props.favoriteDetails)
     return (
@@ -98,8 +98,11 @@ console.log("props.favoriteDetails", props.favoriteDetails)
 </div>
 
 {/* EDIT FOLDER NAME */}
-<SlideDrawer condition={condition} >
-            {!!props.favoriteDetails  && props.favoriteDetails.map(favorite => <div 
+            <SlideDrawer 
+            // condition={condition} 
+                  >
+                    {!!props.favoriteDetails  && props.favoriteDetails.map(favorite => 
+                    <div 
                         className="title-cont" key={favorite.id} favorite={favorite}>
                         <EditableDiv
                         type="text" contentEditable={props.edit} edit={props.edit}
@@ -113,6 +116,7 @@ console.log("props.favoriteDetails", props.favoriteDetails)
                         }}
                         // navigate(`/favorites/${favorite.id}`)
 // DELETE NAVIGATE ^
+                        key={favorite.index}
                         style={(favorite.index === props.favoriteShown) && (props.location === "/home" || "/") ? {textDecoration: "underline"} : null} 
                         onInput={e => setUserFavorites(e.currentTarget.textContent)}
                         >
@@ -135,7 +139,7 @@ export default SideBarFavorites
 
  const SlideDrawer = styled.div`
  transition: height 1s ease-in-out;
- ${({ condition }) => (condition ? `max-height: 0px; overflow: hidden;` : `height: min-content;`)}`
+//  ${({ condition }) => (condition ? `max-height: 0px; overflow: hidden;` : `height: min-content;`)}`
 //  (sideBar ? `left : 0%` : `left: -30%`)}
 
 

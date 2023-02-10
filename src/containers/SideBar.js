@@ -6,10 +6,11 @@ import SideBarFolder from "../components/SideBarFolder";
 import SideBarFavorites from "../components/SideBarFavorites";
 import AboutMe from "../components/AboutMe";
 import styled from "styled-components";
+import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider";
 
 const SideBar = (props) => {
   // TOGGLE SIDEBAR
-  const [sideBar, setBar] = useState(false);
+  const [sideBar, setSideBar] = useState(false);
   const location = useLocation();
   console.log("new props", !!props.userState && props.userState.openModal);
   let history = useHistory();
@@ -30,6 +31,35 @@ const [follow, setFollow] = useState(false)
     const [creative, setCreative] = useState(false)
     const [lifestyle, setLifestyle] = useState(false)
 
+// const [hover, setHover] = useState(false)
+
+const [demoText, setDemoText] = useState("")
+const [demoArrow, setDemoArrow] = useState("16px")
+
+useEffect(() => {
+    setSideBar(props.edit)
+}, [props.edit])
+
+useEffect(() => {
+  if(props.tutorial){
+    // setSideBar(props.edit)
+    // if(props.edit){
+    // }
+    // else{
+
+    // }
+  }
+}, [props.tutorial, props.edit, props.enableDelete])
+
+const folderDemo = ['135px', 'these folders can be used to organize photos as you develope bodies of work ']
+const favoriteDemo = ['208px', "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
+const LinkDemo = ['281px', "here you can add external links to projects or any relevant content you would like to share. i've added my GitHub and LinkedIn for example"]
+const communityDemo = ['375px', "the community page allows you to explore the site and see what other people are taking photos of"]
+// top: ;
+const showTip = () => {
+  
+}
+
 
   return (
     <aside>
@@ -38,14 +68,15 @@ const [follow, setFollow] = useState(false)
       >
         <>
           <ButtonContainer sideBar={sideBar}>
-            <button onClick={() => setBar(!sideBar)}>
+            <button onClick={() => setSideBar(!sideBar)}>
               {sideBar ? "close" : "open"}
             </button>
           </ButtonContainer>
-          <div className="side-bar">
+          <div className="side-bar" 
+          onMouseEnter={() => props.setHover(false)}>
           <div className="follow-cont">
 {/* FOLLOW */}
-          {(props.directory === 'user'| props.directory === '-') ? 
+          {(props.directory === 'user'| props.directory === 'by_Corey_Lee') ? 
           <>
             <Switch>
             <label className="toggle-switch">
@@ -108,7 +139,11 @@ const [follow, setFollow] = useState(false)
                     enableDelete={props.enableDelete}
                     directory={props.directory}
                     // key={props.userId} 
+                    dbVersion={props.dbVersion}
                     />
+
+                    {(props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
+
                     <SideBarFavorites  
                     directory={props.directory}
                     setFavoritePhotos={props.setFavoritePhotos}
@@ -117,20 +152,25 @@ const [follow, setFollow] = useState(false)
                     enableDelete={props.enableDelete}
                     // key={props.userId}
                     edit={props.edit}
-                    />
-                    {(!!props.userLinks || props.edit) && <SideBarLinks
+                    dbVersion={props.dbVersion}
+                    />}
+
+                    {(!!props.userLinks || props.edit) && (props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
+                    <SideBarLinks
                       updateLink={props.updateLink}
                       createLink={props.createLink}
                       userLinks={props.userLinks}
                       edit={props.edit}
                       enableDelete={props.enableDelete}
                       deleteLink={props.deleteLink}
+                      dbVersion={props.dbVersion}
                     />}
+
                   </>
                 )}
 {/* COMMUNITY */}
             <div 
-            onClick={() => setBar(!sideBar)} 
+            onClick={() => setSideBar(!sideBar)} 
             style={{"width": "min-content"}}>
               {props.directory !== 'community' && (
                 <Link as={Link} to="/community" className="community-href">
@@ -144,7 +184,7 @@ const [follow, setFollow] = useState(false)
 
               {/* location.pathname !== "/user" && */}
 {/* HOME */}
-              {props.directory !== 'home' && props.directory !== '-' && (
+              {props.directory !== 'home' && props.directory !== 'by_Corey_Lee' && (
                 
                 
                   <div className="nav-bar-header-wrapper" 
@@ -165,7 +205,7 @@ const [follow, setFollow] = useState(false)
                 onClick={() => logout()}>log out</Button>
               ) : (
                 <Button 
-                 onClick={() => props.useTemplate(setBar(!sideBar))}>
+                 onClick={() => props.useTemplate(setSideBar(!sideBar))}>
                   use ImageBoard
                 </Button>
               )}
@@ -176,6 +216,14 @@ const [follow, setFollow] = useState(false)
           {/* </div>
         </div> */}
         </>
+        <TutorialTip 
+          sideBar={sideBar} 
+          hover={props.hover}
+          onMouseEnter={() => {props.setHover(true)}}
+            >these folders can be used to organize photos as you develope bodies of work 
+            <div className="arrow"></div>
+            </TutorialTip>
+            
       </Sticky>
     </aside>
   );
@@ -191,6 +239,49 @@ const Button = styled.button`
     text-decoration: none;
   }
 `;
+
+const TutorialTip = styled.div`
+  top: 135px;
+  position: absolute;
+  white-space: normal;
+  cursor: default;
+  padding: 15px;
+  min-height: 100%;
+  background: #ff7f5080;
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  color: blue;
+  opacity: 100%;
+  width: 168px;
+  ${({hover}) => hover && 
+`visibility: hidden; opacity: 0%; transition: opacity .2s linear .1s;
+}` }
+  @media (max-width: 1100px) {
+    transition: transform 1s ease;
+    transform: ${({ sideBar }) => (sideBar ? 'translateX(205px)' : 'translateX(-100px)')};
+  }
+  .arrow {
+    &:after {
+    content: "";
+    position: relative;
+    left: -15px;
+    top: 16px;
+    
+    
+    // top: ${({demoArrow}) => demoArrow};
+    position: absolute;
+    // right: -20px;
+    
+    margin-left: -5px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent #ff7f5080 transparent transparent;
+    transition: ${({flexStart, controlDock, edit, delay}) => flexStart ?  !controlDock ? edit ? 'top .3s linear' :  'top .3s linear' : edit ? 'top .3s linear' : 'top ' + delay : 'top .1s linear'};
+  }}
+
+
+  // ${({ sideBar }) => (sideBar ? `right : 0%` : `right: 100%`)};
+`
 
 const ButtonContainer = styled.div`
   display: flex;
@@ -217,7 +308,7 @@ const Sticky = styled.div`
 
   position: sticky;
   top: 0;
-  z-index: 4;
+  z-index: 5;
 .follow-cont{
   padding-top: 0px;
   height: 115px;
