@@ -14,15 +14,42 @@ const CommunityPage = (props) => {
     console.log("path", location.pathname);
 
     const [photo, setPhoto] = useState();
+
     const [openModal, setOpenModal] = useState(false);
-    const modalToggle = (photo) => {
+    const [photos, setPhotos] = useState()
+
+    const modalToggle = (photo, photos) => {
     console.log("photo", photo)
     setPhoto(photo);
     setOpenModal(!openModal);
+    setPhotos(photos)
   };
-// const [users, setUsers] = useState()
-// const [photos, setPhotos] = useState()
-// const [folders, setFolders] = useState()
+  
+  const nextPhoto = (initialPhoto) => {
+    console.log("hi", initialPhoto, photos)
+    let initialIndex = photos.findIndex(
+      (photo) => photo.index === initialPhoto.index
+    );
+    let nextPhoto = photos[initialIndex + 1];
+
+    // initialPhoto === lastPhoto
+    nextPhoto === undefined ? setPhoto(photos[0]) : setPhoto(nextPhoto);
+  };
+
+  const previousPhoto = (initialPhoto) => {
+    console.log("hi", initialPhoto, photos)
+    
+    let initialIndex = photos.findIndex(
+      (photo) => photo.index === initialPhoto.index
+    );
+    let previousPhoto = photos[initialIndex - 1];
+    let firstPhoto = photos[0];
+
+    // previousPhoto === undefined
+    initialPhoto.index === firstPhoto.index
+      ? setPhoto(photos[photos.length - 1])
+      : setPhoto(previousPhoto);
+  };
 
 const colorArr = [['red', 'green'], ['yellow', 'red'], ['blue', 'yellow'], ['green', 'coral'], ['coral', 'blue']]
 // const [connected, setConnected] = useState(true)
@@ -248,13 +275,13 @@ useEffect(() => {
     setCommunity(recentContent.community)
     setFollowing(recentContent.following)
     recentContent.following.folders.length === 0 && setDegree(false)
-    window.store = recentContent
+    // window.store = recentContent
     setLoad(true)
   }
     )
 }, [])
 
-useEffect(() => {
+// useEffect(() => {
   // let followedFolders = following.folders.length
   // let followedUsers = following.users.length
   // following.folders === 0 &&
@@ -262,7 +289,7 @@ useEffect(() => {
   // if(followedFolders + followedUsers === 0){
   //   setDegree(false)
   // }
-}, [following])
+// }, [following])
 
 // useEffect(() => {
 //   // console.log("recent", following, following.users, community);
@@ -307,17 +334,17 @@ const [search, setSearch] = useState([0])
 
 
 
+
     return (
         <Body>
-          {props.openModal && (<ImageModal
+          {openModal && (<ImageModal
           photo={photo}
-          setPhoto={setPhoto}
-          // photos={props.photos}
-          setOpenModal={setOpenModal}
+          photos={photos}
           openModal={openModal}
+          setOpenModal={setOpenModal}
           modalToggle={modalToggle}
-          // previousPhoto={previousPhoto}
-          // nextPhoto={nextPhoto}
+          previousPhoto={previousPhoto}
+          nextPhoto={nextPhoto}
           ></ImageModal>)}
           {/* make button a styled component and pass color or connected */}
           {/* <p style={{paddingLeft: '15px'}}>search filters</p> */}
@@ -439,10 +466,7 @@ const [search, setSearch] = useState([0])
             
             {load && 
             <CommunityScrollCont
-              // lifestyle={filters.lifestyle}
-              // creative={filters.creative}
-              // catagory={filters.catagory}
-              // connected={filters.connected}
+              modalToggle={modalToggle}
               community={community}
               fetchUser={props.fetchUser}
               following={following}

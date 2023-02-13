@@ -43,12 +43,11 @@ const disableOnDrop = () => {
 const onDropVariable = props.edit ? onDrop : disableOnDrop
 
   const gridRef = useRef(null);
-  const imgRef = useRef(null)
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [imgUrl, setImgUrl] = useState(null)
 
   
-  const addPhoto = (e, formData, orientation, photoName, photoDetails, photo, photoUrl) => {
+  const addPhoto = (e, formData, orientation, photoName, photoDetails, photo) => {
     e.preventDefault();
     
     if (props.demo) {
@@ -261,7 +260,7 @@ const adjustFunction = () => {
     let photo = photos[i]; // each square is "photo"
   
     let gridItem = photo.getBoundingClientRect();
-    console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
+    // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
 
     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
 
@@ -273,13 +272,13 @@ const adjustFunction = () => {
   } return 
  }
   useEffect(() => {
-    console.log("testing grid adjustment", photos)
+    // console.log("testing grid adjustment", photos)
     const grid = gridRef.current;
     adjustGridItemsHeight(grid, updPhoto);
   }, [photos]);
 
 useEffect(() => {    
-  console.log("photos", props.photos)
+  // console.log("photos", props.photos)
   !!props.photos && setPhotos([...props.photos])
   const grid = gridRef.current;
   adjustGridItemsHeight(grid, updPhoto);

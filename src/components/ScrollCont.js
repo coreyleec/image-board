@@ -6,8 +6,11 @@ import styled from "styled-components";
 
 
 const ScrollCont = (props) => {
-
-    
+  const [photos, setPhotos] = useState()
+  // useEffect(() => {
+  //   let photos = props?.catagory?.map((obj) => (obj.photos.map(photo => photo)))
+  //   setPhotos(photos.flat())
+  // }, [photos])
 
     const favoriteToggle = (photo) => {
       // const methodVar = !!favorite ? "DESTROY" : "CREATE"
@@ -114,7 +117,7 @@ const ScrollCont = (props) => {
                 folderId={photo.folder_id}
                 onClick={() => console.log(photo.folder_id)}>
                     
-                    <img src={photo.url} onClick={() => props.modalToggle(photo)}/>
+                    <img src={photo.url} onClick={() => props.modalToggle(photo, photos)}/>
                   </PhotoCont>
                   <div>
               </div>
@@ -186,7 +189,7 @@ const ScrollCont = (props) => {
                 folderId={photo.folder_id}
                 onClick={() => console.log(photo.folder_id)}>
                     
-                    <img src={photo.url} onClick={() => props.modalToggle(photo)}/>
+                    <img src={photo.url} onClick={() => props.modalToggle(photo, photos)}/>
                   </PhotoCont>
                   <div>
               </div>
@@ -339,7 +342,9 @@ const PhotoCard = styled.div`
   position: relative;
   left: 25%;
   width: 75%;
-
+  img{
+    cursor: pointer;
+  }
   .photo-cont{
   position: relative;
   border-radius: 13px;

@@ -10,7 +10,7 @@ const CommunityScrollCont = (props) => {
   
   const [catagory, setBodyent] = useState(true)
   // const [users, setUsers] = useState()
-  window.store = props.users
+  // window.store = props.users
 
   
 
@@ -325,7 +325,7 @@ const [photos, setPhotos] = useState()
              <>
             {/* {!!props.following && props.connected ?  */}
             <ScrollCont
-            
+              modalToggle={props.modalToggle}
               fetchUser={props.fetchUser}
               // photos={photos}
               setCatagory={props.setCatagory} 

@@ -46,7 +46,7 @@ const Header = (props) => {
 <Sticky>
 {/* FOLLOW */}
 {(props.directory === 'user') && 
-        <>
+        <div>
             <Switch>
             <label className="toggle-switch">
             <input type="checkbox" 
@@ -58,7 +58,7 @@ const Header = (props) => {
             <p>follow</p> 
             </Switch>
 {/* ART/LIFESTYLE TOGGLE */}
-            {props.follow && 
+            {(!!props.follow) && (
             <>
             <Switch>
             <label className="toggle-switch">
@@ -80,15 +80,15 @@ const Header = (props) => {
             </label>
             <p>lifestyle</p> 
             </Switch>
-            </>
+            </>)
             }
-            </>
+            </div>
 }
-    {(props.directory === 'home' | props.directory === 'by_Corey_Lee') &&           
+    {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&           
         <Switch>
             <label className="toggle-switch">
             <input type="checkbox" 
-            checked={!!props.tutorial}
+            checked={props.tutorial}
             onChange={() => props.setTutorial(!props.tutorial)}
             />
             <span className="switch" />

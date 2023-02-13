@@ -156,16 +156,8 @@ useEffect(() => {
   const updateMedia = () => {
     if (window.innerWidth < 1100) {
       setSkinny(true)
-      setControlDock(false)
-      
     } else {
-      // controlDock && controlDockToggle()
-      
       setSkinny(false)
-      setControlDock(true)
-      !!asideRef.current && setEditDrawerWidth(asideRef.current.clientWidth)
-      !!editDrawerRef.current && setEditDrawerHeight(editDrawerRef.current.clientHeight)
-      // !!editDrawerRef.current && console.log("pain", editDrawerRef.current.clientHeight)
     }
   };
   updateMedia()
@@ -359,8 +351,8 @@ let deleteDemoArrow = !!editDrawerRef.current && (editDrawerRef.current.childNod
 console.log("deleteDemoArrow", deleteDemoArrow)
 
 // const [hover, setHover] = useState(false)
-
-
+console.log("tru", props.folderCollaborators.some(c => c.uuid === props.currentUserId))
+const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.currentUserId)
   return (
     <aside ref={asideRef}  >
      
@@ -414,7 +406,7 @@ console.log("deleteDemoArrow", deleteDemoArrow)
 {/* THIS SECTION ROTATES THE EDIT AND CATAGORIZE TO HIDE EDIT IF A NEW FOLDER HAS NOT YET BEEN CATAGORIZED */}
 
  {/* CATAGORIZE */}           
-             {(props.directory === 'home' || props.directory === 'by_Corey_Lee') 
+             {(props.directory === 'home' || props.directory === 'by_Corey_Lee') || (props.directory === "user" &&  isCollaborator)
              ? (props.folderType === null) 
              ? 
              <>
@@ -426,7 +418,6 @@ console.log("deleteDemoArrow", deleteDemoArrow)
            />
            <span className="switch" />
            </label>
-           {/* <p>{props.folderType ? "creative" : "lifestyle"}</p>  */}
            <p>creative</p> 
            </CatagorySwitch>
            <CatagorySwitch catagorized={props.folderType}
@@ -439,7 +430,6 @@ console.log("deleteDemoArrow", deleteDemoArrow)
            />
            <span className="switch" />
            </label>
-           {/* <p>{props.folderType ? "creative" : "lifestyle"}</p>  */}
            <p>lifestyle</p> 
            </CatagorySwitch>
           </>
@@ -447,13 +437,13 @@ console.log("deleteDemoArrow", deleteDemoArrow)
            <>
            
            
-           <Switch className="edit" data-tip data-for="onload-tutorial"
-           onMouseLeave={() => {
-            ReactTooltip.show(onloadTutorialRef.current);
-          }}
-          onMouseEnter={() => {
-            ReactTooltip.hide(onloadTutorialRef.current);
-          }}
+           <Switch className="edit" 
+          //  onMouseLeave={() => {
+          //   ReactTooltip.show(onloadTutorialRef.current);
+          // }}
+          // onMouseEnter={() => {
+          //   ReactTooltip.hide(onloadTutorialRef.current);
+          // }}
           >
 {/* EDIT */}
            <label className="toggle-switch edit-switch" >
@@ -473,7 +463,6 @@ console.log("deleteDemoArrow", deleteDemoArrow)
 
 
             <div className="edit-drawer" ref={editDrawerRef}>
-            {/* <div className="child-height-total"> */}
             
             <Switch className="delete" >
             
@@ -571,7 +560,7 @@ console.log("deleteDemoArrow", deleteDemoArrow)
            }
 
 {/* FOLDER FOLLOW */}
-            {(props.directory === 'user') &&
+            {(props.directory === 'user') && !isCollaborator && 
             <CatagorySwitch
             asideRef={asideRef}
             className="folder-follow"
@@ -579,13 +568,13 @@ console.log("deleteDemoArrow", deleteDemoArrow)
            >
            <label className="toggle-switch">
            <input type="checkbox" 
-           checked={!follow}
+           checked={follow}
            onChange={() => followToggle()}
           //  checked={props.edit}
            />
            <span className="switch" />
            </label>
-           <p>{follow ? "follow folder" : "unfollow folder"}</p> 
+           <p>{!follow ? "follow folder?" : "unfollow folder?"}</p> 
            </CatagorySwitch>
           }
 
@@ -596,8 +585,8 @@ console.log("deleteDemoArrow", deleteDemoArrow)
             {!!props.folderCollaborators.length &&
             props.folderCollaborators.length >= 2 &&
             <CollabotorList ref={listRef} className="collabUl" 
-            onMouseEnter={() => changeFlex(true)}
-            onMouseLeave={() => changeFlex(false)}
+            // onMouseEnter={() => changeFlex(true)}
+            // onMouseLeave={() => changeFlex(false)}
             >
                 
               {!!props.folderCollaborators.length && props.folderCollaborators.map((collaborator) => (
@@ -1070,11 +1059,11 @@ content: "";
     /* margin: 2px; */
 width: 13px;
 height: 13px;
-background-color: green;
-box-shadow: 0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%);
+// background-color: green;
+// box-shadow: 0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%);
 
-// background-color: #ff0000;
-//     box-shadow: 0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0);
+background-color: #ff0000;
+    box-shadow: 0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0);
 border-radius: 25px;
 transition: transform 0.3s ease;
 }
@@ -1093,7 +1082,8 @@ const CollabotorList = styled.ul`
     margin-bottom: auto;
     background-color: #aaa;
     border-radius: 14px;
-    /* margin-top: 10px; */
+    // /*  */
+    margin-top: 10px;
     /* padding: 4px;
     padding: 10px; */
     padding-inline: 10px;
@@ -1135,7 +1125,7 @@ const CollabLi = styled.li`
       /* transition: padding-left 0.7s ease; */
       /* box-shadow: -1px 1px 5px -2px #000000;
       transform: translate(.5px, -.5px);  */
-      padding-left: 7px;}
+      // padding-left: 7px;}
       /* &:after{
         content: '✉';
       } */
@@ -1219,7 +1209,8 @@ const OpenSwitch = styled.label`
     /* color: ${props => !props.controlDock ? '#154813' : '#824949' };
     color: ${props => !props.controlDock ? '#154813' : '#824949' }; */
     /* transition: width  ${props => !props.controlDock ? '0.3s linear .3s' : '0.5s linear 0s'}; */
-    transition: background-color 0.4s linear, box-shadow 0.4s linear, transform ${props => !props.controlDock ? '0.3s linear' : '0.5s linear 0s'};
+    // background-color 0.4s linear, box-shadow 0.4s linear, 
+    transition: transform ${props => !props.controlDock ? '0.3s linear' : '0.5s linear 0s'};
       
       /* transition: right 0.5s ease; */
       /* left: ${props => !props.controlDock ? '6px' : '232px'}; */

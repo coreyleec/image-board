@@ -50,7 +50,7 @@ const loginSubmit = (e, name, password) => {
       props.setUserId(user.user.id);
       props.setCurrentUserId(user.user.id)
       // props.setUuid(user.user.uuid)
-      props.setTutorial(false)
+      // props.setTutorial(false)
       // props.setUserName(user.user.name);
       // props.setUserAboutMe(user.user.details);
       // props.setUserFolders(user.user.folders);

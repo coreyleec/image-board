@@ -64,9 +64,7 @@ const SideBarLinks = (props) => {
             type="text"
             placeholder="link url"
             onChange={(e) => setLinkUrl(e.target.value)}
-            onKeyDown={(e) => submitLink(e, linkName, 
-              linkUrl)}
-              
+            onKeyDown={(e) => submitLink(e, linkName, linkUrl)} 
           ></StyledUrlInput>
           <input
             type="submit"

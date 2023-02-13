@@ -7,7 +7,7 @@ import AsideRight from "./containers/AsideRight";
 import UserLoginSignup from "./containers/UserLoginSignup";
 import CommunityPage from "./containers/CommunityPage"
 import DndRoutePrefix from "./containers/DndRoutePrefix";
-import AboutCorey from "./containers/AboutCorey";
+import AboutMe from "./containers/AboutMe";
 
 
  
@@ -62,6 +62,7 @@ const [userLinks, setUserLinks] = useState([]);
 
 // EDIT USER INFO
 // const [userEmail, setUserEmail] = useState("");
+const [about, setAbout] = useState("");
 const [userName, setUserName] = useState("");
 const [userAboutMe, setUserAboutMe] = useState("");
 
@@ -168,11 +169,21 @@ const fetchUser = (userId) => {
 }, [currentUserId])
 
 
+// useEffect(() => {
+//   (directory !== 'home' || directory !== 'by_Corey_Lee') &&setTutorial(false)
+//   console.log("user tutorial set")
+// }, [directory])
 useEffect(() => {
-  (directory !== 'home' || directory !== 'by_Corey_Lee') &&setTutorial(false)
+  (directory === 'by_Corey_Lee') && setTutorial(true)
+  console.log("user tutorial set")
 }, [directory])
 
-
+// useEffect(() => {
+//   if (directory !== 'by_Corey_Lee' && tutorial === true){
+//     setTutorial(false)
+//   }
+// }, [directory])
+// (props.directory === "user" &&  props.folderCollaborators.some(c => c.uuid === props.currentUserId))
 const [favoriteShown, setFavoriteShown] = useState(null)
 const [favorites, setFavorites] = useState(null)
 
@@ -284,7 +295,7 @@ const landingFetch = () => {
         setFolders(user.user.folders);
         setFavorites(user.user.favorites);
         setUserFavorites(user.user.favorite_folders)
-
+        setAbout(user.user.about)
         setTutorial(user.user.tutorial)
         setUuid(user.user.uuid)
         setFolderType(user.user.folders[0].creative)
@@ -309,13 +320,6 @@ useEffect(() => {
   }
 }, [directory])
 
-useEffect(() => {
-  if (directory !== 'by_Corey_Lee' && tutorial === true){
-    setTutorial(false)
-  }
-}, [directory])
-
-
  useEffect(() => {
   location.pathname === '/by_Corey_Lee' && location.pathname !== '/login' && location.pathname !== '/community' && landingFetch()
 }, [location.pathname])
@@ -328,7 +332,7 @@ const updateUserFavorites = (photo) => {
   let favoriteFolder = favoriteFolders.find((fFolder) => fFolder.id === photo.favorite_folder_id)
 
   console.log("favoriteFolder", favoriteFolder)
-  window.store = favoriteFolder
+  // window.store = favoriteFolder
   
   let updatedFavoritePhotos = favoriteFolder.favorite_photos.map((fPhoto) => {
     if (fPhoto.id === photo.id) return photo
@@ -871,7 +875,7 @@ useEffect(() => {
         .then((res) => res.json())
         .then((followObj) => {
           console.log("followObj", followObj, followObj.creative_folders);
-          setCreative(followObj.creative_foollow)
+          setCreative(followObj.creative_follow)
           setFollow(followObj)
         });
   }
@@ -904,6 +908,7 @@ useEffect(() => {
       <Cont directory={directory} >
          
         <SideBar
+
           hover={hover} 
           setHover={setHover}
           follow={!!follow}
@@ -913,6 +918,7 @@ useEffect(() => {
           creativeFollow={creativeFollow}
           lifestyleFollow={lifestyleFollow}
           tutorial={tutorial}
+          setTutorial={setTutorial}
           fetch={!!currentUserId ? profileFetch : landingFetch}
           directory={directory}
           setFavoritePhotos={setFavoritePhotos}
@@ -1059,7 +1065,6 @@ useEffect(() => {
                   <CommunityPage
                 userId={userId}
                 currentUserId={currentUserId}
-                setBaseName={props.setBaseName}  
                 setUserName={setUserName}
                 setUserAboutMe={setUserAboutMe}
                 setFolders={setFolders}
@@ -1074,7 +1079,10 @@ useEffect(() => {
                 />
                 </Route>
                 <Route path="/about" >
-                  <AboutCorey
+                  <AboutMe
+                  about={about}
+                  dbVersion={dbVersion}
+                  currentUserId={currentUserId}
                 />
                 </Route>
                 

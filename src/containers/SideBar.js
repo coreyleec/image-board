@@ -23,32 +23,38 @@ const SideBar = (props) => {
     props.setCurrentUserId(null);
     window.location.reload(false);
   };
-const match = useRouteMatch()
-  // const path = !!props.currentUserId ? "home" : "-";
 
-  const [func, setFunc] = useState();
-
-const [follow, setFollow] = useState(false)
-    const [creative, setCreative] = useState(false)
-    const [lifestyle, setLifestyle] = useState(false)
-
-// const [hover, setHover] = useState(false)
+  const [skinny, setSkinny] = useState(false);
+  useEffect(() => {
+    if (window.innerWidth < 1100) {setSkinny(true)} 
+    else {setSkinny(false)}
+  
+    const updateMedia = () => {
+      if (window.innerWidth < 1100) {setSkinny(true)} 
+      else {setSkinny(false)}
+    };
+    updateMedia()
+    window.addEventListener('resize', updateMedia);
+    return () => window.removeEventListener('resize', updateMedia);
+  }, []);
+let topVal = skinny ? -6 : 20
+let loginTopVal = skinny ? -14 : 11
+console.log("top", topVal)
 const folderRef = useRef()
-const folderDemo = [!!folderRef.current && folderRef.current.offsetTop + 22, 'these folders can be used to organize photos as you develope bodies of work']
+const folderDemo = [!!folderRef.current && folderRef.current.offsetTop + topVal, 'these folders can be used to organize photos as you develope bodies of work']
 const favoriteRef = useRef()
-const favoriteDemo = [!!favoriteRef.current && favoriteRef.current.offsetTop + 22, "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
+const favoriteDemo = [!!favoriteRef.current && favoriteRef.current.offsetTop + topVal, "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
 const linkRef = useRef()
-const linkDemo = [!!linkRef.current && linkRef.current.offsetTop + 22, "here you can add external links to projects or any relevant content you would like to share. i've added my GitHub and LinkedIn for example"]
+const linkDemo = [!!linkRef.current && linkRef.current.offsetTop + topVal, "here you can add external links to projects or any relevant content you would like to share. i've added my GitHub and LinkedIn for example"]
 const communityRef = useRef()
-const communityDemo = [!!communityRef.current && communityRef.current.offsetTop + 22, "the community page allows you to explore the site and see what other people are taking photos of"]
+const communityDemo = [!!communityRef.current && communityRef.current.offsetTop + topVal, "the community page allows you to explore the site and see what other people are taking photos of"]
 const aboutRef = useRef()
-const aboutDemo = [!!aboutRef.current && aboutRef.current.offsetTop + 22, "click here for more information on the project, myself, and projects to come!"]
+const aboutDemo = [!!aboutRef.current && aboutRef.current.offsetTop + topVal, "click here for more information on the project, myself, and projects to come!"]
+const loginRef = useRef()
+const loginDemo = [!!loginRef.current && loginRef.current.offsetTop + loginTopVal, "open beta will be available after some more tweaks!"]
 const [demoText, setDemoText] = useState(folderDemo)
-const [demoArrow, setDemoArrow] = useState("16px")
-const [editDemoVar, setEditDemoVar] = useState()
-useEffect(() => {
 
-}, [props.edit])
+
 
 
 
@@ -63,9 +69,6 @@ useEffect(() => {
 }, [props.tutorial, props.edit, props.enableDelete])
 
 
-const showTip = () => {
-  
-}
 console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidth)
 
   return (
@@ -84,7 +87,7 @@ console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidt
           onMouseEnter={() => props.setHover(false)}>
           <div className="follow-cont">
 {/* FOLLOW */}
-          {(props.directory === 'user'| props.directory === 'by_Corey_Lee') ? 
+          {(props.directory === 'user') && 
           <>
             <Switch>
             <label className="toggle-switch">
@@ -123,7 +126,19 @@ console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidt
           }
           </>
 
-            : null
+          
+        }
+         {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&           
+        <Switch>
+            <label className="toggle-switch">
+            <input type="checkbox" 
+            checked={props.tutorial}
+            onChange={() => props.setTutorial(!props.tutorial)}
+            />
+            <span className="switch" />
+            </label>
+            <p>tutorial</p> 
+            </Switch>
         }
             </div>
             <div className="scrollable">
@@ -237,9 +252,13 @@ console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidt
 {/* LOGIN */}              
               {!!props.currentUserId ? (
                 <Button
+                ref={loginRef}
+                onMouseOver={() => setDemoText(loginDemo)}
                 onClick={() => logout()}>log out</Button>
               ) : (
                 <Button 
+                ref={loginRef}
+                onMouseOver={() => setDemoText(loginDemo)}
                  onClick={() => props.useTemplate(setSideBar(!sideBar))}>
                   use ImageBoard
                 </Button>
