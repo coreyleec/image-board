@@ -157,9 +157,11 @@ const StyledImageName = styled.div`
   padding: 10px;
   border-width: 0;
   font-size: 40px;
+  font-family: "HelveticaNeue-Light";
   color: white;
   cursor: default;
   line-height: 43px;
+  
 ${({ edit }) => edit && `cursor: text;`}
   :empty::before {
     color: rgb(118, 118, 118);
@@ -172,7 +174,9 @@ background-color: transparent;
 color: white;
 max-height: 50%;
 padding-inline: 10px;
-font-size: 20px;
+// font-size: 20px;
+font-size: 16px;
+// font-family: "HelveticaNeue-Light";
 text-align: left;
 border-width: 0;
 width: 100%;

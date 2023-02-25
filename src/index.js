@@ -16,11 +16,11 @@ import * as serviceWorker from './serviceWorker';
 const Root = () => {
   
   return (
-    <React.StrictMode>
+    // <React.StrictMode>
     <Router>
     <App/>
   </Router>
-  </React.StrictMode>
+  // </React.StrictMode>
   );
 }
   ReactDOM.render(<Root/>, document.getElementById('root'))

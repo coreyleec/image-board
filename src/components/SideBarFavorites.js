@@ -65,7 +65,7 @@ const [condition, setCondition] = useState()
 //   : setCondition(true)
 // }, [props.directory])
 
-console.log("props.favoriteDetails", props.favoriteDetails)
+// console.log("props.favoriteDetails", props.favoriteDetails)
     return (
         <div>
 {/* FOLDER TOGGLE */}

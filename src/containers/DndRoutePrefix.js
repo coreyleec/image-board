@@ -1,10 +1,11 @@
 import React, {useEffect} from "react";
 import { BrowserRouter as Routes, Route, useLocation, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import DndContainer from "./DndContainer";
+import AboutMe from "./AboutMe";
 
 const DndRoutePrefix = (props) => {
     const match  = useRouteMatch();
-    console.log("url, path", match.path)
+    // console.log("directory", match.path, props.directory)
 
     // useEffect(() => {
         // console.log("hi", props.folderCollaborators.map((colab) => ({
@@ -35,6 +36,7 @@ return (
       >
 
           <DndContainer
+            // subDirectory={subDirectory}
             folderCollaborators={props.folderCollaborators}
               hightlighted={props.hightlighted}
               setBaseName={props.setBaseName}
@@ -60,6 +62,15 @@ return (
               /> 
 
               </Route> 
+
+              <Route path={`${match.path}/about`} >
+                  <AboutMe
+                  setAbout={props.setAbout}
+                  about={props.about}
+                  dbVersion={props.dbVersion}
+                  currentUserId={props.currentUserId}
+                />
+                </Route>
               </Switch>   
 
 )}

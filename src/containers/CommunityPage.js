@@ -11,7 +11,7 @@ const CommunityPage = (props) => {
     const history = useHistory()
     const navigate = history.push
     
-    console.log("path", location.pathname);
+    // console.log("path", location.pathname);
 
     const [photo, setPhoto] = useState();
 
@@ -19,7 +19,7 @@ const CommunityPage = (props) => {
     const [photos, setPhotos] = useState()
 
     const modalToggle = (photo, photos) => {
-    console.log("photo", photo)
+    // console.log("photo", photo)
     setPhoto(photo);
     setOpenModal(!openModal);
     setPhotos(photos)
@@ -271,7 +271,8 @@ useEffect(() => {
     })
     .then((res) => res.json())
     .then((recentContent) => 
-    {console.log("recentContent", recentContent)
+    {
+    // console.log("recentContent", recentContent)
     setCommunity(recentContent.community)
     setFollowing(recentContent.following)
     recentContent.following.folders.length === 0 && setDegree(false)
@@ -306,7 +307,7 @@ useEffect(() => {
 
 
 const [search, setSearch] = useState([0])
-  console.log("props.directory", props.directory)
+  // console.log("props.directory", props.directory)
   const searchUser = (input) => {
     console.log(input)
     // setSearch(...search, input)
@@ -520,7 +521,8 @@ const CatagorySwitch = styled.label`
   
  p {
   padding-left: 10px;
-  font-size: 19px;
+  font-size: 16px; 
+line-height: 25px;
 }
 
   :first-child{
@@ -703,7 +705,8 @@ margin-top: 0;
 p {
 padding-left: 10px;
 /* margin-top: 0.50rem; */
-font-size: 19px;
+font-size: 16px; 
+line-height: 25px;
 }
 &:nth-child(2){
   margin: 10px;
@@ -767,14 +770,17 @@ const InputSwitch = styled.label`
   p {
   display: ${props => !!props.expand && 'none' };
   padding-left: 10px;
-  font-size: 19px;  
+  font-size: 16px; 
+line-height: 25px;  
 }
 input {
   ${({expand})  => expand && `z-index: 1;` }
   width: ${props => props.expand ? '90%' : '0%'};
-    font-size: 19px;
+    font-size: 16px; 
+line-height: 25px;
     margin-left: 4px;
-    font-size: 19px;
+    font-size: 16px; 
+line-height: 25px;
     margin-left: 9px;
     transition: width 1s ease;
   }

@@ -11,6 +11,8 @@ const Header = (props) => {
 
     const [siteHeader, setSiteHeader] = useState()
 
+    const [hover, setHover] = useState(true)
+
     useEffect(() => {
         if (props.directory === 'community'){
             setSiteHeader("Community")
@@ -20,17 +22,23 @@ const Header = (props) => {
     }, [props.directory])
     
 
+useEffect(() => {
+  setTimeout(() => {
+    setHover(false)
+  }, 5000);
+}, [])
 
 
 
         return (
-            <header>
+            <header onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} >
                
                  {!props.edit  
                 ?  <form 
                     // name={props.userName} 
                     onSubmit={(e) => props.nameSubmit(e, newUserName)}>
                         <NameInput
+                        onMouseEnter={() => setHover(false)} onMouseLeave={() => setHover(true)}
                         type="name"
                         name="name" 
                         autocomplete="name"
@@ -97,12 +105,60 @@ const Header = (props) => {
             </Switch>
         }
             </Sticky>
+            {props.tutorial && <TutorialTip hover={hover} >feel free to resize the window to allow space to browse your file manager for photos</TutorialTip>}
             </header>
         )
 
 }
 
 export default Header
+
+const TutorialTip = styled.div`
+  top: 4px;
+  right: 4px;
+  max-height: fit-content;
+  position: absolute;
+  
+  white-space: normal;
+  cursor: default;
+  padding: 15px;
+  background: #ff7f5080;
+  backdrop-filter: blur(6px);
+//   border-radius: 16px;
+  border-top-left-radius: 16px;
+  border-bottom-right-radius: 16px;
+  border-bottom-left-radius: 16px;
+  color: blue;
+  font-size: 16px;
+  opacity: 100%;
+  width: 168px;
+  transition: transform 1s ease, top .3s ease;
+  
+  ${({hover}) => !hover && 
+`visibility: hidden; opacity: 0%; transition: opacity .2s linear .1s;
+}` }
+  
+  .arrow {
+    &:after {
+    content: "";
+    position: relative;
+    left: -15px;
+    top: 16px;
+    
+    
+
+    position: absolute;
+
+    
+    margin-left: -5px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent #ff7f5080 transparent transparent;
+  }}
+
+`
+
+
 const NameInput = styled.input`
     font-size: 3.5rem;
     font-family: "HelveticaNeue-Light";
@@ -156,7 +212,8 @@ const Switch = styled.label`
  p {
   padding-left: 10px;
   /* margin-top: 0.50rem; */
-  font-size: 19px;
+  font-size: 16px; 
+line-height: 25px;
 }
 &:nth-child(2){
     margin-block: 10px;

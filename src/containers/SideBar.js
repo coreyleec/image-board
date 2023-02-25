@@ -1,10 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import React from "react";
-import { Link, useHistory, useLocation, useRouteMatch } from "react-router-dom";
+import { Link, useHistory, useLocation } from "react-router-dom";
 import SideBarLinks from "../components/SideBarLinks";
 import SideBarFolder from "../components/SideBarFolder";
 import SideBarFavorites from "../components/SideBarFavorites";
-import AboutMe from "../components/AboutMe";
 import styled from "styled-components";
 import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider";
 
@@ -12,7 +11,7 @@ const SideBar = (props) => {
   // TOGGLE SIDEBAR
   const [sideBar, setSideBar] = useState(false);
   const location = useLocation();
-  console.log("new props", !!props.userState && props.userState.openModal);
+  // console.log("new props", !!props.userState && props.userState.openModal);
   let history = useHistory();
   let navigate = history.push;
   const sideBarRef = useRef()
@@ -39,7 +38,7 @@ const SideBar = (props) => {
   }, []);
 let topVal = skinny ? -6 : 20
 let loginTopVal = skinny ? -14 : 11
-console.log("top", topVal)
+// console.log("top", topVal)
 const folderRef = useRef()
 const folderDemo = [!!folderRef.current && folderRef.current.offsetTop + topVal, 'these folders can be used to organize photos as you develope bodies of work']
 const favoriteRef = useRef()
@@ -69,7 +68,6 @@ useEffect(() => {
 }, [props.tutorial, props.edit, props.enableDelete])
 
 
-console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidth)
 
   return (
     <aside>
@@ -143,11 +141,8 @@ console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidt
             </div>
             <div className="scrollable">
 
-              {/* {props.currentUser && props.userFolders && */}
-              {/* (location.pathname === ("/" || "/home/" || "/user/" || "/community")) && */}
               {true &&     (
                   <>
-                    {/* <AboutMe {...props} /> */}
                     <div onMouseOver={() => setDemoText(folderDemo)}
                     ref={folderRef}
                     >
@@ -156,10 +151,7 @@ console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidt
                     setFolderPhotos={props.setFolderPhotos}
                     createFolder={props.createFolder}
                     deleteFolder={props.deleteFolder}
-                    // setUserFolders={props.setUserFolders}
                     edit={props.edit}
-                    // setFavoritePhotos={props.setFavoritePhotos}
-                    // setFolderShown={props.setFolderShown}
                     folderShown={props.folderShown}
                     folderDetails={props.folderDetails}
                     setFolderDetails={props.setFolderDetails}
@@ -220,9 +212,11 @@ console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidt
                   </div>
                 </Link>
               )}
-
-              <Link as={Link} to="/about" 
+{/* ABOUT */}
+              <Link 
+              as={Link} to={`/${props.directory}/about`} 
                 onMouseOver={() => setDemoText(aboutDemo)}
+                onClick={() => props.clickAboutLink()}
                 ref={aboutRef}
                 className="community-href">
                   <div className="nav-bar-header-wrapper">
@@ -231,8 +225,6 @@ console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidt
                     ))}
                   </div>
                 </Link>
-
-              {/* location.pathname !== "/user" && */}
 {/* HOME */}
               {props.directory !== 'home' && props.directory !== 'by_Corey_Lee' && (
                 
@@ -270,7 +262,7 @@ console.log("sideBarRef",  !!sideBarRef.current && sideBarRef.current.clientWidt
           {/* </div>
         </div> */}
         </>
-        {(props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial &&
+        {(props.subDirectory !== 'about') && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial &&
         <TutorialTip 
           sideBar={sideBar} 
           sideBarWidth={!!sideBarRef.current && sideBarRef.current.clientWidth}
@@ -311,6 +303,7 @@ const TutorialTip = styled.div`
   backdrop-filter: blur(6px);
   border-radius: 16px;
   color: blue;
+  font-size: 16px;
   opacity: 100%;
   width: 168px;
   transition: transform 1s ease, top .3s ease;
@@ -445,7 +438,8 @@ const StyledP = styled.p`
  p {
   padding-left: 10px;
   /* margin-top: 0.50rem; */
-  font-size: 19px;
+  font-size: 16px; 
+line-height: 25px;
 }
 &:nth-child(2){
     margin-block: 10px;

@@ -1131,7 +1131,7 @@ const Switch = styled.label`
   width: ${({asideRef}) => !!asideRef && asideRef.current.clientWidth - 20 + 'px'};
   p {
     padding-left: 10px;
-    font-size: 19px;
+    font-size: 16px;
   }
   /* @media (max-width: 1100px) {
   :first-child {
@@ -1203,7 +1203,7 @@ const CatagorySwitch = styled.label`
   
  p {
   padding-left: 10px;
-  font-size: 19px;
+  font-size: 16px;
 }
 
   // :first-child{
@@ -1350,14 +1350,14 @@ const OpenSwitch = styled.label`
     /* p {
     
     padding-left: 10px;
-    font-size: 19px;  
+    font-size: 16px;  
   } */
   input {
     ${({expand})  => expand && `z-index: 1;` }
     width: ${props => props.controlDock ? '90%' : '0%'};
-      font-size: 19px;
+      font-size: 16px;
       margin-left: 4px;
-      font-size: 19px;
+      font-size: 16px;
       margin-left: 9px;
       transition: width 4s linear;
     }
@@ -1443,7 +1443,7 @@ const InputSwitch = styled.label`
   p {
   /* left: ${props => !!props.expand && 'none' }; */
   padding-left: 10px;
-  font-size: 19px;  
+  font-size: 16px;  
   ${({expand, skinny, panelRef})  => 
   skinny && `
   position: relative;
@@ -1458,7 +1458,7 @@ const InputSwitch = styled.label`
 input {
   margin-left: 9px;
   margin-top: 2px;
-  font-size: 19px;
+  font-size: 16px;
   transition: width .3s linear;
   width: ${props => props.inputWidth};
   background-color: transparent;
@@ -1469,7 +1469,7 @@ input {
 }
   /* @media (max-width: 1100px) {
   
-    font-size: 19px;
+    font-size: 16px;
     transition: width .3s linear;
   } */
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
@@ -12,8 +12,8 @@ const AboutMe = (props) => {
 
     const [siteHeader, setSiteHeader] = useState()
     const [about, setAbout] = useState({title: '', about: ''})
-    const [newAbout, setNewAbout] = useState({title: '', about: ''})
-    const [bool, setBool] = useState()
+    const [newAbout, setNewAbout] = useState({title: props.about.title, about: props.about.about})
+    const clickContRef = useRef()
 // useEffect(() => {
 //   setAbout(...newAbout)
 // }, [newAbout])
@@ -25,115 +25,131 @@ const AboutMe = (props) => {
       let copy = newAbout
       setAbout(copy)
       const empty = {title: '', about: ''}
+      console.log("props about", typeof props.about, props.about, !_.isEqual(props.about, empty))
       const delayFunc = setTimeout(() => {
-        if (!_.isEqual(about, newAbout)) {
-      console.log("about", about, newAbout, newAbout.title + newAbout.about, _.isEqual(about, newAbout), _.isEqual(newAbout, empty))
-      
-      // Send Axios request here
-      fetch(`${props.dbVersion}/update_name/`, {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${localStorage.token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          about: newAbout,
-        }),
-      })
-        .then((res) => res.json())
-        .then((aboutObj) => {
-          console.log("about real", aboutObj, JSON.parse(aboutObj));
-          setNewAbout(JSON.parse(aboutObj));
-          // window.store = aboutObj
+        if (!_.isEqual(newAbout, empty)) {
+          if (!_.isEqual(about, newAbout)) {
+        console.log("about", about, newAbout, newAbout.title + newAbout.about, _.isEqual(about, newAbout), _.isEqual(newAbout, empty))
+        
+        fetch(`${props.dbVersion}/update_about/`, {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${localStorage.token}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            about: newAbout,
+          }),
         })
-      }
-    
+          .then((res) => res.json())
+          .then((aboutObj) => {
+            console.log("about real", aboutObj);
+            setNewAbout(aboutObj);
+            // props.setAbout(aboutObj);
+            // window.store = aboutObj
+          })
+        }
+        }
   }, 3000)
     
     return () => clearTimeout(delayFunc)
-  // }
+
   }, [newAbout])
+
   console.log("about", about)
   // const nameSubmit = (e) => {
   //   e.preventDefault();
   //   // console.log(e, newName);
   //   // !loggedIn ? 
       
+  const handleBlur = () => {
+    props.setAbout(newAbout)
+  }
+
 
   // };
+  // document.getElementById('title').textContent = 
+  const handleKeyDown = (e) => {
+    console.log("about key", e.keyCode, e.currentTarget.innerHTML)
+    // if (e.keyCode === 13 && e.shiftKey == false) {
+      // e.preventDefault(); 
+      // document.execCommand("insertLineBreak");
+      // document.execCommand('indent', false, '0px');
+    // }
+    // if (e.keyCode === 13) {
+      // e.preventDefault(); 
+      // document.setAttribute('autocapitalize', 'on')
+    // }
+    if (e.keyCode === 9) {
+      // e.preventDefault(); 
+      // document.execCommand('indent', false, '50px');
+    }
+
+    // if (event.keyCode == 13 /*enter*/) {
+    //   this.okAction();
+    // }
+    // if (event.keyCode == 27 /*esc*/) {
+    //   this.cancelAction();
+    // }
+  }
+
+
+  useEffect(() => {
+    // window.addEventListener('click')
+    document.addEventListener('onclick', function (event) {
+      switch (event.key) {
+        
+      }
+    });
+
+
+  }, [])
+  
+// 1. Paste plain text only into contenteditable elements
+document.addEventListener("paste", function (e) {
+  if (e.target.isContentEditable) {
+      e.preventDefault();
+      var text = e.clipboardData.getData('text/plain')
+      document.execCommand('insertText', false, text)
+  }
+});
+
+// 2. Prevent any paste into contenteditable elements
+document.addEventListener("paste", function (e) {
+  if (e.target.isContentEditable) {
+      e.preventDefault();
+      return false;
+  }
+});
+
+
+// const alrt = alert("hello")
         return (
-            <div>
-               
-              <AboutForm 
-                  // onSubmit={(e) => props.nameSubmit(e, newUserName)}
-                  >
-                  <div>
-
-                    <NameInput
-                    contentEditable={true}
-                    type="title"
-                    name="title" 
-                    autocomplete="name"
-                    defaultValue={about.name} 
-                    placeholder="title your about"
-                    className="name-form" 
-                    onInput={(e) => setNewAbout({title: e.target.textContent, about: about.about})}
-                        // value={currentUser.name}
-                        // onChange={(e) => setNewUserName(e.target.value)}
-                    ></NameInput>
-                  
-                    <StyledAbout 
-                    // type="about"
-                    name="about" 
-                    contentEditable={true} 
-                    defaultValue={about.about} 
-                    placeholder="tell us about yourself or body of work"
-                    onInput={(e) => setNewAbout({title: about.title, about: e.target.textContent})}>
-                    </StyledAbout>
-                    </div>
-                    </AboutForm>
-
-{(props.directory === 'user'| props.directory === 'by_Corey_Lee') ? <Sticky>
-{/* FOLLOW */}
-            <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={!!props.follow}
-            onChange={() => props.followToggle(props.userId)}
-            />
-            <span className="switch" />
-            </label>
-            <p>follow</p> 
-            </Switch>
-{/* ART/LIFESTYLE TOGGLE */}
-            {props.follow && 
-            <>
-            <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={props.follow.creative_follow}
-            onChange={() => props.creativeFollow(props.follow.id)}
-            />
-            <span className="switch" />
-            </label>
-            <p>creative</p> 
-            </Switch>
-            <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={!!props.follow && props.follow.lifestyle_follow}
-            onChange={() => props.lifestyleFollow(props.follow.id)}
-            />
-            <span className="switch" />
-            </label>
-            <p>lifestyle</p> 
-            </Switch>
-            </>
-            }
-            </Sticky>
-            : null
-        }
-            </div>
+          <div>
+           <AboutForm ref={clickContRef} spellcheck={true}
+                autocapitalize="sentences">
+              <StyledTitle 
+              type="text" contentEditable={true}
+              onKeyDown={handleKeyDown}
+              dangerouslySetInnerHTML={{__html: props.about.title}}
+              onBlur={handleBlur}
+              onInput={(e) => setNewAbout({title: e.currentTarget.innerHTML, about: about.about})}
+                
+            
+              >
+              </StyledTitle>
+{/* DETAILS FORM EDIT AND PREVIEW */}
+              <StyledAbout
+                onKeyDown={handleKeyDown}
+                onBlur={handleBlur}
+                type="text" contentEditable={true} autocapitalize="sentences"
+                placeholder="tell us about yourself or body of work"
+                dangerouslySetInnerHTML={{__html: props.about.about}}
+                onInput={(e) => setNewAbout({title: about.title, about: e.currentTarget.innerHTML})}
+                >
+              </StyledAbout>
+            </AboutForm>
+          </div>
         )
 
 }
@@ -142,21 +158,115 @@ export default AboutMe
 
 const AboutForm = styled.form`
 // background: blue;
-    display: flex;
-    flex-direction: column;
+    margin: 50px;
+    // display:inline-block;
+    // display: block;
+    // display: flex;
+    // flex-direction: column;
+div{line-height: 1.2;
+  // font-family: "HelveticaNeue-Light";
+  display: block;
+  white-space: pre-wrap;
+}
+
 `
 
-const NameInput = styled.div`
+const StyledTitle = styled.div`
+  text-align: right;
+  float: right;  
+  width: 100%;
+  // line-height: 1.2;
+  font-family: "HelveticaNeue-Light";
+  resize: none;
+  overflow: overlay;
+  // max-height: 50%;
+  padding-bottom: 10px;
+  // padding: 10px;
+  border-width: 0;
+  font-size: 3.5rem;
+  color: black;
+  cursor: default;
+  // line-height: 53px;
+  >* {font-family: "HelveticaNeue-Light"; >* {font-family: "HelveticaNeue-Light";}}
+  ::-webkit-scrollbar {
+    display: unset;
+  }
+// ${({ edit }) => edit && `cursor: text;`}
+  :empty::before {
+    color: rgb(118, 118, 118);
+    content:attr(placeholder);
+  }`
+
+const StyledAbout = styled.div`
+  text-indent: 50px;
+  resize: none;
+  background-color: transparent;
+  color: black;
+  max-height: 50%;
+  padding-top: 10px;
+  padding-inline: 10px;
+  font-size: 1.5rem;
+  font-family: "HelveticaNeue-Light";
+  text-align: left;
+  border-width: 0;
+  width: 100%;
+  overflow: overlay;
+  cursor: default;
+  >* {
+    font-size: 1.5rem;
+  font-family: "HelveticaNeue-Light";
+  text-indent: 50px;
+  >* {
+    font-size: 1.5rem;
+  font-family: "HelveticaNeue-Light";
+  text-indent: 50px;
+  }
+  }
+  div font{
+    font-family: "HelveticaNeue-Light";
+  }
+  div {
+    font-family: "HelveticaNeue-Light";
+  }
+  :empty::before {
+    color: rgb(118, 118, 118);
+    content:attr(placeholder);
+  }
+  ::-webkit-scrollbar {
+    display: unset;
+  }
+  :hover {
+    display: show;
+    ::-webkit-scrollbar {
+      width: 2px;
+    }
+    ::-webkit-scrollbar-thumb {
+      border: 1px solid gainsboro;
+    } 
+}
+
+`
+
+
+
+
+const Title = styled.div`
+resize: none;
+// direction: rtl;
+//     unicode-bidi: bidi-override;
     font-size: 3.5rem;
     font-family: "HelveticaNeue-Light";
-    padding-right: 20px;
+    // -webkit-text-stroke: thin;
+        // padding-right: 20px;
+        // display: inline-block;
+        
     padding-top: 2px;
     width: 100%;
-    text-align: right;
-    float: right;
-    margin-top: .001rem;
-    line-height: 1;
-    display: block;
+    // text-align: right;
+    // float: right;
+    // margin-top: .001rem;
+    // line-height: 1;
+    // display: inline-block;
     // color: #757575;
     color: black;
     :empty::before {
@@ -165,7 +275,7 @@ const NameInput = styled.div`
     }
 `
 
-const StyledAbout = styled.div`
+const About = styled.div`
     resize: none;
     white-space: pre-wrap;
     background-color: transparent;
@@ -201,6 +311,40 @@ const StyledAbout = styled.div`
       }
   
 }`
+
+
+// <Title
+// contentEditable={true}
+// type="text"
+// // id="title" 
+// autocomplete="title"
+// defaultValue={newAbout.name} 
+// placeholder={"add a title for your about"}
+// // className="title-input" 
+// onInput={(e) => setNewAbout({title: e.currentTarget.textContent, about: about.about})}
+//     // value={currentUser.name}
+// >
+//   {about.title}
+// </Title>
+// <AboutForm 
+// // onSubmit={(e) => props.nameSubmit(e, newUserName)}
+// >
+// <div >
+// <div className='about-title-cont'>
+
+// </div>
+// <About 
+// // type="about"
+// name="about" 
+// contentEditable={true} 
+// defaultValue={newAbout.about} 
+// placeholder="tell us about yourself or body of work"
+// onInput={(e) => setNewAbout({title: about.title, about: e.target.textContent})}>
+// {newAbout.about.split("").reverse().join("")}
+// </About>
+// </div>
+// </AboutForm>
+
 
 const TitleHeader = styled.h1`
     width: fit-content;
@@ -245,7 +389,7 @@ const Switch = styled.label`
  p {
   padding-left: 10px;
   /* margin-top: 0.50rem; */
-  font-size: 19px;
+  font-size: 16px;
 }
 &:nth-child(2){
     margin-block: 10px;

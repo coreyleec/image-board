@@ -10,33 +10,253 @@ import DraggableGridItem from "../dnd/DraggableGridItem";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
-import { render } from "@testing-library/react";
 
 const DndContainer = (props) => {
   const location = useLocation();
   const sortPhotos = (a, b) => a.index - b.index;
-  const [photos, setPhotos] = useState()
+  const [photos, setPhotos] = useState(null)
   const [updPhoto, setUpdPhoto] = useState(null)
+  const [imgCount, setImgCount] = useState(0)
+
+  const imgCounter = () => {
+    setImgCount(imgCount + 1)
+    if (imgCount + 1 === 60){
+      adjustFunction()
+      setImagesLoaded(true)
+      console.log("butt")
+    }
+  }
+  
+  
   // useEffect(() => {
   //   setPhotos(photos)
   // }, [props.colorArr])
   
   
-  const match  = useRouteMatch();
+const [underIndexs, setUnderIndexs] = useState()
+
+const landscape = (firstPhotoId, secondPhotoId) => {
+  let newPhotos = [...photos]; // copy of array
+    
+  let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
+    
+  let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
+  const firstIndex = firstPhoto.index; // declares variable value of first photo index
+  firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
+  secondPhoto.index = firstIndex; // then sets the second photo 
+  console.log("drag land")
+  return newPhotos
+}
+const portrait = (firstPhotoId, secondPhotoId) => {
+  let newPhotos = [...photos]; // copy of array
+
+  let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
+  let underFirstPhoto = newPhotos.find((photo) => photo.index === firstPhoto.index + 6)
+
+  let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
+  let underSecondPhoto = newPhotos.find((photo) => photo.index === secondPhoto.index + 6)
+
+  const firstIndex = firstPhoto.index; // declares variable value of 
+  const underFirstIndex = underFirstPhoto.index
+  
+  firstPhoto.index = secondPhoto.index;
+  underFirstPhoto.index = underSecondPhoto.index
+  secondPhoto.index = firstIndex;
+  underSecondPhoto.index = underFirstIndex
+  console.log("drag port")
+  return newPhotos
+}
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
-    console.log("firstPhotoId", firstPhotoId, "secondPhotoId", secondPhotoId)
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
-    console.log("firstPhoto", firstPhoto, "secondPhoto", secondPhoto, firstPhotoId, secondPhotoId)
-    const firstIndex = firstPhoto.index; // declares variable value of first photo index
-    firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
-    secondPhoto.index = firstIndex; // then sets the second photo index to the first index
-    props.setPhotos(newPhotos);
-    props.setReorderedPhotos(newPhotos)
-  };
+    let underFirstPhoto = newPhotos.find((photo) => photo.index === firstPhoto.index + 6)
+    let underSecondPhoto = newPhotos.find((photo) => photo.index === secondPhoto.index + 6)
+    let overFirstPhoto = firstPhoto.index > 5 && newPhotos.find((photo) => photo.index === firstPhoto.index - 6)
+    let overSecondPhoto = firstPhoto.index > 5 && newPhotos.find((photo) => photo.index === secondPhoto.index - 6)
 
+    let overOverFirstPhoto = firstPhoto.index > 5 && newPhotos.find((photo) => photo.index === firstPhoto.index - 12)
+    let overOverSecondPhoto = firstPhoto.index > 5 && newPhotos.find((photo) => photo.index === secondPhoto.index - 12)
+
+    let underUnderFirstPhoto = newPhotos.find((photo) => photo.index === firstPhoto.index + 12)
+    let underUnderSecondPhoto = newPhotos.find((photo) => photo.index === secondPhoto.index + 12)
+
+    const firstIndex = firstPhoto.index; // declares variable value of 
+    const underFirstIndex = underFirstPhoto.index
+    const overFirstIndex = overFirstPhoto.index
+    
+console.log("overFirstIndex", overFirstIndex, overFirstPhoto, !!overFirstPhoto)
+    // console.log("drag", firstPhoto.orientation !== secondPhoto.orientation, firstPhoto.orientation, secondPhoto.orientation, firstPhoto, secondPhoto)
+    // , (firstPhoto.orientation !== secondPhoto.orientation), firstPhoto.orientation, secondPhoto.orientation, firstPhoto, secondPhoto
+    // console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index,
+    // secondPhoto.index + '=' + firstIndex,
+    // overSecondPhoto.index + '=' + overFirstIndex, firstPhoto.orientation, overFirstPhoto.orientation, secondPhoto, !!overFirstPhoto)
+    
+
+// IF PHOTOS HAVE UNEQUAL ORIENTATIONS
+// USER NOTE: RULE SET BY THIS CONDITION MEANS PHOTO ORIENTATIONS ARE OPPOSITE 
+    if (firstPhoto.orientation !== secondPhoto.orientation){
+
+
+      console.log("drag inequal", firstPhoto.orientation, underSecondPhoto.orientation, (secondPhoto.index === firstPhoto.index + 1) || (secondPhoto.index === firstPhoto.index - 1))
+
+// IF DROP TARGET IS RIGHT NEXT TO DRAG SOURCE
+      if ((secondPhoto.index === firstPhoto.index + 1) || (secondPhoto.index === firstPhoto.index - 1)){
+          console.log("DROP TARGET IS RIGHT NEXT TO DRAG SOURCE")
+          console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index,overFirstPhoto.index + '=' + overSecondPhoto.index,
+          secondPhoto.index + '=' + firstIndex,
+          overSecondPhoto.index + '=' + overFirstIndex)
+        if ((!firstPhoto.orientation)) {
+          
+          if (!underSecondPhoto.orientation) {
+            // IF THE SECOND PHOTO IS LANDSCAPE AND THE FIRST PHOTO IS PORTRAIT DOES THE SECOND PHOTO HAVE SPACE UNDER IT FOR A LANDSCAPE PHOTO
+            console.log("first photo is portrait and under second photo is portrait", underUnderSecondPhoto)
+          }
+          if (underSecondPhoto.orientation){
+            console.log("FIRST PHOTO IS PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE", underSecondPhoto.orientation)
+            
+            firstPhoto.index = secondPhoto.index;
+            underFirstPhoto.index = underSecondPhoto.index
+            secondPhoto.index = firstIndex;
+            underSecondPhoto.index = underFirstIndex
+  
+            props.setPhotos(newPhotos);
+            props.setReorderedPhotos(newPhotos)
+          }
+        }
+        else if ((firstPhoto.orientation && underFirstPhoto.orientation)) {
+            console.log("FIRST PHOTO LANDSCAPE AND UNDER FIRST PHOTO IS LANDSCAPE")
+            
+            firstPhoto.index = secondPhoto.index;
+            underFirstPhoto.index = underSecondPhoto.index
+            secondPhoto.index = firstIndex;
+            underSecondPhoto.index = underFirstIndex
+  
+            props.setPhotos(newPhotos);
+            props.setReorderedPhotos(newPhotos)
+          }
+       
+      }
+      else if (firstPhoto.orientation){
+        // console.log("FIRST PHOTO LANDSCAPE UNDER LANDSCAPE PHOTO TO PORTRAIT PHOTO ")
+          if (!!overOverFirstPhoto && !overOverFirstPhoto.orientation ){
+            const overOverFirstIndex = overOverFirstPhoto.index
+            console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index,
+            secondPhoto.index + '=' + firstIndex,
+            overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto)
+            
+// FIRST PHOTO MUST SWITCH WITH UNDERSECOND PHOTO
+// OVER FIRST PHOTO MUST SWITCH WITH SECOND PHOTO
+// OVER OVER FIRST PHOTO MUST SWITCH WITH OVER SECOND PHOTO
+
+
+            firstPhoto.index = underSecondPhoto.index;
+            overFirstPhoto.index = secondPhoto.index
+            overOverFirstPhoto.index = overSecondPhoto.index
+            underSecondPhoto.index = firstIndex
+            secondPhoto.index = overFirstIndex;
+            overSecondPhoto.index = overOverFirstIndex
+            props.setPhotos(newPhotos);
+            props.setReorderedPhotos(newPhotos)
+          }
+          else if (!!overFirstPhoto && overFirstPhoto.orientation){
+            console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index,
+            secondPhoto.index + '=' + firstIndex,
+            overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto)
+            
+            firstPhoto.index = underSecondPhoto.index;
+            overFirstPhoto.index = secondPhoto.index
+            secondPhoto.index = overFirstIndex;
+            underSecondPhoto.index = firstIndex
+            // overSecondPhoto.index = overFirstIndex
+            props.setPhotos(newPhotos);
+            props.setReorderedPhotos(newPhotos)
+          }
+          else if (secondPhoto === underFirstPhoto){
+            if (!!underSecondPhoto.url){
+              firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
+              underSecondPhoto.index = firstIndex; // then sets the second photo 
+              console.log("drag land")
+    
+              props.setPhotos(newPhotos);
+              props.setReorderedPhotos(newPhotos)
+            }
+            
+            else {
+            firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
+            secondPhoto.index = firstIndex; // then sets the second photo 
+            console.log("drag land")
+
+            props.setPhotos(newPhotos);
+            props.setReorderedPhotos(newPhotos)}}
+
+
+
+      else if (!firstPhoto.orientation && underSecondPhoto.orientation){
+        console.log("FIRST PHOTO PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE")
+            
+        firstPhoto.index = secondPhoto.index;
+        underFirstPhoto.index = underSecondPhoto.index
+        secondPhoto.index = firstIndex;
+        underSecondPhoto.index = underFirstIndex
+
+        props.setPhotos(newPhotos);
+        props.setReorderedPhotos(newPhotos)
+      }
+
+// if under second is photo and first photo orientation false
+// 
+
+
+
+        else if (firstPhoto.orientation === secondPhoto.orientation){
+          // console.log("drag port", firstPhoto, secondPhoto, underFirstPhoto, underSecondPhoto)
+          const underFirstIndex = underFirstPhoto.index
+          firstPhoto.index = secondPhoto.index;
+          underFirstPhoto.index = underSecondPhoto.index
+          secondPhoto.index = firstIndex;
+          underSecondPhoto.index = underFirstIndex
+          console.log("drag port")
+
+          props.setPhotos(newPhotos);
+          props.setReorderedPhotos(newPhotos)
+        }
+  
+      }  
+// => DRAG AND DROP ITEMS ARE NOT ADJACENT
+      
+//  IF DRAGGING DOWNWARD      
+      
+    }
+    
+
+// THIS IS A HACKY SOLUTION TO REACT-DND CALLING HOVER MONITOR FUNCTION TWICE
+    else if (firstPhoto === secondPhoto){
+      console.log("do nothing photo same")
+      // console.log("do nothing", firstPhoto, secondPhoto)
+    }
+    else {
+      let underFirstPhoto = newPhotos.find((photo) => photo.index === firstPhoto.index + 6)
+      let underSecondPhoto = newPhotos.find((photo) => photo.index === secondPhoto.index + 6)
+      // if((!!firstPhoto.orientation && !!secondPhoto.orientation)){
+      //   if(!!underSecondPhoto.orientaiton)
+      // }
+      
+      firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
+      secondPhoto.index = firstIndex; // then sets the second photo 
+      console.log("drag land")
+
+      props.setPhotos(newPhotos);
+      props.setReorderedPhotos(newPhotos)
+    }
+    
+
+    let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
+      let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
+      setUnderIndexs(photosUnder)
+      // window.store = portraitPhotos
+  };
 const disableOnDrop = () => {
   console.log("onDrop disabled");
 };
@@ -247,68 +467,93 @@ const testFavorite = (photo) => {
 // }
 // console.log("test", threeWrap())
 
-const onLoadFunc = () => {
+// useEffect(() => {
+//   photos.filter((photo) => photo.orientation)
+// }, [])
+
+
+const adjustFunction = () => {
+  const grid = gridRef.current;
+  // adjustGridItemsHeight(grid, updPhoto)
+  const photos = grid.children
+  for (let i = 0; i < photos.length; i++) {
+    let photo = photos[i]; // each square is "photo"
+    // let photoUnder = photos[i + 6]
+    // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
+    
+    let gridItem = photo.getBoundingClientRect();
+    let height = +getComputedStyle(photo.firstChild).height.slice(0, -2)
+    let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
+
+    let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
+  	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
+  
+
+    photo.style.transformOrigin = `${originX}% ${originY}%`;
+    // if (height !== 220){
+    //   photoUnder.style.zIndex = 'auto'
+    // }
+    // underGridItem.style.zIndex = -1
+  } return 
+ }
+
+ const onLoadFunc = () => {
   adjustFunction()
   setImagesLoaded(true)
 }
 
-const adjustFunction = () => {
-  const grid = gridRef.current;
-  adjustGridItemsHeight(grid, updPhoto)
-  const photos = grid.children
-  for (let i = 0; i < photos.length; i++) {
-    let photo = photos[i]; // each square is "photo"
-  
-    let gridItem = photo.getBoundingClientRect();
-    // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
 
-    let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
 
-    let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
-  	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
-  
-
-	photo.style.transformOrigin = `${originX}% ${originY}%`;
-  } return 
- }
-  useEffect(() => {
-    // console.log("testing grid adjustment", photos)
-    const grid = gridRef.current;
-    adjustGridItemsHeight(grid, updPhoto);
-  }, [photos]);
+  // useEffect(() => {
+  //   console.log("testing grid adjustment")
+  //   // , photos
+  //   const grid = gridRef.current;
+  //   // adjustGridItemsHeight(grid, updPhoto);
+  // }, [photos]);
 
 useEffect(() => {    
   // console.log("photos", props.photos)
-  !!props.photos && setPhotos([...props.photos])
+  // console.log("useEffect", props.photos, props.colorArr)
+  console.log("useEffect")
+  let newPhotos = [...props.photos]; // copy of array
+  let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
+  let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
+
+  setUnderIndexs(photosUnder)
+  !!props.photos && setPhotos([...newPhotos])
   const grid = gridRef.current;
-  adjustGridItemsHeight(grid, updPhoto);
-}, [props.photos, props.colorArr])
+  // adjustGridItemsHeight(grid, updPhoto);
+}, [props.photos])
 
-useEffect(() => {
-  const grid = gridRef.current;
-  const photos = grid.children
-  for (let i = 0; i < photos.length; i++) {
-    let photo = photos[i]; // each square is "photo"
+// useEffect(() => {
+//   const grid = gridRef.current;
+//   const photos = grid.children
+//   for (let i = 0; i < photos.length; i++) {
+//     let photo = photos[i]; // each square is "photo"
   
-    let gridItem = photo.getBoundingClientRect();
-    console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
+//     let gridItem = photo.getBoundingClientRect();
+//     // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
 
-    let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
+//     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
 
-    let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
-  	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
+//     let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
+//   	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
   
 
-	photo.style.transformOrigin = `${originX}% ${originY}%`;
-  } return 
+// 	photo.style.transformOrigin = `${originX}% ${originY}%`;
+//   } return 
 
-}, [])
+// }, [])
 
 
 const [drag, setDrag] = useState(false)
 const dragging = () => {
   setDrag()
 }
+
+// useEffect(() => {
+//   console.log("drag", underIndexs)
+// }, [underIndexs])
 
   return (
     <article>
@@ -343,20 +588,29 @@ const dragging = () => {
               {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
                     className="grid-item"
                     edit={props.edit}
-                    alt={photo.id}
+                    alt={photo.index}
                     key={photo.index}
-                    orientation={+photo.orientation}
+                    orientation={photo.orientation}
                     url={photo.url}
                     photo={photo}
                     collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
                     colorArr={props.colorArr}
-                    onDrop={onDrop}
+                    // onDrop={onDrop}
+                    onDrop={underIndexs.includes(photo.index) ? false : onDrop}
+                    onMouseDown={() => setUnderIndexs(underIndexs.filter((index) => index !== (photo.index + 6)))}
+                      onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
+                    // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                     highlight={photo.color}
                   >
                     <PictureFrame
                     className="picture"
                     // onResize={() => console.log("hello")}
                       // favorited={!!photo.favorites && photo.favorites.length} 
+                      // onMouseDown={() => console.log("drag",underIndexs.filter((index) => index === (photo.index + 6)))}
+                      // onMouseUp={() => console.log(underIndexs.filter((index) => index === (photo.index + 6)))}
+
+                      
+
                       edit={props.edit}
                       url={photo.url}
                       highlight={photo.color}
@@ -364,10 +618,7 @@ const dragging = () => {
                       enableDelete={props.enableDelete}
                       
                       details={!!photo.name || !!photo.details}
-                      orientation={+photo.orientation}
-                      // orientation={!!photo.orientation ? 'portrait' : 'landscape' }
-                      // style={ (photo.url !== null && photo.orientation !== "100px") ? {height: `220px`} : {height: '100px'}
-                      // }
+                      orientation={photo.orientation}
                       >  
                       <div className="center-image">
                         
@@ -377,24 +628,12 @@ const dragging = () => {
                         // ref={imgRef}
                         // key={photo.index}
                         // key={!!photo.url && photo.url}
-                        onLoad={() => props.edit ? adjustFunction() : onLoadFunc() }
+                        onLoad={() => imgCounter() }
+                        // onLoad={() => props.edit ? onLoadFunc() : onLoadFunc() }
                         // onLoad keeps tall images from overlapping the photo on the next line
                         
                         onClick={() => modalToggle(photo)}
-                        // onMouseDown={setCursor("grabbing")}
-                        // {cursor: `${cursor}`}
-                        // style={{cursor: isDragging ? 'grabbing' : 'default' }}
-                        // style={photo.orientation !== "100px"   
-                        // ? {minWidth:`${photo.orientation}`, maxHeight: "220px"}
-                        // : {maxWidth: "135px" }}
-// TRUE = LANDSCAPE && 100px === maxWidth: 135px
-// FALSE = PORTRIAT && 135px minWidth, maxHeight 220px
-// style={
-//   orientation = 
-// photo.orientation !== "100px" 
-// photo.orientation === "135px" 
-// ? {minWidth:`${photo.orientation}`, maxHeight: "220px"}     
-// : {maxWidth: "135px" }}
+
                         // loading="lazy"
                         src={
                           !!photo.url
@@ -457,7 +696,13 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
 
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
-
+    let photoUnder = photos[i + 6]
+    // let photoOver = i > 6 && photos[i - 6]
+    // let photoOrientation = photo.getAttribute('orientation')
+    // let photoUnder = !photoOrientation && photos[i + 6]
+    // let underGridItem = photoUnder.getBoundingClientRect();
+// console.log('this', photoUnder)
+// console.log("items", photoUnder, photoOver)
     let rowHeight = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-auto-rows")
     );
@@ -465,15 +710,39 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
       window.getComputedStyle(grid).getPropertyValue("grid-row-gap")
     );
     let height = +getComputedStyle(photo.firstChild).height.slice(0, -2)
+    let zDex = getComputedStyle(photo.firstChild).zIndex
+
+    // console.log("height", height)
+    console.log("adjustGridItemsHeight")
     let rowSpan = Math.ceil(
       (height + rowGap) /
-        (rowHeight + rowGap)) <= 40 ? 40 : 80
+        (rowHeight + rowGap)) <= 40 ? 40 : 40
 
-if(updPhoto !== null) {if(parseInt(photo.getAttribute("alt")) === updPhoto.id){
-  console.log("issue", height, getComputedStyle(photo.firstChild).height, `{Math.ceil(
-    (` + `${photo.firstChild.getBoundingClientRect().height}`+ '+' + `${rowGap}` + `) /
-      (` + `${rowHeight}`+ `+` + `${rowGap})` +   `) <= 40 ? 40 : 80`)}
-}
+        // photoUnder.style.zIndex = 1
+// if (height === 220){
+//   // photoUnder.style.zIndex = -1
+//   photoUnder.style.zIndex = -1
+//   photoUnder.classList.add('grid-item')
+//   console.log('z-index', zDex)
+// }
+// let value = height === 220 ? -1 : 1
+// photoUnder.style.zIndex = value
+// if (height !== 220){
+//   photoUnder.style.zIndex = 'auto'
+// }
+
+
+// if(!(Math.ceil(
+//   (height + rowGap) /
+//     (rowHeight + rowGap)))){
+//       photo.style.zIndex = 3
+//     }
+
+// if(updPhoto !== null) {if(parseInt(photo.getAttribute("alt")) === updPhoto.id){
+//   console.log("issue", height, getComputedStyle(photo.firstChild).height, `{Math.ceil(
+//     (` + `${photo.firstChild.getBoundingClientRect().height}`+ '+' + `${rowGap}` + `) /
+//       (` + `${rowHeight}`+ `+` + `${rowGap})` +   `) <= 40 ? 40 : 80`)}
+// }
 
     // console.log("rowSpan", rowSpan, parseInt(photo.getAttribute("alt")), i, updPhoto.id)
     photo.style.gridRowEnd = "span " + rowSpan;
@@ -490,7 +759,9 @@ const GridWrapper = styled.div`
   grid-gap: 2px;
   grid-auto-rows: 1px;
   grid-template-columns: repeat(6,minmax(120px, 155px));
-
+  .grid-item{
+    grid-row-end: span 40;
+  }
   
 `;
 // COMPASS 
@@ -512,7 +783,7 @@ const PictureFrame = styled.div`
 
     position: relative;
     left: 50%;
-    top: 50%;
+    top: ${({orientation}) => orientation ? '50%' : '100%' };
     transform: translate(-50%, -50%);
     padding: 0px;
     overflow: hidden;

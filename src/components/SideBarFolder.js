@@ -7,7 +7,7 @@ import { EditableDiv, SubtractButton, AddButton } from '../My.styled'
 import {  useHistory, Link , useLocation, useRouteMatch} from 'react-router-dom';
 
 const SideBarFolder = (props) => {
-  console.log("parse", props.favoriteDetails)
+  // console.log("parse", props.favoriteDetails)
   const [newFolder, setNewFolder] = useState(false)
   const [folderName, setFolderName] = useState("")
   let location = useLocation()

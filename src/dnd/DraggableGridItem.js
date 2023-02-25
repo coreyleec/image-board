@@ -7,7 +7,7 @@ const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }
   // const { photo, onDrop, children, ...p } = props;
   // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
 // console.log("props", p)
-  const useDragAndDrop = (ref, payloadPhoto) => {
+  const useDragAndDrop = (photoRef, payloadPhoto) => {
  // useDrag return value array - collected props: isDragging is Boolean, drag is function
     const [{ isDragging }, drag] = useDrag({
       item: { type: 'GRID_ITEM', ...payloadPhoto },
@@ -19,27 +19,27 @@ const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }
     // console.log("payloadPhoto", payloadPhoto, "photo hover", photo.hover, "drag", drag, "isDragging", isDragging)
 
     // useDrop return value array - no props, drop function
-    const [, drop] = useDrop({
+    const [{ canDrop, isOver }, drop] = useDrop({
       accept: 'GRID_ITEM',
       hover: payloadPhoto.hover
     })
   // hook(node, options) // connectDragSource(connectDropTarget(node))
-    drag(drop(ref));
+    drag(drop(photoRef));
   
     return {
       isDragging
     }
   }
 
-  // ref is grid item styled div
-  const ref = useRef(null);
-  // console.log("ref",ref)
+  // photoRef is grid item styled div
+  const photoRef = useRef(null);
+  // console.log("photoRef",photoRef)
   // console.log("draggable", photo)
 
-  // console.log("ref", ref, "photo",photo, "onDrop", onDrop)
-  const { isDragging } = useDragAndDrop(ref, {
+  // console.log("photoRef", photoRef, "photo",photo, "onDrop", onDrop)
+  const { isDragging } = useDragAndDrop(photoRef, {
     ...photo,
-    hover: createDragHoverCallback(ref, photo, onDrop)
+    hover: createDragHoverCallback(photoRef, photo, onDrop)
   });
 
 
@@ -48,7 +48,7 @@ const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }
   // const opacity = isDragging ? 0 : 1;
 // const style = (photo.url === null) && {zIndex : '-1'}
   return <GridItemWrapper  
-    {...p} ref={ref}  
+    {...p} ref={photoRef}  
     isDragging={isDragging}
     orientation={orientation}
     // style={{ opacity }} 
@@ -67,9 +67,10 @@ export default DraggableGridItem
 //
 // This function makes sure the `onDrop` action is only triggered after
 // the mouse has crossed half of the item`s height or width.
-const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
-  //console.log(ref, currentPhoto, onDrop)
+const createDragHoverCallback = (photoRef, currentPhoto, onDrop) => {
+  // console.log(photoRef, currentPhoto, onDrop)
   return (otherPhoto, monitor) => {
+    // console.log(otherPhoto, monitor)
     const dragIndex = otherPhoto.index;
     const hoverIndex = currentPhoto.index;
   // Don't replace items with themselves
@@ -77,9 +78,9 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
       return;
     }
     // Determine rectangle on screen
-    const hoverBoundingRect = ref.current.getBoundingClientRect();
+    const hoverBoundingRect = photoRef.current.getBoundingClientRect();
     // Get vertical middle
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 2;
+    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 5;
     // Get horizontal middle
     const hoverMiddleX = (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
     // console.log(hoverMiddleX, "hoverMiddleX")
@@ -108,7 +109,7 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
     // this is where you would want to reorder your list
     // In case you wan't to use the whole object, don't forget to
     // make a deep copy, because we are mutating the object on the last line
-    console.log("otherPhoto", otherPhoto, "currentPhoto", currentPhoto)
+    // console.log("otherPhoto currentPhoto")
     onDrop(otherPhoto.id, currentPhoto.id);
   // onDrop(otherPhoto.index, currentPhoto.index);
   // onDrop(otherObject.index, currentObject.index);
@@ -126,24 +127,29 @@ const createDragHoverCallback = (ref, currentPhoto, onDrop) => {
 
 const GridItemWrapper = styled.div `
   /* padding: 5px; */
-  padding-inline: 5px;
-
+  // padding-inline: 5px;
+position: relative;
   ${({url, edit, isDragging, orientation}) => edit 
-    ? `
-    z-index: 1;
-    transition: z-index .0s ease-in, transform .2s ease-in;
-    &:hover {transform: translate(1.5px,-1.5px); transition: transform .2s ease-in, z-index 0s ease-in .2s;}
-    cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
+    ? !!url
+    ? `z-index: 3; 
+    transition: transform .3s ease-in .4s,
+                z-index 0s 0s;
+                cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
     `
+    : `z-index: 2; 
+      transition: transform .3s ease-in .3s, 
+                  z-index 0s linear .3s;
+                  `
     : !!url
-    ? `z-index: 0; 
+    ? `z-index: 3; 
     transition: transform .3s ease-in .4s,
                 z-index 0s 1s;
     &:hover {
       transform: ${orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
-      z-index: 4; 
+      z-index: 5; 
       transition: z-index 0s linear , 
-                  transform .3s ease-in;}`
+                  transform .3s ease-in;}
+                  `
     : `z-index: -1; 
       transition: transform .3s ease-in .3s, 
                   z-index 0s linear .3s;`

@@ -57,10 +57,10 @@ const CommunityScrollCont = (props) => {
 //   return photos;
 // }, {});
 
-useEffect(() => {
-  !!props.following && console.log("recent", props.following, props.following.users, props.community);
+// useEffect(() => {
+//   !!props.following && console.log("recent", props.following, props.following.users, props.community);
 
-}, [props.following])
+// }, [props.following])
 
 
 

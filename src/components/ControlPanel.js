@@ -220,7 +220,7 @@ margin-top: 0;
 p {
 padding-left: 10px;
 /* margin-top: 0.50rem; */
-font-size: 19px;
+font-size: 16px;
 }
 &:nth-child(2){
   margin: 10px;
@@ -284,14 +284,14 @@ const InputSwitch = styled.label`
   p {
   display: ${props => !!props.expand && 'none' };
   padding-left: 10px;
-  font-size: 19px;  
+  font-size: 16px;  
 }
 input {
   ${({expand})  => expand && `z-index: 1;` }
   width: ${props => props.expand ? '90%' : '0%'};
-    font-size: 19px;
+    font-size: 16px;
     margin-left: 4px;
-    font-size: 19px;
+    font-size: 16px;
     margin-left: 9px;
     transition: width 1s ease;
   }

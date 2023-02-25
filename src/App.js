@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Route, useLocation, Switch, useHistory, useRouteMatch, Redirect } from 'react-router-dom';
+import { Route, useLocation, Switch, useHistory, Redirect } from 'react-router-dom';
 import styled from "styled-components";
 import Header from "./containers/Header";
 import SideBar from "./containers/SideBar";
@@ -7,21 +7,25 @@ import AsideRight from "./containers/AsideRight";
 import UserLoginSignup from "./containers/UserLoginSignup";
 import CommunityPage from "./containers/CommunityPage"
 import DndRoutePrefix from "./containers/DndRoutePrefix";
-import AboutMe from "./containers/AboutMe";
+
 
 
  
 
-export const App = (props) => {
+export const App = () => {
   require("events").EventEmitter.defaultMaxListeners = 20;
   let history = useHistory()
   let navigate = history.push;
   const location = useLocation();
   const [directory, setDirectory] = useState()
+  const [subDirectory, setSubDirectory] = useState()
 
   useEffect(() => {
     const root = location.pathname.split('/')[1]
+    const sub = location.pathname.split('/')[2]
     setDirectory(root)
+    setSubDirectory(sub)
+    
   }, [location.pathname])
   
   window.onbeforeunload = function () {
@@ -108,10 +112,12 @@ const profileFetch = () => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("User Profile", user.user)
-      setUserId(user.user.id)
+      console.log("User Profile", user.user, typeof user.user.about)
+      // setUserId(user.user.id)
       setUserName(user.user.name);
-      setUserAboutMe(user.details);
+      // setAbout(user.user.about);
+      
+      setAbout(user.user.about);
         setUserLinks(user.user.links);
         setFolders(user.user.folders);
         setFavorites(user.user.favorites);
@@ -124,8 +130,9 @@ const profileFetch = () => {
         setPhotos(user.user.folders[0].photos)
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
-        setTutorial(user.user.tutorial)
+        // setTutorial(user.user.tutorial)
         navigate(`/home/folders/${user.user.folders[0].index}`)
+        console.log("directory", `/home/folders/${user.user.folders[0].index}`)
         
   })
 }
@@ -143,11 +150,11 @@ const fetchUser = (userId) => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("user", user)
+      console.log("user", user, typeof user.user.about)
       setUserId(user.user.id);
       // props.setUuid(user.user.uuid)
       setUserName(user.user.name);
-      setUserAboutMe(user.user.details);
+      setAbout(user.user.about);
       setFolders(user.user.folders);
       setFolderShown(user.user.folders[0].index)
       setFavoriteShown(null)
@@ -165,7 +172,7 @@ const fetchUser = (userId) => {
 
  useEffect(() => {
   !!currentUserId && userId === currentUserId && profileFetch(userId)
-   
+  !!currentUserId && userId === currentUserId && console.log('login')
 }, [currentUserId])
 
 
@@ -173,10 +180,16 @@ const fetchUser = (userId) => {
 //   (directory !== 'home' || directory !== 'by_Corey_Lee') &&setTutorial(false)
 //   console.log("user tutorial set")
 // }, [directory])
-useEffect(() => {
-  (directory === 'by_Corey_Lee') && setTutorial(true)
-  console.log("user tutorial set")
-}, [directory])
+
+
+
+// useEffect(() => {
+//   (directory === 'by_Corey_Lee') && setTutorial(true)
+//   // console.log("user tutorial set")
+// }, [directory])
+
+
+
 
 // useEffect(() => {
 //   if (directory !== 'by_Corey_Lee' && tutorial === true){
@@ -189,7 +202,7 @@ const [favorites, setFavorites] = useState(null)
 
 const setFolderPhotos = (index) => {
   const folder = folders.find(folder => folder.index === index)
-  console.log("folder", folder)
+  // console.log("folder", folder)
   setFolderShown(index)
   setFavoriteShown(null)
   setFolderPrivacy(folder.public)
@@ -206,6 +219,11 @@ const setFavoritePhotos = (index) => {
   // setFolderCollaborators(folder.collaborators)
   setPhotos(favoriteFolder[0].favorite_photos)
   navigate(`/${directory}/favorites/${index}`)
+}
+
+const clickAboutLink = () => {
+  setFavoriteShown(null)
+  setFolderShown(null)
 }
 
 const [colorArr, setColorArr] = useState([{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}])
@@ -287,7 +305,7 @@ const landingFetch = () => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("tutorialUser", user)
+      console.log("tutorialUser", user, typeof user.user.about, typeof user.user.folders)
       setUserId(user.user.id)
       setUserName(user.user.name);
       setUserAboutMe(user.user.details);
@@ -296,7 +314,7 @@ const landingFetch = () => {
         setFavorites(user.user.favorites);
         setUserFavorites(user.user.favorite_folders)
         setAbout(user.user.about)
-        setTutorial(user.user.tutorial)
+        // setTutorial(user.user.tutorial)
         setUuid(user.user.uuid)
         setFolderType(user.user.folders[0].creative)
         // setFavoriteDetails(user.user.favorite_folders.map(favoriteFolder => (`{"name": "${favoriteFolder.name}", "id": ${favoriteFolder.id}}`)))
@@ -309,6 +327,7 @@ const landingFetch = () => {
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
         navigate(`/by_Corey_Lee/folders/${user.user.folders[0].index}`)
+      
   })
 }
 
@@ -431,7 +450,7 @@ const createFolder = (e, folderName) => {
   }, [newFolder])
 
 useEffect(() => {
-  console.log("folder", folders)
+  // console.log("folder", folders)
   let details = !!folders && folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`))
   let jsonDetails = !!details && details.map(detail => JSON.parse(detail))
   setFolderDetails(jsonDetails)
@@ -703,7 +722,7 @@ const updateUserAboutMe = (e, aboutMe) => {
     .then((res) => res.json())
     .then((userObj) => {
       console.log(userObj.details);
-      setUserAboutMe(userObj.details);
+      setAbout(userObj.details);
     });
 };
 
@@ -770,7 +789,7 @@ const deletePhoto = (photo) => {
 const [reorderedPhotos, setReorderedPhotos] = useState()
 // console.log("reorderedPhotos", reorderedPhotos)
 const reorderSubmit = () => {
-!!folderShown ?
+  !isNaN(folderShown) ?
     !tutorial && fetch(`${dbVersion}/reorder_folder/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
@@ -900,15 +919,18 @@ useEffect(() => {
           setFollow(followObj)
         });
   }
-
+  // console.log("app directory", directory)
   // window.store = state 
+
+  
     return (
       
       <Switch> 
       <Cont directory={directory} >
          
         <SideBar
-
+          subDirectory={subDirectory}
+          clickAboutLink={clickAboutLink}
           hover={hover} 
           setHover={setHover}
           follow={!!follow}
@@ -952,6 +974,7 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <Header
+          subDirectory={subDirectory}
           tutorial={tutorial}
           setTutorial={setTutorial}
           userId={userId}
@@ -968,6 +991,7 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <AsideRight
+          subDirectory={subDirectory}
           hover={hover} 
           setHover={setHover}
           catagorize={catagorize}
@@ -1005,8 +1029,9 @@ useEffect(() => {
       >
 
           <DndRoutePrefix
-              setBaseName={props.setBaseName}
-              // navigate={navigate}
+              subDirectory={subDirectory}
+              about={about}
+              setAbout={setAbout}
               folderCollaborators={folderCollaborators}
               photos={!!photos && photos}
               setPhotos={setPhotos}
@@ -1019,7 +1044,6 @@ useEffect(() => {
               currentUserId={currentUserId}
               tutorial={tutorial}
               setReorderedPhotos={setReorderedPhotos}
-              // addPhoto={addPhoto}
               updateUserFavorites={updateUserFavorites}
               deletePhoto={deletePhoto}
               enableDelete={enableDelete}
@@ -1035,7 +1059,7 @@ useEffect(() => {
  
 
          
-              <Route exact path='/login' >
+              <Route path='/login' >
                 <UserLoginSignup 
                 setTutorial={setTutorial}
                 setUuid={setUuid}
@@ -1045,19 +1069,13 @@ useEffect(() => {
                 setUserLinks={setUserLinks}
                 setFolders={setFolders}
                 setFolderShown={setFolderShown}
-
                 setPhotos={setPhotos}
                 setUserName={setUserName}
-                  // loggedIn={loggedIn}
-                  navigate={navigate}
-
-                  useTemplate={useTemplate} 
-
-
-                  setUserId={setUserId}
-                  setCurrentUserId={setCurrentUserId}
-                  // useTemplate={useTemplate} 
-                  dbVersion={dbVersion}
+                navigate={navigate}
+                useTemplate={useTemplate} 
+                setUserId={setUserId}
+                setCurrentUserId={setCurrentUserId}
+                dbVersion={dbVersion}
                 />
                 </Route>
 
@@ -1078,13 +1096,7 @@ useEffect(() => {
                 fetchUser={fetchUser}
                 />
                 </Route>
-                <Route path="/about" >
-                  <AboutMe
-                  about={about}
-                  dbVersion={dbVersion}
-                  currentUserId={currentUserId}
-                />
-                </Route>
+                
                 
                 
 

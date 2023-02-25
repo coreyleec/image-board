@@ -15,8 +15,6 @@ const AsideRight = (props) => {
   const listRef = useRef()
   const inputRef = useRef();
   const asideRef = useRef();
-  !!asideRef.current && console.log("asideRef", asideRef.current.clientWidth)
-  // window.store = props
   const onloadTutorialRef = useRef()
 
 const [delay, setDelay] = useState('.3s linear .3s')
@@ -92,7 +90,7 @@ const changeFlex = (bool) => {
   //     setDelay('height .3s linear');
   //   }, 500)
   // }
-  console.log("flexStart", bool)
+  // console.log("flexStart", bool)
   setFlexStart(!bool)
 }
 
@@ -100,7 +98,7 @@ const changeFlex = (bool) => {
 
 // const [isCollabor, setIsCollabor] = useEffect(false)
 useEffect(() => {
-  console.log("props.folderCollaborators", props.folderCollaborators) 
+  // console.log("props.folderCollaborators", props.folderCollaborators) 
   // !!props.currentUserId && props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) setIsCollabor(true)})
 }, [props.folderCollaborators])
 
@@ -111,7 +109,7 @@ const [skinny, setSkinny] = useState(false);
 
 const controlDockToggle = () => {
   setControlDock(!controlDock)
-  !!drawerRef.current && console.log("dimensions", drawerRef.current.clientHeight);
+  // !!drawerRef.current && console.log("dimensions", drawerRef.current.clientHeight);
   // !!search && setSearch([0])
 }
 const [drawerHeight, setDrawerHeight] = useState(0)
@@ -169,7 +167,7 @@ const [height, setHeight] = useState(26)
 
 const [searchUl, setSearchUl] = useState([])
 useEffect(() => {
-  console.log("searchUl", searchUl, search)
+  // console.log("searchUl", searchUl, search)
   let length = search.length * 20
   !!search.length ? setSearchUl(length + 6) : 
   setSearchUl([])
@@ -183,25 +181,19 @@ useEffect(() => {
 
 
 const [drawer, setDrawer] = useState(0)
-!!editDrawerRef.current && console.log("switch", editDrawerRef.current.clientHeight)
+// !!editDrawerRef.current && console.log("switch", editDrawerRef.current.clientHeight)
 useEffect(() => {
-  // let openSwitch = controlDock ? 25 : 35
   let deleteSwitch = !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight
-  // let openSwitch = !!editDrawerRef.current && editDrawerRef.current.clientHeight
-  // let drawerRefHeight = editDrawerHeight ? 25 : 35
   let editSwitch = !skinny ? 25 : controlDock ? 25 : 0
   let editDrawer = !skinny ? (105 + deleteSwitch) : props.edit ? 130 : 0
   let collabUl = (!!listRef.current) ? (listRef.current.clientHeight) + 10 : 0
   // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
   let length = search.length * 20
-  // let searchList = (!!search.length) ? length + 6 : 0
-  // !!search.length ? setSearchUl(length + 6) : 
-  // setSearchUl([])
   let catagoryPrompt = 60
   let searchList = (!!search.length) ? (search.length * 20 + 6) : 0
   !!search.length ? setSearchUl(length + 6) : 
   setSearchUl([])
-  console.log("deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
+  // console.log("deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
 
   if (skinny){
     // WINDOW IS SKINNY
@@ -209,7 +201,11 @@ useEffect(() => {
       // CLOSED CONTROL DOCK
       let drawerMath = editSwitch
       setDrawer(drawerMath)
-      console.log("editSwitch", editSwitch)
+      // console.log("editSwitch", editSwitch)
+    }
+    else if (controlDock && props.subDirectory === 'about'){
+      // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
+      setDrawer(25)
     }
     else if (controlDock && props.folderType === null){
       // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
@@ -220,23 +216,22 @@ useEffect(() => {
     else if (!controlDock && props.folderType === null){
       setDrawer(0)
       // CLOSED CONTROL DOCK AND UNCATAGORIZED FOLDER
-      console.log("")
     }
     else if(controlDock && !props.edit) {
       // OPEN CONTROL DOCK WITH EDIT BUTTON AND COLLABORATOR DRAWER
       let drawerMath = editSwitch + collabUl
       setDrawer(drawerMath)
-      console.log("editSwitch", editSwitch, "collabUl", collabUl )
+      // console.log("editSwitch", editSwitch, "collabUl", collabUl )
     }
     else if(controlDock && props.edit && !search.length) {
       let drawerMath = editSwitch + collabUl + editDrawer + 10
       setDrawer(drawerMath)
-      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
+      // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
     }
     else if (controlDock && props.edit && !!search.length) {
       let drawerMath = editSwitch + collabUl + editDrawer + searchList + 10
       setDrawer(drawerMath)
-      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
+      // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
     }
     else if (!controlDock) {setDrawer(0)}
   //   let height = (props.folderType === null) ? 60 : (props.folderCollaborators.length >= 2 && !!listRef.current) ? (35 + listRef.current.clientHeight) : 25
@@ -253,34 +248,36 @@ useEffect(() => {
     
     if (props.folderType !== 0){
       
-      
-      if(!props.edit) {
+      if (props.subDirectory === 'about'){
+        // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
+        setDrawer(35)
+      } 
+      else if(!props.edit) {
         // OPEN CONTROL DOCK WITH EDIT BUTTON AND COLLABORATOR DRAWER
         let drawerMath = editSwitch + collabUl + 10
         setDrawer(drawerMath)
-      console.log("editSwitch", editSwitch, "collabUl", collabUl )
+      // console.log("editSwitch", editSwitch, "collabUl", collabUl )
     }
     else if(props.edit && !search.length) {
       let drawerMath = editSwitch + collabUl + editDrawer + 10
       setDrawer(drawerMath)
-      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
+      // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
     }
     else if (props.edit && !!search.length) {
       let drawerMath = editSwitch + collabUl + editDrawer + searchList + 10
       setDrawer(drawerMath)
-      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
+      // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
     }
   }
   // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
   else if (props.folderType === null){
     let drawerMath = catagoryPrompt
-      console.log("")
       setDrawer(drawerMath)
   }
   }
-}, [props.folderType, props.folderCollaborators, controlDock, props.edit, search, skinny])
+}, [props.folderType, props.folderCollaborators, controlDock, props.edit, search, skinny, props.subDirectory])
 
-console.log("drawer", drawer, !!editDrawerRef.current && editDrawerRef.current.clientHeight, !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight)
+// console.log("drawer", drawer, !!editDrawerRef.current && editDrawerRef.current.clientHeight, !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight)
 
 
 
@@ -299,11 +296,11 @@ console.log("drawer", drawer, !!editDrawerRef.current && editDrawerRef.current.c
 
 const [follow, setFollow] = useState(false)
 const followToggle = () => {
-  console.log("follow")
+  // console.log("follow")
   setFollow(!follow)
 }
 const typeToggle = () => {
-  console.log("follow")
+  // console.log("follow")
   props.setType(!props.folderType)
 }
 
@@ -348,10 +345,10 @@ useEffect(() => {
 }, [props.tutorial, skinny, controlDock, props.directory, props.edit])
 
 let deleteDemoArrow = !!editDrawerRef.current && (editDrawerRef.current.childNodes[0].clientHeight !== 25) ? 19 : 0
-console.log("deleteDemoArrow", deleteDemoArrow)
+// console.log("deleteDemoArrow", deleteDemoArrow)
 
 // const [hover, setHover] = useState(false)
-console.log("tru", props.folderCollaborators.some(c => c.uuid === props.currentUserId))
+// console.log("tru", props.folderCollaborators.some(c => c.uuid === props.currentUserId))
 const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.currentUserId)
   return (
     <aside ref={asideRef}  >
@@ -405,12 +402,25 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
             
 {/* THIS SECTION ROTATES THE EDIT AND CATAGORIZE TO HIDE EDIT IF A NEW FOLDER HAS NOT YET BEEN CATAGORIZED */}
 
- {/* CATAGORIZE */}           
-             {(props.directory === 'home' || props.directory === 'by_Corey_Lee') || (props.directory === "user" &&  isCollaborator)
-             ? (props.folderType === null) 
+ {/* FIRST IS PUBLISH ABOUT SWITCH */}           
+             {(props.directory === 'home' || props.directory === 'by_Corey_Lee') || (props.directory === "user" &&  isCollaborator) 
+             ? (props.subDirectory === 'about') 
+             ? <CatagorySwitch>
+              <label className="toggle-switch edit-switch" >
+             <input type="checkbox" checked={true}
+              // onChange={publishAbout}
+              />
+             <span className="switch" />
+             </label>
+             <p>publish?</p>
+             </CatagorySwitch> 
+             : (props.folderType === null) 
              ? 
              <>
-           <CatagorySwitch catagorized={props.folderType} className="catagory first">
+{/* CATAGORIZE FOLDERS CREATIVE OR LIFESTYLE */}
+           <CatagorySwitch 
+           catagorized={props.folderType} 
+           className="catagory first">
            <label className="toggle-switch">
            <input type="checkbox" 
            checked={props.folderType === true}
@@ -607,7 +617,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
               </CollabotorList>}
             </div>
             </div>
-            {(props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial &&
+            {(props.subDirectory !== 'about') && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial && 
           <TutorialTip 
           asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={skinny}
           flexStart={flexStart} edit={props.edit} delay={delay}
@@ -660,6 +670,7 @@ const TutorialTip = styled.div`
   backdrop-filter: blur(6px);
   border-radius: 16px;
   color: blue;
+  font-size: 16px;
   opacity: 100%;
   width: 168px;
   top: 0;
@@ -675,7 +686,7 @@ const TutorialTip = styled.div`
 };
 @media (max-width: 1100px){
   right: ${({controlDock, skinny, panelRef})  => 
-  controlDock ? '280px' : '80px'};
+  controlDock ? '230px' : '80px'};
   // transform: translateX(-198px); transition: transform 1s ease;
   transition: ${({controlDock})  => 
   controlDock ? 'right 0.3s linear' : 'right 0.3s linear 0.3s'}, opacity .2s linear, z-index .2s linear, top .0s linear,  min-height .4s linear, visibility 0s;
@@ -817,7 +828,7 @@ const Container = styled.div`
     border-top-left-radius: 22px;
     border-bottom-left-radius: 22px;
     transition: ${props => !props.controlDock ? 'width .3s linear .3s' : 'width .3s linear'};
-    width: ${props => !props.controlDock ? '50px' : '250px'};
+    width: ${props => !props.controlDock ? '50px' : '200px'};
   }
 
 
@@ -944,7 +955,8 @@ const Switch = styled.label`
   width: ${({asideRef}) => !!asideRef && asideRef.current.clientWidth - 20 + 'px'};
   p {
     padding-left: 10px;
-    font-size: 19px;
+    font-size: 16px; 
+    line-height: 25px;
   }
   /* @media (max-width: 1100px) {
   :first-child {
@@ -1016,7 +1028,8 @@ const CatagorySwitch = styled.label`
   
  p {
   padding-left: 10px;
-  font-size: 19px;
+  font-size: 16px; 
+    line-height: 25px;
 }
 
   // :first-child{
@@ -1164,14 +1177,17 @@ const OpenSwitch = styled.label`
     /* p {
     
     padding-left: 10px;
-    font-size: 19px;  
+    font-size: 16px; 
+    line-height: 25px;  
   } */
   input {
     ${({expand})  => expand && `z-index: 1;` }
     width: ${props => props.controlDock ? '90%' : '0%'};
-      font-size: 19px;
+      font-size: 16px; 
+    line-height: 25px;
       margin-left: 4px;
-      font-size: 19px;
+      font-size: 16px; 
+    line-height: 25px;
       margin-left: 9px;
       transition: width 4s linear;
     }
@@ -1188,7 +1204,7 @@ const OpenSwitch = styled.label`
     border-radius: 25px;
     /* transition: width 0.5s cubic-bezier(0.75, 0.75, 0.75, 0.75) 0s; */
     transition: width  ${props => !props.controlDock ? '0.3s linear .3s' : '0.3s linear'};
-    width: ${props => !props.controlDock ? '50px' : '250px'};
+    width: ${props => !props.controlDock ? '50px' : '200px'};
     min-width: 50px;
   .switch {margin-bottom: 10px;}
   }
@@ -1214,7 +1230,7 @@ const OpenSwitch = styled.label`
       
       /* transition: right 0.5s ease; */
       /* left: ${props => !props.controlDock ? '6px' : '232px'}; */
-      transform: translateX(${props => !props.controlDock ? '0px' : '225px'});
+      transform: translateX(${props => !props.controlDock ? '0px' : '175px'});
       /* color: ${props => !props.controlDock ? 'white' : '#9d6b6b' } */
       background-color: ${props => !props.controlDock ? 'green' : '#ff0000' };
       box-shadow: ${props => !props.controlDock ? '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)' : '0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0)' };
@@ -1224,10 +1240,12 @@ const OpenSwitch = styled.label`
       font-size: 13px; */
       margin-block: auto;
       // line-height: 11px;
-      // font-size: 16px;
+      // font-size: 16px; 
+    line-height: 25px;
       margin-block: auto;
       line-height: 16px;
-      font-size: 16px;
+      font-size: 16px; 
+    line-height: 25px;
       color: #bc29298a;
       transition: top .3s linear, transform .6s ease, text-shadow .3s ease;
       /* transform: ${props => !props.controlDock ? 'scaleX(-1)' : 'scaleX(1)'};
@@ -1262,7 +1280,8 @@ const InputSwitch = styled.label`
   p {
   /* left: ${props => !!props.expand && 'none' }; */
   padding-left: 10px;
-  font-size: 19px;  
+  font-size: 16px; 
+    line-height: 25px;  
   ${({expand, skinny, panelRef})  => 
   skinny && `
   position: relative;
@@ -1276,8 +1295,12 @@ const InputSwitch = styled.label`
 }
 input {
   margin-left: 9px;
-  margin-top: 2px;
-  font-size: 19px;
+  // margin-top: 2px;
+  // font-size: 16px; 
+  margin-top: 4px;
+    font-size: 16px;
+    line-height: 20px;
+    // line-height: 25px;
   transition: width .3s linear;
   width: ${props => props.inputWidth};
   background-color: transparent;
@@ -1288,7 +1311,8 @@ input {
 }
   /* @media (max-width: 1100px) {
   
-    font-size: 19px;
+    font-size: 16px; 
+    line-height: 25px;
     transition: width .3s linear;
   } */
 
@@ -1306,7 +1330,7 @@ input {
   transition: width 0.3s linear;
   width: ${({expand, skinny, panelRef})  => 
   skinny ? 
-  expand ? '250px' : '50px'
+  expand ? '200px' : '50px'
   : expand ? `${panelRef.current.clientWidth - 21}px` : '50px'};
 
 
@@ -1317,7 +1341,7 @@ ul li {
     list-style-type: none;
     cursor: pointer;
     line-height: 20px;
-    font-size: 17px;
+    font-size: 16px;
   }
  ul {
     background-color: #aaa;
