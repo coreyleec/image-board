@@ -138,19 +138,27 @@ console.log("overFirstIndex", overFirstIndex, overFirstPhoto, !!overFirstPhoto)
           }
        
       }
+      // => DRAG AND DROP ITEMS ARE NOT ADJACENT
       else if (firstPhoto.orientation){
         // console.log("FIRST PHOTO LANDSCAPE UNDER LANDSCAPE PHOTO TO PORTRAIT PHOTO ")
+        // if (overFirstPhoto.index === secondPhoto.index + 1 || overFirstPhoto.index === secondPhoto.index - 1) {
+          
+        // }
+        if (!!overOverFirstPhoto){
+
+        if (overOverFirstPhoto.index === overSecondPhoto.index + 1 || overOverFirstPhoto.index === overSecondPhoto.index - 1) {
+
           if (!!overOverFirstPhoto && !overOverFirstPhoto.orientation ){
             const overOverFirstIndex = overOverFirstPhoto.index
             console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index,
             secondPhoto.index + '=' + firstIndex,
             overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto)
             
-// FIRST PHOTO MUST SWITCH WITH UNDERSECOND PHOTO
-// OVER FIRST PHOTO MUST SWITCH WITH SECOND PHOTO
-// OVER OVER FIRST PHOTO MUST SWITCH WITH OVER SECOND PHOTO
-
-
+            // FIRST PHOTO MUST SWITCH WITH UNDERSECOND PHOTO
+            // OVER FIRST PHOTO MUST SWITCH WITH SECOND PHOTO
+            // OVER OVER FIRST PHOTO MUST SWITCH WITH OVER SECOND PHOTO
+            
+            
             firstPhoto.index = underSecondPhoto.index;
             overFirstPhoto.index = secondPhoto.index
             overOverFirstPhoto.index = overSecondPhoto.index
@@ -160,19 +168,10 @@ console.log("overFirstIndex", overFirstIndex, overFirstPhoto, !!overFirstPhoto)
             props.setPhotos(newPhotos);
             props.setReorderedPhotos(newPhotos)
           }
-          else if (!!overFirstPhoto && overFirstPhoto.orientation){
-            console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index,
-            secondPhoto.index + '=' + firstIndex,
-            overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto)
-            
-            firstPhoto.index = underSecondPhoto.index;
-            overFirstPhoto.index = secondPhoto.index
-            secondPhoto.index = overFirstIndex;
-            underSecondPhoto.index = firstIndex
-            // overSecondPhoto.index = overFirstIndex
-            props.setPhotos(newPhotos);
-            props.setReorderedPhotos(newPhotos)
-          }
+        }
+      
+          
+        }
           else if (secondPhoto === underFirstPhoto){
             if (!!underSecondPhoto.url){
               firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
@@ -192,7 +191,19 @@ console.log("overFirstIndex", overFirstIndex, overFirstPhoto, !!overFirstPhoto)
             props.setReorderedPhotos(newPhotos)}}
 
 
-
+else if (overFirstPhoto.orientation){
+            console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index,
+            secondPhoto.index + '=' + firstIndex,
+            overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto)
+            
+            firstPhoto.index = underSecondPhoto.index;
+            overFirstPhoto.index = secondPhoto.index
+            secondPhoto.index = overFirstIndex;
+            underSecondPhoto.index = firstIndex
+            // overSecondPhoto.index = overFirstIndex
+            props.setPhotos(newPhotos);
+            props.setReorderedPhotos(newPhotos)
+          }
       else if (!firstPhoto.orientation && underSecondPhoto.orientation){
         console.log("FIRST PHOTO PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE")
             
@@ -224,8 +235,31 @@ console.log("overFirstIndex", overFirstIndex, overFirstPhoto, !!overFirstPhoto)
         }
   
       }  
-// => DRAG AND DROP ITEMS ARE NOT ADJACENT
-      
+
+      else if (!firstPhoto.orientation){
+        if (underSecondPhoto.orientation){
+          console.log("FIRST PHOTO IS PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE", underSecondPhoto.orientation)
+          
+          firstPhoto.index = secondPhoto.index;
+          underFirstPhoto.index = underSecondPhoto.index
+          secondPhoto.index = firstIndex;
+          underSecondPhoto.index = underFirstIndex
+
+          props.setPhotos(newPhotos);
+          props.setReorderedPhotos(newPhotos)
+        }
+      // if (underFirstPhoto.orientation) {
+      //   console.log("FIRST PHOTO LANDSCAPE AND UNDER FIRST PHOTO IS LANDSCAPE")
+        
+      //   firstPhoto.index = secondPhoto.index;
+      //   underFirstPhoto.index = underSecondPhoto.index
+      //   secondPhoto.index = firstIndex;
+      //   underSecondPhoto.index = underFirstIndex
+
+      //   props.setPhotos(newPhotos);
+      //   props.setReorderedPhotos(newPhotos)
+      // }
+    }
 //  IF DRAGGING DOWNWARD      
       
     }
