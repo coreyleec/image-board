@@ -86,6 +86,7 @@ const [condition, setCondition] = useState()
                 <div>
             {newFavorites && props.edit && 
                         <EditableDiv 
+                        suppressContentEditableWarning={true}
                         id={"favoriteInput"}
                         type="text" edit={props.edit}
                         // ref={inputRef}
@@ -105,6 +106,7 @@ const [condition, setCondition] = useState()
                     <div 
                         className="title-cont" key={favorite.id} favorite={favorite}>
                         <EditableDiv
+                        suppressContentEditableWarning={true}
                         type="text" contentEditable={props.edit} edit={props.edit}
                         favoriteShown={props.favoriteShown}
                         defaultValue={favorite.name}

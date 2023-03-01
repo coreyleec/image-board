@@ -113,6 +113,7 @@ const moveFolder = useCallback((dragIndex, hoverIndex) => {
 
             {newFolder && props.edit && 
                         <EditableDiv 
+                        suppressContentEditableWarning={true}
                         id={"folderInput"}
                         type="text" edit={props.edit}
                         ref={inputRef}
@@ -133,6 +134,7 @@ let path = location.pathname.split("/")[1] */}
                         className="title-cont" key={folder.id} folder={folder}>
 {/* <Link to={`/folders/${folder.id}`} >                           */}
                         <EditableDiv
+                        suppressContentEditableWarning={true}
                         type="text" contentEditable={props.edit} edit={props.edit}
                         // folderDetails={props.folderDetails}
                         index={folder.index}
