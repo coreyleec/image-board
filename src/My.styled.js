@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const EditableDiv = styled.div`
 font-size: 1.4rem;
-line-height: .85em;
+line-height: 1.15em;
 padding-left: 10px; 
 padding-top: 3px;
 float: left;

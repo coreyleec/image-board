@@ -80,6 +80,7 @@ const SideBarLinks = (props) => {
         props.userLinks.map((link) => (
           <form
             key={link.id}
+            alt={link.index}
             
             // onSubmit={(e) => props.updateLink(e, linkName, linkUrl)}
           >
@@ -119,9 +120,9 @@ const SideBarLinks = (props) => {
             
 
             ) : (
-              <LinkCont>
+              <LinkCont >
           {!!props.userLinks && props.userLinks.map((link) => (
-            <a target="_blank" rel="noopener noreferrer" href={`${link.url}`}> {link.name} </a>
+            <a target="_blank" rel="noopener noreferrer" alt={link.index} href={`${link.url}`}> {link.name} </a>
             ))}
         </LinkCont>
       )}

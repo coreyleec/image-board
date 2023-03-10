@@ -23,22 +23,17 @@ const [delay, setDelay] = useState('.3s linear .3s')
   const editToggle = () => {
     props.editToggle(!props.edit)
     if (props.edit) {
-      // props.editToggle(true)
       setDelay('.3s linear')
       setTimeout(() => {
         setDelay('.3s linear .3s');
       }, 500)
     }
     else {
-      // props.editToggle(false)
       setDelay('.3s linear .3s')
       setTimeout(() => {
         setDelay('.3s linear');
       }, 500)
     }
-    // props.edit && props.loggedIn && 
-    // first click is delay .3s
-    // second click is delay 0s
     props.edit === true && 
     props.reorderSubmit()
   };
@@ -186,6 +181,7 @@ useEffect(() => {
   let deleteSwitch = !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight
   let editSwitch = !skinny ? 25 : controlDock ? 25 : 0
   let editDrawer = !skinny ? (105 + deleteSwitch) : props.edit ? 130 : 0
+  let follow = 50
   let collabUl = (!!listRef.current) ? (listRef.current.clientHeight) + 10 : 0
   // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
   let length = search.length * 20
@@ -194,8 +190,40 @@ useEffect(() => {
   !!search.length ? setSearchUl(length + 6) : 
   setSearchUl([])
   // console.log("deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
-
-  if (skinny){
+  if (props.directory === 'user'){
+    // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
+    if (skinny){
+      // WINDOW IS SKINNY
+      if (!controlDock) {
+        // CLOSED CONTROL DOCK
+        setDrawer(0)
+        // console.log("editSwitch", editSwitch)
+      }
+      else {
+        setDrawer(25)
+      }
+    }
+    else setDrawer(50 + collabUl)
+  } 
+  else if (props.subDirectory === 'about'){
+    // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
+    
+    if (skinny){
+      // WINDOW IS SKINNY
+      if (!controlDock) {
+        // CLOSED CONTROL DOCK
+        setDrawer(0)
+        // console.log("editSwitch", editSwitch)
+      }
+      else {
+        setDrawer(25)
+      }
+    }
+    else {
+      setDrawer(35)
+    }
+  } 
+  else if (skinny){
     // WINDOW IS SKINNY
     if (!controlDock) {
       // CLOSED CONTROL DOCK
@@ -248,11 +276,8 @@ useEffect(() => {
     
     if (props.folderType !== 0){
       
-      if (props.subDirectory === 'about'){
-        // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
-        setDrawer(35)
-      } 
-      else if(!props.edit) {
+     
+      if(!props.edit) {
         // OPEN CONTROL DOCK WITH EDIT BUTTON AND COLLABORATOR DRAWER
         let drawerMath = editSwitch + collabUl + 10
         setDrawer(drawerMath)
@@ -355,7 +380,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
      
       <Sticky>
       <SideWrapper skinny={skinny} asideRef={asideRef} onMouseEnter={() => props.setHover(false)}>
-      {(((props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user'))) &&  
+      {(((props.directory === 'home' || props.directory === 'by_Corey_Lee' || (props.directory === 'user' && props.subDirectory !== 'about')))) &&  
             <Container
             controlDock={controlDock}
             asideRef={asideRef}
@@ -407,12 +432,12 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
              ? (props.subDirectory === 'about') 
              ? <CatagorySwitch>
               <label className="toggle-switch edit-switch" >
-             <input type="checkbox" checked={true}
-              // onChange={publishAbout}
+             <input type="checkbox" checked={props.published}
+              onChange={() => props.publishAbout()}
               />
              <span className="switch" />
              </label>
-             <p>publish?</p>
+             <p>{props.published ? "privatize?" : "publish?"}</p>
              </CatagorySwitch> 
              : (props.folderType === null) 
              ? 
@@ -489,7 +514,6 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
 
            <>
            <div className="cover"></div>
-           {/* {props.edit === true &&  */}
            <CatagorySwitch
            className="catagory"
            catagorized={props.folderType === null}>
@@ -501,23 +525,20 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
            />
            <span className="switch" />
            </label>
-           <p>{props.folderType === null ? "creative" : "lifestyle"}</p> 
+           <p>{props.folderType == false ? "creative" : "lifestyle"}</p> 
            </CatagorySwitch>
            {/* } */}
           </>
 
-
-             {/* <div className="cover"></div> */}
 {/* TOGGLE PRIVACY */}
             {/* {!!props.folderPrivacy &&  */}
             <Switch
             className="public"
-            catagorized={props.folderType === null}
             >
             <label className="toggle-switch">
             <input type="checkbox" 
             // checked={props.folder.public}
-            //  onChange={}
+            //  onChange={() => props.updateFolderPrivacy()}
               />
             <span className="switch" />
             </label>
@@ -552,7 +573,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
              onBlur={() => changeFlex(false)} placeholder="search user"/>
              {/* } */}
             <ul>
-              {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
+              {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid, user.name)}>
                 {user.name}
               </li>))}
             </ul>
@@ -593,7 +614,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
       } */}
 
             {!!props.folderCollaborators.length &&
-            props.folderCollaborators.length >= 2 &&
+            props.folderCollaborators.length >= 2 && props.subDirectory !== 'about' &&
             <CollabotorList ref={listRef} className="collabUl" 
             // onMouseEnter={() => changeFlex(true)}
             // onMouseLeave={() => changeFlex(false)}
@@ -617,7 +638,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
               </CollabotorList>}
             </div>
             </div>
-            {(props.subDirectory !== 'about') && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial && 
+            { props.tutorial &&  (props.subDirectory !== 'about') && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&
           <TutorialTip 
           asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={skinny}
           flexStart={flexStart} edit={props.edit} delay={delay}
@@ -633,7 +654,8 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
             <div className="arrow cat"></div>
             <div className="arrow pub"></div>
             <div className="arrow collab"></div>
-          </TutorialTip>}
+          </TutorialTip>
+           }
             </Container>
             } 
             
@@ -646,7 +668,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
 export default AsideRight;
 
 const SideWrapper = styled.div`
-    width: min-content;
+    min-width: min-content;
     position: absolute;
     // top: 0;
     // left: 0;
@@ -928,11 +950,11 @@ overflow: hidden;
   
   .edit{
     z-index: 1;
-    margin-bottom: 10px;
-    @media (max-width: 1100px) {
-      margin-bottom: ${({edit}) => edit ? '10px' : '0px'  };
-      transition: margin-bottom .3s linear ;
-    }
+    margin-bottom: ${({edit}) => edit ? '10px' : '0px'  };
+    // margin-bottom: 10px;
+    transition: margin-bottom .3s linear ;
+    // @media (max-width: 1100px) {
+    // }
   }
   .delete{
     margin-top: 0px;
@@ -1356,7 +1378,7 @@ ul li {
   cursor: pointer;
     position: absolute;
     content: "";
-    margin-block: 7px;
+    margin-block: 8px;
     margin-inline: 5px;
     width: 13px;
     height: 13px;
@@ -1367,7 +1389,7 @@ ul li {
 
     left: ${({expand, skinny, panelRef})  => 
   skinny ? 
-  expand ? '225px' : '0px'
+  expand ? '176px' : '0px'
   : expand ? `${panelRef.current.clientWidth - 45}px` : '1px'};
     
     

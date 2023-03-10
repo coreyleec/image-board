@@ -51,63 +51,63 @@ useEffect(() => {
                 : <TitleHeader >{(props.directory === 'home' | props.directory === 'by_Corey_Lee' | props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
                     }
 
-<Sticky>
-{/* FOLLOW */}
-{(props.directory === 'user') && 
-        <div>
-            <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={!!props.follow}
-            onChange={() => props.followToggle(props.userId)}
-            />
-            <span className="switch" />
-            </label>
-            <p>follow</p> 
-            </Switch>
-{/* ART/LIFESTYLE TOGGLE */}
-            {(!!props.follow) && (
-            <>
-            <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={props.follow.creative_follow}
-            onChange={() => props.creativeFollow(props.follow.id)}
-            />
-            <span className="switch" />
-            </label>
-            <p>creative</p> 
-            </Switch>
-            <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={!!props.follow && props.follow.lifestyle_follow}
-            onChange={() => props.lifestyleFollow(props.follow.id)}
-            />
-            <span className="switch" />
-            </label>
-            <p>lifestyle</p> 
-            </Switch>
-            </>)
-            }
-            </div>
-}
-    {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&           
-        <Switch>
-            <label className="toggle-switch">
-            <input type="checkbox" 
-            checked={props.tutorial}
-            onChange={() => props.setTutorial(!props.tutorial)}
-            />
-            <span className="switch" />
-            </label>
-            <p>tutorial</p> 
-            </Switch>
-        }
-            </Sticky>
-            {props.tutorial && <TutorialTip hover={hover} >feel free to resize the window to allow space to browse your file manager for photos</TutorialTip>}
-            </header>
-        )
+      <Sticky>
+      {/* FOLLOW */}
+      {(props.directory === 'user') && 
+              <div>
+                  <Switch>
+                  <label className="toggle-switch">
+                  <input type="checkbox" 
+                  checked={!!props.follow}
+                  onChange={() => props.followToggle(props.userId)}
+                  />
+                  <span className="switch" />
+                  </label>
+                  <p>follow</p> 
+                  </Switch>
+      {/* ART/LIFESTYLE TOGGLE */}
+                  {(!!props.follow) && (
+                  <>
+                  <Switch>
+                  <label className="toggle-switch">
+                  <input type="checkbox" 
+                  checked={props.follow.creative_follow}
+                  onChange={() => props.creativeFollow(props.follow.id)}
+                  />
+                  <span className="switch" />
+                  </label>
+                  <p>creative</p> 
+                  </Switch>
+                  <Switch>
+                  <label className="toggle-switch">
+                  <input type="checkbox" 
+                  checked={!!props.follow && props.follow.lifestyle_follow}
+                  onChange={() => props.lifestyleFollow(props.follow.id)}
+                  />
+                  <span className="switch" />
+                  </label>
+                  <p>lifestyle</p> 
+                  </Switch>
+                  </>)
+                  }
+                  </div>
+      }
+          {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&           
+              <Switch>
+                  <label className="toggle-switch">
+                  <input type="checkbox" 
+                  checked={props.tutorial}
+                  onChange={() => props.setTutorial(!props.tutorial)}
+                  />
+                  <span className="switch" />
+                  </label>
+                  <p>tutorial</p> 
+                  </Switch>
+              }
+                  </Sticky>
+                  {props.tutorial && (window.innerWidth > 1100) && <TutorialTip hover={hover} >resize the window to allow space to browse your files</TutorialTip>}
+                  </header>
+              )
 
 }
 

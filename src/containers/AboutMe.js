@@ -14,56 +14,61 @@ const AboutMe = (props) => {
     const [about, setAbout] = useState({title: '', about: ''})
     const [newAbout, setNewAbout] = useState({title: props.about.title, about: props.about.about})
     const clickContRef = useRef()
-// useEffect(() => {
-//   setAbout(...newAbout)
-// }, [newAbout])
-
 
   useEffect(() => {
-    // const bool = console.log(_.isEqual(object, other))
-    // if (!!about.name || !!about.about) {
-      let copy = newAbout
+
+// if (props.loggedIn){
+      const copy = newAbout
       setAbout(copy)
       const empty = {title: '', about: ''}
+
       console.log("props about", typeof props.about, props.about, !_.isEqual(props.about, empty))
+
       const delayFunc = setTimeout(() => {
         if (!_.isEqual(newAbout, empty)) {
           if (!_.isEqual(about, newAbout)) {
-        console.log("about", about, newAbout, newAbout.title + newAbout.about, _.isEqual(about, newAbout), _.isEqual(newAbout, empty))
-        
-        fetch(`${props.dbVersion}/update_about/`, {
-          method: "PATCH",
-          headers: {
-            Authorization: `Bearer ${localStorage.token}`,
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            about: newAbout,
-          }),
-        })
-          .then((res) => res.json())
-          .then((aboutObj) => {
-            console.log("about real", aboutObj);
-            setNewAbout(aboutObj);
-            // props.setAbout(aboutObj);
-            // window.store = aboutObj
-          })
-        }
-        }
+
+          console.log("about", about, newAbout, newAbout.title + newAbout.about, _.isEqual(about, newAbout), _.isEqual(newAbout, empty))
+
+            if ((props.demo && props.directory === 'by_Corey_Lee')){
+            setNewAbout(copy);
+            }
+            else if (props.loggedIn){
+            fetch(`${props.dbVersion}/update_about/`, {
+              method: "PATCH",
+              headers: {
+                Authorization: `Bearer ${localStorage.token}`,
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                about: newAbout,
+              }),
+            })
+              .then((res) => res.json())
+              .then((aboutObj) => {
+                console.log("about real", aboutObj, aboutObj);
+                setNewAbout(aboutObj);
+                // props.setAbout(aboutObj);
+                // window.store = aboutObj
+              })
+            }
+        }}
   }, 3000)
     
     return () => clearTimeout(delayFunc)
-
+// }
   }, [newAbout])
 
-  console.log("about", about)
+  // console.log("about", about, newAbout)
   // const nameSubmit = (e) => {
   //   e.preventDefault();
   //   // console.log(e, newName);
   //   // !loggedIn ? 
       
   const handleBlur = () => {
-    props.setAbout(newAbout)
+    let handleAbout = Object.assign({}, newAbout, {publish: props.about.publish})
+    console.log("about", about, newAbout, newAbout);
+    props.setAbout(handleAbout)
   }
 
 
@@ -107,33 +112,39 @@ const AboutMe = (props) => {
   
 // 1. Paste plain text only into contenteditable elements
 document.addEventListener("paste", function (e) {
+  console.log("text is good", e.currentTarget.isContentEditable)
   if (e.target.isContentEditable) {
       e.preventDefault();
-      var text = e.clipboardData.getData('text/plain')
+      const text = e.clipboardData.getData('text/plain')
       document.execCommand('insertText', false, text)
+      console.log("text is good", text)
   }
 });
 
 // 2. Prevent any paste into contenteditable elements
-document.addEventListener("paste", function (e) {
-  if (e.target.isContentEditable) {
-      e.preventDefault();
-      return false;
-  }
-});
-
+// document.addEventListener("paste", function (e) {
+//   if (e.target.isContentEditable) {
+//       e.preventDefault();
+//       return false;
+//   }
+// });
+const publicRef=useRef()
 
 // const alrt = alert("hello")
         return (
           <div>
+            {/* <button onClick={() => handleBlur()}>click</button> */}
            <AboutForm ref={clickContRef} spellcheck={true}
-                autocapitalize="sentences">
+                >
               <StyledTitle 
-              type="text" contentEditable={true}
-              onKeyDown={handleKeyDown}
+              ref={publicRef}
+              autocapitalize="sentences"
+              placeholder="add a title to your about section"
+              type="text" contentEditable={!!(props.loggedIn || props.demo)}
               dangerouslySetInnerHTML={{__html: props.about.title}}
+              onKeyDown={handleKeyDown}
               onBlur={handleBlur}
-              onInput={(e) => setNewAbout({title: e.currentTarget.innerHTML, about: about.about})}
+              onInput={(e) => setNewAbout({title: e.currentTarget.innerHTML, about: newAbout.about})}
                 
             
               >
@@ -142,10 +153,10 @@ document.addEventListener("paste", function (e) {
               <StyledAbout
                 onKeyDown={handleKeyDown}
                 onBlur={handleBlur}
-                type="text" contentEditable={true} autocapitalize="sentences"
+                type="text" contentEditable={!!(props.loggedIn || props.demo)} autocapitalize="sentences"
                 placeholder="tell us about yourself or body of work"
                 dangerouslySetInnerHTML={{__html: props.about.about}}
-                onInput={(e) => setNewAbout({title: about.title, about: e.currentTarget.innerHTML})}
+                onInput={(e) => setNewAbout({title: newAbout.title, about: e.currentTarget.innerHTML})}
                 >
               </StyledAbout>
             </AboutForm>

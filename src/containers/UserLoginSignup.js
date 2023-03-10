@@ -49,7 +49,7 @@ const loginSubmit = (e, name, password) => {
       localStorage.token = user.user.token;
       props.setUserId(user.user.id);
       props.setCurrentUserId(user.user.id)
-      // props.setTutorial(false)
+      props.setDemo(false)
       // navigate("/home")
       
     });

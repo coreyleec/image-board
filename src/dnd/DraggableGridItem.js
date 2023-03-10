@@ -131,28 +131,28 @@ const GridItemWrapper = styled.div `
 position: relative;
   ${({url, edit, isDragging, orientation}) => edit 
     ? !!url
-    ? `z-index: 3; 
+    ? `z-index: 2; 
     transition: transform .3s ease-in .4s,
                 z-index 0s 0s;
                 cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
     `
-    : `z-index: 2; 
+    : `z-index: 1; 
       transition: transform .3s ease-in .3s, 
-                  z-index 0s linear .3s;
+                  z-index 0s linear 0;
                   `
     : !!url
-    ? `z-index: 3; 
+    ? `z-index: 2; 
     transition: transform .3s ease-in .4s,
                 z-index 0s 1s;
     &:hover {
       transform: ${orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
       z-index: 5; 
-      transition: z-index 0s linear , 
+      transition: z-index .3s cubic-bezier(0,1,1,0) , 
                   transform .3s ease-in;}
                   `
     : `z-index: -1; 
       transition: transform .3s ease-in .3s, 
-                  z-index 0s linear .3s;`
+                  z-index .3s cubic-bezier(0,1,1,0);`
    }
    /* :hover {
     

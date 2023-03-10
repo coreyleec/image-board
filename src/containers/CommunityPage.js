@@ -272,7 +272,7 @@ useEffect(() => {
     .then((res) => res.json())
     .then((recentContent) => 
     {
-    // console.log("recentContent", recentContent)
+    console.log("recentContent", recentContent)
     setCommunity(recentContent.community)
     setFollowing(recentContent.following)
     recentContent.following.folders.length === 0 && setDegree(false)

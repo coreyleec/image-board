@@ -37,6 +37,7 @@ return (
 
           <DndContainer
             // subDirectory={subDirectory}
+            loggedIn={props.loggedIn}
             folderCollaborators={props.folderCollaborators}
               hightlighted={props.hightlighted}
               setBaseName={props.setBaseName}
@@ -50,7 +51,7 @@ return (
               uuid={props.uuid}
               userId={props.userId}
               currentUserId={props.currentUserId}
-              tutorial={props.tutorial}
+              demo={props.demo}
               setReorderedPhotos={props.setReorderedPhotos}
               deletePhoto={props.deletePhoto}
               enableDelete={props.enableDelete}
@@ -65,6 +66,8 @@ return (
 
               <Route path={`${match.path}/about`} >
                   <AboutMe
+                  demo={props.demo}
+                  loggedIn={props.loggedIn}
                   setAbout={props.setAbout}
                   about={props.about}
                   dbVersion={props.dbVersion}

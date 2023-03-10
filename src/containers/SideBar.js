@@ -23,6 +23,12 @@ const SideBar = (props) => {
     window.location.reload(false);
   };
 
+  const clickAboutLink = () => {
+    props.setFavoriteShown(null)
+    props.setFolderShown(null)
+    setSideBar(false) 
+  }
+
   const [skinny, setSkinny] = useState(false);
   useEffect(() => {
     if (window.innerWidth < 1100) {setSkinny(true)} 
@@ -147,7 +153,7 @@ useEffect(() => {
                     ref={folderRef}
                     >
                     <SideBarFolder 
-                    
+                    loggedIn={props.loggedIn}
                     setFolderPhotos={props.setFolderPhotos}
                     createFolder={props.createFolder}
                     deleteFolder={props.deleteFolder}
@@ -166,6 +172,7 @@ useEffect(() => {
                     ref={favoriteRef}
                     >
                     <SideBarFavorites  
+                    loggedIn={props.loggedIn}
                     directory={props.directory}
                     setFavoritePhotos={props.setFavoritePhotos}
                     favoriteDetails={props.favoriteDetails}
@@ -182,7 +189,7 @@ useEffect(() => {
                     ref={linkRef}
                     >
                     <SideBarLinks
-                      
+                      loggedIn={props.loggedIn}
                       updateLink={props.updateLink}
                       createLink={props.createLink}
                       userLinks={props.userLinks}
@@ -196,6 +203,22 @@ useEffect(() => {
 
                   </>
                 )}
+{/* ((props.directory === 'by_Corey_Lee' || props.directory === 'user' || props.directory === 'home') ||(props.published || props.edit)) */}
+
+{/* ABOUT */}
+          {!!(props.published && props.directory === 'user') || !!(!!(props.directory === 'home' || props.directory === 'by_Corey_Lee') && (props.published || props.edit)) && 
+              <Link 
+              as={Link} to={`/${props.directory}/about`} 
+                onMouseOver={() => setDemoText(aboutDemo)}
+                onClick={() => clickAboutLink()}
+                ref={aboutRef}
+                className="community-href">
+                  <div className="nav-bar-header-wrapper">
+                    {"about".split("").map((n) => (
+                      <p className="nav-bar-header">{n}</p>
+                    ))}
+                  </div>
+                </Link>}
 {/* COMMUNITY */}
             <div 
             onClick={() => setSideBar(!sideBar)} 
@@ -212,19 +235,7 @@ useEffect(() => {
                   </div>
                 </Link>
               )}
-{/* ABOUT */}
-              <Link 
-              as={Link} to={`/${props.directory}/about`} 
-                onMouseOver={() => setDemoText(aboutDemo)}
-                onClick={() => props.clickAboutLink()}
-                ref={aboutRef}
-                className="community-href">
-                  <div className="nav-bar-header-wrapper">
-                    {"about".split("").map((n) => (
-                      <p className="nav-bar-header">{n}</p>
-                    ))}
-                  </div>
-                </Link>
+
 {/* HOME */}
               {props.directory !== 'home' && props.directory !== 'by_Corey_Lee' && (
                 
@@ -361,6 +372,8 @@ const Sticky = styled.div`
     
 
   position: sticky;
+  position: relative;
+  z-index: 3;
   top: 0;
   z-index: 5;
 .follow-cont{

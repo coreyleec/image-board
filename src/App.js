@@ -27,7 +27,7 @@ export const App = () => {
     setSubDirectory(sub)
     
   }, [location.pathname])
-  
+  console.log("subDirectory", subDirectory)
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
@@ -44,6 +44,10 @@ export const App = () => {
 const [currentUserId, setCurrentUserId] = useState(0);
 const [userId, setUserId] = useState(0);
 const [uuid, setUuid] = useState(0)
+const [loggedIn, setLoggedIn] = useState(false)
+useEffect(() => {
+  (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
+}, [userId, currentUserId])
 
 
 // COMMENTS //
@@ -56,9 +60,9 @@ const [folderShown, setFolderShown] = useState(null);
 
 //userFavorites// 
 const [folderCollaborators, setFolderCollaborators] = useState([])
-  const [folderPrivacy, setFolderPrivacy] = useState()
-  const [userFavorites, setUserFavorites] = useState();
-  const [favoriteDetails, setFavoriteDetails] = useState()
+const [folderPrivacy, setFolderPrivacy] = useState()
+const [userFavorites, setUserFavorites] = useState();
+const [favoriteDetails, setFavoriteDetails] = useState()
 const [folderDetails, setFolderDetails] = useState()
 
 // LINKS //
@@ -66,7 +70,7 @@ const [userLinks, setUserLinks] = useState([]);
 
 // EDIT USER INFO
 // const [userEmail, setUserEmail] = useState("");
-const [about, setAbout] = useState("");
+const [about, setAbout] = useState({title:"", about:"", publish: false});
 const [userName, setUserName] = useState("");
 const [userAboutMe, setUserAboutMe] = useState("");
 
@@ -97,7 +101,15 @@ const editToggle = () => {
 const [hover, setHover] = useState(false)
 
 const [tutorial, setTutorial] = useState(false)
+const [demo, setDemo] = useState(false)
 
+useEffect(() => {
+  directory !== 'by_Corey_Lee' ? setDemo(false) : setDemo(true)
+}, [location.pathname])
+
+useEffect(() => {
+  
+}, [])
 
 
 const profileFetch = () => {
@@ -113,33 +125,33 @@ const profileFetch = () => {
     .then((user) => 
     {
       console.log("User Profile", user.user, typeof user.user.about)
-      // setUserId(user.user.id)
+      setUserId(user.user.id)
       setUserName(user.user.name);
-      // setAbout(user.user.about);
-      
       setAbout(user.user.about);
-        setUserLinks(user.user.links);
-        setFolders(user.user.folders);
-        setFavorites(user.user.favorites);
-        setUserFavorites(user.user.favorite_folders)
-        // setFolderPhotos(user.user.folders[0].index)
-        setFolderType(user.user.folders[0].creative)
-        setFolderShown(user.user.folders[0].index)
-        setFavoriteShown(null)
-        setFolderCollaborators(user.user.folders[0].collaborators)
-        setPhotos(user.user.folders[0].photos)
-        // setUserComments(user.comments);
-        // setUserEmail(user.user.email);
-        // setTutorial(user.user.tutorial)
-        navigate(`/home/folders/${user.user.folders[0].index}`)
-        console.log("directory", `/home/folders/${user.user.folders[0].index}`)
+      setUserLinks(user.user.links);
+      setFolders(user.user.folders);
+      setFavorites(user.user.favorites);
+      setUserFavorites(user.user.favorite_folders)
+      // setFolderPhotos(user.user.folders[0].index)
+      setFolderType(user.user.folders[0].creative)
+      setFolderShown(user.user.folders[0].index)
+      setFavoriteShown(null)
+      setFolderCollaborators(user.user.folders[0].collaborators)
+      setPhotos(user.user.folders[0].photos)
+      // setUserComments(user.comments);
+      // setUserEmail(user.user.email);
+      setTutorial(user.user.tutorial)
+      navigate(`/home/folders/${user.user.folders[0].index}`)
+      console.log("directory", `/home/folders/${user.user.folders[0].index}`)
         
   })
 }
 
-const fetchUser = (userId) => {
+const fetchUser = (userId, name) => {
   userId === currentUserId 
   ? profileFetch()
+  : (name === 'Corey Lee') 
+  ? landingFetch()
   : fetch(`${dbVersion}/users/${userId}/`, {
         method: "GET",
         headers: {
@@ -162,6 +174,7 @@ const fetchUser = (userId) => {
       setUserLinks(user.user.links);
       setPhotos(user.user.folders[0].photos)
       setFollow(user.user.follow)
+      setTutorial(false)
       navigate(`/user/folders/${user.user.folders[0].index}`)
       
         // setUserComments(user.comments);
@@ -171,15 +184,34 @@ const fetchUser = (userId) => {
 
 
  useEffect(() => {
-  !!currentUserId && userId === currentUserId && profileFetch(userId)
-  !!currentUserId && userId === currentUserId && console.log('login')
-}, [currentUserId])
+    userId === currentUserId && profileFetch(userId)
+    console.log('login')
+}, [userId, currentUserId])
 
 
-// useEffect(() => {
-//   (directory !== 'home' || directory !== 'by_Corey_Lee') &&setTutorial(false)
-//   console.log("user tutorial set")
-// }, [directory])
+const publishAbout = () => {
+  if (demo){
+  const demoAbout = Object.assign({}, about, {publish: !about.publish});
+  setAbout(demoAbout);
+  }
+  else {fetch(`${dbVersion}/publish_about/`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((publishBool) => {
+      const newAbout = Object.assign({}, about, {publish: publishBool});
+      // newAbout.publish = publishBool
+      console.log("about real", publishBool, newAbout, newAbout.publish);
+      setAbout(newAbout);
+      // props.setAbout(aboutObj);
+      // window.store = aboutObj
+    })}
+}
+console.log("about", about, about.publish)
 
 
 
@@ -221,10 +253,7 @@ const setFavoritePhotos = (index) => {
   navigate(`/${directory}/favorites/${index}`)
 }
 
-const clickAboutLink = () => {
-  setFavoriteShown(null)
-  setFolderShown(null)
-}
+
 
 const [colorArr, setColorArr] = useState([{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}])
 
@@ -309,24 +338,20 @@ const landingFetch = () => {
       setUserId(user.user.id)
       setUserName(user.user.name);
       setUserAboutMe(user.user.details);
-        setUserLinks(user.user.links);
-        setFolders(user.user.folders);
-        setFavorites(user.user.favorites);
-        setUserFavorites(user.user.favorite_folders)
-        setAbout(user.user.about)
-        // setTutorial(user.user.tutorial)
-        setUuid(user.user.uuid)
-        setFolderType(user.user.folders[0].creative)
-        // setFavoriteDetails(user.user.favorite_folders.map(favoriteFolder => (`{"name": "${favoriteFolder.name}", "id": ${favoriteFolder.id}}`)))
-        // setFolderDetails(user.user.folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}}`)))
-        setFolderCollaborators(user.user.folders[0].collaborators)
-        setFolderShown(user.user.folders[0].index)
-        setFavoriteShown(null)
-        // console.log("user folders", user.user.folders)
-        setPhotos(user.user.folders[0].photos)
-        // setUserComments(user.comments);
-        // setUserEmail(user.user.email);
-        navigate(`/by_Corey_Lee/folders/${user.user.folders[0].index}`)
+      setUserLinks(user.user.links);
+      setFolders(user.user.folders);
+      setFavorites(user.user.favorites);
+      setUserFavorites(user.user.favorite_folders)
+      setAbout(user.user.about)
+      setDemo(user.user.demo)
+      setUuid(user.user.uuid)
+      setFolderType(user.user.folders[0].creative)
+      setFolderCollaborators(user.user.folders[0].collaborators)
+      setFolderShown(user.user.folders[0].index)
+      setFavoriteShown(null)
+      setPhotos(user.user.folders[0].photos)
+      setTutorial(true)
+      navigate(`/by_Corey_Lee/folders/${user.user.folders[0].index}`)
       
   })
 }
@@ -347,13 +372,14 @@ useEffect(() => {
 
 const updateUserFavorites = (photo) => {
   console.log("favoriteObj", photo)
+
   const favoriteFolders = [...userFavorites]
-  let favoriteFolder = favoriteFolders.find((fFolder) => fFolder.id === photo.favorite_folder_id)
+  const favoriteFolder = favoriteFolders.find((fFolder) => fFolder.id === photo.favorite_folder_id)
 
   console.log("favoriteFolder", favoriteFolder)
   // window.store = favoriteFolder
   
-  let updatedFavoritePhotos = favoriteFolder.favorite_photos.map((fPhoto) => {
+  const updatedFavoritePhotos = favoriteFolder.favorite_photos.map((fPhoto) => {
     if (fPhoto.id === photo.id) return photo
     else return fPhoto;
   })
@@ -385,10 +411,8 @@ const [newFolder, setNewFolder] = useState(false)
 const createFolder = (e, folderName) => {
     e.preventDefault();
     const nextIndex = folderDetails[folderDetails.length - 1].index + 1
-    if (tutorial) {
 
-    
-    // let imgObjs = 
+    if (demo) {
     let folder = {}
     folder.id = folders[folders.length - 1].id + 1
     folder.name = folderName
@@ -405,7 +429,6 @@ const createFolder = (e, folderName) => {
     
     for(let i = 0; i < 60; i++) {
       let photo = {}
-      // let img = new Image()
       photo.index = i + 1
       photo.id = i + 1
       photo.url = null
@@ -422,7 +445,8 @@ const createFolder = (e, folderName) => {
     setNewFolder(true)
     setFolderType(folder.creative)
     }
-    else {fetch(`${dbVersion}/folders/`, {
+    else if (loggedIn){
+      fetch(`${dbVersion}/folders/`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -457,13 +481,15 @@ useEffect(() => {
 }, [folders])
 
   // FOLDER FUNCTIONS
-  // const [folderType, setFolderType] = useState()
-  const [folderType, setFolderType] = useState(null)
-  // ${folder.id}
+const [folderType, setFolderType] = useState(null)
+
 const catagorize = (boolean) => {
   console.log('catagorizeFolder', boolean)
+
   let updatedFolder = folders.find((folder) => folder.id === folderShown)
+
   updateFolder.creative = boolean
+  
   setFolders(
     folders.map((folder) => {
       if (folder.id === updatedFolder.id) 
@@ -471,12 +497,13 @@ const catagorize = (boolean) => {
       else return folder;
     })
     );
-console.log("updatedFolder", updatedFolder)
+  console.log("updatedFolder", updatedFolder)
+  
   folderType !== null ? 
   setFolderType(!folderType)
   : setFolderType(boolean)
 
-  tutorial && fetch(`${dbVersion}/catagorize/${userId}`, {
+  loggedIn && fetch(`${dbVersion}/catagorize/${userId}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -509,7 +536,7 @@ console.log("updatedFolder", updatedFolder)
 
   const updateFolder = (e, folderName, folder) => {
     e.preventDefault();
-    if (tutorial) {
+    if (demo) {
     folders.map((folder) => {
       if (folder.id === folder.id) 
       { folder.name = folderName
@@ -541,11 +568,18 @@ console.log("updatedFolder", updatedFolder)
       });
   };
 
-  const addCollaborator = (uuid) => {
-    // e.preventDefault();
+  const addCollaborator = (uuid, name) => {
+
     console.log("id", userId, "folder", folderShown)
+
     const folder = folders.find(folder => folder.index === folderShown)
-    fetch(`${dbVersion}/add_collaborator/${folder.id}`, {
+
+    if (demo){
+      const collaborator = {name: name, uuid: uuid}
+      setFolderCollaborators([...folderCollaborators, collaborator])
+    }
+    else {
+      fetch(`${dbVersion}/add_collaborator/${folder.id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -570,11 +604,11 @@ console.log("updatedFolder", updatedFolder)
         //     // else return folder;
         //   })
         // );
-      });
+      });}
   };
 
-  const updateFolderPrivacy = (e) => {
-    e.preventDefault();
+  const updateFolderPrivacy = () => {
+
     fetch(`${dbVersion}/folders/${folderShown}`, {
       method: "PATCH",
       headers: {
@@ -583,9 +617,6 @@ console.log("updatedFolder", updatedFolder)
       },
       body: JSON.stringify({
         public: !folderPrivacy,
-        // details: folderDescription,
-        // link: folderLink,
-        // user_id: currentUser.id
       }),
     })
       .then((res) => res.json())
@@ -604,13 +635,13 @@ console.log("updatedFolder", updatedFolder)
   
 
     const deleteFolder = (folderObj) => {
-       // GETS INDEX OF DELETED FOLDER
+      // GETS INDEX OF DELETED FOLDER
       //  console.log(folderObj)
       const folderIndex = folders.findIndex(
         (folder) => folder.index === folderObj.index);
-        // console.log("folderIndex", folderIndex)
+      // console.log("folderIndex", folderIndex)
       // GETS INDEX OF FOLDER NEXT TO DELETED FOLDER
-       const previousFolder = (folderShown === folders[0].index )
+       const previousFolder = (folderShown === folders[0].index)
        ? folders[1] 
        : folders[folderIndex - 1]
       // IF VIEWED FOLDER IS DELETED, SHOW PREVIOUS FOLDER. IF THIS FOLDER IS THE FIRST IN THE ARRAY, THEN SELECT THE NEXT FOLDER IN ARRAY
@@ -624,7 +655,7 @@ console.log("updatedFolder", updatedFolder)
         // console.log("previous folder", previousFolder)
         // THERE'S AN ISSUE WITH THE FETCH. RECIEVING ERROR: Uncaught (in promise) SyntaxError: Unexpected end of JSON input
         // SO FUNCTION IS OPTIMISTIC UNTIL RESOLVED
-      fetch(`${dbVersion}/folders/${folderObj.index}/`, {
+      loggedIn && fetch(`${dbVersion}/folders/${folderObj.index}/`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
@@ -635,38 +666,50 @@ console.log("updatedFolder", updatedFolder)
 
 const createLink = (e, linkName, linkUrl) => {
   e.preventDefault();
-  console.log("hello");
-  console.log(e)
-  console.log(linkName)
-  console.log(linkUrl)
+  
   const nextIndex = !!userLinks.length ? userLinks[userLinks.length - 1].index + 1 : 1
-  fetch(`${dbVersion}/links/`, {
-      method: 'POST'
-      , headers: {
-          Authorization: `Bearer ${localStorage.token}`,
-          "Content-Type": "application/json"
-      },
-      body: JSON.stringify({
-        name: linkName,
-        url: linkUrl, 
-        index: nextIndex
+  if (demo) {
+    const newLink = {
+    name: linkName,
+    url: linkUrl, 
+    index: nextIndex,
+    u_id: currentUserId}
+    setUserLinks([...userLinks, newLink])
+    console.log("link", e, linkName, linkUrl, newLink);
+  }
+  else {
+    console.log("link", e, linkName, linkUrl);
+    fetch(`${dbVersion}/links/`, {
+        method: 'POST'
+        , headers: {
+            Authorization: `Bearer ${localStorage.token}`,
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          name: linkName,
+          url: linkUrl, 
+          index: nextIndex,
+          u_id: currentUserId
+      })
     })
-  })
-  .then(res => res.json())
-  .then(linkObj => {
-    console.log(linkObj)
-    setUserLinks([...userLinks, linkObj])
-    }
-  )
+    .then(res => res.json())
+    .then(linkObj => {
+      console.log("linkObj", linkObj, nextIndex)
+      setUserLinks([...userLinks, linkObj])
+      }
+    )}
 };
+// console.log("userLinks", userLinks)
 
   const deleteLink = (e, linkObj) => {
-      e.preventDefault()
-    const updatedLinksArr = userLinks.filter((link) => link.index !== linkObj.index);
+    e.preventDefault();
+    const updatedLinksArr = userLinks.filter((link) => link.id !== linkObj.id);
     
+    console.log("updatedLinksArr", userLinks.filter((link) => link.id !== linkObj.id), linkObj)
+
     setUserLinks(updatedLinksArr)
 
-    fetch(`${dbVersion}/links/${linkObj.id}/`, { method: "DELETE", headers: {
+    loggedIn && fetch(`${dbVersion}/links/${linkObj.id}/`, { method: "DELETE", headers: {
       Authorization: `Bearer ${localStorage.token}`
   }, })
       
@@ -706,30 +749,13 @@ const createLink = (e, linkName, linkUrl) => {
 
 // USER DETAILS
 
-const updateUserAboutMe = (e, aboutMe) => {
-  e.preventDefault();
-  console.log("about me", aboutMe)
-  fetch(`${dbVersion}/users/${currentUserId}`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      details: aboutMe,
-    }),
-  })
-    .then((res) => res.json())
-    .then((userObj) => {
-      console.log(userObj.details);
-      setAbout(userObj.details);
-    });
-};
-
 const nameSubmit = (e, newName) => {
   e.preventDefault();
   // console.log(e, newName);
-  // !loggedIn ? 
+  if (demo) {
+    setUserName(newName)
+  }
+  else if (loggedIn) {
     fetch(`${dbVersion}/users/${currentUserId}`, {
     method: "PATCH",
     headers: {
@@ -738,7 +764,6 @@ const nameSubmit = (e, newName) => {
     },
     body: JSON.stringify({
       name: newName,
-      // user_id: userId,
     }),
   })
     .then((res) => res.json())
@@ -746,19 +771,25 @@ const nameSubmit = (e, newName) => {
       console.log(userObj);
       setUserName(userObj.name);
     })
-    // : setUserName(newName);
+}
 };
 
-      
 // PHOTO FUNCTIONS
 
-
-
-
 const deletePhoto = (photo) => {
-
   console.log(photo);
-  fetch(`${dbVersion}/photos/${photo.id}/`, {
+  
+  if (demo){
+    const updatedPhoto = {name: null, url: null, details: null, orientation: true, image_file: null, id: photo.id, index: photo.index, u_id: photo.u_id, folder_id: photo.folder_id}
+    setPhotos(
+      photos.map((photo) => {
+        if (photo.id === updatedPhoto.id) return updatedPhoto;
+        else return photo;
+      })
+    );
+  }
+  else if (loggedIn){
+    fetch(`${dbVersion}/photos/${photo.id}/`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -781,7 +812,7 @@ const deletePhoto = (photo) => {
           else return photo;
         })
       );
-    });
+    });}
 };
 
 
@@ -790,21 +821,21 @@ const [reorderedPhotos, setReorderedPhotos] = useState()
 // console.log("reorderedPhotos", reorderedPhotos)
 const reorderSubmit = () => {
   !isNaN(folderShown) ?
-    !tutorial && fetch(`${dbVersion}/reorder_folder/`, {
+    !demo && fetch(`${dbVersion}/reorder_photos/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         reordered_photos: reorderedPhotos,
       }),
     })
-    : !tutorial && fetch(`${dbVersion}/reorder_favorite/`, {
+    : !demo && fetch(`${dbVersion}/reorder_favorite/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         reordered_photos: reorderedPhotos,
       }),
     })
-  // )
+
   reorderedPhotos !== undefined && setReorderedPhotos(undefined)
   };
 
@@ -827,9 +858,9 @@ useEffect(() => {
 
 
   const followToggle = (uId) => {
-  // User uuid 
+
     console.log("follow", follow, uId)
-    if (tutorial === true) {
+    if (demo) {
       setFollow(!follow) 
       setTimeout(() => {
         setCreative(!creative)
@@ -919,7 +950,7 @@ useEffect(() => {
           setFollow(followObj)
         });
   }
-  // console.log("app directory", directory)
+  
   // window.store = state 
 
   
@@ -929,8 +960,13 @@ useEffect(() => {
       <Cont directory={directory} >
          
         <SideBar
+          loggedIn={loggedIn}
+          // about={about}
+          published={about.publish}
           subDirectory={subDirectory}
-          clickAboutLink={clickAboutLink}
+          // clickAboutLink={clickAboutLink}
+          setFolderShown={setFolderShown}
+          setFavoriteShown={setFavoriteShown}
           hover={hover} 
           setHover={setHover}
           follow={!!follow}
@@ -957,7 +993,7 @@ useEffect(() => {
           deleteLink={deleteLink}
           deleteFolder={deleteFolder}
           createFolder={createFolder}
-          setFolderShown={setFolderShown}
+          // setFolderShown={setFolderShown}
           updateFolder={updateFolder}
           createLink={createLink}
           userLinks={userLinks}
@@ -967,13 +1003,13 @@ useEffect(() => {
           setUserId={setUserId}
           currentUserId={currentUserId}
           setCurrentUserId={setCurrentUserId}
-          updateUserAboutMe={updateUserAboutMe}
           userAboutMe={userAboutMe}
           useTemplate={useTemplate}
 
           dbVersion={dbVersion}
         />
         <Header
+          loggedIn={loggedIn}
           subDirectory={subDirectory}
           tutorial={tutorial}
           setTutorial={setTutorial}
@@ -991,6 +1027,7 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <AsideRight
+          loggedIn={loggedIn}
           subDirectory={subDirectory}
           hover={hover} 
           setHover={setHover}
@@ -998,6 +1035,7 @@ useEffect(() => {
           folderType={folderType}
           setFolderType={setFolderType}
           tutorial={tutorial}
+          
           uuid={uuid}
           directory={directory}
           hiliteCollaborator={hiliteCollaborator}
@@ -1009,8 +1047,10 @@ useEffect(() => {
           enableDelete={enableDelete}
           editToggle={editToggle}
           addCollaborator={addCollaborator}
-
+          publishAbout={publishAbout}
+          published={about.publish}
           folderShown={folderShown}
+          
           edit={edit}
           reorderSubmit={reorderSubmit}
           userId={userId}
@@ -1029,6 +1069,7 @@ useEffect(() => {
       >
 
           <DndRoutePrefix
+              loggedIn={loggedIn}
               subDirectory={subDirectory}
               about={about}
               setAbout={setAbout}
@@ -1042,7 +1083,9 @@ useEffect(() => {
               userId={userId}
               uuid={uuid}
               currentUserId={currentUserId}
+              // tutorial={demo || tutorial}
               tutorial={tutorial}
+              demo={demo}
               setReorderedPhotos={setReorderedPhotos}
               updateUserFavorites={updateUserFavorites}
               deletePhoto={deletePhoto}
@@ -1061,7 +1104,10 @@ useEffect(() => {
          
               <Route path='/login' >
                 <UserLoginSignup 
+                loggedIn={loggedIn}
                 setTutorial={setTutorial}
+                setDemo={setDemo}
+                demo={demo}
                 setUuid={setUuid}
                 userProfile={userProfile}
                 setUserProfile={setUserProfile}
@@ -1081,6 +1127,7 @@ useEffect(() => {
 
                 <Route path="/community" >
                   <CommunityPage
+                loggedIn={loggedIn}
                 userId={userId}
                 currentUserId={currentUserId}
                 setUserName={setUserName}
