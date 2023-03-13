@@ -32,8 +32,8 @@ export const App = () => {
     window.scrollTo(0, 0);
   }
   // SWITCH DATABASE VERSION
-  // const [dbVersion, setDbVersion] = useState(`http://[::1]:3000/api/v1/`)
-  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1/`)
+  const [dbVersion, setDbVersion] = useState(`http://[::1]:3000/api/v1/`)
+  // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1/`)
   
 
 
