@@ -33,7 +33,7 @@ export const App = () => {
   }
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`http://[::1]:3000/api/v1/`)
-  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/`)
+  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com`)
   
 
 
