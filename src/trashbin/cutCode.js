@@ -198,7 +198,7 @@ import React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from 'react-router-dom';
 import styled, { keyframes } from "styled-components";
-import ReactTooltip from 'react-tooltip'
+
 
 
 
