@@ -36,7 +36,7 @@
     "styled-components": "^5.1.0"
   },
   "scripts": {
-    "start": "node src/App.js",
+    "start": "node server.js",
     "devstart": "react-scripts start",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
