@@ -91,7 +91,8 @@ main {
 aside:nth-child(1) {
   /* padding-top: 5px; */
   /* padding-inline: 5px; */
-  z-index: 2;
+  position: relative;
+  z-index: 3;
   margin-right: 5px;
   grid-area: leftbar;
   background-color: gainsboro;
