@@ -132,18 +132,19 @@ position: relative;
   ${({url, edit, isDragging, orientation}) => edit 
     ? !!url
     ? `z-index: 2; 
-    transition: transform .3s ease-in .4s,
-                z-index 0s 0s;
-                cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
+      transition: transform .3s ease-in, z-index 0s 0s;
+      cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
+      :hover {transform: translate(2px, -2px);} 
     `
     : `z-index: 1; 
-      transition: transform .3s ease-in .3s, 
-                  z-index 0s linear 0;
-                  `
+      transition: transform .3s ease-in, 
+      z-index 0s linear 0;
+      :hover {transform: translate(2px, -2px);}
+         `
     : !!url
     ? `z-index: 0; 
-    transition: transform .3s ease-in .4s,
-                z-index 0s 1s;
+      transition: transform .3s ease-in .4s,
+      z-index 0s 1s;
     &:hover {
       transform: ${orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
       z-index: 5; 
@@ -154,10 +155,6 @@ position: relative;
       transition: transform .3s ease-in .3s, 
                   z-index .3s cubic-bezier(0,1,1,0);`
    }
-   /* :hover {
-    
-    transition: transform .4s ease-in;
-    z-index: 4;
-  } */
+  
   /* overflow: unset; */
 `;
