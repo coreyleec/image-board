@@ -214,9 +214,11 @@ const fetchUser = (userId, name) => {
 
 
  useEffect(() => {
-    userId === currentUserId && profileFetch(userId)
-    (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
-    console.log('login')
+   (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
+   console.log('login')
+   
+    userId === currentUserId && profileFetch(userId);
+
 }, [userId, currentUserId])
 
 
