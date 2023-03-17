@@ -134,12 +134,15 @@ const SideBarLinks = (props) => {
 export default SideBarLinks;
 const LinkCont = styled.div`
 a {
+    font-size: 1.4rem;
+    line-height: 1.15em;
+    padding-left: 10px;
+    padding-top: 3px;
+    float: left;
+    text-align: left;
+    width: 100%;
     display: block;
     color: blue;
-    font-size: 1.4rem;
-    line-height: .85em;
-    padding-left: 10px;
-    padding-bottom: 7px;
   }
 `
 

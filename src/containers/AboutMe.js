@@ -122,12 +122,12 @@ document.addEventListener("paste", function (e) {
 });
 
 // 2. Prevent any paste into contenteditable elements
-// document.addEventListener("paste", function (e) {
-//   if (e.target.isContentEditable) {
-//       e.preventDefault();
-//       return false;
-//   }
-// });
+document.addEventListener("paste", function (e) {
+  if (e.target.isContentEditable) {
+      e.preventDefault();
+      return false;
+  }
+});
 const publicRef=useRef()
 
 // const alrt = alert("hello")
