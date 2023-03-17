@@ -33,7 +33,7 @@ export const App = () => {
   }
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`http://[::1]:3000/api/v1/`)
-  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com`)
+  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1/`)
   
 
 
@@ -144,6 +144,38 @@ const profileFetch = () => {
       navigate(`/home/folders/${user.user.folders[0].index}`)
       console.log("directory", `/home/folders/${user.user.folders[0].index}`)
         
+  })
+}
+
+const landingFetch = () => {
+  fetch(`${dbVersion}/landing_page`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((user) => 
+    {
+      console.log("tutorialUser", user, typeof user.user.about, typeof user.user.folders)
+      setUserId(user.user.id)
+      setUserName(user.user.name);
+      setUserAboutMe(user.user.details);
+      setUserLinks(user.user.links);
+      setFolders(user.user.folders);
+      setFavorites(user.user.favorites);
+      setUserFavorites(user.user.favorite_folders)
+      setAbout(user.user.about)
+      setDemo(user.user.demo)
+      setUuid(user.user.uuid)
+      setFolderType(user.user.folders[0].creative)
+      setFolderCollaborators(user.user.folders[0].collaborators)
+      setFolderShown(user.user.folders[0].index)
+      setFavoriteShown(null)
+      setPhotos(user.user.folders[0].photos)
+      setTutorial(true)
+      navigate(`/by_Corey_Lee/folders/${user.user.folders[0].index}`)
+      
   })
 }
 
@@ -324,37 +356,7 @@ const hiliteCollaborator = (user) => {
 
 
 
-const landingFetch = () => {
-  fetch(`${dbVersion}/landing_page`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-    })
-    .then((res) => res.json())
-    .then((user) => 
-    {
-      console.log("tutorialUser", user, typeof user.user.about, typeof user.user.folders)
-      setUserId(user.user.id)
-      setUserName(user.user.name);
-      setUserAboutMe(user.user.details);
-      setUserLinks(user.user.links);
-      setFolders(user.user.folders);
-      setFavorites(user.user.favorites);
-      setUserFavorites(user.user.favorite_folders)
-      setAbout(user.user.about)
-      setDemo(user.user.demo)
-      setUuid(user.user.uuid)
-      setFolderType(user.user.folders[0].creative)
-      setFolderCollaborators(user.user.folders[0].collaborators)
-      setFolderShown(user.user.folders[0].index)
-      setFavoriteShown(null)
-      setPhotos(user.user.folders[0].photos)
-      setTutorial(true)
-      navigate(`/by_Corey_Lee/folders/${user.user.folders[0].index}`)
-      
-  })
-}
+
 
 useEffect(() => {
   if (directory === 'login' || 'community'){
