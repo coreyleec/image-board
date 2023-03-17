@@ -141,7 +141,7 @@ position: relative;
                   z-index 0s linear 0;
                   `
     : !!url
-    ? `z-index: 2; 
+    ? `z-index: 0; 
     transition: transform .3s ease-in .4s,
                 z-index 0s 1s;
     &:hover {
