@@ -45,9 +45,7 @@ const [currentUserId, setCurrentUserId] = useState(0);
 const [userId, setUserId] = useState(0);
 const [uuid, setUuid] = useState(0)
 const [loggedIn, setLoggedIn] = useState(false)
-useEffect(() => {
-  (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
-}, [userId, currentUserId])
+
 
 
 // COMMENTS //
@@ -217,6 +215,7 @@ const fetchUser = (userId, name) => {
 
  useEffect(() => {
     userId === currentUserId && profileFetch(userId)
+    (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
     console.log('login')
 }, [userId, currentUserId])
 
