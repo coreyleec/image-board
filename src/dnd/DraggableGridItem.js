@@ -137,14 +137,12 @@ position: relative;
       :hover {transform: translate(2px, -2px);} 
     `
     : `z-index: 1; 
-      transition: transform .3s ease-in, 
-      z-index 0s linear 0;
+      transition: transform .3s ease-in, z-index 0s 0s;
       :hover {transform: translate(2px, -2px);}
-         `
+      `
     : !!url
     ? `z-index: 0; 
-      transition: transform .3s ease-in .4s,
-      z-index 0s 1s;
+      transition: transform .3s ease-in .4s, z-index 0s 1s;
     &:hover {
       transform: ${orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
       z-index: 5; 
@@ -152,8 +150,7 @@ position: relative;
                   transform .3s ease-in;}
                   `
     : `z-index: -1; 
-      transition: transform .3s ease-in .3s, 
-                  z-index .3s cubic-bezier(0,1,1,0);`
+      transition: transform .3s ease-in .3s, z-index .3s cubic-bezier(0,1,1,0);`
    }
   
   /* overflow: unset; */
