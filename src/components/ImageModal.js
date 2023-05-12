@@ -160,7 +160,7 @@ const StyledImageName = styled.div`
   font-family: "HelveticaNeue-Light";
   color: white;
   cursor: default;
-  line-height: 43px;
+  line-height: 34px;
   
 ${({ edit }) => edit && `cursor: text;`}
   :empty::before {
@@ -223,7 +223,7 @@ const ModelContent = styled.div`
       flex-basis: 0;
       max-width: 20%;
       overflow-wrap: break-word;
-      height: inherit;
+      min-height: inherit;
       background-color: ${props => props.edit ? `rgba(80, 45, 0, 0.6)` : `rgba(0, 0, 0, 0.3)`};
       /* margin-bottom: max(15%); */
       /* height: 100%; */
@@ -235,7 +235,7 @@ const ModelContent = styled.div`
     .modal-img-cont {
             /* background-color: ${props => props.edit ? `rgba(80, 45, 0, 0.6)` : `rgba(0, 0, 0, 0.3)`}; */
             background-color: transparent;
-
+      height: inherit;
       display: inline;
       text-align: center;
       padding-inline: 7px;

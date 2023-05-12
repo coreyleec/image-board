@@ -40,6 +40,7 @@ const [undo, setUndo] = useState()
 const [underIndexs, setUnderIndexs] = useState()
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
+    // PORTRAIT === FALSE & LANDSCAPE === TRUE
     let newPhotos = [...photos]; // copy of array
     let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
     let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
@@ -57,31 +58,74 @@ const [underIndexs, setUnderIndexs] = useState()
 
     const firstIndex = firstPhoto.index; // declares variable value of 
     const underFirstIndex = !!underFirstPhoto && underFirstPhoto.index
+    const underSecondIndex = !!underFirstPhoto && underFirstPhoto.index
     const underUnderFirstIndex = !!underUnderFirstPhoto && underUnderFirstPhoto.index
     const overFirstIndex = !!overFirstPhoto && overFirstPhoto.index
     
+    console.log("drag", firstPhoto, secondPhoto)
 // IF PHOTOS HAVE UNEQUAL ORIENTATIONS
-// USER NOTE: RULE SET BY THIS CONDITION MEANS PHOTO ORIENTATIONS ARE OPPOSITE 
+// USER NOTE: RULE SET BY THIS CONDITION MEANS PHOTO ORIENTATIONS ARE OPPOSITE GOING FORWARD
     if (firstPhoto.orientation !== secondPhoto.orientation){
-
+      console.log("drag inequal")
       // console.log("drag inequal", firstPhoto.orientation, underSecondPhoto.orientation, (secondPhoto.index === firstPhoto.index + 1) || (secondPhoto.index === firstPhoto.index - 1))
-      if (secondPhoto.index === underFirstIndex){
-        console.log("drag down", underFirstPhoto)
 
-        if (!!underSecondPhoto.url){
-          firstPhoto.index = secondPhoto.index
-          underSecondPhoto.index = firstIndex
-          setUndo([...props.photos])
-          console.log("drag land")
-        }
-        else {
-        firstPhoto.index = secondPhoto.index
-        secondPhoto.index = firstIndex
-        setUndo([...props.photos])
-        console.log("drag land")
-        }}
+      if (secondPhoto.index === overFirstIndex || secondPhoto.index === underFirstIndex){
+      if (secondPhoto.index === underFirstIndex){
+// DRAG DOWN ONE 
+// IF TRUE THEN FIRST PHOTO IS LANSCAPE AND SECOND IS PORTRAIT
+if (!firstPhoto.orientation) {
+  console.log("if the first photo is portrait", !firstPhoto.orientation)
+  // under the second photo is landscape
+  if (underSecondPhoto.orientation){
+    console.log("under the second photo is landscape", underSecondPhoto.orientation, "move the photo under second to the first")
+// move the photo under second to the first
+      firstPhoto.index = secondPhoto.index
+      underSecondPhoto.index = firstIndex
+      setUndo([...props.photos])
+      console.log("first photo is portrait and second photo is landscape", !!underSecondPhoto.url)
+  }
+  else if (!underSecondPhoto.orientation) {
+    // move the first photo under the second and the second to the first
+    firstPhoto.index = underSecondPhoto.index
+    underSecondPhoto.index = firstIndex
+    setUndo([...props.photos])
+    console.log("first photo is portrait and second photo is landscape", !!underSecondPhoto.url)
+  }
+}
+// else if (firstPhoto.orientation) {
+//   firstPhoto.index = underSecondPhoto.index
+//   secondPhoto.index = firstIndex
+//   setUndo([...props.photos])
+//     console.log("first photo is portrait and second photo is landscape", !!underSecondPhoto.url)
+//   // move the first photo under the second photo and the second to the first
+// }
+
+
+        // if (underSecondPhoto.orientation){
+        //   if (!!underSecondPhoto.url){
+            // MOVE PORTRAIT DOWN ONE AND MOVE LANDSCAPE UNDER TO FIRST PHOTO POSITION
+            // firstPhoto.index = secondPhoto.index
+        //     underSecondPhoto.index = firstIndex
+        //     setUndo([...props.photos])
+        //     console.log("first photo is portrait and second photo is landscape", !!underSecondPhoto.url)
+        //   }
+        // }
+        // else {
+          // FIRST AND SECOND PHOTO ARE SAME ORIENTATION
+          // THIS MAY BE REDUNDANT BECAUSE IT CONTRADICTS PREVIOUS INEQUAL RULE
+        //   firstPhoto.index = secondPhoto.index
+        //   secondPhoto.index = firstIndex
+        //   setUndo([...props.photos])
+        //   console.log("first and second photo are same orientation")
+        // }
+      }
+
+      // DRAG PHOTO UP
       else if (secondPhoto.index === overFirstIndex){
         console.log("drag up", underFirstPhoto)
+        // IF FIRST PHOTO IS PORTRAIT THEN SECOND PHOTO ABOVE IS LANDSCAPE
+        // THEN MOVE SECOND PHOTO TO FIRST POSITION AND FIRST PHOTO TO UNDER SECOND PHOTO POSITION
+        // if (!!underFirstPhoto.url)
         if (!firstPhoto.oreintation){
           firstPhoto.index = secondPhoto.index
           secondPhoto.index = underFirstIndex
@@ -96,12 +140,14 @@ const [underIndexs, setUnderIndexs] = useState()
           setUndo([...props.photos])
           console.log("drag land")
         }
-        else {
-        firstPhoto.index = secondPhoto.index; 
-        secondPhoto.index = firstIndex
-        setUndo([...props.photos])
-        console.log("drag land")
-        }}
+        // POSSIBLY REDUNDANT
+        // else {
+        // firstPhoto.index = secondPhoto.index; 
+        // secondPhoto.index = firstIndex
+        // setUndo([...props.photos])
+        // console.log("drag land")
+        // }
+      }}
 // IF DROP TARGET IS RIGHT NEXT TO DRAG SOURCE
       else if ((secondPhoto.index === firstPhoto.index + 1) || (secondPhoto.index === firstPhoto.index - 1)){
           // console.log("DROP TARGET IS RIGHT NEXT TO DRAG SOURCE")
@@ -113,7 +159,7 @@ const [underIndexs, setUnderIndexs] = useState()
             console.log("first photo is portrait and under second photo is portrait", underUnderSecondPhoto)
           }
           if (underSecondPhoto.orientation){
-            // console.log("FIRST PHOTO IS PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE", underSecondPhoto.orientation)
+            console.log("FIRST PHOTO IS PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE", underSecondPhoto.orientation)
             
             firstPhoto.index = secondPhoto.index;
             underFirstPhoto.index = underSecondPhoto.index
@@ -150,11 +196,11 @@ const [underIndexs, setUnderIndexs] = useState()
       }
     }
       // => DRAG AND DROP ITEMS ARE NOT ADJACENT
-      else if (firstPhoto.orientation){
+      else {
         console.log("DRAG AND DROP ITEMS ARE NOT ADJACENT ")
         // console.log("FIRST PHOTO LANDSCAPE UNDER LANDSCAPE PHOTO TO PORTRAIT PHOTO ", firstPhoto.index > 6, firstPhoto.index > 12, overFirstIndex, overFirstPhoto, !!overFirstPhoto, overOverFirstPhoto)
 
-        if (firstPhoto.index > 5){
+        if (firstPhoto.index > 6){
           console.log("second row test")
           // console.log("second row test", (!overOverFirstPhoto || (overOverFirstPhoto.orientation === true)), overFirstPhoto.orientation)
           if (overOverFirstPhoto.orientation === true){
@@ -172,7 +218,7 @@ const [underIndexs, setUnderIndexs] = useState()
         }
       }
       else if (overFirstPhoto.orientation && (secondPhoto.index < 6)){ 
-        // console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT")
+        console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT")
         firstPhoto.index = underSecondPhoto.index;
         overFirstPhoto.index = secondPhoto.index
         secondPhoto.index = overFirstIndex;
@@ -185,7 +231,7 @@ const [underIndexs, setUnderIndexs] = useState()
   
             if (!!overOverFirstPhoto && !overOverFirstPhoto.orientation ){
               const overOverFirstIndex = overOverFirstPhoto.index
-              // console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index, secondPhoto.index + '=' + firstIndex, overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto)
+              console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index, secondPhoto.index + '=' + firstIndex, overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto)
               
               // FIRST PHOTO MUST SWITCH WITH UNDERSECOND PHOTO
               // OVER FIRST PHOTO MUST SWITCH WITH SECOND PHOTO
@@ -212,7 +258,7 @@ const [underIndexs, setUnderIndexs] = useState()
       }
 // if under second is photo and first photo orientation false
         else if (firstPhoto.orientation === secondPhoto.orientation){
-          // console.log("drag port", firstPhoto, secondPhoto, underFirstPhoto, underSecondPhoto)
+          console.log("drag port", firstPhoto, secondPhoto, underFirstPhoto, underSecondPhoto)
           const underFirstIndex = underFirstPhoto.index
           firstPhoto.index = secondPhoto.index;
           underFirstPhoto.index = underSecondPhoto.index
@@ -222,17 +268,17 @@ const [underIndexs, setUnderIndexs] = useState()
         }
       }  
 
-      else if (!firstPhoto.orientation){
-        if (underSecondPhoto.orientation){
-          console.log("FIRST PHOTO IS PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE", underSecondPhoto.orientation)
+      // else if (!firstPhoto.orientation){
+      //   if (underSecondPhoto.orientation){
+      //     console.log("FIRST PHOTO IS PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE", underSecondPhoto.orientation)
           
-          firstPhoto.index = secondPhoto.index;
-          underFirstPhoto.index = underSecondPhoto.index
-          secondPhoto.index = firstIndex;
-          underSecondPhoto.index = underFirstIndex
-          setUndo([...props.photos])
-        }
-      }  
+      //     firstPhoto.index = secondPhoto.index;
+      //     underFirstPhoto.index = underSecondPhoto.index
+      //     secondPhoto.index = firstIndex;
+      //     underSecondPhoto.index = underFirstIndex
+      //     setUndo([...props.photos])
+      //   }
+      // }  
     }
     
 // THIS IS A HACKY SOLUTION TO REACT-DND CALLING HOVER MONITOR FUNCTION TWICE
@@ -291,7 +337,7 @@ useEffect(() => {
         else return photo;}))
     }
 
-    else {
+    else if (props.loggedIn)  {
       const data = new FormData(formData)
       orientation !== undefined && orientation !== true && data.append('orientation', orientation)        
       photoName !== undefined && photoName !== null && data.append('name', photoName)
@@ -758,10 +804,7 @@ const PictureFrame = styled.div`
     justify-content: center;
     border-radius: 13px;
     box-shadow: -3px 3px 5px 2px #aaaaaa;
-    /* border: solid 3px yellow; */
     outline: ${({highlight, url}) => !!url && highlight !== undefined && ` solid 3px ${highlight}`};
-    /* width: fit-content; 
-    max-width: 90%; */
     
     width: min-content;
     max-width: 90%;

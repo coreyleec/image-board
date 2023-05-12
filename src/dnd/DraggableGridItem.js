@@ -6,6 +6,7 @@ import { useDrag, useDrop } from 'react-dnd';
 const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }) => {
   // const { photo, onDrop, children, ...p } = props;
   // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
+  // console.log( "onDrop", onDrop)
 // console.log("props", p)
   const useDragAndDrop = (photoRef, payloadPhoto) => {
  // useDrag return value array - collected props: isDragging is Boolean, drag is function
@@ -80,7 +81,7 @@ const createDragHoverCallback = (photoRef, currentPhoto, onDrop) => {
     // Determine rectangle on screen
     const hoverBoundingRect = photoRef.current.getBoundingClientRect();
     // Get vertical middle
-    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 5;
+    const hoverMiddleY = (hoverBoundingRect.bottom - hoverBoundingRect.top) / 9;
     // Get horizontal middle
     const hoverMiddleX = (hoverBoundingRect.right - hoverBoundingRect.left) / 2;
     // console.log(hoverMiddleX, "hoverMiddleX")
@@ -109,7 +110,7 @@ const createDragHoverCallback = (photoRef, currentPhoto, onDrop) => {
     // this is where you would want to reorder your list
     // In case you wan't to use the whole object, don't forget to
     // make a deep copy, because we are mutating the object on the last line
-    // console.log("otherPhoto currentPhoto")
+    // console.log("otherPhoto currentPhoto", otherPhoto.id, currentPhoto.id)
     onDrop(otherPhoto.id, currentPhoto.id);
   // onDrop(otherPhoto.index, currentPhoto.index);
   // onDrop(otherObject.index, currentObject.index);

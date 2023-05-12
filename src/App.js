@@ -27,7 +27,7 @@ export const App = () => {
     setSubDirectory(sub)
     
   }, [location.pathname])
-  console.log("subDirectory", subDirectory)
+  // console.log("location.pathname", location.pathname)
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
@@ -101,9 +101,9 @@ const [hover, setHover] = useState(false)
 const [tutorial, setTutorial] = useState(false)
 const [demo, setDemo] = useState(false)
 
-useEffect(() => {
-  directory !== 'by_Corey_Lee' ? setDemo(false) : setDemo(true)
-}, [location.pathname])
+// useEffect(() => {
+//   directory !== 'by_Corey_Lee' ? setDemo(false) : setDemo(true)
+// }, [location.pathname])
 
 useEffect(() => {
   
@@ -171,7 +171,7 @@ const landingFetch = () => {
       setFolderShown(user.user.folders[0].index)
       setFavoriteShown(null)
       setPhotos(user.user.folders[0].photos)
-      setTutorial(true)
+      // setTutorial(true)
       navigate(`/by_Corey_Lee/folders/${user.user.folders[0].index}`)
       
   })
@@ -216,7 +216,7 @@ const fetchUser = (userId, name) => {
  useEffect(() => {
    (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
    console.log('login')
-   
+
     userId === currentUserId && profileFetch(userId);
 
 }, [userId, currentUserId])
@@ -227,7 +227,7 @@ const publishAbout = () => {
   const demoAbout = Object.assign({}, about, {publish: !about.publish});
   setAbout(demoAbout);
   }
-  else {fetch(`${dbVersion}/publish_about/`, {
+  else if (loggedIn) {fetch(`${dbVersion}/publish_about/`, {
     method: "PATCH",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
@@ -244,7 +244,7 @@ const publishAbout = () => {
       // window.store = aboutObj
     })}
 }
-console.log("about", about, about.publish)
+// console.log("about", about, about.publish)
 
 
 
@@ -546,7 +546,7 @@ const catagorize = (boolean) => {
       return folder}
     })
   }
-    else fetch(`${dbVersion}/folders/${folder.id}`, {
+    else if (loggedIn) fetch(`${dbVersion}/folders/${folder.id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -561,7 +561,7 @@ const catagorize = (boolean) => {
     })
       .then((res) => res.json())
       .then((folderObj) => {
-        // console.log("folderObj", folderObj.collaborator);
+        console.log("folderObj", folderObj);
         setFolders(
           folders.map((folder) => {
             if (folder.id === folderObj.id) return folderObj;
@@ -581,7 +581,7 @@ const catagorize = (boolean) => {
       const collaborator = {name: name, uuid: uuid}
       setFolderCollaborators([...folderCollaborators, collaborator])
     }
-    else {
+    else if (loggedIn) {
       fetch(`${dbVersion}/add_collaborator/${folder.id}`, {
       method: "PATCH",
       headers: {
@@ -680,7 +680,7 @@ const createLink = (e, linkName, linkUrl) => {
     setUserLinks([...userLinks, newLink])
     console.log("link", e, linkName, linkUrl, newLink);
   }
-  else {
+  else if (loggedIn) {
     console.log("link", e, linkName, linkUrl);
     fetch(`${dbVersion}/links/`, {
         method: 'POST'
@@ -824,14 +824,14 @@ const [reorderedPhotos, setReorderedPhotos] = useState()
 // console.log("reorderedPhotos", reorderedPhotos)
 const reorderSubmit = () => {
   !isNaN(folderShown) ?
-    !demo && fetch(`${dbVersion}/reorder_photos/`, {
+    !demo && loggedIn && fetch(`${dbVersion}/reorder_photos/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         reordered_photos: reorderedPhotos,
       }),
     })
-    : !demo && fetch(`${dbVersion}/reorder_favorite/`, {
+    : !demo && loggedIn && fetch(`${dbVersion}/reorder_favorite/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -868,7 +868,7 @@ useEffect(() => {
       setTimeout(() => {
         setCreative(!creative)
       }, "50")}
-    else {
+    else if (loggedIn){
 
     if (follow === null) {
       fetch(`${dbVersion}/follows/`, {
@@ -1038,7 +1038,7 @@ useEffect(() => {
           folderType={folderType}
           setFolderType={setFolderType}
           tutorial={tutorial}
-          
+          newFolder={newFolder}
           uuid={uuid}
           directory={directory}
           hiliteCollaborator={hiliteCollaborator}

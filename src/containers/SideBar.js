@@ -404,7 +404,6 @@ const Sticky = styled.div`
 
     @media (max-width: 1100px) {
       position: fixed;
-      max-height: 75vh;
       top: 0%;
       width: 200px;
       transition: transform 1s ease;

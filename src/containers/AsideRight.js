@@ -348,14 +348,16 @@ useEffect(() => {
       setDemoArrow("16px")
       } 
       else if (controlDock){
-        if (!props.edit) {(props.directory === 'by_Corey_Lee') && setDemoText("feel free to explore the site as if you were me. use the edit switch to edit my account") ||
+        if (!props.edit) {(props.directory === 'by_Corey_Lee') && setDemoText("feel free to explore the site using my account. use the edit switch to edit my account") ||
         (props.directory === 'home') && setDemoText("use the edit switch to edit your projects. all personal information will become editable.")
         setDemoArrow("49px")}
         else if (props.edit){
           setDemoText("these switches will allow you to do things such as add, edit, and currate photos, add collaborators, as well as enable you to add, edit and delete elements in the left sidebar.")
           setDemoArrow("83px")
         }
-  }}      
+  }}      else if (props.newFolder){
+            setDemoText("decide where this folder will contain lifestyle or creative photos")
+          }
         else {
         if (!props.edit){
             (props.directory === 'by_Corey_Lee') && setDemoText("feel free to explore the site as if you were me. use the edit switch to edit my account") ||
@@ -698,7 +700,7 @@ const TutorialTip = styled.div`
   // background: rgb(167 165 165 / 50%);
 
 @media (min-width: 1100px){
-  right: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth + 5 + 'px'}
+  right: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth - 26 + 'px'}
   }
   // width: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth + 'px'};
   

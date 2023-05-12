@@ -36,11 +36,12 @@
     "styled-components": "^5.1.0"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "PORT=9000 react-scripts start",
     "devstart": "react-scripts start",
     "test": "react-scripts test",
     "build": "react-scripts build",
     "eject": "react-scripts eject"
+    
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -56,6 +57,5 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "devDependencies": {}
+  }
 }
