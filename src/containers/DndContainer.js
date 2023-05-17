@@ -312,8 +312,8 @@ if (!firstPhoto.orientation) {
       // let indexArr = photos.map((photo) => { return photo.index })
       let errorBool = indexArr.some((photo, idx) => { 
         return indexArr.indexOf(photo) != idx})
-        
-      if (errorBool){
+
+      if (!errorBool){
       setUnderIndexs(photosUnder)
       props.setPhotos(newPhotos);
       props.setReorderedPhotos(newPhotos)}
