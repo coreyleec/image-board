@@ -36,6 +36,15 @@ const DndContainer = (props) => {
   // useEffect(() => {
   //   setPhotos(photos)
   // }, [props.colorArr])
+
+
+  // ONDROP ERROR HANDLING
+  useEffect(() => {
+    
+  }, [
+    
+  ])
+  
   
 const [undo, setUndo] = useState()
 const [underIndexs, setUnderIndexs] = useState()
@@ -169,15 +178,15 @@ if (!firstPhoto.orientation) {
             setUndo([...props.photos])
           }
         }
-        // else if ((firstPhoto.orientation && underFirstPhoto.orientation)) {
-        //     // console.log("FIRST PHOTO LANDSCAPE AND UNDER FIRST PHOTO IS LANDSCAPE")
+        else if ((firstPhoto.orientation && underFirstPhoto.orientation)) {
+            // console.log("FIRST PHOTO LANDSCAPE AND UNDER FIRST PHOTO IS LANDSCAPE")
             
-        //     firstPhoto.index = secondPhoto.index;
-        //     underFirstPhoto.index = underSecondPhoto.index
-        //     secondPhoto.index = firstIndex
-        //     underSecondPhoto.index = underFirstIndex
-        //     setUndo([...props.photos])
-        //   }
+            firstPhoto.index = secondPhoto.index;
+            underFirstPhoto.index = underSecondPhoto.index
+            secondPhoto.index = firstIndex
+            underSecondPhoto.index = underFirstIndex
+            setUndo([...props.photos])
+          }
        else {
          // IF FIRST PHOTO ORIENTATION IS LANDSCAPE AND THE SECOND PHOTO IS PORTRAIT AND UNDER FIRST PHOTO IS PORTRAIT AND UNDER UNDER SECOND IS LANDSCAPE
          console.log("is below?") 
@@ -298,10 +307,16 @@ if (!firstPhoto.orientation) {
 
       let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
       let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
-      setUnderIndexs(photosUnder)
       
+      let indexArr = photos.map((photo) => photo.index)
+      // let indexArr = photos.map((photo) => { return photo.index })
+      let errorBool = indexArr.some((photo, idx) => { 
+        return indexArr.indexOf(photo) != idx})
+        
+      if (errorBool){
+      setUnderIndexs(photosUnder)
       props.setPhotos(newPhotos);
-      props.setReorderedPhotos(newPhotos)
+      props.setReorderedPhotos(newPhotos)}
 
   };
 

@@ -152,6 +152,7 @@ useEffect(() => {
                     <div onMouseOver={() => setDemoText(folderDemo)}
                     ref={folderRef}
                     >
+                    {(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
                     <SideBarFolder 
                     loggedIn={props.loggedIn}
                     setFolderPhotos={props.setFolderPhotos}
@@ -165,7 +166,7 @@ useEffect(() => {
                     directory={props.directory}
                     // key={props.userId} 
                     dbVersion={props.dbVersion}
-                    />
+                    />}
                     </div>
                     {(props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
                     <div onMouseOver={() => setDemoText(favoriteDemo)}
