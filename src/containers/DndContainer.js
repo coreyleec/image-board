@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { Heart } from '../My.styled'
 import { MultiBackend } from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
-import TouchBackend from 'react-dnd-touch-backend'
+// import { TouchBackend } from 'react-dnd-touch-backend'
 import { DndProvider } from "react-dnd";
 import DraggableGridItem from "../dnd/DraggableGridItem";
 import "react-grid-layout/css/styles.css";
