@@ -76,8 +76,10 @@ const createDragHoverCallback = (photoRef, currentPhoto, onDrop) => {
     const hoverIndex = currentPhoto.index;
   // Don't replace items with themselves
     if (dragIndex === hoverIndex) {
+      console.log("error text handling")
       return;
     }
+    else if (dragIndex !== hoverIndex) {
     // Determine rectangle on screen
     const hoverBoundingRect = photoRef.current.getBoundingClientRect();
     // Get vertical middle
@@ -113,14 +115,15 @@ const createDragHoverCallback = (photoRef, currentPhoto, onDrop) => {
     // console.log("otherPhoto currentPhoto", otherPhoto.id, currentPhoto.id)
     onDrop(otherPhoto.id, currentPhoto.id);
   // onDrop(otherPhoto.index, currentPhoto.index);
-  // onDrop(otherObject.index, currentObject.index);
+  console.log("error text", otherPhoto.index, currentPhoto.index);
   // Note: we're mutating the monitor item here!
   // Generally it's better to avoid mutations,
   // but it's good here for the sake of performance
   // to avoid expensive index searches.
-  otherPhoto.index = currentPhoto.index;
-  
-    
+  // if (dragIndex !== hoverIndex) {
+  // otherPhoto.index = currentPhoto.index;
+  // }
+    }
  
   }
 }

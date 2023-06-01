@@ -72,9 +72,12 @@ const [underIndexs, setUnderIndexs] = useState()
     const underUnderFirstIndex = !!underUnderFirstPhoto && underUnderFirstPhoto.index
     const overFirstIndex = !!overFirstPhoto && overFirstPhoto.index
     
-    console.log("drag", firstPhoto, secondPhoto)
+    console.log("drag", firstPhoto.index, secondPhoto.index, firstPhoto.index !== secondPhoto.index)
 // IF PHOTOS HAVE UNEQUAL ORIENTATIONS
 // USER NOTE: RULE SET BY THIS CONDITION MEANS PHOTO ORIENTATIONS ARE OPPOSITE GOING FORWARD
+
+
+if (firstPhoto.index !== secondPhoto.index){
     if (firstPhoto.orientation !== secondPhoto.orientation){
       console.log("drag inequal")
       // console.log("drag inequal", firstPhoto.orientation, underSecondPhoto.orientation, (secondPhoto.index === firstPhoto.index + 1) || (secondPhoto.index === firstPhoto.index - 1))
@@ -90,6 +93,7 @@ if (!firstPhoto.orientation) {
     console.log("under the second photo is landscape", underSecondPhoto.orientation, "move the photo under second to the first")
 // move the photo under second to the first
       firstPhoto.index = secondPhoto.index
+      underFirstPhoto.index = underSecondPhoto.index
       underSecondPhoto.index = firstIndex
       setUndo([...props.photos])
       console.log("first photo is portrait and second photo is landscape", !!underSecondPhoto.url)
@@ -136,7 +140,7 @@ if (!firstPhoto.orientation) {
         // IF FIRST PHOTO IS PORTRAIT THEN SECOND PHOTO ABOVE IS LANDSCAPE
         // THEN MOVE SECOND PHOTO TO FIRST POSITION AND FIRST PHOTO TO UNDER SECOND PHOTO POSITION
         // if (!!underFirstPhoto.url)
-        if (!firstPhoto.oreintation){
+        if (!firstPhoto.oreintation){ 
           firstPhoto.index = secondPhoto.index
           secondPhoto.index = underFirstIndex
           underFirstPhoto.index = firstIndex
@@ -210,24 +214,33 @@ if (!firstPhoto.orientation) {
         console.log("DRAG AND DROP ITEMS ARE NOT ADJACENT ")
         // console.log("FIRST PHOTO LANDSCAPE UNDER LANDSCAPE PHOTO TO PORTRAIT PHOTO ", firstPhoto.index > 6, firstPhoto.index > 12, overFirstIndex, overFirstPhoto, !!overFirstPhoto, overOverFirstPhoto)
 
-        if (firstPhoto.index > 6){
+        if (firstPhoto.index > 6 && (overOverFirstPhoto.orientation === true)){
           console.log("second row test")
           // console.log("second row test", (!overOverFirstPhoto || (overOverFirstPhoto.orientation === true)), overFirstPhoto.orientation)
-          if (overOverFirstPhoto.orientation === true){
+          // if (overOverFirstPhoto.orientation === true){
             // console.log("second row test", overFirstPhoto.orientation)
             if (overFirstPhoto.orientation){
-          console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT")
+          console.log("FIRST PHOTO, BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT")
+          // FIRST PHOTO
           // , firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index,
           // secondPhoto.index + '=' + firstIndex,
           // overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto
+          // firstPhoto.index = secondPhoto.index;
+          // underFirstPhoto.index = underSecondPhoto.index
+          // underUnderFirstPhoto.index = underUnderSecondPhoto.index
+          // secondPhoto.index = firstIndex
+          // underSecondPhoto.index = underFirstIndex
+          // underUnderSecondPhoto.index = underUnderFirstIndex
+
+
           firstPhoto.index = underSecondPhoto.index;
           overFirstPhoto.index = secondPhoto.index
           secondPhoto.index = overFirstIndex;
           underSecondPhoto.index = firstIndex
           setUndo([...props.photos])
         }
-      }
-      else if (overFirstPhoto.orientation && (secondPhoto.index < 6)){ 
+      // }
+      else if (overFirstPhoto.orientation && firstPhoto.orientation && !overSecondPhoto.orientation){ 
         console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT")
         firstPhoto.index = underSecondPhoto.index;
         overFirstPhoto.index = secondPhoto.index
@@ -257,9 +270,8 @@ if (!firstPhoto.orientation) {
           }
         }     
       }
-      else if (!firstPhoto.orientation && underSecondPhoto.orientation){
+      else if (!firstPhoto.orientation && underSecondPhoto.orientation && secondPhoto.orientation){
         console.log("FIRST PHOTO PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE")
-            
         firstPhoto.index = secondPhoto.index;
         underFirstPhoto.index = underSecondPhoto.index
         secondPhoto.index = firstIndex;
@@ -310,14 +322,35 @@ if (!firstPhoto.orientation) {
       
       let indexArr = photos.map((photo) => photo.index)
       // let indexArr = photos.map((photo) => { return photo.index })
-      let errorBool = indexArr.some((photo, idx) => { 
-        return indexArr.indexOf(photo) != idx})
+      const errorBool = indexArr.some((photo, idx) => {return indexArr.indexOf(photo) != idx})
 
-      if (!errorBool){
-      setUnderIndexs(photosUnder)
-      props.setPhotos(newPhotos);
-      props.setReorderedPhotos(newPhotos)}
+      const missingItems = (arr, n) => {
+        let missingItems = [];
+        for (let i = 1; i <= n; i++) if (!arr.includes(i)) missingItems.push(i);
+        return missingItems;
+      }
+      let missingBool = missingItems(indexArr, 60).length
+      console.log("error missing", !!missingItems(indexArr, 60).length, missingItems(indexArr, 60));
 
+let secondIndex = secondPhoto.index
+let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex) > 1 
+
+        console.log("error text", errorBool, (props.photos === photos), quantityBool)
+      if (!errorBool && !missingBool){
+        console.log("error text", !errorBool, !missingBool)
+        setUnderIndexs(photosUnder)
+        props.setPhotos(newPhotos);
+        props.setReorderedPhotos(newPhotos)}
+      else if (errorBool && !!missingBool) {
+        console.log("error text", errorBool, !!missingBool)
+        let portraitPhotos = props.photos.filter((photo) => photo.orientation !== true)
+        let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
+        setUnderIndexs(photosUnder)
+        props.setReorderedPhotos(props.photos)
+        // props.setPhotos(props.photos)
+        setPhotos(props.photos)
+      }
+    }
   };
 
 const cntrlZ = useCallback(
