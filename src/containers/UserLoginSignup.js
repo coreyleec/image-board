@@ -50,10 +50,13 @@ const loginSubmit = (e, name, password) => {
       props.setUserId(user.user.id);
       props.setCurrentUserId(user.user.id)
       props.setDemo(false)
+      props.setLoggedIn(true)
+      props.profileFetch()
       // navigate("/home")
       
     });
   };
+
 
 // console.log("token", localStorage.token)
 // USER SIGNUP

@@ -17,10 +17,11 @@ const SideBar = (props) => {
   const sideBarRef = useRef()
   // LOGOUT
   const logout = () => {
-    navigate("/");
     localStorage.clear();
     props.setCurrentUserId(null);
     window.location.reload(false);
+    props.setLoggedIn(false)
+    navigate("/");
   };
 
   const clickAboutLink = () => {

@@ -21,6 +21,7 @@ const [delay, setDelay] = useState('.3s linear .3s')
 
   const editToggle = () => {
     props.editToggle(!props.edit)
+    console.log("reorderedPhotos", props.edit)
     if (props.edit) {
       setDelay('.3s linear')
       setTimeout(() => {

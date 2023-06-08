@@ -27,13 +27,13 @@ export const App = () => {
     setSubDirectory(sub)
     
   }, [location.pathname])
-  // console.log("location.pathname", location.pathname)
+  // console.log("location.pathname", location.pathname, directory)
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
   }
   // SWITCH DATABASE VERSION
-  // const [dbVersion, setDbVersion] = useState(`http://[::1]:3000/api/v1/`)
-  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1/`)
+  const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
+  // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1/`)
   
 
 
@@ -42,7 +42,7 @@ export const App = () => {
  
  // LOGIN
 const [currentUserId, setCurrentUserId] = useState(0);
-const [userId, setUserId] = useState(0);
+const [userId, setUserId] = useState(null);
 const [uuid, setUuid] = useState(0)
 const [loggedIn, setLoggedIn] = useState(false)
 
@@ -81,13 +81,7 @@ const [photos, setPhotos] = useState([]);
 const deleteToggle = () => {
   setEnableDelete(!enableDelete)
 }
-const editToggle = () => {
-  edit === false
-  ? setEdit(!edit)
-  : setEdit(!edit) 
-  enableDelete === true && setEnableDelete(!enableDelete)
-  // reorderSubmit()
-};
+
 // LOGIN FUNCTIONS
  const useTemplate = () => {
 
@@ -101,9 +95,7 @@ const [hover, setHover] = useState(false)
 const [tutorial, setTutorial] = useState(false)
 const [demo, setDemo] = useState(false)
 
-// useEffect(() => {
-//   directory !== 'by_Corey_Lee' ? setDemo(false) : setDemo(true)
-// }, [location.pathname])
+
 
 useEffect(() => {
   
@@ -124,6 +116,7 @@ const profileFetch = () => {
     {
       console.log("User Profile", user.user, typeof user.user.about)
       setUserId(user.user.id)
+      // setCurrentUserId(user.user.id)
       setUserName(user.user.name);
       setAbout(user.user.about);
       setUserLinks(user.user.links);
@@ -144,6 +137,8 @@ const profileFetch = () => {
         
   })
 }
+
+
 
 const landingFetch = () => {
   fetch(`${dbVersion}/landing_page`, {
@@ -178,6 +173,7 @@ const landingFetch = () => {
 }
 
 const fetchUser = (userId, name) => {
+  console.log('here it is', userId, name)
   userId === currentUserId 
   ? profileFetch()
   : (name === 'Corey Lee') 
@@ -213,13 +209,61 @@ const fetchUser = (userId, name) => {
 }
 
 
+const autoLoggin = () => {
+  // console.log("name", name, "password", password)
+  console.log('auto login function', uuid)
+  fetch(`${dbVersion}/auto_login`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((user) => {
+      console.log('auto login function', user, user.uuid)
+      setCurrentUserId(user.uuid)
+      setDemo(false)
+      setLoggedIn(true)
+      // profileFetch()
+      // navigate("/home")
+      
+    });
+  };
+
+useEffect(() => {
+  // if (directory === 'home'){
+
+  // }
+  console.log('auto login', !!localStorage.token && !currentUserId && !userId)
+  
+  if (!!localStorage.token && !currentUserId && !userId){
+    console.log('auto login')
+    autoLoggin()
+  }
+}, [])
+
  useEffect(() => {
-   (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
-   console.log('login')
+  //  (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
+  
+  // userId === currentUserId && profileFetch(userId);
+  // if token && !currentUserId && !userId
 
-    userId === currentUserId && profileFetch(userId);
+if (directory === 'home' && userId !== currentUserId && !currentUserId){
+  console.log('profile login', directory === 'home' && userId !== currentUserId && !currentUserId)
+    setLoggedIn(true)
+    profileFetch()
+    setDemo(false)
+  }
+else if (directory === 'by_Corey_Lee'){
+    landingFetch()
+    setDemo(true)
+  }
 
-}, [userId, currentUserId])
+
+}, [directory])
+
+
 
 
 const publishAbout = () => {
@@ -367,9 +411,10 @@ useEffect(() => {
   }
 }, [directory])
 
- useEffect(() => {
-  location.pathname === '/by_Corey_Lee' && location.pathname !== '/login' && location.pathname !== '/community' && landingFetch()
-}, [location.pathname])
+//  useEffect(() => {
+//   console.log('here it is')
+//   location.pathname === '/by_Corey_Lee' && location.pathname !== '/login' && location.pathname !== '/community' && landingFetch()
+// }, [location.pathname])
 
             
 
@@ -821,27 +866,41 @@ const deletePhoto = (photo) => {
 
 
 const [reorderedPhotos, setReorderedPhotos] = useState()
-// console.log("reorderedPhotos", reorderedPhotos)
+
+// console.log("reorderedPhotos", reorderedPhotos, !isNaN(folderShown))
+
 const reorderSubmit = () => {
-  !isNaN(folderShown) ?
+  console.log("reorderedPhotos", reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderShown))
+if (!!reorderedPhotos){
+  let photoArray = [...reorderedPhotos]
+  if (!isNaN(folderShown)) {
     !demo && loggedIn && fetch(`${dbVersion}/reorder_photos/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
-        reordered_photos: reorderedPhotos,
+        reordered_photos: photoArray,
       }),
     })
-    : !demo && loggedIn && fetch(`${dbVersion}/reorder_favorite/`, {
+  }
+    else{!demo && loggedIn && fetch(`${dbVersion}/reorder_favorite/`, {
       method: "PATCH",
       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         reordered_photos: reorderedPhotos,
       }),
-    })
+    })}
+  }
 
   reorderedPhotos !== undefined && setReorderedPhotos(undefined)
   };
-
+  const editToggle = () => {
+    edit === false
+    ? setEdit(!edit) && reorderSubmit()
+    : setEdit(!edit) 
+    enableDelete === true && setEnableDelete(!enableDelete)
+    console.log("reorderedPhotos", reorderedPhotos)
+    
+  };
   /// MODAL
   const [openModal, setOpenModal] = useState(false);
   const [token, setToken] = useState(localStorage.getItem('token'));
@@ -964,6 +1023,7 @@ useEffect(() => {
          
         <SideBar
           loggedIn={loggedIn}
+          setLoggedIn={setLoggedIn}
           // about={about}
           published={about.publish}
           subDirectory={subDirectory}
@@ -980,7 +1040,7 @@ useEffect(() => {
           lifestyleFollow={lifestyleFollow}
           tutorial={tutorial}
           setTutorial={setTutorial}
-          fetch={!!currentUserId ? profileFetch : landingFetch}
+          fetch={!!localStorage.token ? profileFetch : landingFetch}
           directory={directory}
           setFavoritePhotos={setFavoritePhotos}
           setFolderPhotos={setFolderPhotos}
@@ -1101,13 +1161,17 @@ useEffect(() => {
               {/* />  */}
               {/* )} */}
               </Route>    
-              <Redirect from="/" to="/by_Corey_Lee" />
- 
+              
+              {!!localStorage.token ?
+              <Redirect from="/" to="/home" />
+              : <Redirect from="/" to="/by_Corey_Lee" />}
 
          
               <Route path='/login' >
                 <UserLoginSignup 
                 loggedIn={loggedIn}
+                setLoggedIn={setLoggedIn}
+                profileFetch={profileFetch}
                 setTutorial={setTutorial}
                 setDemo={setDemo}
                 demo={demo}

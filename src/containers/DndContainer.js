@@ -329,19 +329,20 @@ if (!firstPhoto.orientation) {
         for (let i = 1; i <= n; i++) if (!arr.includes(i)) missingItems.push(i);
         return missingItems;
       }
-      let missingBool = missingItems(indexArr, 60).length
+      const missingBool = !!missingItems(indexArr, 60).length
       console.log("error missing", !!missingItems(indexArr, 60).length, missingItems(indexArr, 60));
 
 let secondIndex = secondPhoto.index
 let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex) > 1 
 
-        console.log("error text", errorBool, (props.photos === photos), quantityBool)
-      if (!errorBool && !missingBool){
+        console.log("error text reorderedPhotos", errorBool, (props.photos === photos), quantityBool, newPhotos)
+        console.log("error text", !errorBool, !missingBool)
+      if (!errorBool && missingBool){
         console.log("error text", !errorBool, !missingBool)
         setUnderIndexs(photosUnder)
         props.setPhotos(newPhotos);
         props.setReorderedPhotos(newPhotos)}
-      else if (errorBool && !!missingBool) {
+      else if (errorBool && !missingBool) {
         console.log("error text", errorBool, !!missingBool)
         let portraitPhotos = props.photos.filter((photo) => photo.orientation !== true)
         let photosUnder = portraitPhotos.map((photo) => photo.index + 6)

@@ -77,10 +77,10 @@ const [condition, setCondition] = useState()
                     }
                     </div>
 
-                        <AddButton edit={props.edit} 
+                        {/* <AddButton edit={props.edit} 
                         onClick={() => {setNewFavorites(!newFavorites)
                           // openNewFavorites()
-                          }} >+</AddButton>
+                          }} >+</AddButton> */}
                     </div>
 {/* NEW FOLDER */}
                 <div>
