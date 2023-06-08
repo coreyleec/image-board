@@ -33,7 +33,7 @@ export const App = () => {
   }
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
-  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1/`)
+  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
   
 
 
@@ -84,14 +84,12 @@ const deleteToggle = () => {
 
 // LOGIN FUNCTIONS
  const useTemplate = () => {
-
    setUserProfile(!userProfile);
    navigate("/login")
  };
 
 // DEMO STATE
 const [hover, setHover] = useState(false)
-
 const [tutorial, setTutorial] = useState(false)
 const [demo, setDemo] = useState(false)
 
@@ -104,7 +102,7 @@ useEffect(() => {
 
 const profileFetch = () => {
   
-  fetch(`${dbVersion}/profile/`, {
+  fetch(`${dbVersion}/profile`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -225,7 +223,7 @@ const autoLoggin = () => {
       setCurrentUserId(user.uuid)
       setDemo(false)
       setLoggedIn(true)
-      // profileFetch()
+      profileFetch()
       // navigate("/home")
       
     });
