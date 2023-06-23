@@ -254,20 +254,7 @@ useEffect(() => {
             </div>
 
 
-{/* LOGIN */}              
-              {!!props.currentUserId ? (
-                <Button
-                ref={loginRef}
-                onMouseOver={() => setDemoText(loginDemo)}
-                onClick={() => logout()}>log out</Button>
-              ) : (
-                <Button 
-                ref={loginRef}
-                onMouseOver={() => setDemoText(loginDemo)}
-                 onClick={() => props.useTemplate(setSideBar(!sideBar))}>
-                  use ImageBoard
-                </Button>
-              )}
+
               {/* props.setLoggedIn(false) */}
               {/* <p>image board is a visual tool for image curation, and digital portfolio</p> */}
             </div>
@@ -275,6 +262,22 @@ useEffect(() => {
           {/* </div>
         </div> */}
         </>
+        {/* LOGIN */}              
+        {props.loggedIn ? (
+                <Button
+                ref={loginRef}
+                sideBar={sideBar}
+                onMouseOver={() => setDemoText(loginDemo)}
+                onClick={() => logout()}>log out</Button>
+              ) : (
+                <Button 
+                ref={loginRef}
+                sideBar={sideBar}
+                onMouseOver={() => setDemoText(loginDemo)}
+                 onClick={() => props.useTemplate(setSideBar(!sideBar))}>
+                  use ImageBoard
+                </Button>
+              )}
         {(props.subDirectory !== 'about') && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial &&
         <TutorialTip 
           sideBar={sideBar} 
@@ -294,12 +297,30 @@ useEffect(() => {
 export default SideBar;
 
 const Button = styled.button`
-    margin-top: 80px;
-    /* float: right; */
-  a {
-    font-size: inherit;
-    text-decoration: none;
-  }
+    margin-top: 40px;
+    margin-inline: 5px;
+    position: relative;
+    transition: right 1s ease;
+    white-space: nowrap;
+    ${({ sideBar }) => (sideBar ? `right : 0%` : `right: 100%`)};
+    a {
+      font-size: inherit;
+      text-decoration: none;
+    }
+    @media (max-width: 1100px) {
+
+      position: fixed;
+      // top: 0%;
+      top: 79vh;
+      width: fit-content;
+      transition: transform 1s ease;
+      left : 0%;
+      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
+       
+      /* ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')}; */
+      backdrop-filter: blur(6px);
+      
+
 `;
 
 const TutorialTip = styled.div`
@@ -374,8 +395,8 @@ const Sticky = styled.div`
     
 
   position: sticky;
-  position: relative;
-  z-index: 3;
+  // position: relative;
+  // z-index: 3;
   top: 0;
   z-index: 5;
 .follow-cont{
@@ -387,9 +408,10 @@ const Sticky = styled.div`
   }
 }
   .side-bar {
+    overflow: hidden;
     padding-inline: 5px;
     /* height: 75%; */
-    max-height: 100vh;
+    height: 88vh;
     overflow-y: scroll;
     padding-bottom: 5px;
     position: relative;
@@ -405,6 +427,7 @@ const Sticky = styled.div`
     ${({ sideBar }) => (sideBar ? `left : 0%` : `left: -30%`)}; */
 
     @media (max-width: 1100px) {
+      overflow: hidden;
       position: fixed;
       top: 0%;
       width: 200px;
@@ -426,6 +449,9 @@ const Sticky = styled.div`
       display: block;
       @media only screen and (max-width: 1100px) {
         margin-top: 10px;
+        margin-top: 10px;
+        height: 65vh;
+        overflow: scroll;
       }
     }
     .community-href {

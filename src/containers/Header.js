@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
@@ -22,13 +22,16 @@ const Header = (props) => {
     }, [props.directory])
     
 
-useEffect(() => {
-  setTimeout(() => {
-    setHover(false)
-  }, 5000);
-}, [])
+// useEffect(() => {
+//   setTimeout(() => {
+//     setHover(false)
+//   }, 5000);
+// }, [])
 
 
+const TutorialRef = useRef()
+const TutorialDemo = [!!TutorialRef.current && TutorialRef.current.offsetTop]
+console.log("TutorialDemo", TutorialDemo)
 
         return (
             <header onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} >
@@ -93,6 +96,7 @@ useEffect(() => {
                   </div>
       }
           {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&           
+              <>
               <Switch>
                   <label className="toggle-switch">
                   <input type="checkbox" 
@@ -103,9 +107,16 @@ useEffect(() => {
                   </label>
                   <p>tutorial</p> 
                   </Switch>
+                  {!props.tutorial && (window.innerWidth > 1100) && <TutorialTip hover={hover} 
+                  TutorialRef={TutorialRef}
+                  >click here for a guided tutorial
+                  <div className="arrow"></div>
+                  </TutorialTip>}
+                </>
               }
                   </Sticky>
-                  {props.tutorial && (window.innerWidth > 1100) && <TutorialTip hover={hover} >resize the window to allow space to browse your files</TutorialTip>}
+                  {props.tutorial && (window.innerWidth > 1100) && <ViewPortTip hover={hover} >resize your window to allow room to view your local files in a separate window
+                  </ViewPortTip>}
                   </header>
               )
 
@@ -113,7 +124,7 @@ useEffect(() => {
 
 export default Header
 
-const TutorialTip = styled.div`
+const ViewPortTip = styled.div`
   top: 4px;
   right: 4px;
   max-height: fit-content;
@@ -150,6 +161,44 @@ const TutorialTip = styled.div`
     position: absolute;
 
     
+    margin-left: -5px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent #ff7f5080 transparent transparent;
+  }}
+
+`
+const TutorialTip = styled.div`
+  // top: 4px;
+  // top: ${({demoTop}) => demoTop + 'px'};
+  // right: 4px;
+  top: 4px;
+  right: -77px;
+  max-height: fit-content;
+  position: absolute;
+  
+  white-space: normal;
+  cursor: default;
+  padding: 15px;
+  background: #ff7f5080;
+  backdrop-filter: blur(6px);
+  border-radius: 16px;
+  color: blue;
+  font-size: 16px;
+  opacity: 100%;
+  width: 135px;
+  transition: transform 1s ease, top .3s ease;
+  
+  ${({hover}) => hover && 
+`visibility: hidden; opacity: 0%; transition: opacity .2s linear .1s;` }
+  
+  .arrow {
+    &:after {
+    content: "";
+    position: relative;
+    left: -15px;
+    top: 23px;
+    position: absolute;    
     margin-left: -5px;
     border-width: 10px;
     border-style: solid;

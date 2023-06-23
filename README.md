@@ -1,12 +1,37 @@
 # Image Board
 
+ImageBoard is a visual tool for curating photos, collaboration and presenting bodies of work in digital form
+
+The idea for ImageBoard was born from a need to simplify editorial projects or gallery curation, where a person needs to be able to see multiple images at once, quickly reorder them, add text, and do this collaboratively if needed. Profiles also double as portfolios as they are a digital representation of a users bodies of work. 
+
+ImageBoard has been creative outlet for me to explore my curiosities for coding, as well as a place to showcase my technical abilities and creativity. My main objective for this project was to learn through creating unique and complex elements. The following are a few examples of these.
+
+![](community_scroll_cont.gif)
+![](right_sidebar.gif)
+![](editable_elements.gif)
+![](image_tile_animations.gif)
+
+Things to come:
+- continue cleaning up code, and storing repetitious code in variables. the project has been a lot of experimenting for the sake of learning, so I would like to go back and apply a best practices approach
+- an accompanying camera app for mobile
+- adding the ability to reorder elements in the sidebar such as folders, and links
+- adding an image bank to the right so a user can drag and store multiple images into the app before setting them in their desired place
+- the ability to drag images from a file manager into a square on the grid
+- because their are so many filters in the community page, I would like to revise the layout to utilize the left sidebar where information is already store
+- add realtime updates for collaborators and profile visitors
+- public and private toggle for folders
+- including collaborative folders in collaborators sidebar
+- adding a blog to accompanying folder
+- adding a "like" value to photos for search filters and a separate button for adding to favorites
+- lastly I would like to update code based on what's currently available from Rails and React, and eventually rewrite the backend in Python and the frontend using Typescript
+
 Image Board is a visual tool for image layout but may also act as a digital portfolio, or an extension for pre-existing portfolios. 
 Prior to Image Board the project was called Memphis. Rather than continue to work on the original, I chose to take what I learned an rebuild the project piece by piece, while keeping a reference to all of the original code as I rebuild. 
 For a more in depth look at what's to come, please refer to verion 1 [frontend](https://github.com/coreyleec/memphis) and [backend](https://github.com/coreyleec/memphis_backend).
 
 UPDATE 08.16.21
 
-![](demo-2.gif)
+
 
 I chose to continue with React Bootstrap Modal rather than  code the Modal from scratch after some issues with indexing (i.e., image tiles were appearing above the non-Bootstrap modal). I'll return to this at a later time, but right now I feel that there's more important things I can focus on.
 

@@ -101,8 +101,8 @@ useEffect(() => {
 
 
 const profileFetch = () => {
-  
-  fetch(`${dbVersion}/profile`, {
+  console.log('profile fetch', localStorage.token)
+  fetch(`${dbVersion}/profile/`, {
         method: "GET",
         headers: {
           Authorization: `Bearer ${localStorage.token}`,
@@ -149,6 +149,7 @@ const landingFetch = () => {
     .then((user) => 
     {
       console.log("tutorialUser", user, typeof user.user.about, typeof user.user.folders)
+      setCurrentUserId(user.user.id)
       setUserId(user.user.id)
       setUserName(user.user.name);
       setUserAboutMe(user.user.details);
@@ -530,11 +531,12 @@ useEffect(() => {
 const [folderType, setFolderType] = useState(null)
 
 const catagorize = (boolean) => {
-  console.log('catagorizeFolder', boolean)
+  
+  let updatedFolder = folders.find((folder) => folder.index === folderShown)
+  
+  // console.log('catagorizeFolder', boolean, updatedFolder, folderShown, folders)
 
-  let updatedFolder = folders.find((folder) => folder.id === folderShown)
-
-  updateFolder.creative = boolean
+  updatedFolder.creative = boolean
   
   setFolders(
     folders.map((folder) => {
@@ -868,7 +870,7 @@ const [reorderedPhotos, setReorderedPhotos] = useState()
 // console.log("reorderedPhotos", reorderedPhotos, !isNaN(folderShown))
 
 const reorderSubmit = () => {
-  console.log("reorderedPhotos", reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderShown))
+  console.log("reorderedPhotos", !!reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderShown))
 if (!!reorderedPhotos){
   let photoArray = [...reorderedPhotos]
   if (!isNaN(folderShown)) {

@@ -329,21 +329,21 @@ if (!firstPhoto.orientation) {
         for (let i = 1; i <= n; i++) if (!arr.includes(i)) missingItems.push(i);
         return missingItems;
       }
-      const missingBool = !!missingItems(indexArr, 60).length
+      const missingBool = !missingItems(indexArr, 59).length
       console.log("error missing", !!missingItems(indexArr, 60).length, missingItems(indexArr, 60));
 
 let secondIndex = secondPhoto.index
 let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex) > 1 
 
         console.log("error text reorderedPhotos", errorBool, (props.photos === photos), quantityBool, newPhotos)
-        console.log("error text", !errorBool, !missingBool)
+        console.log("error text", !errorBool, missingBool)
       if (!errorBool && missingBool){
-        console.log("error text", !errorBool, !missingBool)
+        console.log("error text", !errorBool, missingBool)
         setUnderIndexs(photosUnder)
         props.setPhotos(newPhotos);
         props.setReorderedPhotos(newPhotos)}
       else if (errorBool && !missingBool) {
-        console.log("error text", errorBool, !!missingBool)
+        console.log("error text", errorBool, !missingBool)
         let portraitPhotos = props.photos.filter((photo) => photo.orientation !== true)
         let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
         setUnderIndexs(photosUnder)
@@ -407,7 +407,7 @@ useEffect(() => {
   .then((res) => res.json())
   .then((photoObj) => {
     console.log("photoObj",photoObj);
-    setPhotos(photos.map((photo) => {
+    props.setPhotos(photos.map((photo) => {
         if (photo.id === photoObj.id) return photoObj;
         else return photo;})
       );
@@ -569,7 +569,7 @@ const adjustFunction = () => {
   //   const grid = gridRef.current;
   //   // adjustGridItemsHeight(grid, updPhoto);
   // }, [photos]);
-
+// FIND ME
 useEffect(() => {    
   // console.log("photos", props.photos)
   // console.log("useEffect", props.photos, props.colorArr)

@@ -595,6 +595,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
 {/* FOLDER FOLLOW */}
             {(props.directory === 'user') && !isCollaborator && 
             <CatagorySwitch
+            isCollaborator={isCollaborator}
             asideRef={asideRef}
             className="folder-follow"
           //  catagorized={props.folderType}
@@ -701,7 +702,7 @@ const TutorialTip = styled.div`
   // background: rgb(167 165 165 / 50%);
 
 @media (min-width: 1100px){
-  right: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth - 26 + 'px'}
+  right: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth + 'px'}
   }
   // width: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth + 'px'};
   
