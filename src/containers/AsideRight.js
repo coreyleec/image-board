@@ -99,7 +99,7 @@ useEffect(() => {
 
 
 const [controlDock, setControlDock] = useState(false)
-const [skinny, setSkinny] = useState(false);
+
 
 
 const controlDockToggle = () => {
@@ -137,26 +137,7 @@ useEffect(() => {
 })
 
 
-useEffect(() => {
-  if (window.innerWidth < 1100) {
-    setSkinny(true)
-    setControlDock(false)
-  } else {
-    setSkinny(false)
-    setControlDock(true)
-  }
 
-  const updateMedia = () => {
-    if (window.innerWidth < 1100) {
-      setSkinny(true)
-    } else {
-      setSkinny(false)
-    }
-  };
-  updateMedia()
-  window.addEventListener('resize', updateMedia);
-  return () => window.removeEventListener('resize', updateMedia);
-}, []);
 
 const [height, setHeight] = useState(26)
 
@@ -179,8 +160,8 @@ const [drawer, setDrawer] = useState(0)
 // !!editDrawerRef.current && console.log("switch", editDrawerRef.current.clientHeight)
 useEffect(() => {
   let deleteSwitch = !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight
-  let editSwitch = !skinny ? 25 : controlDock ? 25 : 0
-  let editDrawer = !skinny ? (105 + deleteSwitch) : props.edit ? 130 : 0
+  let editSwitch = !props.skinny ? 25 : controlDock ? 25 : 0
+  let editDrawer = !props.skinny ? (105 + deleteSwitch) : props.edit ? 130 : 0
   let follow = 50
   let collabUl = (!!listRef.current) ? (listRef.current.clientHeight) + 10 : 0
   // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
@@ -190,9 +171,9 @@ useEffect(() => {
   !!search.length ? setSearchUl(length + 6) : 
   setSearchUl([])
   // console.log("deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
-  if (props.directory === 'user'){
+  if (props.directory === 'user' && !isCollaborator){
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
-    if (skinny){
+    if (props.skinny){
       // WINDOW IS SKINNY
       if (!controlDock) {
         // CLOSED CONTROL DOCK
@@ -208,7 +189,7 @@ useEffect(() => {
   else if (props.subDirectory === 'about'){
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
     
-    if (skinny){
+    if (props.skinny){
       // WINDOW IS SKINNY
       if (!controlDock) {
         // CLOSED CONTROL DOCK
@@ -223,7 +204,7 @@ useEffect(() => {
       setDrawer(35)
     }
   } 
-  else if (skinny){
+  else if (props.skinny){
     // WINDOW IS SKINNY
     if (!controlDock) {
       // CLOSED CONTROL DOCK
@@ -238,7 +219,7 @@ useEffect(() => {
     else if (controlDock && props.folderType === null){
       // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
       let drawerMath = catagoryPrompt
-      console.log("catagoryPrompt", catagoryPrompt)
+      // console.log("catagoryPrompt", catagoryPrompt)
       setDrawer(drawerMath)
     }
     else if (!controlDock && props.folderType === null){
@@ -263,7 +244,7 @@ useEffect(() => {
     }
     else if (!controlDock) {setDrawer(0)}
   //   let height = (props.folderType === null) ? 60 : (props.folderCollaborators.length >= 2 && !!listRef.current) ? (35 + listRef.current.clientHeight) : 25
-  // skinny ? 
+  // props.skinny ? 
   //   controlDock ? 
   //     setDrawer(height) 
   //     : setDrawer(0) 
@@ -300,13 +281,18 @@ useEffect(() => {
       setDrawer(drawerMath)
   }
   }
-}, [props.folderType, props.folderCollaborators, controlDock, props.edit, search, skinny, props.subDirectory])
+}, [props.folderType, props.folderCollaborators, controlDock, props.edit, search, props.skinny, props.subDirectory])
 
 // console.log("drawer", drawer, !!editDrawerRef.current && editDrawerRef.current.clientHeight, !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight)
 
 
 
-
+useEffect(() => {
+  if (window.innerWidth < 1100) {
+    setControlDock(false)
+  } else {
+    setControlDock(true)
+  }},[])
 
 
 
@@ -343,7 +329,7 @@ const [demoText, setDemoText] = useState("")
 const [demoArrow, setDemoArrow] = useState("16px")
 useEffect(() => {
   if (props.tutorial){
-    if (skinny) {
+    if (props.skinny) {
       if (controlDock === false){
       setDemoText("flip this switch to edit the profile settings")
       setDemoArrow("16px")
@@ -369,7 +355,7 @@ useEffect(() => {
             setDemoArrow("49px")
             }}
 }
-}, [props.tutorial, skinny, controlDock, props.directory, props.edit])
+}, [props.tutorial, props.skinny, controlDock, props.directory, props.edit])
 
 let deleteDemoArrow = !!editDrawerRef.current && (editDrawerRef.current.childNodes[0].clientHeight !== 25) ? 19 : 0
 // console.log("deleteDemoArrow", deleteDemoArrow)
@@ -381,13 +367,13 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
     <aside ref={asideRef}  >
      
       <Sticky>
-      <SideWrapper skinny={skinny} asideRef={asideRef} onMouseEnter={() => props.setHover(false)}>
+      <SideWrapper skinny={props.skinny} asideRef={asideRef} onMouseEnter={() => props.setHover(false)}>
       {(((props.directory === 'home' || props.directory === 'by_Corey_Lee' || (props.directory === 'user' && props.subDirectory !== 'about')))) &&  
             <Container
             controlDock={controlDock}
             asideRef={asideRef}
             edit={props.edit}
-            skinny={skinny}
+            skinny={props.skinny}
             
             drawer={drawer}
             drawerHeight={drawerHeight}
@@ -403,7 +389,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
             
             >
           
-              {skinny  && <OpenSwitch 
+              {props.skinny  && <OpenSwitch 
               controlDock={controlDock}
               
               >
@@ -553,7 +539,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
             className="collaborate"
             inputWidth={inputWidth}
             panelRef={panelRef}
-            skinny={skinny}
+            skinny={props.skinny}
             // catagorized={props.folderType === null}
             search={search}
             expand={expand} >
@@ -643,9 +629,9 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
             </div>
             { props.tutorial &&  (props.subDirectory !== 'about') && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&
           <TutorialTip 
-          asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={skinny}
+          asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={props.skinny}
           flexStart={flexStart} edit={props.edit} delay={delay}
-          arrowTopDistance={skinny ? 35 : deleteDemoArrow}
+          arrowTopDistance={props.skinny ? 35 : deleteDemoArrow}
           hover={props.hover}
           onMouseEnter={() => {
             props.setHover(true)

@@ -10,8 +10,11 @@ import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider";
 const SideBar = (props) => {
   // TOGGLE SIDEBAR
   const [sideBar, setSideBar] = useState(false);
-  const location = useLocation();
   // console.log("new props", !!props.userState && props.userState.openModal);
+  const [skinny, setSkinny] = useState(false);
+  const [hover, setHover] = useState(true)
+  const [timer, setTimer] = useState(true)
+  const location = useLocation();
   let history = useHistory();
   let navigate = history.push;
   const sideBarRef = useRef()
@@ -30,7 +33,7 @@ const SideBar = (props) => {
     setSideBar(false) 
   }
 
-  const [skinny, setSkinny] = useState(false);
+  
   useEffect(() => {
     if (window.innerWidth < 1100) {setSkinny(true)} 
     else {setSkinny(false)}
@@ -74,13 +77,33 @@ useEffect(() => {
   }
 }, [props.tutorial, props.edit, props.enableDelete])
 
-
+useEffect(() => {
+  setTimeout(() => {
+    setHover(false)
+  }, 10000);
+}, [])
+useEffect(() => {
+  
+}, [sideBar])
+useEffect(() => {
+  sideBar ? setTimer(false) : setTimer(true)
+  setTimeout(() => {
+    setTimer(false)
+  }, 7000);
+ 
+}, [skinny, sideBar])
 
   return (
     <aside>
       <Sticky sideBar={sideBar}
       directory={props.directory}
       >
+        {!props.tutorial && (window.innerWidth < 1100) && <TutorialTip 
+            sideBar={sideBar}
+            timer={timer}
+            >click here to access the guided tutorial
+            <div className="arrow"></div>
+            </TutorialTip>}
         <>
           <ButtonContainer sideBar={sideBar}>
             <button onClick={() => setSideBar(!sideBar)}>
@@ -133,7 +156,8 @@ useEffect(() => {
 
           
         }
-         {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&           
+         {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
+         <>
         <Switch>
             <label className="toggle-switch">
             <input type="checkbox" 
@@ -144,6 +168,8 @@ useEffect(() => {
             </label>
             <p>tutorial</p> 
             </Switch>
+            
+            </>        
         }
             </div>
             <div className="scrollable">
@@ -279,7 +305,7 @@ useEffect(() => {
                 </Button>
               )}
         {(props.subDirectory !== 'about') && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial &&
-        <TutorialTip 
+        <CatagoryTip 
           sideBar={sideBar} 
           sideBarWidth={!!sideBarRef.current && sideBarRef.current.clientWidth}
           hover={props.hover}
@@ -287,7 +313,7 @@ useEffect(() => {
           onMouseEnter={() => {props.setHover(true)}}
             >{demoText[1]} 
             <div className="arrow"></div>
-            </TutorialTip>
+            </CatagoryTip>
         }
       </Sticky>
     </aside>
@@ -308,6 +334,7 @@ const Button = styled.button`
       text-decoration: none;
     }
     @media (max-width: 1100px) {
+      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
 
       position: fixed;
       // top: 0%;
@@ -315,7 +342,6 @@ const Button = styled.button`
       width: fit-content;
       transition: transform 1s ease;
       left : 0%;
-      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
        
       /* ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')}; */
       backdrop-filter: blur(6px);
@@ -324,6 +350,56 @@ const Button = styled.button`
 `;
 
 const TutorialTip = styled.div`
+  // top: 60px;
+  // right: 60px;
+  top: 32px;
+  // left: 200px;
+  border-top-left-radius: 0px;
+  border-top-right-radius: 16px;
+  border-bottom-right-radius: 16px;
+  border-bottom-left-radius: 16px;
+  ${({timer}) => !timer && 
+`visibility: hidden; opacity: 0%;
+}` }
+  // top: 5px;
+  // left: 210px;
+  max-height: fit-content;
+  position: absolute;
+  // transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
+  transition: left 1s ease, opacity .2s linear .1s;
+  ${({ sideBar }) => (!sideBar ? `left : 55px` : `left: 200px`)};
+  white-space: normal;
+  cursor: default;
+  padding: 15px;
+  background: #ff7f5080;
+  backdrop-filter: blur(6px);
+  // border-radius: 16px;
+  color: blue;
+  font-size: 16px;
+  opacity: 100%;
+  width: 135px;
+  // transition: transform 1s ease, top .3s ease;
+  
+
+  
+  .arrow {
+    &:after {
+    // content: "";
+    position: relative;
+    // left: 23px;
+    // top: -20px;
+    left: -15px;
+    top: 21px;
+    position: absolute;    
+    margin-left: -5px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent #ff7f5080 transparent transparent;
+  }}
+
+`
+
+const CatagoryTip = styled.div`
   top: ${({demoTop}) => demoTop + 'px'};
   max-height: fit-content;
   position: absolute;

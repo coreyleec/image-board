@@ -15,7 +15,9 @@ This project has been creative outlet for me to learn while exploring my curiosi
  
 
 Things to come:
-- continue cleaning up code, and storing repetitious code in variables. the project has been a lot of experimenting for the sake of learning, so I would like to go back and apply a best practices approach
+- continue cleaning up code, and storing repetitious code in variables, further consolidate code for easier debugging. the project has been a lot of experimenting for the sake of learning, so I would like to go back and apply a best practices approach
+- optimize css transitions by reducing computations
+- further debugging and resolving conflicting code
 - an accompanying camera app for mobile
 - adding the ability to reorder elements in the sidebar such as folders, and links
 - adding an image bank to the right so a user can drag and store multiple images into the app before setting them in their desired place

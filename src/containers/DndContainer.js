@@ -407,7 +407,7 @@ useEffect(() => {
   .then((res) => res.json())
   .then((photoObj) => {
     console.log("photoObj",photoObj);
-    props.setPhotos(photos.map((photo) => {
+    props.setPhotos(props.photos.map((photo) => {
         if (photo.id === photoObj.id) return photoObj;
         else return photo;})
       );

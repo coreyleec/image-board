@@ -12,6 +12,7 @@ const Header = (props) => {
     const [siteHeader, setSiteHeader] = useState()
 
     const [hover, setHover] = useState(true)
+    const [timer, setTimer] = useState(true)
 
     useEffect(() => {
         if (props.directory === 'community'){
@@ -22,16 +23,20 @@ const Header = (props) => {
     }, [props.directory])
     
 
-// useEffect(() => {
-//   setTimeout(() => {
-//     setHover(false)
-//   }, 5000);
-// }, [])
+useEffect(() => {
+  setTimeout(() => {
+    setHover(false)
+  }, 10000);
+}, [])
+useEffect(() => {
+  setTimer(true)
+  setTimeout(() => {
+    setTimer(false)
+  }, 5000);
+}, [props.skinny])
 
 
-const TutorialRef = useRef()
-const TutorialDemo = [!!TutorialRef.current && TutorialRef.current.offsetTop]
-console.log("TutorialDemo", TutorialDemo)
+
 
         return (
             <header onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} >
@@ -107,15 +112,14 @@ console.log("TutorialDemo", TutorialDemo)
                   </label>
                   <p>tutorial</p> 
                   </Switch>
-                  {!props.tutorial && (window.innerWidth > 1100) && <TutorialTip hover={hover} 
-                  TutorialRef={TutorialRef}
+                  {!props.tutorial && (window.innerWidth > 1100) && <TutorialTip timer={timer}
                   >click here for a guided tutorial
                   <div className="arrow"></div>
                   </TutorialTip>}
                 </>
               }
                   </Sticky>
-                  {props.tutorial && (window.innerWidth > 1100) && <ViewPortTip hover={hover} >resize your window to allow room to view your local files in a separate window
+                  {props.tutorial && (window.innerWidth > 1100) && <ViewPortTip hover={hover} >resize your window to allow room to browse through your local files
                   </ViewPortTip>}
                   </header>
               )
@@ -169,9 +173,6 @@ const ViewPortTip = styled.div`
 
 `
 const TutorialTip = styled.div`
-  // top: 4px;
-  // top: ${({demoTop}) => demoTop + 'px'};
-  // right: 4px;
   top: 4px;
   right: -77px;
   max-height: fit-content;
@@ -189,7 +190,7 @@ const TutorialTip = styled.div`
   width: 135px;
   transition: transform 1s ease, top .3s ease;
   
-  ${({hover}) => hover && 
+  ${({timer}) =>!timer && 
 `visibility: hidden; opacity: 0%; transition: opacity .2s linear .1s;` }
   
   .arrow {

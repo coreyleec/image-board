@@ -78,6 +78,26 @@ const [enableDelete , setEnableDelete] = useState(false)
 // ADD PHOTO
 const [photos, setPhotos] = useState([]);
 
+const [skinny, setSkinny] = useState(false);
+useEffect(() => {
+  if (window.innerWidth < 1100) {
+    setSkinny(true)
+  } else {
+    setSkinny(false)
+  }
+
+  const updateMedia = () => {
+    if (window.innerWidth < 1100) {
+      setSkinny(true)
+    } else {
+      setSkinny(false)
+    }
+  };
+  updateMedia()
+  window.addEventListener('resize', updateMedia);
+  return () => window.removeEventListener('resize', updateMedia);
+}, []);
+
 const deleteToggle = () => {
   setEnableDelete(!enableDelete)
 }
@@ -1072,6 +1092,7 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <Header
+          skinny={skinny}
           loggedIn={loggedIn}
           subDirectory={subDirectory}
           tutorial={tutorial}
@@ -1090,6 +1111,7 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <AsideRight
+          skinny={skinny}
           loggedIn={loggedIn}
           subDirectory={subDirectory}
           hover={hover} 
