@@ -72,30 +72,13 @@ const searchToggle = () => {
 const [flexStart, setFlexStart] = useState(false)
 
 const changeFlex = (bool) => {
-  // if (props.edit) {
 
-  //   setDelay('height .3s linear')
-  //   setTimeout(() => {
-  //     setDelay('height .3s linear .3s');
-  //   }, 500)
-  // }
-  // else {
-  //   setDelay('height .3s linear .3s')
-  //   setTimeout(() => {
-  //     setDelay('height .3s linear');
-  //   }, 500)
-  // }
-  // console.log("flexStart", bool)
   setFlexStart(!bool)
 }
 
 
 
-// const [isCollabor, setIsCollabor] = useEffect(false)
-useEffect(() => {
-  // console.log("props.folderCollaborators", props.folderCollaborators) 
-  // !!props.currentUserId && props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) setIsCollabor(true)})
-}, [props.folderCollaborators])
+
 
 
 const [controlDock, setControlDock] = useState(false)
@@ -113,10 +96,7 @@ const [editDrawerHeight, setEditDrawerHeight] = useState(0)
 
 // DEMO TIP
 const [pageLoad, setPageLoad] = useState(true)
-// useEffect(() => {
-//   props.tutorial === true && setPageLoad(true)
-//   ReactTooltip.rebuild()
-// }, [])
+
 
 const [editTutorial, setEditTutorial] = useState(false)
 useEffect(() => {
@@ -339,7 +319,7 @@ useEffect(() => {
         (props.directory === 'home') && setDemoText("use the edit switch to edit your projects. all personal information will become editable.")
         setDemoArrow("49px")}
         else if (props.edit){
-          setDemoText("these switches will allow you to do things such as add, edit, and currate photos, add collaborators, as well as enable you to add, edit and delete elements in the left sidebar.")
+          setDemoText("these switches will allow you to do things such as add, edit, and reorder photos, add collaborators, as well as enable you to add, edit and delete elements in the left sidebar.")
           setDemoArrow("83px")
         }
   }}      else if (props.newFolder){
@@ -1392,3 +1372,41 @@ ul li {
 
 
 `
+
+
+// REFERENCE GRAVEYARD
+
+  // if (props.edit) {
+
+  //   setDelay('height .3s linear')
+  //   setTimeout(() => {
+  //     setDelay('height .3s linear .3s');
+  //   }, 500)
+  // }
+  // else {
+  //   setDelay('height .3s linear .3s')
+  //   setTimeout(() => {
+  //     setDelay('height .3s linear');
+  //   }, 500)
+  // }
+  // console.log("flexStart", bool)
+
+    // if (props.edit) {
+
+  //   setDelay('height .3s linear')
+  //   setTimeout(() => {
+  //     setDelay('height .3s linear .3s');
+  //   }, 500)
+  // }
+  // else {
+  //   setDelay('height .3s linear .3s')
+  //   setTimeout(() => {
+  //     setDelay('height .3s linear');
+  //   }, 500)
+  // }
+  // console.log("flexStart", bool)
+// const [isCollabor, setIsCollabor] = useEffect(false)
+// useEffect(() => {
+  // console.log("props.folderCollaborators", props.folderCollaborators) 
+  // !!props.currentUserId && props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) setIsCollabor(true)})
+// }, [props.folderCollaborators])

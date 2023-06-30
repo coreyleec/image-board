@@ -256,25 +256,16 @@ useEffect(() => {
   // }
   console.log('auto login', !!localStorage.token && !currentUserId && !userId)
   
-  if (!!localStorage.token && !currentUserId && !userId){
+  if (!!localStorage.token && !currentUserId && !userId ){
     console.log('auto login')
     autoLoggin()
   }
+
 }, [])
 
  useEffect(() => {
-  //  (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
-  
-  // userId === currentUserId && profileFetch(userId);
-  // if token && !currentUserId && !userId
 
-if (directory === 'home' && userId !== currentUserId && !currentUserId){
-  console.log('profile login', directory === 'home' && userId !== currentUserId && !currentUserId)
-    setLoggedIn(true)
-    profileFetch()
-    setDemo(false)
-  }
-else if (directory === 'by_Corey_Lee'){
+if (directory === 'by_Corey_Lee'){
     landingFetch()
     setDemo(true)
   }
@@ -310,21 +301,6 @@ const publishAbout = () => {
 // console.log("about", about, about.publish)
 
 
-
-// useEffect(() => {
-//   (directory === 'by_Corey_Lee') && setTutorial(true)
-//   // console.log("user tutorial set")
-// }, [directory])
-
-
-
-
-// useEffect(() => {
-//   if (directory !== 'by_Corey_Lee' && tutorial === true){
-//     setTutorial(false)
-//   }
-// }, [directory])
-// (props.directory === "user" &&  props.folderCollaborators.some(c => c.uuid === props.currentUserId))
 const [favoriteShown, setFavoriteShown] = useState(null)
 const [favorites, setFavorites] = useState(null)
 
@@ -430,10 +406,6 @@ useEffect(() => {
   }
 }, [directory])
 
-//  useEffect(() => {
-//   console.log('here it is')
-//   location.pathname === '/by_Corey_Lee' && location.pathname !== '/login' && location.pathname !== '/community' && landingFetch()
-// }, [location.pathname])
 
             
 
@@ -1286,3 +1258,40 @@ const Footer = styled.footer`
 
 
 
+// REFERENCE GRAVEYARD
+
+
+
+
+  //  (userId === currentUserId) ? setLoggedIn(true) : setLoggedIn(false)
+  
+  // userId === currentUserId && profileFetch(userId);
+  // if token && !currentUserId && !userId
+
+// if (directory === 'home' && !!localStorage.token){
+//   console.log('profile login', directory === 'home' && userId !== currentUserId && !currentUserId, userId, currentUserId)
+//   autoLoggin()  
+//   // setLoggedIn(true)
+//   //   profileFetch()
+//   //   setDemo(false)
+//   }
+// else 
+// useEffect(() => {
+//   (directory === 'by_Corey_Lee') && setTutorial(true)
+//   // console.log("user tutorial set")
+// }, [directory])
+
+
+
+
+// useEffect(() => {
+//   if (directory !== 'by_Corey_Lee' && tutorial === true){
+//     setTutorial(false)
+//   }
+// }, [directory])
+// (props.directory === "user" &&  props.folderCollaborators.some(c => c.uuid === props.currentUserId))
+
+//  useEffect(() => {
+//   console.log('here it is')
+//   location.pathname === '/by_Corey_Lee' && location.pathname !== '/login' && location.pathname !== '/community' && landingFetch()
+// }, [location.pathname])

@@ -563,12 +563,7 @@ const adjustFunction = () => {
 
 
 
-  // useEffect(() => {
-  //   console.log("testing grid adjustment")
-  //   // , photos
-  //   const grid = gridRef.current;
-  //   // adjustGridItemsHeight(grid, updPhoto);
-  // }, [photos]);
+
 // FIND ME
 useEffect(() => {    
   // console.log("photos", props.photos)
@@ -584,25 +579,7 @@ useEffect(() => {
   // adjustGridItemsHeight(grid, updPhoto);
 }, [props.photos])
 
-// useEffect(() => {
-//   const grid = gridRef.current;
-//   const photos = grid.children
-//   for (let i = 0; i < photos.length; i++) {
-//     let photo = photos[i]; // each square is "photo"
   
-//     let gridItem = photo.getBoundingClientRect();
-//     // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
-
-//     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
-
-//     let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
-//   	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
-  
-
-// 	photo.style.transformOrigin = `${originX}% ${originY}%`;
-//   } return 
-
-// }, [])
 
 
 const [drag, setDrag] = useState(false)
@@ -610,9 +587,6 @@ const dragging = () => {
   setDrag()
 }
 
-// useEffect(() => {
-//   console.log("drag", underIndexs)
-// }, [underIndexs])
 
   return (
     <article>
@@ -1092,3 +1066,35 @@ background-color: gainsboro;
 }
   `
 
+// REFERENCE GRAVEYARD
+
+// useEffect(() => {
+  //   console.log("testing grid adjustment")
+  //   // , photos
+  //   const grid = gridRef.current;
+  //   // adjustGridItemsHeight(grid, updPhoto);
+  // }, [photos]);
+
+// useEffect(() => {
+//   const grid = gridRef.current;
+//   const photos = grid.children
+//   for (let i = 0; i < photos.length; i++) {
+//     let photo = photos[i]; // each square is "photo"
+  
+//     let gridItem = photo.getBoundingClientRect();
+//     // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
+
+//     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
+
+//     let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
+//   	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
+  
+
+// 	photo.style.transformOrigin = `${originX}% ${originY}%`;
+//   } return 
+
+// }, [])
+
+// useEffect(() => {
+//   console.log("drag", underIndexs)
+// }, [underIndexs])
