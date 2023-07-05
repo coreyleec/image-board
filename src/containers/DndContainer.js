@@ -568,14 +568,15 @@ const adjustFunction = () => {
 useEffect(() => {    
   // console.log("photos", props.photos)
   // console.log("useEffect", props.photos, props.colorArr)
-  console.log("useEffect")
+  if (!!props.photos.length){
+  console.log("useEffect", props.photos)
   let newPhotos = [...props.photos]; // copy of array
   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
 
   setUnderIndexs(photosUnder)
   !!props.photos && setPhotos([...newPhotos])
-  const grid = gridRef.current;
+  const grid = gridRef.current;}
   // adjustGridItemsHeight(grid, updPhoto);
 }, [props.photos])
 

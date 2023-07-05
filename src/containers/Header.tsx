@@ -1,15 +1,48 @@
-import { useState, useEffect, useRef } from 'react'
+import { Dispatch, SetStateAction, useState, useEffect, useRef } from 'react'
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
+// t.string :u_id
+//       t.integer :user_id
+//       t.boolean :creative_follow, default: false
+//       t.boolean :lifestyle_follow, default: false
+//       t.integer :folder_exceptions, array: true, default: []
 
-const Header = (props) => {
+
+interface Props {
+  skinny: boolean;
+  loggedIn: boolean;
+  subDirectory: string;
+  tutorial: boolean;
+  setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+  userId: string;
+  follow: {
+    id: number;
+    u_id: string;
+    creative_follow: boolean;
+    lifestyle_follow: boolean;
+    folder_exceptions: boolean;
+    };
+  creative: boolean;
+  lifestyle: boolean;
+  directory: string;
+  userName: string;
+  edit: boolean;
+  dbVersion: string;
+  followToggle: (params: any) => any;
+  creativeFollow: (params: any) => any;
+  lifestyleFollow: (params: any) => any;
+  nameSubmit: (event, params: any) => any;
+
+}
+
+const Header: React.FC<Props> = (props) => {
     const location = useLocation();
     
-    const [newUserName, setNewUserName] = useState()
+    const [newUserName, setNewUserName] = useState("")
 
-    const [siteHeader, setSiteHeader] = useState()
+    const [siteHeader, setSiteHeader] = useState("")
 
     const [hover, setHover] = useState(true)
     const [timer, setTimer] = useState(true)
@@ -56,7 +89,7 @@ useEffect(() => {
                             onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader >{(props.directory === 'home' | props.directory === 'by_Corey_Lee' | props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
+                : <TitleHeader >{(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
                     }
 
       <Sticky>
@@ -112,14 +145,17 @@ useEffect(() => {
                   </label>
                   <p>tutorial</p> 
                   </Switch>
-                  {!props.tutorial && (window.innerWidth > 1100) && <TutorialTip timer={timer}
+                  {!props.tutorial && (window.innerWidth > 1100) && <TutorialTip 
+                  tutorial={props.tutorial}
+                  timer={timer}
                   >click here for a guided tutorial
                   <div className="arrow"></div>
                   </TutorialTip>}
                 </>
               }
                   </Sticky>
-                  {props.tutorial && (window.innerWidth > 1100) && <ViewPortTip hover={hover} >resize your window to allow room to browse through your local files
+                  {props.tutorial && <ViewPortTip hover={hover} >resize your window to allow room to browse through your local files
+                  {/* <div className="arrow"></div> */}
                   </ViewPortTip>}
                   </header>
               )
@@ -157,7 +193,8 @@ const ViewPortTip = styled.div`
     &:after {
     content: "";
     position: relative;
-    left: -15px;
+    transition: left .3s ease;
+    left: ${({tutorial}) => tutorial ? '-250px' : '-15px' };
     top: 16px;
     
     
@@ -166,7 +203,7 @@ const ViewPortTip = styled.div`
 
     
     margin-left: -5px;
-    border-width: 10px;
+    border-width: 40px;
     border-style: solid;
     border-color: transparent #ff7f5080 transparent transparent;
   }}
