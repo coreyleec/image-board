@@ -31,6 +31,7 @@ export const App = () => {
   // console.log("location.pathname", location.pathname, directory)
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
+    console.log("scroll")
   }
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
@@ -1025,6 +1026,7 @@ useEffect(() => {
       <Cont directory={directory} >
          
         <SideBar
+          overflow={overflow}
           loggedIn={loggedIn}
           setLoggedIn={setLoggedIn}
           // about={about}
@@ -1094,6 +1096,7 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <AsideRight
+        
           skinny={skinny}
           loggedIn={loggedIn}
           subDirectory={subDirectory}

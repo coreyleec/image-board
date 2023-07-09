@@ -460,7 +460,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
              </label>
              <p>{props.published ? "privatize?" : "publish?"}</p>
              </CatagorySwitch> 
-             : (props.folderType === null) 
+             : (props?.folderType === null) 
              ? 
              <>
 {/* CATAGORIZE FOLDERS CREATIVE OR LIFESTYLE */}

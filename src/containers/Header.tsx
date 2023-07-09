@@ -249,24 +249,27 @@ const TutorialTip = styled.div`
 const NameInput = styled.input`
     font-size: 3.5rem;
     font-family: "HelveticaNeue-Light";
-    padding-right: 20px;
-    padding-top: 0;
     text-align: right;
     float: right;
+    line-height: .75;
+    padding-top: 0;
     margin-top: .001rem;
-    line-height: 1;
     display: block;
     color: #757575;
+    padding-right: 2%;
+    padding-top: 2%;
 `
 const TitleHeader = styled.h1`
-    width: fit-content;
-    float: right;
-    font-size:3.5rem;
-    text-align: right;
+    font-size: 3.5rem;
     font-family: "HelveticaNeue-Light";
+    text-align: right;
+    float: right;
+    line-height: .75;
+    width: fit-content;
     font-weight: normal;
-    padding-right: 20px;
     cursor: default;
+    padding-right: 2%;
+    padding-top: 2%;
 `
 const Sticky = styled.div`
     position: relative;

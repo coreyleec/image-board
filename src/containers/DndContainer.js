@@ -561,7 +561,11 @@ const adjustFunction = () => {
   setImagesLoaded(true)
 }
 
-
+// if image is in center then trigger css changes
+// if gridItem.left - gridItem.right = innerWidth * .20
+//  and if gridItem.top - gridItem.bottom = innerHeight * .20
+// 0px = 100% && 100px = 0% 
+// as difference from center decreases 
 
 
 // FIND ME

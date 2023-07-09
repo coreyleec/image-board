@@ -453,19 +453,24 @@ const ButtonContainer = styled.div`
   padding-top: 5px;
   padding-inline: 5px;
   @media (max-width: 1100px) {
-      
     transition: width 1s ease;
-      width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
+    width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
       
-      
+      button {
+        position: sticky;
+        z-index: 4;
+        transition: transform 1s ease;
+        transform: ${({ sideBar }) => (sideBar ? 'translateX(143px)' : 'translateX(0px)')};
+      }
     }
-  
+    @media (min-width: 1100px) {
   button {
     position: sticky;
     transition: left 1s;
     z-index: 4;
     ${({ sideBar }) => (sideBar ? `left : 25%` : `left: 0%`)};
   }
+}
 `;
 
 const Sticky = styled.div`
@@ -473,7 +478,7 @@ const Sticky = styled.div`
 
   position: sticky;
   // position: relative;
-  // z-index: 3;
+  z-index: 3;
   top: 0;
   z-index: 5;
 .follow-cont{
@@ -487,8 +492,8 @@ const Sticky = styled.div`
   .side-bar {
     overflow: hidden;
     padding-inline: 5px;
-    /* height: 75%; */
-    height: 88vh;
+    height: 90vh;
+    padding-bottom: 5vh;
     overflow-y: scroll;
     padding-bottom: 5px;
     position: relative;
@@ -498,10 +503,6 @@ const Sticky = styled.div`
     /* -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
     mask-image: linear-gradient(to bottom, black 50%, transparent 100%); */
 
-    /* position: fixed;
-    top: 0%;
-    transition: left 1s ease;
-    ${({ sideBar }) => (sideBar ? `left : 0%` : `left: -30%`)}; */
 
     @media (max-width: 1100px) {
       overflow: hidden;
@@ -511,14 +512,10 @@ const Sticky = styled.div`
       transition: transform 1s ease;
       left : 0%;
       transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
-       
-      /* ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')}; */
       backdrop-filter: blur(6px);
-      
-      /* background: coral; */
       border-bottom-right-radius: 22px;
       &::-webkit-scrollbar {
-        width: 0px;
+        display: none;
       }
     }
  
@@ -527,8 +524,11 @@ const Sticky = styled.div`
       @media only screen and (max-width: 1100px) {
         margin-top: 10px;
         margin-top: 10px;
-        height: 65vh;
+        height: 64vh;
         overflow: scroll;
+        &::-webkit-scrollbar {
+          width: 0px;
+        }
       }
     }
     .community-href {

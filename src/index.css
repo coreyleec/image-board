@@ -2,8 +2,6 @@
   font-family: Helvetica, sans-serif; 
   box-sizing: border-box;
   margin: 0;
-  /* overflow: hidden; */
-  /* padding: 0; */
 }
 
 html {
@@ -13,55 +11,18 @@ html {
   min-height: 100%;
 }
 body {
-  overflow: hidden;
   overflow-x: hidden;
   overflow-y: scroll;
   width: 100vw;
- /* background-color: black; */
+  height: 100vh;
   background-color: hwb(0deg 83% 17%);
   margin: 0;
-  /* font-family: "HelveticaNeue"; */
-  /* -webkit-font-smoothing: antialiased; */
   -moz-osx-font-smoothing: grayscale;
 }
 body::-webkit-scrollbar {
   display: none;
 }
-/* code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-} */
 
-
-/* .cont {
-  display: grid;
-  height: 100vh;
-  grid-template-columns:  17% 1fr 17%;
-  grid-template-rows: auto 1.5fr auto;
-  grid-template-areas: 
-  "leftbar header header"
-  "leftbar main rightbar"
-  "leftbar footer rightbar";
-
-} */
-@media only screen and (max-width: 1100px) {
-  
-  /* .cont {
-    grid-template-columns:  0% 1fr 0%;
-  } */
-  /* main{
-    border-radius: 0px 0px 0px 0px;
-
-  }
-  aside:nth-child(3) {    
-    border-style: solid;
-    border-top-left-radius: 0px;
-  }
-  header {
-    border-bottom-left-radius: 0px;
-  }
-   */
-}
 
 header {
   grid-area: header;
@@ -72,7 +33,6 @@ header {
   border-right-width: 0px;
   border-bottom-width: 6px;
   border-left-width: 0px;
-  /* border-style: solid; */
   border-bottom-left-radius: 22px;
   margin-bottom: 6px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
@@ -84,14 +44,13 @@ main {
   background-color: gainsboro;
   border-radius: 22px 22px 22px 22px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
-  /* max-height:inherit; */
-  /* max-width: inherit; */
   display: unset;
   align-items: center;
 }
+main::-webkit-scrollbar {
+  display: none;
+}
 aside:nth-child(1) {
-  /* padding-top: 5px; */
-  /* padding-inline: 5px; */
   position: relative;
   z-index: 3;
   margin-right: 5px;
@@ -101,70 +60,38 @@ aside:nth-child(1) {
   border-right-width: 6px;
   border-bottom-width: 0px;
   border-left-width: 0px;
-  /* border-style: solid; */
   box-shadow: -3px 3px 5px 2px #aaaaaa;
-  /* margin-right: 6px; */
   border-bottom-right-radius: 22px;
 }
 
 
 
-/* aside:nth-child(1) input {
-font-size: 2rem;
-    text-align: left;
-    font-family: Helvetica, sans-serif;
-    width: 240px;
-    color: #212529;
-} */
-
 aside:nth-child(3) {
   grid-area: rightbar;
-  /* position: sticky;
-  top: 0; */
   background-color: gainsboro;
   border-top-width: 0px;
   border-right-width: 0px;
   border-bottom-width: 0px;
-  border-left-width: 6px;
-  /* border-style: solid; */
-  /* overflow: hidden; */
+  /* border-left-width: 6px; */
   border-radius: 22px 0px 0px 22px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
   margin-left: 6px;
-  /* @media only screen and (max-width: 1100px) {} */
 }
 
-.footer {
-  /* grid-area: footer; */
-  /* border-radius: 0px 0px 22px 22px;
-  height: 118px;
-  background-color: gainsboro;
-  border-top-width: 6px;
-  border-right-width: 0px;
-  border-bottom-width: 0px;
-  border-left-width: 0px; */
-  /* z-index: 2; */
-  /* border-style: solid; */
-}
+@media (max-width: 1100px) {
+  aside:nth-child(3) {
+    margin-left: 0px;
+  }
+  }
 
 article {
-  /* flex: 1 0 auto; */
-  /* padding-block: 80px; */
   padding-inline: max(10%);
-  /* padding-inline: max(10%); */
   padding-top: 80px;
   height: 95rem;
-  /* height: max-content; */
   min-width: 700px;
 }
 
-/* .grid-item{
-  
-} */
-.grid{
-  /* height: 1100px; */
-  /* overflow: hidden; */
-}
+
 button {
   background-color: gainsboro;
   
@@ -172,14 +99,10 @@ button {
 .sidebar-catagory {
   display:flex;
   justify-content: space-between;  
-  /* max-height: 47.78;/ */
-  /* width: max-content; */
-  /* padding-bottom: 5px; */
 }
 .title-cont {
   display:flex;
   justify-content: space-between;
-  /* margin-right: 5; */
   width: 100%;
   
   padding-bottom: 5px;
@@ -201,7 +124,6 @@ button {
   border: none;
   font-size: 35px;
   line-height: 0px;
-  /* z-index: 1; */
   position: absolute;
   right: 2px;
   top:11px;
@@ -227,50 +149,23 @@ input:-webkit-autofill {
 .slide-button-left {
   margin-top: 5px;
   margin-left: .3vw ;
-  /* left: 0%; */
   transition: 1s;
   position: absolute;
   z-index: 1;
   font-size: 15px;
 }
-  /* .slide-button-left {
-    margin-top: 5px;
-    margin-left: .3vw ;
 
-    transition: 1s;
-    position: absolute;
-    z-index: 1;
-    font-size: 15px;
-  } */
   .slide-button-right {
     margin-top: 5px;
-    /* left: 88%; */
+
     margin-left: max(14.6vw, 172px);   
-    /* margin-right: auto; */
+
     transition: 1s;
     position: absolute;
     z-index: 1;
     font-size: 15px;
   }
 
-  .side-bar-closed .scrollable  {
-    /* opacity: 0;
-    width: 0; */
-  }
-/* .scrollable {    
-    height: 700px;
-    overflow-y: scroll;
-    display: block;
-    padding-inline: 5px;
-  } */
-/* .scrollable::-webkit-scrollbar {
-    width: 0px;
-  } */
-
-/* .break {
-    margin-top: 5rem;
-    height: 1.5fr;
-  } */
 .about-me {
     font-size: 1rem;  
   }
@@ -311,16 +206,14 @@ input:-webkit-autofill {
   -webkit-text-stroke-width: 1.5px;
   font-size: 35px;
   line-height: 1.2;
-  /* margin-top: 20vh; */
   margin-bottom: 0px;
   cursor: pointer;
-  /* text-shadow: 0px 0px #212529; */
   text-shadow: 0px 0px #212529;
     transition: all 0.5s ease-in .2s;
 }
 .nav-bar-header:hover {
     transition: all 0.2s ease-out;
-    /* transform: scale(1.2,1.2); */
+
     transform: translate(3px, -3px); 
     text-shadow:
     -3px 3px #212529,
@@ -334,12 +227,8 @@ input:-webkit-autofill {
     -1px 1px #212529,
     -0.75px 0.75px #212529,
     -0.5px 0.5px #212529,
-    -0.25px 0.25px #212529;
-/* } */
+    -0.25px 0.25px #212529
 
-
-    /* box-shadow: none; */
-    /* box-shadow: -1px 1px 1px 1px #aaaaaa;  */
   }
   
 
@@ -362,15 +251,11 @@ input:-webkit-autofill {
     right:0;
     bottom:0;
     background: rgba(0, 0, 0, 0.8);
-    /* color: white; */
+
     outline: none;
     padding: 3.2rem;
     padding: 100px;
   }
-
-
-  div.modal-content form input::placeholder {
-    /* color: gainsboro; */}
 
   .next-button-right {
     cursor: pointer;
