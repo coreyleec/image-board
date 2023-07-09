@@ -86,7 +86,8 @@ main {
   box-shadow: -3px 3px 5px 2px #aaaaaa;
   /* max-height:inherit; */
   /* max-width: inherit; */
-
+  display: unset;
+  align-items: center;
 }
 aside:nth-child(1) {
   /* padding-top: 5px; */
@@ -154,6 +155,7 @@ article {
   padding-top: 80px;
   height: 95rem;
   /* height: max-content; */
+  min-width: 700px;
 }
 
 /* .grid-item{

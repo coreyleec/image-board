@@ -1,23 +1,92 @@
 import React from "react";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { Dispatch, SetStateAction, useState, useEffect, useRef, useCallback } from "react";
 import { useLocation } from 'react-router-dom';
 import styled, { keyframes } from "styled-components";
 
-
-
-const AsideRight = (props) => {
+interface IProps {
+  skinny: boolean;
+  loggedIn: boolean;
+  subDirectory: string;
+  hover: boolean; 
+  setHover: React.Dispatch<React.SetStateAction<boolean>>;
+  catagorize: (params: boolean) => boolean;
+  folderType: null | boolean;
+  setFolderType: React.Dispatch<React.SetStateAction<boolean>>;
+  tutorial: boolean;
+  newFolder: boolean;
+  uuid: string;
+  directory: string;
+  setType: React.Dispatch<React.SetStateAction<boolean>>;
+  hiliteCollaborator: (params: object) => null;
+  updateFolderPrivacy: (params: null) => object;
+  folderPrivacy: undefined | boolean;
+  folderDetails: undefined | string;
+  folderCollaborators: undefined | [ICollaborator];
+  setEnableDelete: React.Dispatch<React.SetStateAction<boolean>>;
+  enableDelete: boolean;
+  editToggle: (params: boolean) => object;
+  addCollaborator: (params: string, string) => null;
+  publishAbout: () => void;
+  published: boolean;
+  folderShown: number;
+  
+  edit: boolean;
+  reorderSubmit: () => null;
+  userId: string;
+  currentUserId: string;
+  dbVersion: string;
+}
+ interface ICollaborator {
+  uuid: string;
+  name: string;
+}
+interface IState {
+  delay: string;
+  search: [];
+  expand: boolean;
+  flexStart: boolean;
+  controlDock: boolean;
+  drawerHeight: number;
+  editDrawerWidth: number;
+  editDrawerHeight: number;
+  height: number;
+  inputWidth: string;
+  setInputWidth: React.Dispatch<React.SetStateAction<string>>;
+  searchUl: [] | number ;
+  setSearchUl: React.Dispatch<React.SetStateAction< number | [] | undefined>>;
+  drawer: number;
+  follow: boolean;
+  demoText: string;
+  setDemoText: React.Dispatch<React.SetStateAction<string>>;
+  demoArrow: string;
+}
+const AsideRight: React.FC<IProps> = (props) => {
   const location = useLocation();
 
-  const panelRef = useRef()
-  const drawerRef = useRef()
-  const editDrawerRef = useRef()
-  const listRef = useRef()
-  const inputRef = useRef();
-  const asideRef = useRef();
-  const onloadTutorialRef = useRef()
+  const panelRef = useRef(null)
+  const drawerRef = useRef(null)
+  const editDrawerRef = useRef(null)
+  const listRef = useRef(null)
+  const inputRef = useRef(null);
+  const asideRef = useRef(null);
+  const onloadTutorialRef = useRef(null)
 
-const [delay, setDelay] = useState('.3s linear .3s')
-
+  const [delay, setDelay] = useState('.3s linear .3s')
+  const [search, setSearch] = useState([])
+  const [expand, setExpand] = useState(false)
+  const [flexStart, setFlexStart] = useState(false)
+  const [controlDock, setControlDock] = useState(false)
+  const [drawerHeight, setDrawerHeight] = useState(0)
+  const [editDrawerWidth, setEditDrawerWidth] = useState(0)
+  const [editDrawerHeight, setEditDrawerHeight] = useState(0)
+  const [editTutorial, setEditTutorial] = useState(false)
+  const [height, setHeight] = useState(26)
+  const [inputWidth, setInputWidth] = useState("")
+  const [searchUl, setSearchUl] = useState<number | []>([])
+  const [drawer, setDrawer] = useState(0)
+  const [follow, setFollow] = useState(false)
+  const [demoText, setDemoText] = useState("")
+  const [demoArrow, setDemoArrow] = useState("16px")
 
   const editToggle = () => {
     props.editToggle(!props.edit)
@@ -38,7 +107,7 @@ const [delay, setDelay] = useState('.3s linear .3s')
     props.reorderSubmit()
   };
 
-  const [search, setSearch] = useState([])
+  
   
   const searchUser = (input) => {
     console.log(input)
@@ -58,7 +127,7 @@ const [delay, setDelay] = useState('.3s linear .3s')
     });
   }
 
-const [expand, setExpand] = useState(false)
+
 
 const searchToggle = () => {
   setExpand(!expand)
@@ -69,19 +138,11 @@ const searchToggle = () => {
     inputRef.current.blur();
   }
 }
-const [flexStart, setFlexStart] = useState(false)
 
 const changeFlex = (bool) => {
-
+  
   setFlexStart(!bool)
 }
-
-
-
-
-
-
-const [controlDock, setControlDock] = useState(false)
 
 
 
@@ -90,56 +151,44 @@ const controlDockToggle = () => {
   // !!drawerRef.current && console.log("dimensions", drawerRef.current.clientHeight);
   // !!search && setSearch([0])
 }
-const [drawerHeight, setDrawerHeight] = useState(0)
-const [editDrawerWidth, setEditDrawerWidth] = useState(0)
-const [editDrawerHeight, setEditDrawerHeight] = useState(0)
-
-// DEMO TIP
-const [pageLoad, setPageLoad] = useState(true)
 
 
-const [editTutorial, setEditTutorial] = useState(false)
+
 useEffect(() => {
   setEditTutorial(props.edit)
 }, [props.tutorial === true, props.edit])
 
-const [deleteTutorial, setDeleteTutorial] = useState()
-const [dragTutorial, setDragTutorial] = useState()
-const [collabTutorial, setCollabTutorial] = useState()
-const [nameTutorial, setNameTutorial] = useState()
-const [sidebarTutorial, setSidebarTutorial] = useState()
-const [catagoryTutorial, setCatagoryTutorial] = useState()
 
 
 useEffect(() => {
-  !!drawerRef?.current && setDrawerHeight(drawerRef.current.clientHeight)
-  !!editDrawerRef?.current && setEditDrawerHeight(editDrawerRef.current.clientHeight)
+  setDrawerHeight(drawerRef.current?.clientHeight)
+  setEditDrawerHeight(editDrawerRef.current?.clientHeight)
 })
 
 
 
 
-const [height, setHeight] = useState(26)
 
-const [searchUl, setSearchUl] = useState([])
+
+
 useEffect(() => {
   // console.log("searchUl", searchUl, search)
-  let length = search.length * 20
-  !!search.length ? setSearchUl(length + 6) : 
+  let length = (search.length * 20) + 6 
+  !!search.length ? setSearchUl(length) : 
   setSearchUl([])
 }, [search])
 
-const [inputWidth, setInputWidth] = useState()
+
 
 useEffect(() => {
   expand ? setInputWidth('83%') : setInputWidth('0%')
 }, [expand])
 
 
-const [drawer, setDrawer] = useState(0)
+
 // !!editDrawerRef.current && console.log("switch", editDrawerRef.current.clientHeight)
 useEffect(() => {
-  let deleteSwitch = !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight
+  let deleteSwitch = editDrawerRef.current?.childNodes[0].clientHeight
   let editSwitch = !props.skinny ? 25 : controlDock ? 25 : 0
   let editDrawer = !props.skinny ? (105 + deleteSwitch) : props.edit ? 130 : 0
   let follow = 50
@@ -235,7 +284,7 @@ useEffect(() => {
   }
   else {
     
-    if (props.folderType !== 0){
+    if (props.folderType !== null){
       
      
       if(!props.edit) {
@@ -285,7 +334,7 @@ useEffect(() => {
 
 // if folder is creative type is set to true
 
-const [follow, setFollow] = useState(false)
+
 const followToggle = () => {
   // console.log("follow")
   setFollow(!follow)
@@ -305,8 +354,7 @@ useEffect(() => {
 
 }, [props.directory])
 
-const [demoText, setDemoText] = useState("")
-const [demoArrow, setDemoArrow] = useState("16px")
+
 useEffect(() => {
   if (props.tutorial){
     if (props.skinny) {
@@ -315,8 +363,11 @@ useEffect(() => {
       setDemoArrow("16px")
       } 
       else if (controlDock){
-        if (!props.edit) {(props.directory === 'by_Corey_Lee') && setDemoText("feel free to explore the site using my account. use the edit switch to edit my account") ||
-        (props.directory === 'home') && setDemoText("use the edit switch to edit your projects. all personal information will become editable.")
+        if (!props.edit) { 
+          if (props.directory === 'by_Corey_Lee'){
+           setDemoText("feel free to explore the site using my account. use the edit switch to edit my account")}
+           else if (props.directory === 'home'){ 
+            setDemoText("use the edit switch to edit your projects. all personal information will become editable.")}
         setDemoArrow("49px")}
         else if (props.edit){
           setDemoText("these switches will allow you to do things such as add, edit, and reorder photos, add collaborators, as well as enable you to add, edit and delete elements in the left sidebar.")
@@ -327,8 +378,10 @@ useEffect(() => {
           }
         else {
         if (!props.edit){
-            (props.directory === 'by_Corey_Lee') && setDemoText("feel free to explore the site as if you were me. use the edit switch to edit my account") ||
-            (props.directory === 'home') && setDemoText("use the edit switch to edit your projects. all personal information will become editable.")
+            if (props.directory === 'by_Corey_Lee') {
+            setDemoText("feel free to explore the site as if you were me. use the edit switch to edit my account")}
+            else if (props.directory === 'home') {
+            setDemoText("use the edit switch to edit your projects. all personal information will become editable.")}
             setDemoArrow("16px")}
           else {
             setDemoText("the switches shown here will allow you to do things such as add, edit, and organize photos, add collaborators, as well as enable you to add, edit and delete elements in the left sidebar.")
@@ -337,7 +390,7 @@ useEffect(() => {
 }
 }, [props.tutorial, props.skinny, controlDock, props.directory, props.edit])
 
-let deleteDemoArrow = !!editDrawerRef.current && (editDrawerRef.current.childNodes[0].clientHeight !== 25) ? 19 : 0
+let deleteDemoArrow =  (editDrawerRef.current?.childNodes[0].clientHeight !== 25) ? 19 : 0
 // console.log("deleteDemoArrow", deleteDemoArrow)
 
 // const [hover, setHover] = useState(false)
@@ -472,7 +525,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
               <label className="toggle-switch" >
               <input type="checkbox" 
               checked={props.enableDelete}
-              onChange={props.deleteToggle}
+              onChange={() => props.setEnableDelete(!props.enableDelete)}
               />
               <span className="switch" />
               </label>
@@ -535,13 +588,13 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
            {/* {expand &&  */}
            <input
              ref={inputRef}
-             autoFocus="autofocus" 
+             autoFocus
              type="text" onChange={(e) => searchUser(e.target.value)} 
              onFocus={() => changeFlex(true)}
              onBlur={() => changeFlex(false)} placeholder="search user"/>
              {/* } */}
             <ul>
-              {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid, user.name)}>
+              {search?.map((user) => (<li onClick={() => props.addCollaborator(user.uuid, user.name)}>
                 {user.name}
               </li>))}
             </ul>
@@ -668,9 +721,9 @@ const TutorialTip = styled.div`
   // background: rgb(167 165 165 / 50%);
 
 @media (min-width: 1100px){
-  right: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth + 'px'}
+  right: ${({asideRef}) => asideRef.current?.clientWidth + 'px'}
   }
-  // width: ${({asideRef}) => !!asideRef.current && asideRef.current.clientWidth + 'px'};
+  // width: ${({asideRef}) => asideRef.current?.clientWidth + 'px'};
   
   transition: ${({controlDock})  => 
   controlDock ? 'right 0.3s linear' : 'right 0.3s linear 0.3s'}, opacity .2s linear, z-index .2s linear, top .3s linear, min-height .4s linear, visibility 0s;
@@ -943,7 +996,7 @@ const Switch = styled.label`
   display:flex;
   z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
   /* margin-bottom: 10px; */
-  width: ${({asideRef}) => !!asideRef && asideRef.current.clientWidth - 20 + 'px'};
+  width: ${({asideRef}) => asideRef?.current?.clientWidth - 20 + 'px'};
   p {
     padding-left: 10px;
     font-size: 16px; 
@@ -951,7 +1004,7 @@ const Switch = styled.label`
   }
   /* @media (max-width: 1100px) {
   :first-child {
-    margin-bottom: ${({edit}) => !!edit ? '10px' : '0px'  };
+    margin-bottom: ${({edit}) => edit ? '10px' : '0px'  };
   } */
   :nth-child(n+2) {
     /* margin-bottom: 10px; */
@@ -1163,8 +1216,8 @@ const OpenSwitch = styled.label`
     /* margin-top: 0; */
     /* margin-bottom: 10px; */
     height: 25px;
-    margin-bottom: ${props => !!props.controlDock ? '10px' : '0px'};
-    transition: margin-bottom ${props => !!props.controlDock ? '.3s linear' : '.4s linear .2s'};
+    margin-bottom: ${props => props.controlDock ? '10px' : '0px'};
+    transition: margin-bottom ${props => props.controlDock ? '.3s linear' : '.4s linear .2s'};
     /* p {
     
     padding-left: 10px;
@@ -1269,7 +1322,7 @@ const InputSwitch = styled.label`
   }
 
   p {
-  /* left: ${props => !!props.expand && 'none' }; */
+  /* left: ${props => props.expand && 'none' }; */
   padding-left: 10px;
   font-size: 16px; 
     line-height: 25px;  

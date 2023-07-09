@@ -8,7 +8,8 @@ import UserLoginSignup from "./containers/UserLoginSignup";
 import CommunityPage from "./containers/CommunityPage"
 import DndRoutePrefix from "./containers/DndRoutePrefix";
 
-
+// if viewport width is less than 600 
+// then 
 
  
 
@@ -17,7 +18,7 @@ export const App = () => {
   let history = useHistory()
   let navigate = history.push;
   const location = useLocation();
-  const [directory, setDirectory] = useState()
+  const [directory, setDirectory] = useState("")
   const [subDirectory, setSubDirectory] = useState()
 
   useEffect(() => {
@@ -55,7 +56,7 @@ const [loggedIn, setLoggedIn] = useState(false)
 
 const [folders, setFolders] = useState();
 const [folderShown, setFolderShown] = useState(null);
-
+const [folderType, setFolderType] = useState(null)
 //userFavorites// 
 const [folderCollaborators, setFolderCollaborators] = useState([])
 const [folderPrivacy, setFolderPrivacy] = useState()
@@ -77,19 +78,35 @@ const [edit, setEdit] = useState(false);
 const [enableDelete , setEnableDelete] = useState(false)
 // ADD PHOTO
 const [photos, setPhotos] = useState([]);
-
+const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
+useEffect(() => {
+  if (directory === 'community') { 
+    setOverflow('hidden')
+  } 
+  else if (window.outerWidth < 500){
+    setOverflow('scroll')
+  }
+  else {
+    setOverflow('unset')
+  }
+  
+}, [skinny, directory])
+
+
 useEffect(() => {
   if (window.innerWidth < 1100) {
     setSkinny(true)
-  } else {
+  } 
+  else {
     setSkinny(false)
   }
 
   const updateMedia = () => {
     if (window.innerWidth < 1100) {
       setSkinny(true)
-    } else {
+    }  
+    else {
       setSkinny(false)
     }
   };
@@ -98,9 +115,7 @@ useEffect(() => {
   return () => window.removeEventListener('resize', updateMedia);
 }, []);
 
-const deleteToggle = () => {
-  setEnableDelete(!enableDelete)
-}
+
 
 // LOGIN FUNCTIONS
  const useTemplate = () => {
@@ -112,12 +127,6 @@ const deleteToggle = () => {
 const [hover, setHover] = useState(false)
 const [tutorial, setTutorial] = useState(false)
 const [demo, setDemo] = useState(false)
-
-
-
-useEffect(() => {
-  
-}, [])
 
 
 const profileFetch = () => {
@@ -520,7 +529,7 @@ useEffect(() => {
 }, [folders])
 
   // FOLDER FUNCTIONS
-const [folderType, setFolderType] = useState(null)
+
 
 const catagorize = (boolean) => {
   
@@ -1007,7 +1016,9 @@ useEffect(() => {
   
   // window.store = state 
 
+ 
   
+
     return (
       
       <Switch> 
@@ -1100,8 +1111,8 @@ useEffect(() => {
           folderPrivacy={folderPrivacy}
           folderDetails={folderDetails}
           folderCollaborators={folderCollaborators}
-          deleteToggle={deleteToggle}
           enableDelete={enableDelete}
+          setEnableDelete={setEnableDelete}
           editToggle={editToggle}
           addCollaborator={addCollaborator}
           publishAbout={publishAbout}
@@ -1112,12 +1123,12 @@ useEffect(() => {
           reorderSubmit={reorderSubmit}
           userId={userId}
           currentUserId={currentUserId}
-          // options={{unmountOnBlur: true}}
           dbVersion={dbVersion}
+          // options={{unmountOnBlur: true}}
         />
         {/* if main state says community, overflow === hidden */}
         <main
-        style={{overflow: directory === 'community' ? 'hidden' : 'unset'}}
+        style={{overflow: overflow, display: 'unset'}}
         
         >
           {/* GRID STARTS HERE */}

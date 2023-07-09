@@ -10,7 +10,7 @@ import styled from "styled-components";
 //       t.integer :folder_exceptions, array: true, default: []
 
 
-interface Props {
+interface IProps {
   skinny: boolean;
   loggedIn: boolean;
   subDirectory: string;
@@ -37,7 +37,7 @@ interface Props {
 
 }
 
-const Header: React.FC<Props> = (props) => {
+const Header: React.FC<IProps> = (props) => {
     const location = useLocation();
     
     const [newUserName, setNewUserName] = useState("")
@@ -112,7 +112,7 @@ useEffect(() => {
                   <Switch>
                   <label className="toggle-switch">
                   <input type="checkbox" 
-                  checked={props.follow.creative_follow}
+                  checked={props.follow?.creative_follow}
                   onChange={() => props.creativeFollow(props.follow.id)}
                   />
                   <span className="switch" />
@@ -122,7 +122,7 @@ useEffect(() => {
                   <Switch>
                   <label className="toggle-switch">
                   <input type="checkbox" 
-                  checked={!!props.follow && props.follow.lifestyle_follow}
+                  checked={props.follow?.lifestyle_follow}
                   onChange={() => props.lifestyleFollow(props.follow.id)}
                   />
                   <span className="switch" />
