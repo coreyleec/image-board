@@ -157,7 +157,7 @@ useEffect(() => {
 
           
         }
-         {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
+         {!props.mobile && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
          <>
         <Switch>
             <label className="toggle-switch">

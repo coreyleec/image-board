@@ -38,7 +38,7 @@
   },
   "scripts": {
     "start": "node server.js",
-    "devstart": "PORT=9700 react-scripts start",
+    "devstart": "PORT=9600 react-scripts start",
     "test": "react-scripts test",
     "build": "react-scripts build",
     "eject": "react-scripts eject"

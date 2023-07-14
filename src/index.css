@@ -9,6 +9,7 @@ html {
 }
 #root {
   min-height: 100%;
+  min-width: 100%;
 }
 body {
   overflow-x: hidden;
@@ -44,13 +45,16 @@ main {
   background-color: gainsboro;
   border-radius: 22px 22px 22px 22px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
-  display: unset;
-  align-items: center;
+  display: block;
+  /* display: unset; */
+  /* align-items: center; */
+  
 }
-main::-webkit-scrollbar {
-  display: none;
+main div{
+  display: flex;
 }
 aside:nth-child(1) {
+  display: block;
   position: relative;
   z-index: 3;
   margin-right: 5px;
@@ -64,8 +68,18 @@ aside:nth-child(1) {
   border-bottom-right-radius: 22px;
 }
 
-
-
+.grid {
+  /* overflow: scroll; */
+  justify-content: center;
+  display: inline;
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+  /* height: 100%;
+  width: 100%; */
+}
+.grid::-webkit-scrollbar {
+  display: none;
+}
 aside:nth-child(3) {
   grid-area: rightbar;
   background-color: gainsboro;
@@ -83,13 +97,66 @@ aside:nth-child(3) {
     margin-left: 0px;
   }
   }
+  @media (max-width: 700px) {
+    header {
+      height: 90px;
+    }
+    main{
+      display: flex;
+      justify-content: center;
+      overflow: hidden;
+    }
+    article {
+      display: flex;
+      justify-content: center;
+      padding-inline: 0;
+      padding-top: 0px;
+    }
+    .grid {
+      padding-block: 20vh;
+      padding-inline: 22vw;
+      overflow: scroll;
+      /* padding: 80px; */
+      /* padding: 22%; */
+      /* display: flex;
+      justify-content: center; */
+      /* flex-direction: column; */
+    }
+    .bumper{
+      width: 10vw;
+      height: 100vh;
+      display: inline;
+    }
+    .title-cont {
+      font-size: 1rem;
+      line-height: 1em;
+    }
+    .nav-bar-header{
+      font-size: 25px;
+    }
 
+    }
+    @media (min-width: 700px) {
+      article {
+        padding-inline: max(10%);
+        padding-top: 80px;
+      }
+      .grid{
+        display: flex;
+      }
+    }
 article {
-  padding-inline: max(10%);
-  padding-top: 80px;
-  height: 95rem;
-  min-width: 700px;
+  /* padding-inline: max(10%);
+  padding-top: 80px; */
+  /* height: 95rem;
+  min-width: 700px; */
+  /* overflow: scroll; */
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+  /* width: min-content; */
+  overflow-x: scroll;
 }
+
 
 
 button {

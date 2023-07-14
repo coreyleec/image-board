@@ -81,12 +81,13 @@ const [enableDelete , setEnableDelete] = useState(false)
 const [photos, setPhotos] = useState([]);
 const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
+const [mobile, setMobile] = useState(false);
 useEffect(() => {
   if (directory === 'community') { 
     setOverflow('hidden')
   } 
   else if (window.outerWidth < 500){
-    setOverflow('scroll')
+    setOverflow('hidden')
   }
   else {
     setOverflow('unset')
@@ -102,13 +103,24 @@ useEffect(() => {
   else {
     setSkinny(false)
   }
-
+  if (window.outerWidth < 700){
+    setMobile(true)
+  }
+  else {
+    setMobile(false)
+  }
   const updateMedia = () => {
     if (window.innerWidth < 1100) {
       setSkinny(true)
     }  
     else {
       setSkinny(false)
+    }
+    if (window.outerWidth < 700){
+      setMobile(true)
+    }
+    else {
+      setMobile(false)
     }
   };
   updateMedia()
@@ -1026,6 +1038,7 @@ useEffect(() => {
       <Cont directory={directory} >
          
         <SideBar
+          mobile={mobile}
           overflow={overflow}
           loggedIn={loggedIn}
           setLoggedIn={setLoggedIn}
@@ -1077,6 +1090,7 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <Header
+          mobile={mobile}
           skinny={skinny}
           loggedIn={loggedIn}
           subDirectory={subDirectory}
@@ -1095,9 +1109,9 @@ useEffect(() => {
           nameSubmit={nameSubmit}
           dbVersion={dbVersion}
         />
-        <AsideRight
-        
-          skinny={skinny}
+        {!mobile && <AsideRight
+          skinny={skinny || mobile}
+          mobile={mobile}
           loggedIn={loggedIn}
           subDirectory={subDirectory}
           hover={hover} 
@@ -1128,11 +1142,10 @@ useEffect(() => {
           currentUserId={currentUserId}
           dbVersion={dbVersion}
           // options={{unmountOnBlur: true}}
-        />
+        />}
         {/* if main state says community, overflow === hidden */}
         <main
         style={{overflow: overflow, display: 'unset'}}
-        
         >
           {/* GRID STARTS HERE */}
           
@@ -1140,6 +1153,7 @@ useEffect(() => {
       >
 
           <DndRoutePrefix
+              mobile={mobile}
               loggedIn={loggedIn}
               subDirectory={subDirectory}
               about={about}
@@ -1177,6 +1191,7 @@ useEffect(() => {
          
               <Route path='/login' >
                 <UserLoginSignup 
+                mobile={mobile}
                 loggedIn={loggedIn}
                 setLoggedIn={setLoggedIn}
                 profileFetch={profileFetch}
@@ -1202,21 +1217,22 @@ useEffect(() => {
 
                 <Route path="/community" >
                   <CommunityPage
-                loggedIn={loggedIn}
-                userId={userId}
-                currentUserId={currentUserId}
-                setUserName={setUserName}
-                setUserAboutMe={setUserAboutMe}
-                setFolders={setFolders}
-                setPhotos={setPhotos}
-                setUserLinks={setUserLinks}
-                setFolderShown={setFolderShown}
-                setUserId={setUserId}
-                setFolderCollaborators={setFolderCollaborators}
-                setUuid={setUuid}
-                dbVersion={dbVersion}
-                fetchUser={fetchUser}
-                />
+                    mobile={mobile}
+                    loggedIn={loggedIn}
+                    userId={userId}
+                    currentUserId={currentUserId}
+                    setUserName={setUserName}
+                    setUserAboutMe={setUserAboutMe}
+                    setFolders={setFolders}
+                    setPhotos={setPhotos}
+                    setUserLinks={setUserLinks}
+                    setFolderShown={setFolderShown}
+                    setUserId={setUserId}
+                    setFolderCollaborators={setFolderCollaborators}
+                    setUuid={setUuid}
+                    dbVersion={dbVersion}
+                    fetchUser={fetchUser}
+                  />
                 </Route>
                 
                 
@@ -1236,6 +1252,7 @@ useEffect(() => {
 const Cont = styled.div`
   display: grid;
   height: 100vh;
+  width: 100vw;
   /* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '17% 1fr 17%'}; */
   grid-template-columns: 17% 1fr 17%;
   grid-template-rows: auto 1.5fr auto;

@@ -5,6 +5,7 @@ import styled, { keyframes } from "styled-components";
 
 interface IProps {
   skinny: boolean;
+  mobile: boolean;
   loggedIn: boolean;
   subDirectory: string;
   hover: boolean; 
@@ -213,7 +214,9 @@ useEffect(() => {
         setDrawer(25)
       }
     }
-    else setDrawer(50 + collabUl)
+    else {
+      setDrawer(50 + collabUl)
+    }
   } 
   else if (props.subDirectory === 'about'){
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
@@ -248,7 +251,7 @@ useEffect(() => {
     else if (controlDock && props.folderType === null){
       // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
       let drawerMath = catagoryPrompt
-      // console.log("catagoryPrompt", catagoryPrompt)
+      console.log("catagoryPrompt", catagoryPrompt)
       setDrawer(drawerMath)
     }
     else if (!controlDock && props.folderType === null){
@@ -305,9 +308,10 @@ useEffect(() => {
     }
   }
   // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
-  else if (props.folderType === null){
+  else if (props.folderDetails && props.folderType === null){
     let drawerMath = catagoryPrompt
       setDrawer(drawerMath)
+      console.log("here")
   }
   }
 }, [props.folderType, props.folderCollaborators, controlDock, props.edit, search, props.skinny, props.subDirectory])
@@ -422,7 +426,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
             
             >
           
-              {props.skinny  && <OpenSwitch 
+              {(props.skinny && !props.mobile) && <OpenSwitch 
               controlDock={controlDock}
               
               >
@@ -460,7 +464,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
              </label>
              <p>{props.published ? "privatize?" : "publish?"}</p>
              </CatagorySwitch> 
-             : (props?.folderType === null) 
+             : (!!props.folderDetails && props?.folderType === null) 
              ? 
              <>
 {/* CATAGORIZE FOLDERS CREATIVE OR LIFESTYLE */}

@@ -133,6 +133,7 @@ const GridItemWrapper = styled.div `
   /* padding: 5px; */
   // padding-inline: 5px;
 position: relative;
+display: block;
   ${({url, edit, isDragging, orientation}) => edit 
     ? !!url
     ? `z-index: 2; 
