@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
-const ControlPanel = (props) => {
+const FilterDrawer = (props) => {
     const colorArr = [['red', 'green'], ['yellow', 'red'], ['blue', 'yellow'], ['green', 'coral'], ['coral', 'blue']]
 
     return (
@@ -122,7 +122,7 @@ const ControlPanel = (props) => {
 
     )
 }
-export default ControlPanel;
+export default FilterDrawer;
 
 
 const Panel = styled.div`

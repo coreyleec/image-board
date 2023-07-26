@@ -8,6 +8,7 @@ import UserLoginSignup from "./containers/UserLoginSignup";
 import CommunityPage from "./containers/CommunityPage"
 import DndRoutePrefix from "./containers/DndRoutePrefix";
 
+
 // if viewport width is less than 600 
 // then 
 
@@ -29,10 +30,11 @@ export const App = () => {
     
   }, [location.pathname])
   // console.log("location.pathname", location.pathname, directory)
-  window.onbeforeunload = function () {
-    window.scrollTo(0, 0);
-    console.log("scroll")
-  }
+  // window.onbeforeunload = function () {
+  //   window.scrollTo(1050, 1000);
+  //   console.log("scroll")
+  // }
+  // onbeforeunload()
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
   const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
@@ -128,7 +130,21 @@ useEffect(() => {
   return () => window.removeEventListener('resize', updateMedia);
 }, []);
 
+// LOG NEATLY
+// needs playing with but could be helpful for clarity
+// can pair with another function that makes an object of values
+const makeNeat = (values) => {
+  const result = []
+  for (const value in values){
+  let object = { value : eval(value)};
+  result.push(object)
 
+  }
+}
+const logNeatly = (header, array) => {
+  for(let [key, value] of array){
+    console.log(header, `${value}:${eval(value)}`)}
+}
 
 // LOGIN FUNCTIONS
  const useTemplate = () => {
@@ -1028,7 +1044,10 @@ useEffect(() => {
   }
   
   // window.store = state 
-
+const [mobileTimer, setMobilTimer] = useState(0) 
+ useEffect(() => {
+   
+ }, [skinny])
  
   
 
@@ -1036,6 +1055,7 @@ useEffect(() => {
       
       <Switch> 
       <Cont directory={directory} >
+         {mobile && <MobileModal></MobileModal>}
          
         <SideBar
           mobile={mobile}
@@ -1145,7 +1165,7 @@ useEffect(() => {
         />}
         {/* if main state says community, overflow === hidden */}
         <main
-        style={{overflow: overflow, display: 'unset'}}
+        // style={{overflow: overflow, display: 'unset'}}
         >
           {/* GRID STARTS HERE */}
           
@@ -1265,10 +1285,56 @@ const Cont = styled.div`
   @media (max-width: 1100px) {
   grid-template-columns:  0% 1fr 0%;
 }
+@media (max-width: 700px) {
+  background-color: ${props => props.directory === "community" ? '#474747' : 'gainsboro'};
+  
+  main, header{
+  background-color: ${props => props.directory === "community" ? '#474747' : 'gainsboro'};
+}
+
+header{
+  box-shadow: -3px 3px 5px 2px #373737;
+}
+main{
+  box-shadow: -3px 3px 5px 2px #373737;
+}
+}
 
 `
 /* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '0% 1fr 0%'}; */
   
+const MobileModal = styled.div`
+// top: 60px;
+  // right: 60px;
+  top: 32px;
+  // left: 200px;
+  border-radius: 16px;
+  
+  ${({timer}) => !timer && 
+`visibility: hidden; opacity: 0%;
+}` }
+  // top: 5px;
+  // left: 210px;
+  max-height: fit-content;
+  position: absolute;
+  // transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateY(-198px)')};
+  transition: left 1s ease, opacity .2s linear .1s;
+  ${({ sideBar }) => (!sideBar ? `left : 55px` : `left: 200px`)};
+  white-space: normal;
+  cursor: default;
+  padding: 15px;
+  background: #ff7f5080;
+  backdrop-filter: blur(6px);
+  // border-radius: 16px;
+  color: blue;
+  font-size: 16px;
+  opacity: 100%;
+  width: 135px;
+  // transition: transform 1s ease, top .3s ease;
+  
+`
+
+
 const Footer = styled.footer`
   /* transition-delay: .2s; */
   /* z-index: ${({edit}) => edit ? '3' : '2'}; */

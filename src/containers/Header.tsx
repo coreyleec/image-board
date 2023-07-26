@@ -12,6 +12,7 @@ import styled from "styled-components";
 
 interface IProps {
   skinny: boolean;
+  mobile: boolean;
   loggedIn: boolean;
   subDirectory: string;
   tutorial: boolean;
@@ -70,7 +71,6 @@ useEffect(() => {
 
 
 
-
         return (
             <header onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} >
                
@@ -89,7 +89,9 @@ useEffect(() => {
                             onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader >{(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
+                : <TitleHeader 
+                mobile={props.mobile} directory={props.directory}
+                >{(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
                     }
 
       <Sticky>
@@ -270,6 +272,7 @@ const TitleHeader = styled.h1`
     cursor: default;
     padding-right: 2%;
     padding-top: 2%;
+    color: ${({directory, mobile}) => (directory === 'community' && mobile) ? '#b7d814' : 'black' };
 `
 const Sticky = styled.div`
     position: relative;

@@ -15,7 +15,7 @@ const Root = () => {
     <Router>
     <App/>
   </Router>
-  // </React.StrictMode>
+  // </React.StrictMode>e8fe00
   );
 }
   ReactDOM.render(<Root/>, document.getElementById('root'))

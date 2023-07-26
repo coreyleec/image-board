@@ -2,15 +2,12 @@ import { useState, useEffect, useRef } from 'react'
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
-// import { Parallax } from "react-scroll-parallax";import { ScrollSyncPane } from 'react-scroll-sync';
+import MobilePhotoFeed from '../mobileContainers/MobilePhotoFeed';
 
 
-const ScrollCont = (props) => {
+const CommunitySecondaryFilter = (props) => {
   const [photos, setPhotos] = useState()
-  // useEffect(() => {
-  //   let photos = props?.catagory?.map((obj) => (obj.photos.map(photo => photo)))
-  //   setPhotos(photos.flat())
-  // }, [photos])
+  
 
     const favoriteToggle = (photo) => {
       // const methodVar = !!favorite ? "DESTROY" : "CREATE"
@@ -56,183 +53,20 @@ const ScrollCont = (props) => {
       
 
         return (
-          
-            <Cont
-            catagory={props.filters.catagory}
+          <div style={{height: "inherit"}}>
+
+           <MobilePhotoFeed
+            filters={props.filters.catagory}
             panel={props.panel}
             panelHeight={props.panelHeight}
+            catagory={props.catagory}
+           />
 
-            >
-              <div className='tabs'>
-              <p className='side-tab' onClick={() => props.setCatagory(true)} ><mark className="true" >users</mark></p>
-              <p className='side-tab' onClick={() => props.setCatagory(false)} ><mark className="false" >folders</mark></p>
-              </div>
-                
-            {!!props.error ?
-            <div>
-              {props.error[1]}
-            </div>
-            :
-            <div className='coffin-cont'>
-            <div className='coffin'  >
-            {props.filters.catagory ?
-            <>
-            {props?.catagory?.map((obj, n) => (
-              
-              
-              
-              <div className='user-cont' key={n} 
-              //  style={{'z-index': `${n}`}}
-              
-               >
-
-               <UserCard identifier={obj.uuid} onClick={() => props.fetchUser(obj.uuid, obj.name)}>
-                   <div className="catagory"> 
-                   <h4>{obj.name}</h4>
-                   {/* <h4>{obj.folders}</h4> */}
-                 {/* {obj.folders.map(folder => {
-                   return(
-                    <div className="space">
-                    <p>{folder.name}</p> */}
-                    {/* <p className="notification">{folder.count}</p> */}
-                     {/* </div>
-                )})}  */}
-                </div>
-                
-            </UserCard>
-          {obj.photos.map(photo => 
-               <PhotoCard >
-              <div className="text-cont">
-              {!!photo.name && <p className="photo-name" >{photo.name}</p>}
-              {!!photo.details && <p className="photo-details" >{photo.details}</p>}
-              <p className="obj-name" onClick={() => props.fetchUser(photo.u_id)} >{photo.obj_name}</p>
-              <p className="folder-name">{photo.folder_name}</p>
-              </div>
-              <div className='photo-cont'>
-                <div className='photo-header'></div>
-                <PhotoCont
-                identifier={props.catagory
-                  ? obj.uuid
-                  : obj.id}
-                folderId={photo.folder_id}
-                onClick={() => console.log(photo.folder_id)}>
-                    
-                    <img src={photo.url} onClick={() => props.modalToggle(photo, photos)}/>
-                  </PhotoCont>
-                  <div>
-              </div>
-              <div className='photo-footer'></div>
-              </div>
-                  <div className='button-cont'>
-                    <Heart 
-                      favorited={photo.favorites !== undefined && !!photo.favorites.length}
-                      className="heart"
-                      onClick={() => favoriteToggle
-                      (photo)} >♥</Heart>
-                    <Add>✚</Add>
-                  </div>
-              </PhotoCard> 
-              )}
-                                     <hr
-                 style={{
-                   position: 'relative',
-                   background: 'gainsboro',
-                   borderStyle: 'none',
-                   borderTop: 'solid',
-                   borderTopWidth: '2px',
-                   top: '0px',
-                   zIndex: 6,
-                   height: '1px',
-                   paddingBottom: '18px',
-                 }}
-               />
-              </div>
-              
-              )
-              )}
-            </>
-            : <>
-            {props?.catagory?.map((obj, n) => (
-               <div className='user-cont' key={n} 
-              //  style={{'z-index': `${n}`}}
-               >
-
-               <UserCard identifier={obj.uuid} onClick={() => props.fetchUser(obj.uuid)}>
-                   <div className="catagory"> 
-                   <h4>{obj.name}</h4>
-                   {/* <h4>{obj.folders}</h4> */}
-                 {/* {obj.folders.map(folder => {
-                   return(
-                    <div className="space">
-                     */}
-                    {/* <p className="notification">{folder.count}</p> */}
-                     {/* </div>
-                )})}  */}
-                <p>{obj.user_name}</p>
-                </div>
-                
-            </UserCard>
-          {obj.photos.map(photo => 
-               <PhotoCard >
-              <div className="text-cont">
-              {!!photo.name && <p className="photo-name" >{photo.name}</p>}
-              {!!photo.details && <p className="photo-details" >{photo.details}</p>}
-              <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo)} >{photo.obj_name}</p>
-              {/* <p className="folder-name">{photo.folder_name}</p> */}
-              </div>
-              <div className='photo-cont'>
-                <div className='photo-header'></div>
-                <PhotoCont
-                identifier={props.catagory
-                  ? obj.uuid
-                  : obj.id}
-                folderId={photo.folder_id}
-                onClick={() => console.log(photo.folder_id)}>
-                    
-                    <img src={photo.url} onClick={() => props.modalToggle(photo, photos)}/>
-                  </PhotoCont>
-                  <div>
-              </div>
-              <div className='photo-footer'></div>
-              </div>
-                  <div className='button-cont'>
-                    <Heart 
-                      favorited={photo.favorites !== undefined && !!photo.favorites.length}
-                      className="heart"
-                      onClick={() => favoriteToggle
-                      (photo)} >♥</Heart>
-                    <Add>✚</Add>
-                  </div>
-              </PhotoCard> 
-              )}
-                                     <hr
-                 style={{
-                   position: 'relative',
-                   background: 'gainsboro',
-                   borderStyle: 'none',
-                   borderTop: 'solid',
-                   borderTopWidth: '2px',
-                   top: '0px',
-                   zIndex: 6,
-                   height: '1px',
-                   paddingBottom: '18px',
-                 }}
-               />
-              </div>
-              
-              )
-              )}
-
-              </>
-}
-
-              </div>
-            </div>
-}
-
-          </Cont>
+          </div>
         )
 }
+
+export default CommunitySecondaryFilter
 
 const Heart = styled.button`
     cursor: pointer;
@@ -513,7 +347,7 @@ img {
 
 
 
-export default ScrollCont
+
 
 
 

@@ -3,14 +3,16 @@ import React, { useRef} from 'react';
 import styled from 'styled-components';
 import { useDrag, useDrop } from 'react-dnd';
 
-const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }) => {
+const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, mobile, ...p }) => {
   // const { photo, onDrop, children, ...p } = props;
   // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
   // console.log( "onDrop", onDrop)
 // console.log("props", p)
+
   const useDragAndDrop = (photoRef, payloadPhoto) => {
  // useDrag return value array - collected props: isDragging is Boolean, drag is function
     const [{ isDragging }, drag] = useDrag({
+      
       item: { type: 'GRID_ITEM', ...payloadPhoto },
       collect: monitor => ({
         isDragging: monitor.isDragging(),
@@ -50,13 +52,14 @@ const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }
 // const style = (photo.url === null) && {zIndex : '-1'}
   return <GridItemWrapper  
     {...p} ref={photoRef}  
-    isDragging={isDragging}
+    isDragging={mobile ? false : isDragging}
     orientation={orientation}
     // style={{ opacity }} 
     // style={{style}}
     // style={{cursor: isDragging ? 'grabbing' : 'grab' }}
     edit={edit} 
     photo={photo}
+    mobile={mobile}
     >
     {children}
     </GridItemWrapper>
@@ -132,28 +135,27 @@ const createDragHoverCallback = (photoRef, currentPhoto, onDrop) => {
 const GridItemWrapper = styled.div `
   /* padding: 5px; */
   // padding-inline: 5px;
-position: relative;
+
 display: block;
-  ${({url, edit, isDragging, orientation}) => edit 
+  ${({url, edit, isDragging, orientation, mobile}) => 
+  edit && mobile
     ? !!url
-    ? `z-index: 2; 
-      transition: transform .3s ease-in, z-index 0s 0s;
-      cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
-      :hover {transform: translate(2px, -2px);} 
-    `
-    : `z-index: 1; 
-      transition: transform .3s ease-in, z-index 0s 0s;
-      :hover {transform: translate(2px, -2px);}
-      `
+      ? `z-index: 2; 
+        transition: transform .3s ease-in, z-index 0s 0s;
+        cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
+        :hover {transform: translate(2px, -2px);}`
+          : `z-index: 1; 
+            transition: transform .3s ease-in, z-index 0s 0s;
+            :hover {transform: translate(2px, -2px);}
+            `
     : !!url
-    ? `z-index: 0; 
-      transition: transform .3s ease-in .4s, z-index 0s 1s;
-    &:hover {
-      transform: ${orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
-      z-index: 5; 
-      transition: z-index .3s cubic-bezier(0,1,1,0) , 
-                  transform .3s ease-in;}
-                  `
+      ? `z-index: 0; 
+        transition: transform .3s ease-in .4s, z-index 0s 1s;
+      &:hover {
+        transform: ${mobile ? 'scale(1)' : orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
+        z-index: 5; 
+        transition: z-index .3s cubic-bezier(0,1,1,0) , 
+                    transform .3s ease-in;}`
     : `z-index: -1; 
       transition: transform .3s ease-in .3s, z-index .3s cubic-bezier(0,1,1,0);`
    }
