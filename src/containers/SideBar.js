@@ -11,7 +11,7 @@ const SideBar = (props) => {
   // TOGGLE SIDEBAR
   const [sideBar, setSideBar] = useState(false);
   // console.log("new props", !!props.userState && props.userState.openModal);
-  const [skinny, setSkinny] = useState(false);
+
   const [hover, setHover] = useState(true)
   const [timer, setTimer] = useState(true)
   const location = useLocation();
@@ -34,20 +34,8 @@ const SideBar = (props) => {
   }
 
   
-  useEffect(() => {
-    if (window.innerWidth < 1100) {setSkinny(true)} 
-    else {setSkinny(false)}
-  
-    const updateMedia = () => {
-      if (window.innerWidth < 1100) {setSkinny(true)} 
-      else {setSkinny(false)}
-    };
-    updateMedia()
-    window.addEventListener('resize', updateMedia);
-    return () => window.removeEventListener('resize', updateMedia);
-  }, []);
-let topVal = skinny ? -6 : 20
-let loginTopVal = skinny ? -14 : 11
+let topVal = props.skinny ? -6 : 20
+let loginTopVal = props.skinny ? -14 : 11
 // console.log("top", topVal)
 const folderRef = useRef()
 const folderDemo = [!!folderRef.current && folderRef.current.offsetTop + topVal, 'these folders can be used to organize photos as you develope bodies of work']
@@ -91,7 +79,7 @@ useEffect(() => {
     setTimer(false)
   }, 7000);
  
-}, [skinny, sideBar])
+}, [props.skinny, sideBar])
 
   return (
     <aside>
@@ -324,7 +312,7 @@ useEffect(() => {
 export default SideBar;
 
 const Button = styled.button`
-    margin-top: 40px;
+    margin-top: 35px;
     margin-inline: 5px;
     position: relative;
     transition: right 1s ease;

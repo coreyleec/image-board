@@ -41,12 +41,17 @@ const CommunityTopFilter = (props) => {
 export default CommunityTopFilter;
 
 const Body = styled.div`
-  /* height: calc(100% - 100px); */
-  position: relative;
-  height: 100%;
-  /* top: -15%; */
-  top : ${({mobile, panel, panelHeight}) => mobile ? '0px' : panel ? `${panelHeight.current.clientHeight + 10}px` : `10px`};
+
+    position: relative;
+    margin-bottom: inherit;
+    height: -webkit-fill-available;
+    overflow-y: scroll;
+    top : ${({mobile, panel, panelHeight}) => mobile ? '0px' : panel ? `${panelHeight.current.clientHeight + 10}px` : `10px`};
   transition: top .2s ease-in;
+  // overflow-x: hidden;
+  /* margin-inline: max(4vw); */
+  /* margin-inline: 4vw; */
+  margin-inline: 15px;
 `
 
 

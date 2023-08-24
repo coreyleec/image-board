@@ -138,7 +138,7 @@ const GridItemWrapper = styled.div `
 
 display: block;
   ${({url, edit, isDragging, orientation, mobile}) => 
-  edit && mobile
+  edit && !mobile
     ? !!url
       ? `z-index: 2; 
         transition: transform .3s ease-in, z-index 0s 0s;

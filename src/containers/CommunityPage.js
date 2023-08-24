@@ -4,6 +4,7 @@ import { useHistory, useLocation } from 'react-router-dom';
 import CommunityTopFilter from "../components/CommunityTopFilter";
 import ImageModal from '../components/ImageModal';
 import styled from 'styled-components'
+// import recent from '../recent.json'
 
 
 const CommunityPage = (props) => {
@@ -283,6 +284,15 @@ useEffect(() => {
 }, [])
 
 // useEffect(() => {
+//   setCommunity(recent.community)
+//     setFollowing(recent.following)
+//     recent.following.folders.length === 0 && setDegree(false)
+//     // window.store = recentContent
+//     setLoad(true)
+// }, [])
+
+
+// useEffect(() => {
   // let followedFolders = following.folders.length
   // let followedUsers = following.users.length
   // following.folders === 0 &&
@@ -510,8 +520,10 @@ const Body = styled.div`
     /* padding-top: 20px; */
     /* border-radius: 22px 22px 22px 22px; */
     /* background: gainsboro; */
-    // height: 100%;
-    height: inherit;
+    // height: inherit;
+    height: 100%;
+    margin-bottom: 35px;
+    overflow: hidden;
     
 `
 

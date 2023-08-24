@@ -12,11 +12,13 @@ html {
   min-width: 100%;
 }
 body {
-  overflow-x: hidden;
-  overflow-y: scroll;
+  /* overflow-x: hidden;
+  overflow-y: scroll; */
+  /* overflow: hidden; */
   width: 100vw;
   height: 100vh;
-  background-color: hwb(0deg 83% 17%);
+  /* background-color: hwb(0deg 83% 17%); */
+  background-color: black;
   margin: 0;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -49,6 +51,7 @@ main {
   border-radius: 22px 22px 22px 22px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
   display: block;
+  /* overflow: hidden; */
   /* display: unset; */
   /* align-items: center; */
   
@@ -105,6 +108,9 @@ aside:nth-child(3) {
       justify-content: center;
       overflow: hidden;
     }
+    body {
+      background-color: black;
+    }
     article {
       padding-inline: 0;
       padding-top: 0px;
@@ -131,7 +137,9 @@ aside:nth-child(3) {
       }
       .grid-wrapper{
         display: flex;
+        justify-content: center;
       }
+      
     }
 article {
   /* height: 95rem;

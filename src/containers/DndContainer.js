@@ -12,14 +12,13 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
 
-const DndContainer = (props) => {
+const MobilePhotoGrid = (props) => {
   const location = useLocation();
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState(null)
   const [updPhoto, setUpdPhoto] = useState(null)
   const [imgCount, setImgCount] = useState(0)
   const gridRef = useRef(null);
-  const gridWrapperRef = useRef(null)
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [imgUrl, setImgUrl] = useState(null)
 
@@ -539,10 +538,10 @@ const adjustFunction = () => {
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
     // let photoUnder = photos[i + 6]
+    // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
     
     let gridItem = photo.getBoundingClientRect();
-    // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
-    // let height = getComputedStyle(photo.firstChild).height.slice(0, -2)
+    let height = +getComputedStyle(photo.firstChild).height.slice(0, -2)
     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
 
     let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
@@ -562,204 +561,7 @@ const adjustFunction = () => {
   setImagesLoaded(true)
 }
 
-// if image is in center then trigger css changes
-// if gridItem.left - gridItem.right = innerWidth * .20
-//  and if gridItem.top - gridItem.bottom = innerHeight * .20
-// 0px = 100% && 100px = 0% 
-// as difference from center decreases 
-// emptyPhoto on outside
-// every 6 photos, all empty photos are on outside, below 3 on left and above 3 on left
 
-const grid = gridRef.current;
-const gridWrapper = gridWrapperRef.current;
-
-const [photoId, setPhotoId] = useState(null)
-const [xPos, setXPos] = useState(null)
-const [yPos, setYPos] = useState(null)
-const [xCenter, setXCenter] = useState(null)
-const [yCenter, setYCenter] = useState(null)
-const [baseWidth, setBaseWidth] = useState(null)
-
-const scrollPosition = () => {
-  if (props.mobile){
- 
- const gridRect = grid.getBoundingClientRect() 
- 
- const photos = grid.children
- 
- const gridWrapper = gridWrapperRef.current;
- const gridWrapperRect = gridWrapper.getBoundingClientRect()
- const gridWrapperWidth = gridWrapperRect.width
- const height = gridWrapperRect.height
- 
-//  find cont center, 
-// find grid center that is equal to cont center
- for (let i = 0; i < photos.length; i++) {
-   let photo = photos[i]; // each square is "photo"
-   const orientation = !!photo.getElementsByClassName("portrait").length
-   const type = !!photo.getElementsByClassName("tile").length
-   // IF THE GRID ITEM IS A HIDDEN BLANK IMAGE TILE 
-   if (type){setBaseWidth(10 + photo.offsetWidth/2)}
-
-   const gridItem = photo.getBoundingClientRect();
-   const top = Math.abs(gridItem.top)
-   const left = Math.abs(gridItem.left)
-   const right = Math.abs(gridItem.right)
-
-
-
-   const centerX = gridWrapperWidth/2 - baseWidth
-   const centerY = height/3
-   
-   setXCenter(centerX)
-   setYCenter(centerY)
-
-   const positionX = left - (photo.offsetWidth / 2);
-   const positionY = top - (photo.offsetHeight / 2);
-  //  console.log(" p", photo, 
-  //  positionX + ">" + centerX,
-  //  positionX > centerX, 
-  //  positionX + (baseWidth * 2) + "<" + ((gridWrapperWidth/2) + baseWidth),
-  //  positionX + (baseWidth * 2) < (gridWrapperWidth/2) + baseWidth)
-  // if (positionX > centerX){
-  //   console.log("photo", photo, 
-  //   positionX + ">" + centerX,
-  //   positionX > centerX)
-  // }
-
-  //  if (positionX + (baseWidth * 2) < (gridWrapperWidth/2) + baseWidth){
-  //   console.log("photo", photo, 
-  //   positionX + (baseWidth * 2) + "<" + ((gridWrapperWidth/2) + baseWidth),
-  //   positionX + (baseWidth * 2) < (gridWrapperWidth/2) + baseWidth)
-  //  }
-  //  setXPos(width - photo.offsetWidth/2)
-  //  setYPos(height/4)
-   let xDiff = positionX - xPos
-   let yDiff = (positionY + yPos)/2 - yPos 
-   let xBool = Math.abs(xDiff) > gridWrapperWidth * .2
-   let yBool = Math.abs(yDiff) > height * .2
-   if (photo.id == 3){
- 
-  }
-  // right is also less than or equal to left plus base times 2
-  const positionXEnd = gridItem.right - baseWidth * 2
-  const centerXEnd = (gridWrapperWidth/2) + baseWidth
-  // if (positionX > centerX && positionXEnd
-  //    < (centerXEnd + 10)){
-  //     if (positionY > (height/5) && positionY < (height/3)){
-    // console.log("test photo", photo, gridItem, positionX,  ">",  centerX, "&&", positionXEnd, 
-    // "<", centerXEnd )}
-      // "photo id", photo.id,
-      // "left", left, ">", 
-      // "centerX", centerX,
-      // left > centerX,
-
-      // "right", right, "<=",
-      // "gridWrapperWidth/2", gridWrapperWidth/2, "+" ,"baseWidth", baseWidth,
-      // right <= gridWrapperWidth/2 + baseWidth
-    
-  // }
-
-// console.log("height/3",  positionX, gridWrapperWidth/4, gridWrapperWidth * .75)
-
-   // (((top + height)/2) - height)
-  //  if(xBool && yBool){
-  //  PROHIBITS ACTION UNLESS THE USER HAS SCROLLED X DISTANCE
-
-  if (!type && (gridItem.left > 0) && (gridItem.top > 0)){ 
-    
-    if (positionY > (height/5) && positionY < (height/4)){
-    
-    if (gridItem.left > positionX && gridItem.right < centerXEnd){
-
-     setPhotoId(photo.id)
-     setXPos(positionX)
-     setYPos(positionY)
-
-     console.log(
-      photo, gridItem,
-      "positionY", positionY,
-      "centerY", centerY,  
-      "(height * .5)", (height * .5), (height * .4), 
-      "photo id", photo.id,
-      'right', gridItem.right, centerXEnd - gridWrapperWidth,
-      "left", left, ">", 
-      "centerX", centerX,
-      'positionX', positionX,
-      positionX > centerX,
-      "position plus width of photo", 
-      positionX + (baseWidth * 2),
-      "center point", 
-      (gridWrapperWidth/3) + baseWidth,
-      "answer", 
-      positionX + (baseWidth * 3) < (gridWrapperWidth/2) + baseWidth,
-
-      "photo.offsetTop", photo.offsetLeft, 
-      "left minus base",
-      left - baseWidth,
-
-      "right", right, "<",
-      "gridWrapperWidth/2", gridWrapperWidth/2, "+" ,"baseWidth", baseWidth,
-      right < gridWrapperWidth/2 + baseWidth)
-
-     //  let centerY = gridItem.offsetTop + gridItem.offsetHeight / 2;
-    //  console.log("type", orientation, type, centerX, centerY, photo.offsetLeft, photo.offsetWidth, photo.offsetTop, photo.offsetHeight)
-    
-     if (!orientation){
-      console.log("photo", photo.firstChild, photo, photo.style)
-      photo.style.gridColumnEnd = `span 2`
-      photo.style.gridRowEnd = `span 80`
-      photo.firstChild.style.height = '220px'
-      photo.firstChild.style.top = '50%'
-      photo.firstChild.style.color = 'red'
-    }
-    else {
-      console.log("photo", photo.firstChild, photo, photo.style)
-      photo.style.gridColumnEnd = `span 2`
-      photo.style.gridRowEnd = `span 120`
-      photo.firstChild.style.height = '340px'
-      photo.firstChild.style.top = '50%'
-      photo.firstChild.style.color = 'red'
-    }
- // else if (type){
-
- 
- }}
- 
- else if(photoId !== photo.id){
-  // THIS REVERTS IMAGES BACK TO SIZE 
-  if (!orientation){
-    photo.style.gridColumnEnd = `span 1`
-    photo.style.gridRowEnd = `span 40`
-    photo.firstChild.style.height = '100px'
-  }
-  else {
-    photo.style.gridColumnEnd = `span 1`
-    photo.style.gridRowEnd = `span 80`
-    photo.firstChild.style.height = '220px'
-    photo.firstChild.style.top = '50%'
-  }
-}}
- 
-  }
-  // }
-   
-  }
-  
-   
-//  } 
-}
-
-useEffect(() => {
-  const gridWrapper = document.getElementById("grid-wrapper");
-  const gridRect = grid?.getBoundingClientRect() 
-
-  if (!!gridRect){  
-    const center = gridRect.width/2
-    gridWrapper.scrollLeft = center
-    console.log("scroll", gridWrapper, center, gridRect)
-  }
-}, [!!gridRef.current === true])
 
 
 // FIND ME
@@ -776,7 +578,7 @@ useEffect(() => {
   !!props.photos && setPhotos([...newPhotos])
   const grid = gridRef.current;}
   // adjustGridItemsHeight(grid, updPhoto);
-}, [props.photos, props.mobile])
+}, [props.photos])
 
   
 
@@ -787,11 +589,9 @@ const dragging = () => {
 }
 
 
-
-
   return (
-    <article >
-<Square className="square" xCenter={xCenter} yCenter={yCenter}></Square>
+    <article>
+      {/* <button onClick={adjustFunction}>adjust</button> */}
       {openModal && (
         <ImageModal
         setImgUrl={setImgUrl}
@@ -813,27 +613,16 @@ const dragging = () => {
       options={HTML5toTouch}
       >
         <>
-          <div 
-          id="grid-wrapper"
-          className="grid-wrapper"
-          onScroll={() => scrollPosition()}
-          ref={gridWrapperRef}
-          >
-            {/* <div className="bumper"></div> */}
-            <Square className="square" xCenter={xCenter} yCenter={yCenter}></Square>
-            <Grid
+          <div className="grid">
+            <GridWrapper
               ref={gridRef}
-              className="grid"
               style={{ opacity: imagesLoaded ? 1 : 0 }}
               // style={{ opacity }}
               >
-
               {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
                     className="grid-item"
-                    id={photo.index}
-                    mobile={props.mobile}
                     edit={props.edit}
-                    draggable={!props.mobile}
+                    alt={photo.index}
                     key={photo.index}
                     orientation={photo.orientation}
                     url={photo.url}
@@ -841,22 +630,21 @@ const dragging = () => {
                     collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
                     colorArr={props.colorArr}
                     // onDrop={onDrop}
-                    onDrop={underIndexs.includes(photo.index) ? false : !props.mobile ? false : onDrop}
+                    onDrop={underIndexs.includes(photo.index) ? false : onDrop}
                     onMouseDown={() => setUnderIndexs(underIndexs.filter((index) => index !== (photo.index + 6)))}
                       onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
                     // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                     highlight={photo.color}
                   >
                     <PictureFrame
-                    className={!!photo.url ? photo.orientation ? "picture landscape" : "picture portrait" : 'tile landscape'}
-                    // alt={}
+                    className="picture"
                     // onResize={() => console.log("hello")}
                       // favorited={!!photo.favorites && photo.favorites.length} 
                       // onMouseDown={() => console.log("drag",underIndexs.filter((index) => index === (photo.index + 6)))}
                       // onMouseUp={() => console.log(underIndexs.filter((index) => index === (photo.index + 6)))}
 
                       
-                      mobile={props.mobile}
+
                       edit={props.edit}
                       url={photo.url}
                       highlight={photo.color}
@@ -919,7 +707,7 @@ const dragging = () => {
                     </PictureFrame>
                   </DraggableGridItem>
                 ))}
-            </Grid>
+            </GridWrapper>
           </div>
       </>
       </DndProvider>
@@ -927,7 +715,7 @@ const dragging = () => {
       </article>
   );
 };
-export default DndContainer;
+export default MobilePhotoGrid;
 
 
 // const adjustHover = (grid) => {
@@ -997,44 +785,18 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
   } return 
 };
 
-const Square = styled.div`
-position: fixed;
-color: red;
-opacity:  50%;
-height: 118px;
-width: 150px;
-left: ${({xCenter}) => xCenter + "px"};
-top: ${({yCenter}) => yCenter + "px"};
-`
 
-const Grid = styled.div`
+
+const GridWrapper = styled.div`
   display: grid;
+  justify-content: center;
   grid-gap: 2px;
   grid-auto-rows: 1px;
   grid-template-columns: repeat(6,minmax(120px, 155px));
-  position: relative;
-  width: fit-content;
-
-  @media (max-width: 700px) {
-    padding-inline: 40vw;
-  }
   .grid-item{
-    position: relative;
     grid-row-end: span 40;
-    
-    &:before{
-      content:'';
-      display: block;
-      top:100%;
-      position: absolute;
-      width: 100%;
-      height: 0;
-    }
   }
-  .grid-item:focus::before{
-    height: 20px;
-  }
-  ;
+  
 `;
 // COMPASS 
  /* className={
@@ -1049,19 +811,18 @@ const Grid = styled.div`
             : "empty-box" // HAS NO IMAGE URL
         } */
 
-        // width: ${({mobile}) => mobile ? '-webkit-fill-available' : 'min-content' }
+
         
 const PictureFrame = styled.div`
 
     position: relative;
     left: 50%;
-    top: ${({orientation, mobile}) => orientation ? '50%' : '100%' };
-    // top: ${({orientation, mobile}) => orientation ? '50%' : mobile ? '50%' : '100%' };
+    top: ${({orientation}) => orientation ? '50%' : '100%' };
     transform: translate(-50%, -50%);
     padding: 0px;
     overflow: hidden;
-    height: ${({orientation, mobile}) => orientation ? '100px' : '220px'}
-    ;
+    /* height: min-content; */
+    height: ${({orientation}) => orientation ? '100px' : '220px' };
     background-color: ${({edit}) => edit ? 'gainsboro' : 'rgb(255 87 0 / 69%)'};
     backdrop-filter: blur(6px);
     display: flex;
@@ -1070,14 +831,9 @@ const PictureFrame = styled.div`
     box-shadow: -3px 3px 5px 2px #aaaaaa;
     outline: ${({highlight, url}) => !!url && highlight !== undefined && ` solid 3px ${highlight}`};
     
-    width: ${({mobile}) => mobile ? ' -webkit-fill-available' : 'min-content' };
-    // max-height: ${({mobile}) => mobile ? '90%' : 'unset' };
+    width: min-content;
     max-width: 90%;
-    // max-width: 96%;
-
     transition: 
-    height .3s ease-in,
-    width .3s ease-in,
     border-radius .2s ease-out, 
     background-color 0s linear 1s, 
     max-width .3s ease-out .2s, 
@@ -1100,8 +856,7 @@ const PictureFrame = styled.div`
     /* overflow: visible; */
     /* margin: 0px; */
     overflow-y: clip;
-    // width: max-content;
-    width: ${({mobile}) => mobile ? '100%' : 'max-content' };
+    width: max-content;
     border-radius: 13px;
     transition: border-radius .2s ease-out;
 }
@@ -1155,8 +910,7 @@ const PictureFrame = styled.div`
     /* border-radius: 13px; */
     
     z-index: 9;
-    ${({mobile, orientation}) => mobile ? 
-    'height: -webkit-fill-available; width: 100%;' : orientation ? 
+    ${({orientation}) => orientation ? 
     'max-width: 150px; min-height: 100px;' : 'min-width: 135px; max-height: 220px;' }
 }
 /* height: 100%; */

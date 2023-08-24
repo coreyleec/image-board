@@ -20,7 +20,7 @@ return (
       <div id={photo.id} className="text-cont">
         {!!photo.name && <p className="photo-name" ><mark>{photo.name}</mark></p>}
         {!!photo.details && <p className="photo-details" ><mark>{photo.details}</mark></p>}
-        <p className="user-name" onClick={() => props.fetchUser(photo.user_id)} ><mark>{photo.user_name}</mark></p>
+        <p className="user-name" onClick={() => props.fetchUser(photo.u_id)} ><mark>{photo.user_name}</mark></p>
         {/* <p className="folder-name">{photo.folder.name}</p> */}
       </div>
       <img src={photo.url}/>
@@ -54,7 +54,7 @@ const PhotoCard = styled.div`
   height: fit-content;
   border-radius: 13px;
   margin-bottom: 15px;
-  background-color: #474747;
+  background-color: black;
 
 /* &:hover .text-cont {
   opacity: 1;
@@ -142,7 +142,7 @@ const Cont = styled.div`
     height: 100%;
     max-height: -webkit-fill-available;
     overflow: hidden;
-    padding-inline: 15px;
+    // padding-inline: 15px;
     
 
     
@@ -199,7 +199,7 @@ const Cont = styled.div`
     height: 40px;
     border-top-right-radius: 13px;
     border-top-left-radius: 13px;
-    box-shadow: 0 -18px 0 0 #474747;
+    box-shadow: 0 -18px 0 0 black;
 }
 .coffin-footer {
     position: sticky;
@@ -217,7 +217,7 @@ const Cont = styled.div`
     height: 40px;
     border-bottom-right-radius: 13px;
     border-bottom-left-radius: 13px;
-    box-shadow: 0px 14px 0 0 #474747 ;
+    box-shadow: 0px 14px 0 0 black ;
     background-color: transparent;
 }
 

@@ -36,10 +36,16 @@ export const App = () => {
   // }
   // onbeforeunload()
   // SWITCH DATABASE VERSION
-  // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
-  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
+  const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
+  // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
   
+//   const observer = new PerformanceObserver((list) => {
+//     console.log('Long Task detected! 🚩️');
+//     const entries = list.getEntries();
+//     console.log(entries);
+// });
 
+// observer.observe({entryTypes: ['longtask']});
 
   // OPEN LOGIN
  const [userProfile, setUserProfile] = useState(true);
@@ -1062,6 +1068,7 @@ const [mobileTimer, setMobilTimer] = useState(0)
           overflow={overflow}
           loggedIn={loggedIn}
           setLoggedIn={setLoggedIn}
+          skinny={skinny}
           // about={about}
           published={about.publish}
           subDirectory={subDirectory}
@@ -1285,19 +1292,29 @@ const Cont = styled.div`
   @media (max-width: 1100px) {
   grid-template-columns:  0% 1fr 0%;
 }
+// : '2'
+@media (min-width: 1100px) {
+  main{
+    
+    ${({directory}) => directory === "community" && 'height: 100%; overflow: hidden;'}
+    // height: ${props => props.directory === "community" ? 'auto' : '100%'};
+     ;
+  }
+}
 @media (max-width: 700px) {
-  background-color: ${props => props.directory === "community" ? '#474747' : 'gainsboro'};
+  
+  background-color: black;
   
   main, header{
-  background-color: ${props => props.directory === "community" ? '#474747' : 'gainsboro'};
-}
+    background-color: black;
+  }
 
-header{
-  box-shadow: -3px 3px 5px 2px #373737;
-}
-main{
-  box-shadow: -3px 3px 5px 2px #373737;
-}
+  header{
+    box-shadow: none;
+  }
+  main{
+    box-shadow: none;
+  }
 }
 
 `
