@@ -5,16 +5,15 @@ import styled from "styled-components";
 import { Heart } from '../My.styled'
 import { MultiBackend } from "react-dnd-multi-backend";
 import HTML5toTouch from "../dnd/HTML5toTouch";
-// import { TouchBackend } from 'react-dnd-touch-backend'
 import { DndProvider } from "react-dnd";
-import DraggableGridItem from "../dnd/DraggableGridItem";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
 import { first } from "lodash";
+import DraggableGridItem from "../dnd/DraggableGridItem";
 
 const MobilePhotoGrid = (props) => {
-  const location = useLocation();
+
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState(null)
   const [updPhoto, setUpdPhoto] = useState(null)
@@ -386,7 +385,10 @@ useEffect(() => {
           nextPhoto={nextPhoto}
         />
       )}
-
+      <LoadingModal imagesLoaded={imagesLoaded}>
+        <div className="background">iB</div>
+        <div className="foreground"></div>
+      </LoadingModal>
       <DndProvider backend={MultiBackend} 
       options={HTML5toTouch}
       >
@@ -397,8 +399,6 @@ useEffect(() => {
           onScroll={() => scrollPosition()}
           ref={gridWrapperRef}
           >
-            {/* <div className="bumper"></div> */}
-            {/* <Square className="square" xCenter={xCenter} yCenter={yCenter}></Square> */}
             <Grid
               ref={gridRef}
               className="grid"
@@ -406,7 +406,8 @@ useEffect(() => {
               // style={{ opacity }}
               >
 
-              {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
+              {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (
+              <DraggableGridItem
                     className="grid-item"
                     id={photo.index}
                     mobile={props.mobile}
@@ -414,25 +415,16 @@ useEffect(() => {
                     draggable={!props.mobile}
                     key={photo.index}
                     orientation={photo.orientation}
-                    url={photo.url}
+                    url={!!photo.url}
                     photo={photo}
                     collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
                     colorArr={props.colorArr}
-                    // onDrop={onDrop}
-
-                    onMouseDown={() => setUnderIndexs(underIndexs.filter((index) => index !== (photo.index + 6)))}
-                      onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
-                    // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                     highlight={photo.color}
                   >
                     <PictureFrame
                     className={!!photo.url ? photo.orientation ? "picture landscape" : "picture portrait" : 'tile landscape'}
                     // alt={}
                     // onResize={() => console.log("hello")}
-                      // favorited={!!photo.favorites && photo.favorites.length} 
-                      // onMouseDown={() => console.log("drag",underIndexs.filter((index) => index === (photo.index + 6)))}
-                      // onMouseUp={() => console.log(underIndexs.filter((index) => index === (photo.index + 6)))}
-
                       
                       mobile={props.mobile}
                       edit={props.edit}
@@ -507,10 +499,6 @@ useEffect(() => {
 export default MobilePhotoGrid;
 
 
-// const adjustHover = (grid) => {
-
-// }
-
 const adjustGridItemsHeight = (grid, updPhoto) => {
 
   // set all grid photos to vairable "photos"
@@ -520,12 +508,7 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
     let photoUnder = photos[i + 6]
-    // let photoOver = i > 6 && photos[i - 6]
-    // let photoOrientation = photo.getAttribute('orientation')
-    // let photoUnder = !photoOrientation && photos[i + 6]
-    // let underGridItem = photoUnder.getBoundingClientRect();
-// console.log('this', photoUnder)
-// console.log("items", photoUnder, photoOver)
+
     let rowHeight = parseInt(
       window.getComputedStyle(grid).getPropertyValue("grid-auto-rows")
     );
@@ -557,7 +540,50 @@ width: 150px;
 left: ${({xCenter}) => xCenter + "px"};
 top: ${({yCenter}) => yCenter + "px"};
 `
+const LoadingModal = styled.div`
 
+    position: fixed;
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+    top: 0;
+    z-index: ${({imagesLoaded}) => !imagesLoaded ? '7' : '-1'};
+    transition: z-index 0s ease 1s;
+
+.background{
+    position: absolute;
+    background: gainsboro;
+    height: -webkit-fill-available;
+    opacity: ${({imagesLoaded}) => imagesLoaded ? '0' : '1'};
+    top: 0px;
+    color: black;
+    font-size: xxx-large;
+    padding: 44%;
+    z-index: 7;
+    transition: opacity .3s ease-out;
+}
+
+.foreground{
+    position: fixed;
+    z-index: 13;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    // background: #dcdcdc8c; 
+    backdrop-filter: blur(10px);
+    transition: backdrop-filter 4s easy-out;
+    animation: blur-in 2s forwards; 
+}
+@keyframes blur-in {
+  from {
+    backdrop-filter: blur(10px);
+  }
+  to {
+    backdrop-filter: blur(0px);
+  }
+}
+    
+`
 const Grid = styled.div`
   display: grid;
   grid-gap: 2px;
@@ -575,6 +601,7 @@ const Grid = styled.div`
     position: relative;
     grid-row-end: span 40;
     grid-column-end: span 40;
+    // z-index: ${({url}) => url ? '1' : '-1' }
       }
   ;
 `;
@@ -604,22 +631,15 @@ const PictureFrame = styled.div`
     overflow: hidden;
     height: ${({orientation, mobile}) => orientation ? '100px' : '220px'}
     ;
-    background-color: ${({edit}) => edit ? 'gainsboro' : 'rgb(255 87 0 / 69%)'};
-    // backdrop-filter: blur(6px);
+    // background-color: ${({edit}) => edit ? 'gainsboro' : 'rgb(255 87 0 / 69%)'};
     display: flex;
     justify-content: center;
     border-radius: 13px;
     box-shadow: -3px 3px 5px 2px #aaaaaa;
     outline: ${({highlight, url}) => !!url && highlight !== undefined && ` solid 3px ${highlight}`};
-    
-    // width: ${({mobile}) => mobile ? ' -webkit-fill-available' : 'min-content' };
     width: 120px ;
     box-shadow: ${({mobile}) => mobile ? 'none' : '-3px 3px 5px 2px #aaaaaa' };
-    
-    // max-height: ${({mobile}) => mobile ? '90%' : 'unset' };
     max-width: 90%;
-    // max-width: 96%;
-
     transition: 
     height .1s ease-in,
     width .1s ease-in,
@@ -629,7 +649,7 @@ const PictureFrame = styled.div`
     padding-right .2s ease-out .1s, 
     padding-left .2s ease-out .1s, 
     padding-block .2s ease-out .1s, 
-    ${({url}) => !!url ? 'box-shadow .2s ease-in .6s' : 'box-shadow .3s ease-in'};
+    ${({url}) => url ? 'box-shadow .2s ease-in .6s' : 'box-shadow .3s ease-in'};
     /* transition: border-radius .5s ease-out 0ms, background-color 0s linear, max-width 0.5s ease-in, padding-right 0.5s ease-in, box-shadow .2s ease-out .4s; */
 
   
@@ -642,46 +662,31 @@ const PictureFrame = styled.div`
     height: 100%;
     position: relative;
     z-index: 7;
-    /* overflow: visible; */
-    /* margin: 0px; */
     overflow-y: clip;
-    // width: max-content;
     width: ${({mobile}) => mobile ? '100%' : 'max-content' };
     border-radius: 13px;
     transition: border-radius .2s ease-out;
 }
-&:hover .center-image{
-  border-radius: 0px;
-  transition: border-radius .3s ease-out .6s;
-  /* margin: 3px; */
-  
-}
+
   .content-drawer {
     position: absolute;
     width: 100px;
-    /* transform: translateX(-100px); */
-    /* transition: transform .3s ease-in .3s; */
     right: 0px;
     padding-inline: 3px;
     flex-grow: 1;
-    /* height: max-content; */
-    /* height: 100%; */
+
     .card-content {
-      /* position: absolute; */
       z-index: -4;
       transition: z-index 0s ease .3s;
       h4 {
         font-size: small;
         overflow: hidden;
-        /* white-space: pre; */
       }
       p {
         display: -webkit-box;
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-        /* overflow-wrap: break-word; */
-        /* hyphens: manual; */
         text-overflow: ellipsis;
         font-size: xx-small;
         line-height: 9px;
@@ -690,28 +695,20 @@ const PictureFrame = styled.div`
   }   
 
   .photo {
-    /* position: relative; */
-    /* margin-block: auto; */
-    /* top: -8px; */
-    /* left: 0; */
-    /* position: relative; */
-    /* z-index: 9;
-    /* object-fit: cover; */
-    /* border-radius: 13px; */
     
     z-index: 9;
     ${({mobile, orientation}) => mobile ? 
     'height: -webkit-fill-available; width: 100%;' : orientation ? 
     'max-width: 150px; min-height: 100px;' : 'min-width: 135px; max-height: 220px;' }
 }
-/* height: 100%; */
+
 .delete-cont{
     top: 14px;
     right: 21px;
     position: absolute;
     ${({enableDelete, url}) => !!url && enableDelete 
     ? 'opacity: 1; z-index: 8; transition: opacity .2s linear;' : 'opacity: 0; z-index: 0; transition: opacity .2s linear, z-index 0s linear .3s;'};
-      /* transition: opacity .2s linear; */
+
 }
 
 .delete-photo-button{
@@ -727,118 +724,54 @@ const PictureFrame = styled.div`
       padding: 0px;
       position: relative;
       width: 0px;
-      /* transition: transform .3s linear; */
   
 }
 
-  ${({ edit, url, details, orientation }) => !edit ? !!url 
-  ? `
-  
-  // IMAGE HOVER 
-  &:hover {
-    z-index: 3;
-    ${details 
-    ? 'max-width: 250%; padding-right: 100px;' 
-    : 'max-width: 156%; padding-right: 3px; z-index: 7; ' }
-    // max-height: ${orientation ? '150px' : '227px' };
-    border-radius: 0px;
-    box-shadow: none;
-    padding-block: 3px;
-    padding-left: 3px;
-    
 
-    transition: 
-    padding-left .2s linear .4s, 
-    padding-block .2s linear .4s, 
-    padding-right .2s linear .4s, 
-    border-radius .3s ease-out .6s, 
-    max-width .3s linear .1s, 
-    max-height .5s linear, 
-    box-shadow 0s,
-    outline .3s linear .2s;
+${({ edit, url, details, orientation }) => !edit ? !!url 
+? `
 
-    
-    .heart{opacity: 70%;}
-    .content-drawer {
-    // transform: translateX(0px);
-}
+// IMAGE HOVER 
 
-} 
-
-// &:hover .photo{
-//   border-radius: 0px;
-//   transition: border-radius .5s ease-out .4s;
-//   /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
-//   // position: initial;
-// }
 `
 : `
 // MISSING BOX
-  background-color: gainsboro;
-  box-shadow: 0px 0px 0px 0px #aaaaaa;
+background-color: gainsboro;
+box-shadow: 0px 0px 0px 0px #aaaaaa;
 
-  // background-color: rgb(255 87 0 / 69%);
-  
-    
+.photo {
+  width: 135px;
+}`
+: !!url ? `
 
-  .photo {
-    width: 135px;
-
-  }`
-  : !!url ? `
-  
 // DAGGABLE PICTURE
-    background-color: gainsboro;
-    transition: background-color 0s linear 1s, box-shadow .3s ease-in;
-    &:active {
-      box-shadow: none !important;
-      transition: box-shadow .1s linear;
-      }
-&:hover {
-&:hover {
-    z-index: 3;
-    box-shadow: -7px 7px 10px 4px #aaaaaa;
-    transition: box-shadow .3s ease-in;
+  background-color: gainsboro;
+  transition: background-color 0s linear 1s, box-shadow .3s ease-in;
+  &:active {
+    box-shadow: none !important;
+    transition: box-shadow .1s linear;
     }
-.photo{
-  // height: inherit;
-  border-radius: 13px;
-  // min-width: 150px;
-  // width: 150px;
-  // max-height: 220px;
-  /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
-  // position: initial;
-}
-}
+
 }`:`
 
 // DRAGGABLE EMPTY BOX
 
 transition: background-color 0s linear 1s, box-shadow .3s ease-in;
 background-color: gainsboro;
-  .photo {
-  background-color: gainsboro;
-  position: initial;
-  border-radius: 13px;
-  height: 100px;
-  }
-  &:hover {
-  &:active {
-    box-shadow: 0px 0px 0px 0px #aaaaaa !important;
-    outline: #aaaaaa solid;
-    transition: box-shadow .1s linear;
-    }
-&:hover {
-    z-index: 3;
-    box-shadow: -7px 7px 10px 4px #aaaaaa ;
-    transition: box-shadow .2s ease-out;
-    }
-  }
+.photo {
+background-color: gainsboro;
+position: initial;
+border-radius: 13px;
+height: 100px;
+}
+
 
 }
-  `
+`
 }
-  `
+
+
+`
 
 // REFERENCE GRAVEYARD
 

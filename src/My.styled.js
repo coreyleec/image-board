@@ -37,6 +37,12 @@ ${({ edit }) => edit && `
   // padding-bottom: 5px;
   padding-right: 10px;
 } 
+@media (max-width: 700px) {
+  font-size: 1rem;
+  color: #fff;
+  }
+
+
 `
 export const SubtractButton = styled.button`
 ${({enableDelete}) => enableDelete ? 'opacity: 1;' : 'opacity: 0;'}

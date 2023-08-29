@@ -608,7 +608,10 @@ const dragging = () => {
           nextPhoto={nextPhoto}
         />
       )}
-
+      <LoadingModal imagesLoaded={imagesLoaded}>
+        <div className="background">iB</div>
+        <div className="foreground"></div>
+      </LoadingModal>
       <DndProvider backend={MultiBackend} 
       options={HTML5toTouch}
       >
@@ -786,6 +789,51 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
 };
 
 
+const LoadingModal = styled.div`
+position: absolute;
+// top: 0;
+left: 0px;
+height: -webkit-fill-available;
+width: -webkit-fill-available;
+
+.background{
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+    position: absolute;
+    background: gainsboro;
+    opacity: ${({imagesLoaded}) => imagesLoaded ? '0%' : '100%'};
+    top: 0px;
+    color: black;
+    font-size: xxx-large;
+    padding-inline: 45%;
+    padding-top: 25%;
+    z-index: 7;
+    transition: opacity .3s easy-out .3s;
+}
+
+.foreground{
+    position: absolute;
+    z-index: 13;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    // background: #dcdcdc8c;
+    backdrop-filter: ${({imagesLoaded}) => imagesLoaded ? 'blur(0px)' : 'blur(10px)'};
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+    transition: backdrop-filter .3s easy-out;
+    animation: blur-in 2s forwards; 
+}
+@keyframes blur-in {
+  from {
+    backdrop-filter: blur(10px);
+  }
+  to {
+    backdrop-filter: blur(0px);
+  }
+}
+`
 
 const GridWrapper = styled.div`
   display: grid;

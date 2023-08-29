@@ -272,8 +272,10 @@ const TitleHeader = styled.h1`
     cursor: default;
     padding-right: 2%;
     padding-top: 2%;
-    color: ${({directory, mobile}) => (directory === 'community' && mobile) ? '#b7d814' : 'black' };
+    color: ${({directory, mobile}) => ( mobile) ? 'white' : 'black' };
 `
+// directory === 'community' &&
+// color: rgb(183, 216, 20); b7d814
 const Sticky = styled.div`
     position: relative;
     top: 0;

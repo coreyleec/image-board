@@ -86,7 +86,7 @@ useEffect(() => {
       <Sticky sideBar={sideBar}
       directory={props.directory}
       >
-        {!props.tutorial && (window.innerWidth < 1100) && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
+        {!props.tutorial && (window.innerWidth < 1100) && (window.innerWidth > 700) && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
             <TutorialTip 
             sideBar={sideBar}
             timer={timer}
