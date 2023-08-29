@@ -3,14 +3,12 @@ import { useEffect, useState, useRef, useCallback} from "react";
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import styled from "styled-components";
 import { Heart } from '../My.styled'
-import { MultiBackend } from "react-dnd-multi-backend";
-import HTML5toTouch from "../dnd/HTML5toTouch";
-import { DndProvider } from "react-dnd";
+
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
 import { first } from "lodash";
-import DraggableGridItem from "../dnd/DraggableGridItem";
+
 
 const MobilePhotoGrid = (props) => {
 
@@ -390,9 +388,8 @@ useEffect(() => {
         <div className="background">iB</div>
         <div className="foreground"></div>
       </LoadingModal>
-      <DndProvider backend={MultiBackend} 
-      options={HTML5toTouch}
-      >
+
+
         <>
           <div 
           id="grid-wrapper"
@@ -408,7 +405,7 @@ useEffect(() => {
               >
 
               {!!photos && !photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (
-              <DraggableGridItem
+              <GridItem
                     className="grid-item"
                     id={photo.index}
                     mobile={props.mobile}
@@ -487,12 +484,12 @@ useEffect(() => {
                         </div>
 
                     </PictureFrame>
-                  </DraggableGridItem>
+                  </GridItem>
                 ))}
             </Grid>
           </div>
       </>
-      </DndProvider>
+
       {/* <div className="bottom-curtain"></div> */}
       </article>
   );
@@ -607,6 +604,11 @@ const Grid = styled.div`
       }
   ;
 `;
+
+const GridItem = styled.div`
+z-index: ${({url}) => url ? "1" : "-5"};
+
+`
 // COMPASS 
  /* className={
           !props.edit
