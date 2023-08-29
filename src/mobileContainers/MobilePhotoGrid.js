@@ -26,6 +26,7 @@ const MobilePhotoGrid = (props) => {
 
   const imgCounter = () => {
     setImgCount(imgCount + 1)
+    console.log("images loaded", imgCount, props.photos.length, photos.length)
     if (imgCount + 1 === 60){
       adjustFunction()
       setImagesLoaded(true)
@@ -406,7 +407,7 @@ useEffect(() => {
               // style={{ opacity }}
               >
 
-              {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (
+              {!!photos && !photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (
               <DraggableGridItem
                     className="grid-item"
                     id={photo.index}
@@ -451,8 +452,8 @@ useEffect(() => {
                         // loading="lazy"
                         loading="eager"
                         src={
-                          !!photo.url
-                          ? photo.thumbnail_url
+                          !!photo.thumbnail_url
+                          ? photo.url
                           : require('../assets/100x135.png')
                         }
                         />
@@ -547,6 +548,7 @@ const LoadingModal = styled.div`
     width: -webkit-fill-available;
     top: 0;
     z-index: ${({imagesLoaded}) => !imagesLoaded ? '7' : '-1'};
+    // z-index: 7;
     transition: z-index 0s ease 1s;
 
 .background{
@@ -554,6 +556,7 @@ const LoadingModal = styled.div`
     background: gainsboro;
     height: -webkit-fill-available;
     opacity: ${({imagesLoaded}) => imagesLoaded ? '0' : '1'};
+    // opacity: 1;
     top: 0px;
     color: black;
     font-size: xxx-large;
@@ -589,8 +592,7 @@ const Grid = styled.div`
   grid-gap: 2px;
   grid-auto-rows: 1px;
   background: black;
-  // grid-template-columns: repeat(6,minmax(120px, 155px));
-  grid-template-columns: ${({mobile}) => !mobile ? 'repeat(241, minmax(1px, 1px))' : 'repeat(6,minmax(120px, 155px))' };
+  grid-template-columns: repeat(241, minmax(1px, 1px)) ;
   position: relative;
   width: fit-content;
 

@@ -674,7 +674,7 @@ const dragging = () => {
                         // loading="lazy"
                         src={
                           !!photo.url
-                          ? photo.url
+                          ? photo.thumbnail_url
                           : require('../assets/100x135.png')
                         }
                         />
@@ -795,6 +795,7 @@ position: absolute;
 left: 0px;
 height: -webkit-fill-available;
 width: -webkit-fill-available;
+z-index: ${({imagesLoaded}) => !imagesLoaded ? '7' : '-1'};
 
 .background{
     height: -webkit-fill-available;
@@ -808,7 +809,7 @@ width: -webkit-fill-available;
     padding-inline: 45%;
     padding-top: 25%;
     z-index: 7;
-    transition: opacity .3s easy-out .3s;
+    transition: opacity .3s easy-out;
 }
 
 .foreground{
