@@ -552,6 +552,7 @@ const LoadingModal = styled.div`
     position: absolute;
     background: gainsboro;
     height: -webkit-fill-available;
+    width: -webkit-fill-available;
     opacity: ${({imagesLoaded}) => imagesLoaded ? '0' : '1'};
     // opacity: 1;
     top: 0px;
