@@ -574,6 +574,13 @@ useEffect(() => {
   }
 }, [!!gridRef.current === true])
 
+// useEffect(() => {
+//   first
+
+//   return () => {
+//     second
+//   }
+// }, [])
 
 // FIND ME
 useEffect(() => {    
@@ -801,7 +808,7 @@ const Grid = styled.div`
   display: grid;
   grid-gap: 2px;
   grid-auto-rows: 1px;
-  background: white;
+  background: black;
   grid-template-columns: repeat(241, minmax(1px, 1px)) ;
   position: relative;
   width: fit-content;
@@ -917,7 +924,7 @@ const PictureFrame = styled.div`
   .photo {
     
     z-index: 9;
-    max-height: 110%;
+    max-height: 116%;
     object-fit: contain;
 }
 

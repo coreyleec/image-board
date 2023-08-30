@@ -790,11 +790,17 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
 
 
 const LoadingModal = styled.div`
-position: absolute;
-// top: 0;
-left: 0px;
-height: -webkit-fill-available;
-width: -webkit-fill-available;
+    top: 136px;
+    position: absolute;
+    left: 17%;
+    height: -webkit-fill-available;
+    width: 66%;
+    z-index: 8;
+// position: absolute;
+// // top: 0;
+// left: 0px;
+// height: -webkit-fill-available;
+// width: -webkit-fill-available;
 z-index: ${({imagesLoaded}) => !imagesLoaded ? '7' : '-1'};
 
 .background{
