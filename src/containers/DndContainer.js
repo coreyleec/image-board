@@ -949,14 +949,7 @@ const PictureFrame = styled.div`
   }   
 
   .photo {
-    /* position: relative; */
-    /* margin-block: auto; */
-    /* top: -8px; */
-    /* left: 0; */
-    /* position: relative; */
-    /* z-index: 9;
-    /* object-fit: cover; */
-    /* border-radius: 13px; */
+
     
     z-index: 9;
     ${({orientation}) => orientation ? 

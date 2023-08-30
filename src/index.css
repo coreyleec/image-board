@@ -116,7 +116,6 @@ aside:nth-child(3) {
       padding-top: 0px;
     }
     .grid-wrapper {
-      padding-block: 20vh;
       padding-inline: 22vw;
       overflow: scroll;
       white-space: nowrap;

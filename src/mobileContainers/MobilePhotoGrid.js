@@ -227,24 +227,10 @@ const [end, setEnd] = useState(0)
       const left = Math.abs(gridItem.left)
       const right = Math.abs(gridItem.right)
     
-      if((eval(photo.id) > end) || (eval(photo.id) < start)){
-        if (!orientation){
-          photo.style.gridColumnEnd = `span 40`
-          photo.style.gridRowEnd = `span 40`
-          photo.firstChild.style.height = '100px'
-          photo.firstChild.style.width = '120px'
-        }
-        else {
-          photo.style.gridColumnEnd = `span 40`
-          photo.style.gridRowEnd = `span 80`
-          photo.firstChild.style.height = '220px'
-          photo.firstChild.style.width = '120px'
-          photo.firstChild.style.top = '50%'
-        }
-      }
 
 
-      let centered = (top >= height * .2 && top < height * .4) && (left >= gridWrapperWidth * .3 && left <= gridWrapperWidth * .6)
+      let positive = (gridItem.top >= 0 && gridItem.left >= 0 && gridItem.right >= 0)
+      let centered = (top >= height * .25 && top < height * .4) && (left >= gridWrapperWidth * .3 && left <= gridWrapperWidth * .5)
     
       const findCenter = () => {
         if (centered && !!photo){
@@ -252,8 +238,9 @@ const [end, setEnd] = useState(0)
         }
       }
 
-      let centeredId = findCenter()
-      
+      const centeredId = findCenter()
+
+      const changeCells = (centeredId) => {
       if (!!centeredId){
         const centeredType = !!photos[centeredId].getElementsByClassName("tile").length
         const centeredOrientation = !!photos[centeredId].getElementsByClassName("portrait").length
@@ -263,10 +250,10 @@ const [end, setEnd] = useState(0)
         setStart(first)
         setEnd(range)
    
-        for (let i = start; i < end; i++){ 
+        for (let i = first; i < range; i++){ 
           let rangePhoto = photos[i];
           const rangeOrientation = !!rangePhoto?.getElementsByClassName("portrait").length
-              
+          const rangeType = !!photos[i].getElementsByClassName("tile").length
           if (!!rangePhoto){
 
             if (!centeredType){   
@@ -274,26 +261,28 @@ const [end, setEnd] = useState(0)
               if (eval(rangePhoto.id) === centeredId && photoId !== centeredId){
   
                 setPhotoId(eval(rangePhoto.id))
-
+              if (!rangeType){
                 if (!rangeOrientation){
-                  console.log("photo", photo.firstChild, photo, photo.style)
+                  console.log("rangeType", rangeType, rangePhoto.firstChild, rangePhoto, rangePhoto.style)
                   rangePhoto.style.gridColumnEnd = `span 80`
                   rangePhoto.style.gridRowEnd = `span 80`
                   rangePhoto.firstChild.style.height = '220px'
-                  rangePhoto.firstChild.style.width = '220px'
+                  rangePhoto.firstChild.style.width = '240px'
                   rangePhoto.firstChild.style.top = '50%'
-                  rangePhoto.firstChild.style.color = 'red'
                   setPhotoId(null)
                 }
                 else {
-                  console.log("photo", photo.firstChild, photo, photo.style)
                   rangePhoto.style.gridColumnEnd = `span 80`
                   rangePhoto.style.gridRowEnd = `span 120`
                   rangePhoto.firstChild.style.height = '340px'
-                  rangePhoto.firstChild.style.width = '220px'
+                  rangePhoto.firstChild.style.width = '240px'
                   rangePhoto.firstChild.style.top = '50%'
-                  rangePhoto.firstChild.style.color = 'red'
                   setPhotoId(null)
+                }}
+                else{
+                  console.log("rangePhoto", rangePhoto.firstChild, rangePhoto, rangePhoto.style)
+                  rangePhoto.style.gridColumnEnd = `span 1`
+                  rangePhoto.style.gridRowEnd = `span 1`
                 }
               }
               if (eval(rangePhoto.id) !== centeredId){
@@ -328,10 +317,251 @@ const [end, setEnd] = useState(0)
             }      
           }
         }
+
+        return [first, range]
       }
+    }
+
+const rowState = changeCells(centeredId)
+
+
+const reset = () => { 
+  for (let i = 0; i < photos.length; i++) {
+    let photo = photos[i]; // each square is "photo"
+    const orientation = !!photo.getElementsByClassName("portrait").length
+    const type = !!photo.getElementsByClassName("tile").length
+
+  if (!!rowState){
+    if((eval(photo.id) > rowState[1]) || (eval(photo.id) < rowState[0])){
+    if (!orientation){
+      photo.style.gridColumnEnd = `span 40`
+      photo.style.gridRowEnd = `span 40`
+      photo.firstChild.style.height = '100px'
+      photo.firstChild.style.width = '120px'
+    }
+    else {
+      photo.style.gridColumnEnd = `span 40`
+      photo.style.gridRowEnd = `span 80`
+      photo.firstChild.style.height = '220px'
+      photo.firstChild.style.width = '120px'
+      photo.firstChild.style.top = '50%'
+    }
+  }}
+
+
+}}
+reset(rowState)
+// for (let i = 0; i < photos.length; i++) {
+//   if(result?.length  > 0 && (eval(photo.id) > result[1]) || (eval(photo.id) < result[0])){
+//     if (!orientation){
+//       photo.style.gridColumnEnd = `span 40`
+//       photo.style.gridRowEnd = `span 40`
+//       photo.firstChild.style.height = '100px'
+//       photo.firstChild.style.width = '120px'
+//     }
+//     else {
+//       photo.style.gridColumnEnd = `span 40`
+//       photo.style.gridRowEnd = `span 80`
+//       photo.firstChild.style.height = '220px'
+//       photo.firstChild.style.width = '120px'
+//       photo.firstChild.style.top = '50%'
+//     }
+//   }
+// }
     }
   }
 }
+
+// useEffect(() => {
+  
+//   const photos = grid?.children
+//   const gridWrapper = gridWrapperRef.current;
+//   const gridWrapperRect = gridWrapper.getBoundingClientRect()
+  
+//     for (let i = 0; i < photos?.length; i++) {
+//       let photo = photos[i]; // each square is "photo"
+//         const orientation = !!photo.getElementsByClassName("portrait").length
+//         const type = !!photo.getElementsByClassName("tile").length
+//   if((eval(photo.id) > end) || (eval(photo.id) < start)){
+//     if (!orientation){
+//       photo.style.gridColumnEnd = `span 40`
+//       photo.style.gridRowEnd = `span 40`
+//       photo.firstChild.style.height = '100px'
+//       photo.firstChild.style.width = '120px'
+//     }
+//     else {
+//       photo.style.gridColumnEnd = `span 40`
+//       photo.style.gridRowEnd = `span 80`
+//       photo.firstChild.style.height = '220px'
+//       photo.firstChild.style.width = '120px'
+//       photo.firstChild.style.top = '50%'
+//     }
+//   }
+// }
+// }, [start, end])
+//   const scrollPosition = () => {
+
+//     if (props.mobile){
+   
+//     const photos = grid.children
+//     const gridWrapper = gridWrapperRef.current;
+//     const gridWrapperRect = gridWrapper.getBoundingClientRect()
+//     const gridWrapperWidth = gridWrapperRect.width
+//     const height = gridWrapperRect.height
+    
+//       for (let i = 0; i < photos.length; i++) {
+//       let photo = photos[i]; // each square is "photo"
+//       const orientation = !!photo.getElementsByClassName("portrait").length
+//       const type = !!photo.getElementsByClassName("tile").length
+
+//       const gridItem = photo.getBoundingClientRect();
+//       const top = Math.abs(gridItem.top)
+//       const left = Math.abs(gridItem.left)
+//       const right = Math.abs(gridItem.right)
+    
+
+
+//       let positive = (gridItem.top >= 0 && gridItem.left >= 0 && gridItem.right >= 0)
+//       let centered = (top >= height * .25 && top < height * .4) && (left >= gridWrapperWidth * .3 && left <= gridWrapperWidth * .5)
+    
+//       const findCenter = () => {
+//         if (centered && !!photo){
+//           return eval(photo.id)
+//         }
+//       }
+
+//       let centeredId = findCenter()
+//       // const changeCells = (centeredId) => {
+//       if (centeredId){
+//         const centeredType = !!photos[centeredId].getElementsByClassName("tile").length
+//         const centeredOrientation = !!photos[centeredId].getElementsByClassName("portrait").length
+//         let first = Math.floor(centeredId/6) * 6
+//         let range = centeredOrientation ? 16 + first : 11 + first
+          
+//         setStart(first)
+//         setEnd(range)
+   
+//         for (let i = first; i < range; i++){ 
+//           let rangePhoto = photos[i];
+//           const rangeOrientation = !!rangePhoto?.getElementsByClassName("portrait").length
+              
+//           if (!!rangePhoto){
+
+//             if (!centeredType){   
+                  
+//               if (eval(rangePhoto.id) === centeredId && photoId !== centeredId){
+  
+//                 setPhotoId(eval(rangePhoto.id))
+
+//                 if (!rangeOrientation){
+//                   console.log("photo", photo.firstChild, photo, photo.style)
+//                   rangePhoto.style.gridColumnEnd = `span 80`
+//                   rangePhoto.style.gridRowEnd = `span 80`
+//                   rangePhoto.firstChild.style.height = '220px'
+//                   rangePhoto.firstChild.style.width = '240px'
+//                   rangePhoto.firstChild.style.top = '50%'
+//                   rangePhoto.firstChild.style.color = 'red'
+//                   setPhotoId(null)
+//                 }
+//                 else {
+//                   console.log("photo", photo.firstChild, photo, photo.style)
+//                   rangePhoto.style.gridColumnEnd = `span 80`
+//                   rangePhoto.style.gridRowEnd = `span 120`
+//                   rangePhoto.firstChild.style.height = '340px'
+//                   rangePhoto.firstChild.style.width = '240px'
+//                   rangePhoto.firstChild.style.top = '50%'
+//                   rangePhoto.firstChild.style.color = 'red'
+//                   setPhotoId(null)
+//                 }
+//               }
+//               if (eval(rangePhoto.id) !== centeredId){
+//                 if (!rangeOrientation){
+//                 rangePhoto.style.gridColumnEnd = `span 32`
+//                 rangePhoto.style.gridRowEnd = `span 40`
+//                 rangePhoto.firstChild.style.height = '100px'
+//                 rangePhoto.firstChild.style.top = '50%'
+//               }
+//               else {
+//                 rangePhoto.style.gridColumnEnd = `span 32`
+//                 rangePhoto.style.gridRowEnd = `span 80`
+//                 rangePhoto.firstChild.style.height = '220px'
+//                 rangePhoto.firstChild.style.top = '50%'
+//               }
+//             }
+//           }
+//           else{
+//               if (!rangeOrientation){
+//                 rangePhoto.style.gridColumnEnd = `span 40`
+//                 rangePhoto.style.gridRowEnd = `span 40`
+//                 rangePhoto.firstChild.style.width = '120px'
+//                 rangePhoto.firstChild.style.height = '100px'
+//               }
+//               else {
+//               rangePhoto.style.gridColumnEnd = `span 40`
+//               rangePhoto.style.gridRowEnd = `span 80`
+//               rangePhoto.firstChild.style.width = '120px'
+//               rangePhoto.firstChild.style.height = '220px'
+//               rangePhoto.firstChild.style.top = '50%'
+//               }
+//             }      
+//           }
+//         }
+
+//       //   return [first, range]
+//       // }
+//     }
+
+// // let result = changeCells(centeredId)
+
+// // for (let i = 0; i < photos.length; i++) {
+// //   if(!!result && !!result.length && (eval(photo.id) > result[1]) || (eval(photo.id) < result[0])){
+// //     if (!orientation){
+// //       photo.style.gridColumnEnd = `span 40`
+// //       photo.style.gridRowEnd = `span 40`
+// //       photo.firstChild.style.height = '100px'
+// //       photo.firstChild.style.width = '120px'
+// //     }
+// //     else {
+// //       photo.style.gridColumnEnd = `span 40`
+// //       photo.style.gridRowEnd = `span 80`
+// //       photo.firstChild.style.height = '220px'
+// //       photo.firstChild.style.width = '120px'
+// //       photo.firstChild.style.top = '50%'
+// //     }
+// //   }
+// // // }
+//     }
+//   }
+// }
+
+// useEffect(() => {
+  
+//   const photos = grid?.children
+//   const gridWrapper = gridWrapperRef.current;
+//   const gridWrapperRect = gridWrapper.getBoundingClientRect()
+  
+//     for (let i = 0; i < photos?.length; i++) {
+//       let photo = photos[i]; // each square is "photo"
+//         const orientation = !!photo.getElementsByClassName("portrait").length
+//         const type = !!photo.getElementsByClassName("tile").length
+//   if((eval(photo.id) > end) || (eval(photo.id) < start)){
+//     if (!orientation){
+//       photo.style.gridColumnEnd = `span 40`
+//       photo.style.gridRowEnd = `span 40`
+//       photo.firstChild.style.height = '100px'
+//       photo.firstChild.style.width = '120px'
+//     }
+//     else {
+//       photo.style.gridColumnEnd = `span 40`
+//       photo.style.gridRowEnd = `span 80`
+//       photo.firstChild.style.height = '220px'
+//       photo.firstChild.style.width = '120px'
+//       photo.firstChild.style.top = '50%'
+//     }
+//   }
+// }
+// }, [start, end])
+
 
 useEffect(() => {
   const gridWrapper = document.getElementById("grid-wrapper");
@@ -425,13 +655,10 @@ useEffect(() => {
                     // onResize={() => console.log("hello")}
                       
                       mobile={props.mobile}
-                      edit={props.edit}
                       url={photo.url}
                       highlight={photo.color}
                       contentSizing={!!photo.name || !!photo.details}
                       enableDelete={props.enableDelete}
-                      
-                      details={!!photo.name || !!photo.details}
                       orientation={photo.orientation}
                       >  
                       <div className="center-image">
@@ -456,16 +683,6 @@ useEffect(() => {
                         />
                         </div>
 
-                      {(photo.details || photo.name) 
-                      && <div className="content-drawer">
-                        <div className="card-content" >
-                       
-                          {/* {photo.name.map(line =><h4>{line}</h4>)} */}
-                          <h4>{photo.name}</h4>
-                        <p className={"card-details"} >{photo.details}</p>
-                        {!!photo.username && <p className={"card-details"} >{photo.username.name}</p>}
-                      </div>
-                      </div>}
 {/* FAVORITE BUTTON */}
 {/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
                         {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && 
@@ -476,12 +693,7 @@ useEffect(() => {
                         (photo)} >♥</Heart>}
   {/* DELETE BUTTON */}
                          
-                        <div className="delete-cont">
-                        <button
-                        className="delete-photo-button" 
-                        style={{display}}
-                        onClick={() => props.deletePhoto(photo)} >+</button>
-                        </div>
+                      
 
                     </PictureFrame>
                   </GridItem>
@@ -589,12 +801,14 @@ const Grid = styled.div`
   display: grid;
   grid-gap: 2px;
   grid-auto-rows: 1px;
-  background: black;
+  background: white;
   grid-template-columns: repeat(241, minmax(1px, 1px)) ;
   position: relative;
   width: fit-content;
 
   @media (max-width: 700px) {
+    padding-block-start: 20vh;
+    padding-block-end: 40vh;
     padding-inline: 40vw;
   }
   .grid-item{
@@ -644,7 +858,7 @@ const PictureFrame = styled.div`
     outline: ${({highlight, url}) => !!url && highlight !== undefined && ` solid 3px ${highlight}`};
     width: 120px ;
     box-shadow: ${({mobile}) => mobile ? 'none' : '-3px 3px 5px 2px #aaaaaa' };
-    max-width: 90%;
+    max-width: calc(100% - 15px);
     transition: 
     height .1s ease-in,
     width .1s ease-in,
@@ -664,6 +878,7 @@ const PictureFrame = styled.div`
     display: flex;
     align-self: center;
     align-items: center;
+    justify-content: center;
     height: 100%;
     position: relative;
     z-index: 7;
@@ -702,9 +917,8 @@ const PictureFrame = styled.div`
   .photo {
     
     z-index: 9;
-    ${({mobile, orientation}) => mobile ? 
-    'height: -webkit-fill-available; width: 100%;' : orientation ? 
-    'max-width: 150px; min-height: 100px;' : 'min-width: 135px; max-height: 220px;' }
+    max-height: 110%;
+    object-fit: contain;
 }
 
 .delete-cont{
