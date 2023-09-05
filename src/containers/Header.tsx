@@ -271,7 +271,7 @@ const TitleHeader = styled.h1`
     font-weight: normal;
     cursor: default;
     padding-right: 2%;
-    padding-top: 2%;
+    padding-top: 1%;
     color: ${({directory, mobile}) => ( mobile) ? 'white' : 'black' };
 `
 // directory === 'community' &&

@@ -1056,7 +1056,7 @@ const [mobileTimer, setMobilTimer] = useState(0)
  }, [skinny])
  
   
-
+console.log("mobile", mobile)
     return (
       
       <Switch> 
@@ -1136,7 +1136,7 @@ const [mobileTimer, setMobilTimer] = useState(0)
           nameSubmit={nameSubmit}
           dbVersion={dbVersion}
         />
-        {<AsideRight
+        <AsideRight
           skinny={skinny || mobile}
           mobile={mobile}
           loggedIn={loggedIn}
@@ -1169,7 +1169,7 @@ const [mobileTimer, setMobilTimer] = useState(0)
           currentUserId={currentUserId}
           dbVersion={dbVersion}
           // options={{unmountOnBlur: true}}
-        />}
+        />
         {/* if main state says community, overflow === hidden */}
         <main
         // style={{overflow: overflow, display: 'unset'}}

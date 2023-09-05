@@ -59,6 +59,9 @@ main {
 main div{
   /* display: flex; */
 }
+/* aside:nth-child(1) {
+  grid-area: leftbar;
+} */
 aside:nth-child(1) {
   display: block;
   position: relative;
