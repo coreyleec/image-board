@@ -89,7 +89,7 @@ const [enableDelete , setEnableDelete] = useState(false)
 const [photos, setPhotos] = useState([]);
 const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
-const [mobile, setMobile] = useState(false);
+const [mobile, setMobile] = useState(null);
 useEffect(() => {
   if (directory === 'community') { 
     setOverflow('hidden')
