@@ -12,7 +12,7 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
 
-const MobilePhotoGrid = (props) => {
+const DndContainer = (props) => {
   const location = useLocation();
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState(null)
@@ -407,7 +407,7 @@ useEffect(() => {
   .then((res) => res.json())
   .then((photoObj) => {
     console.log("photoObj",photoObj);
-    props.setPhotos(props.photos.map((photo) => {
+    props.setPhotos(photos.map((photo) => {
         if (photo.id === photoObj.id) return photoObj;
         else return photo;})
       );
@@ -563,24 +563,46 @@ const adjustFunction = () => {
 
 
 
-
+  // useEffect(() => {
+  //   console.log("testing grid adjustment")
+  //   // , photos
+  //   const grid = gridRef.current;
+  //   // adjustGridItemsHeight(grid, updPhoto);
+  // }, [photos]);
 // FIND ME
 useEffect(() => {    
   // console.log("photos", props.photos)
   // console.log("useEffect", props.photos, props.colorArr)
-  if (!!props.photos.length){
-  console.log("useEffect", props.photos)
+  console.log("useEffect")
   let newPhotos = [...props.photos]; // copy of array
   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
 
   setUnderIndexs(photosUnder)
   !!props.photos && setPhotos([...newPhotos])
-  const grid = gridRef.current;}
+  const grid = gridRef.current;
   // adjustGridItemsHeight(grid, updPhoto);
 }, [props.photos])
 
+// useEffect(() => {
+//   const grid = gridRef.current;
+//   const photos = grid.children
+//   for (let i = 0; i < photos.length; i++) {
+//     let photo = photos[i]; // each square is "photo"
   
+//     let gridItem = photo.getBoundingClientRect();
+//     // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
+
+//     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
+
+//     let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
+//   	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
+  
+
+// 	photo.style.transformOrigin = `${originX}% ${originY}%`;
+//   } return 
+
+// }, [])
 
 
 const [drag, setDrag] = useState(false)
@@ -588,6 +610,9 @@ const dragging = () => {
   setDrag()
 }
 
+// useEffect(() => {
+//   console.log("drag", underIndexs)
+// }, [underIndexs])
 
   return (
     <article>
@@ -608,7 +633,7 @@ const dragging = () => {
           nextPhoto={nextPhoto}
         />
       )}
-      <LoadingModal imagesLoaded={imagesLoaded}>
+    <LoadingModal imagesLoaded={imagesLoaded}>
         <div className="background">iB</div>
         <div className="foreground"></div>
       </LoadingModal>
@@ -674,7 +699,7 @@ const dragging = () => {
                         // loading="lazy"
                         src={
                           !!photo.url
-                          ? photo.thumbnail_url
+                          ? photo.url
                           : require('../assets/100x135.png')
                         }
                         />
@@ -718,7 +743,7 @@ const dragging = () => {
       </article>
   );
 };
-export default MobilePhotoGrid;
+export default DndContainer;
 
 
 // const adjustHover = (grid) => {
@@ -787,7 +812,6 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
     
   } return 
 };
-
 
 const LoadingModal = styled.div`
     top: 136px;
@@ -955,7 +979,14 @@ const PictureFrame = styled.div`
   }   
 
   .photo {
-
+    /* position: relative; */
+    /* margin-block: auto; */
+    /* top: -8px; */
+    /* left: 0; */
+    /* position: relative; */
+    /* z-index: 9;
+    /* object-fit: cover; */
+    /* border-radius: 13px; */
     
     z-index: 9;
     ${({orientation}) => orientation ? 
@@ -1115,35 +1146,3 @@ background-color: gainsboro;
 }
   `
 
-// REFERENCE GRAVEYARD
-
-// useEffect(() => {
-  //   console.log("testing grid adjustment")
-  //   // , photos
-  //   const grid = gridRef.current;
-  //   // adjustGridItemsHeight(grid, updPhoto);
-  // }, [photos]);
-
-// useEffect(() => {
-//   const grid = gridRef.current;
-//   const photos = grid.children
-//   for (let i = 0; i < photos.length; i++) {
-//     let photo = photos[i]; // each square is "photo"
-  
-//     let gridItem = photo.getBoundingClientRect();
-//     // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
-
-//     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
-
-//     let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
-//   	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
-  
-
-// 	photo.style.transformOrigin = `${originX}% ${originY}%`;
-//   } return 
-
-// }, [])
-
-// useEffect(() => {
-//   console.log("drag", underIndexs)
-// }, [underIndexs])

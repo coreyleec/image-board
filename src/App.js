@@ -36,8 +36,8 @@ export const App = () => {
   // }
   // onbeforeunload()
   // SWITCH DATABASE VERSION
-  // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
-  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
+  const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
+  // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
   
 //   const observer = new PerformanceObserver((list) => {
 //     console.log('Long Task detected! 🚩️');
