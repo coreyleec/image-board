@@ -1136,7 +1136,7 @@ const [mobileTimer, setMobilTimer] = useState(0)
           nameSubmit={nameSubmit}
           dbVersion={dbVersion}
         />
-        {!mobile && <AsideRight
+        {<AsideRight
           skinny={skinny || mobile}
           mobile={mobile}
           loggedIn={loggedIn}
