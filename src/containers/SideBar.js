@@ -17,6 +17,9 @@ const SideBar = (props) => {
   const location = useLocation();
   let history = useHistory();
   let navigate = history.push;
+
+  const [skinny, setSkinny] = useState(false);
+
   const sideBarRef = useRef()
   // LOGOUT
   const logout = () => {
@@ -33,9 +36,21 @@ const SideBar = (props) => {
     setSideBar(false) 
   }
 
-  
-let topVal = props.skinny ? -6 : 20
-let loginTopVal = props.skinny ? -14 : 11
+  useEffect(() => {
+    if (window.innerWidth < 1100) {setSkinny(true)} 
+    else {setSkinny(false)}
+
+    const updateMedia = () => {
+      if (window.innerWidth < 1100) {setSkinny(true)} 
+      else {setSkinny(false)}
+    };
+    updateMedia()
+    window.addEventListener('resize', updateMedia);
+    return () => window.removeEventListener('resize', updateMedia);
+  }, []);
+
+let topVal = skinny ? -6 : 20
+let loginTopVal = skinny ? -14 : 11
 // console.log("top", topVal)
 const folderRef = useRef()
 const folderDemo = [!!folderRef.current && folderRef.current.offsetTop + topVal, 'these folders can be used to organize photos as you develope bodies of work']
@@ -79,7 +94,7 @@ useEffect(() => {
     setTimer(false)
   }, 7000);
  
-}, [props.skinny, sideBar])
+}, [skinny, sideBar])
 
   return (
     <aside>

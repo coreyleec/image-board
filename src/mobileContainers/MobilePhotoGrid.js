@@ -574,13 +574,6 @@ useEffect(() => {
   }
 }, [!!gridRef.current === true])
 
-// useEffect(() => {
-//   first
-
-//   return () => {
-//     second
-//   }
-// }, [])
 
 // FIND ME
 useEffect(() => {    
@@ -861,10 +854,10 @@ const PictureFrame = styled.div`
     display: flex;
     justify-content: center;
     border-radius: 13px;
-    box-shadow: -3px 3px 5px 2px #aaaaaa;
+    // box-shadow: -3px 3px 5px 2px #aaaaaa;
     outline: ${({highlight, url}) => !!url && highlight !== undefined && ` solid 3px ${highlight}`};
     width: 120px ;
-    box-shadow: ${({mobile}) => mobile ? 'none' : '-3px 3px 5px 2px #aaaaaa' };
+    // box-shadow: ${({mobile}) => mobile ? 'none' : '-3px 3px 5px 2px #aaaaaa' };
     max-width: calc(100% - 15px);
     transition: 
     height .1s ease-in,
@@ -924,7 +917,7 @@ const PictureFrame = styled.div`
   .photo {
     
     z-index: 9;
-    max-height: 116%;
+    max-height: 110%;
     object-fit: contain;
 }
 

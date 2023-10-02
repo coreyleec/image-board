@@ -1,4 +1,5 @@
 {
     "editor.wordWrap": "on",
-    "editor.hover.enabled": false
+    "editor.hover.enabled": false,
+    "terminal.integrated.scrollback": 2000
 }

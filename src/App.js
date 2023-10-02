@@ -89,7 +89,7 @@ const [enableDelete , setEnableDelete] = useState(false)
 const [photos, setPhotos] = useState([]);
 const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
-const [mobile, setMobile] = useState(null);
+const [mobile, setMobile] = useState(false);
 useEffect(() => {
   if (directory === 'community') { 
     setOverflow('hidden')
@@ -1056,7 +1056,7 @@ const [mobileTimer, setMobilTimer] = useState(0)
  }, [skinny])
  
   
-console.log("mobile", mobile)
+
     return (
       
       <Switch> 
@@ -1136,7 +1136,7 @@ console.log("mobile", mobile)
           nameSubmit={nameSubmit}
           dbVersion={dbVersion}
         />
-        <AsideRight
+        {!mobile && <AsideRight
           skinny={skinny || mobile}
           mobile={mobile}
           loggedIn={loggedIn}
@@ -1169,7 +1169,7 @@ console.log("mobile", mobile)
           currentUserId={currentUserId}
           dbVersion={dbVersion}
           // options={{unmountOnBlur: true}}
-        />
+        />}
         {/* if main state says community, overflow === hidden */}
         <main
         // style={{overflow: overflow, display: 'unset'}}
@@ -1289,58 +1289,6 @@ const Cont = styled.div`
   "leftbar footer rightbar";
 
 
-  header {
-    grid-area: header;
-    z-index: 1;
-    height: 130px;
-    background-color: gainsboro;
-    border-top-width: 0px;
-    border-right-width: 0px;
-    border-bottom-width: 6px;
-    border-left-width: 0px;
-    border-bottom-left-radius: 22px;
-    margin-bottom: 6px;
-    box-shadow: -3px 3px 5px 2px #aaaaaa;
-  }
-  
-  
-  main {
-    grid-area: main;
-    background-color: gainsboro;
-    border-radius: 22px 22px 22px 22px;
-    box-shadow: -3px 3px 5px 2px #aaaaaa;
-    display: block;
-    /* overflow: hidden; */
-    /* display: unset; */
-    /* align-items: center; */
-    
-  }
-  aside:nth-child(1) {
-    display: block;
-    position: relative;
-    z-index: 3;
-    margin-right: 5px;
-    grid-area: leftbar;
-    background-color: gainsboro;
-    border-top-width: 0px;
-    border-right-width: 6px;
-    border-bottom-width: 0px;
-    border-left-width: 0px;
-    box-shadow: -3px 3px 5px 2px #aaaaaa;
-    border-bottom-right-radius: 22px;
-  }
-  aside:nth-child(3) {
-    grid-area: rightbar;
-    background-color: gainsboro;
-    border-top-width: 0px;
-    border-right-width: 0px;
-    border-bottom-width: 0px;
-    /* border-left-width: 6px; */
-    border-radius: 22px 0px 0px 22px;
-    box-shadow: -3px 3px 5px 2px #aaaaaa;
-    margin-left: 6px;
-  }
-  
   @media (max-width: 1100px) {
   grid-template-columns:  0% 1fr 0%;
 }
