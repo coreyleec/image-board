@@ -4,8 +4,8 @@ import { useLocation, useRouteMatch } from 'react-router-dom';
 import styled from "styled-components";
 import { Heart } from '../My.styled'
 
-import "react-grid-layout/css/styles.css";
-import "react-resizable/css/styles.css";
+// import "react-grid-layout/css/styles.css";
+// import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
 import { first } from "lodash";
 
