@@ -34,7 +34,7 @@ const DndRoutePrefix = (props) => {
 return (
     <Switch>
 <Route path={[ `${match.path}/folders/:id` , `${match.path}/favorites/:id` ]} 
-      remder={(props) => props.mobile ? 
+      render={(props) => props.mobile ? 
           (<MobilePhotoGrid
             // subDirectory={subDirectory}
             mobile={props.mobile}
