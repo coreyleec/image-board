@@ -38,8 +38,7 @@ return (
  <Route path={[ `${match.path}/folders/:id` , `${match.path}/favorites/:id` ]} 
       >
         <div>
-         {props.mobile !== null && props.mobile ? 
-         <MobilePhotoGrid
+         {props.mobile !== null && props.mobile && <MobilePhotoGrid
             // subDirectory={subDirectory}
             mobile={props.mobile}
             loggedIn={props.loggedIn}
@@ -65,7 +64,8 @@ return (
               updateUserFavorites={props.updateUserFavorites}
               directory={props.directory}
               dbVersion={props.dbVersion}
-              /> : <DndContainer
+              /> }
+              {props.mobile !== null && !props.mobile && <DndContainer
             // subDirectory={subDirectory}
             mobile={props.mobile}
             loggedIn={props.loggedIn}
