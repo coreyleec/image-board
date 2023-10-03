@@ -1061,7 +1061,7 @@ const [mobileTimer, setMobilTimer] = useState(0)
       
       <Switch> 
       <Cont directory={directory} >
-         {mobile && <MobileModal></MobileModal>}
+         {/* {mobile && <MobileModal></MobileModal>} */}
          
         <SideBar
           mobile={mobile}
@@ -1327,7 +1327,7 @@ const MobileModal = styled.div`
   // left: 200px;
   border-radius: 16px;
   
-  ${({timer}) => !timer && 
+  // ${({timer}) => !timer && 
 `visibility: hidden; opacity: 0%;
 }` }
   // top: 5px;
@@ -1336,7 +1336,7 @@ const MobileModal = styled.div`
   position: absolute;
   // transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateY(-198px)')};
   transition: left 1s ease, opacity .2s linear .1s;
-  ${({ sideBar }) => (!sideBar ? `left : 55px` : `left: 200px`)};
+  // ${({ sideBar }) => (!sideBar ? `left : 55px` : `left: 200px`)};
   white-space: normal;
   cursor: default;
   padding: 15px;
