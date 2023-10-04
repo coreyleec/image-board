@@ -635,10 +635,10 @@ const dragging = () => {
           nextPhoto={nextPhoto}
         />
       )}
-    <LoadingModal imagesLoaded={imagesLoaded}>
+    {/* <LoadingModal imagesLoaded={imagesLoaded}>
         <div className="background">iB</div>
         <div className="foreground"></div>
-      </LoadingModal>
+      </LoadingModal> */}
       <DndProvider backend={MultiBackend} 
       options={HTML5toTouch}
       >

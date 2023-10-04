@@ -3,7 +3,7 @@ import React, { useRef} from 'react';
 import styled from 'styled-components';
 import { useDrag, useDrop } from 'react-dnd';
 
-const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, mobile, ...p }) => {
+const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }) => {
   // const { photo, onDrop, children, ...p } = props;
   // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
   // console.log( "onDrop", onDrop)
@@ -52,14 +52,13 @@ const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, mobile
 // const style = (photo.url === null) && {zIndex : '-1'}
   return <GridItemWrapper  
     {...p} ref={photoRef}  
-    isDragging={mobile ? false : isDragging}
+    isDragging={isDragging}
     orientation={orientation}
     // style={{ opacity }} 
     // style={{style}}
     // style={{cursor: isDragging ? 'grabbing' : 'grab' }}
     edit={edit} 
     photo={photo}
-    mobile={mobile}
     >
     {children}
     </GridItemWrapper>
@@ -137,8 +136,8 @@ const GridItemWrapper = styled.div `
   // padding-inline: 5px;
 
 display: block;
-  ${({url, edit, isDragging, orientation, mobile}) => 
-  edit && !mobile
+  ${({url, edit, isDragging, orientation}) => 
+  edit
     ? !!url
       ? `z-index: 2; 
         transition: transform .3s ease-in, z-index 0s 0s;
@@ -152,7 +151,7 @@ display: block;
       ? `z-index: 0; 
         transition: transform .3s ease-in .4s, z-index 0s 1s;
       &:hover {
-        transform: ${mobile ? 'scale(1)' : orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
+        transform: ${orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
         z-index: 5; 
         transition: z-index .3s cubic-bezier(0,1,1,0) , 
                     transform .3s ease-in;}`

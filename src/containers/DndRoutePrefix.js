@@ -39,7 +39,6 @@ return (
       >
         <DndContainer
             // subDirectory={subDirectory}
-            mobile={props.mobile}
             loggedIn={props.loggedIn}
             folderCollaborators={props.folderCollaborators}
               hightlighted={props.hightlighted}
