@@ -407,7 +407,7 @@ useEffect(() => {
   .then((res) => res.json())
   .then((photoObj) => {
     console.log("photoObj",photoObj);
-    props.setPhotos(photos.map((photo) => {
+    props.setPhotos(props.photos.map((photo) => {
         if (photo.id === photoObj.id) return photoObj;
         else return photo;})
       );
@@ -563,48 +563,24 @@ const adjustFunction = () => {
 
 
 
-  // useEffect(() => {
-  //   console.log("testing grid adjustment")
-  //   // , photos
-  //   const grid = gridRef.current;
-  //   // adjustGridItemsHeight(grid, updPhoto);
-  // }, [photos]);
+
 // FIND ME
 useEffect(() => {    
   // console.log("photos", props.photos)
   // console.log("useEffect", props.photos, props.colorArr)
   if (!!props.photos.length){
-    console.log("useEffect", props.photos)
-  console.log("useEffect")
+  console.log("useEffect", props.photos)
   let newPhotos = [...props.photos]; // copy of array
   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
 
   setUnderIndexs(photosUnder)
-  !!props.photos && setPhotos([...newPhotos])}
-  // const grid = gridRef.current;
+  !!props.photos && setPhotos([...newPhotos])
+  const grid = gridRef.current;}
   // adjustGridItemsHeight(grid, updPhoto);
 }, [props.photos])
 
-// useEffect(() => {
-//   const grid = gridRef.current;
-//   const photos = grid.children
-//   for (let i = 0; i < photos.length; i++) {
-//     let photo = photos[i]; // each square is "photo"
   
-//     let gridItem = photo.getBoundingClientRect();
-//     // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
-
-//     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
-
-//     let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
-//   	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
-  
-
-// 	photo.style.transformOrigin = `${originX}% ${originY}%`;
-//   } return 
-
-// }, [])
 
 
 const [drag, setDrag] = useState(false)
@@ -612,9 +588,6 @@ const dragging = () => {
   setDrag()
 }
 
-// useEffect(() => {
-//   console.log("drag", underIndexs)
-// }, [underIndexs])
 
   return (
     <article>
@@ -635,10 +608,7 @@ const dragging = () => {
           nextPhoto={nextPhoto}
         />
       )}
-    {/* <LoadingModal imagesLoaded={imagesLoaded}>
-        <div className="background">iB</div>
-        <div className="foreground"></div>
-      </LoadingModal> */}
+
       <DndProvider backend={MultiBackend} 
       options={HTML5toTouch}
       >
@@ -815,58 +785,7 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
   } return 
 };
 
-const LoadingModal = styled.div`
-    top: 136px;
-    position: absolute;
-    left: 17%;
-    height: -webkit-fill-available;
-    width: 66%;
-    z-index: 8;
-// position: absolute;
-// // top: 0;
-// left: 0px;
-// height: -webkit-fill-available;
-// width: -webkit-fill-available;
-z-index: ${({imagesLoaded}) => !imagesLoaded ? '7' : '-1'};
 
-.background{
-    height: -webkit-fill-available;
-    width: -webkit-fill-available;
-    position: absolute;
-    background: gainsboro;
-    opacity: ${({imagesLoaded}) => imagesLoaded ? '0%' : '100%'};
-    top: 0px;
-    color: black;
-    font-size: xxx-large;
-    padding-inline: 45%;
-    padding-top: 25%;
-    z-index: 7;
-    transition: opacity .3s easy-out;
-}
-
-.foreground{
-    position: absolute;
-    z-index: 13;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    // background: #dcdcdc8c;
-    backdrop-filter: ${({imagesLoaded}) => imagesLoaded ? 'blur(0px)' : 'blur(10px)'};
-    height: -webkit-fill-available;
-    width: -webkit-fill-available;
-    transition: backdrop-filter .3s easy-out;
-    animation: blur-in 2s forwards; 
-}
-@keyframes blur-in {
-  from {
-    backdrop-filter: blur(10px);
-  }
-  to {
-    backdrop-filter: blur(0px);
-  }
-}
-`
 
 const GridWrapper = styled.div`
   display: grid;
@@ -1147,3 +1066,36 @@ background-color: gainsboro;
   `
 }
   `
+
+// REFERENCE GRAVEYARD
+
+// useEffect(() => {
+  //   console.log("testing grid adjustment")
+  //   // , photos
+  //   const grid = gridRef.current;
+  //   // adjustGridItemsHeight(grid, updPhoto);
+  // }, [photos]);
+
+// useEffect(() => {
+//   const grid = gridRef.current;
+//   const photos = grid.children
+//   for (let i = 0; i < photos.length; i++) {
+//     let photo = photos[i]; // each square is "photo"
+  
+//     let gridItem = photo.getBoundingClientRect();
+//     // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
+
+//     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
+
+//     let originX = (10 * ( fromCenter/window.innerWidth * 100)) / 9,
+//   	originY =  (10 * (gridItem.top/window.innerHeight * 100)) / 10;
+  
+
+// 	photo.style.transformOrigin = `${originX}% ${originY}%`;
+//   } return 
+
+// }, [])
+
+// useEffect(() => {
+//   console.log("drag", underIndexs)
+// }, [underIndexs])
