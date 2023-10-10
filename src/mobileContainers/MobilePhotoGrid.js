@@ -11,7 +11,7 @@ const MobilePhotoGrid = (props) => {
 
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState(null)
-
+  const [updPhoto, setUpdPhoto] = useState(null)
   const [imgCount, setImgCount] = useState(0)
   const gridRef = useRef(null);
   const gridWrapperRef = useRef(null)
