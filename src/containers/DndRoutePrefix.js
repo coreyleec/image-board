@@ -38,7 +38,7 @@ return (
  <Route path={[ `${match.path}/folders/:id` , `${match.path}/favorites/:id` ]} 
       >
         <div>
-         {props.mobile ? <MobilePhotoGrid
+         <DndContainer
             // subDirectory={subDirectory}
             mobile={props.mobile}
             loggedIn={props.loggedIn}
@@ -65,33 +65,6 @@ return (
               directory={props.directory}
               dbVersion={props.dbVersion}
               /> 
-              : <DndContainer
-            // subDirectory={subDirectory}
-            mobile={props.mobile}
-            loggedIn={props.loggedIn}
-            folderCollaborators={props.folderCollaborators}
-              hightlighted={props.hightlighted}
-              setBaseName={props.setBaseName}
-              photos={props.photos}
-              colorArr={props.colorArr}
-              setPhotos={props.setPhotos}
-              openModal={props.openModal}
-              setOpenModal={props.setOpenModal}
-              folderShown={props.folderShown}
-              
-              uuid={props.uuid}
-              userId={props.userId}
-              currentUserId={props.currentUserId}
-              demo={props.demo}
-              setReorderedPhotos={props.setReorderedPhotos}
-              deletePhoto={props.deletePhoto}
-              enableDelete={props.enableDelete}
-              edit={props.edit}
-              reorderSubmit={props.reorderSubmit}
-              updateUserFavorites={props.updateUserFavorites}
-              directory={props.directory}
-              dbVersion={props.dbVersion}
-              /> }
 </div>
               </Route> 
 
