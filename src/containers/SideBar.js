@@ -160,7 +160,7 @@ useEffect(() => {
 
           
         }
-         {!props.mobile && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
+         {!mobile && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
          <>
         <Switch>
             <label className="toggle-switch">
@@ -178,7 +178,7 @@ useEffect(() => {
             </div>
             <div className="scrollable">
 
-              {true &&     (
+
                   <>
                     <div onMouseOver={() => setDemoText(folderDemo)}
                     ref={folderRef}
@@ -234,7 +234,7 @@ useEffect(() => {
                     }
 
                   </>
-                )}
+
 {/* ((props.directory === 'by_Corey_Lee' || props.directory === 'user' || props.directory === 'home') ||(props.published || props.edit)) */}
 
 {/* ABOUT */}

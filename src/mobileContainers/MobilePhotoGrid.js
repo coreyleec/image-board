@@ -1,20 +1,17 @@
 import React from "react";
 import { useEffect, useState, useRef, useCallback} from "react";
-import { useLocation, useRouteMatch } from 'react-router-dom';
 import styled from "styled-components";
 import { Heart } from '../My.styled'
-
-// import "react-grid-layout/css/styles.css";
-// import "react-resizable/css/styles.css";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
-import { first } from "lodash";
 
 
 const MobilePhotoGrid = (props) => {
 
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState(null)
-  const [updPhoto, setUpdPhoto] = useState(null)
+
   const [imgCount, setImgCount] = useState(0)
   const gridRef = useRef(null);
   const gridWrapperRef = useRef(null)
@@ -589,7 +586,7 @@ useEffect(() => {
   !!props.photos && setPhotos([...newPhotos])
   const grid = gridRef.current;}
   // adjustGridItemsHeight(grid, updPhoto);
-}, [props.photos, props.mobile])
+}, [props.photos])
 
 
 

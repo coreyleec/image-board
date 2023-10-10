@@ -637,7 +637,7 @@ const dragging = () => {
                     highlight={photo.color}
                   >
                     <PictureFrame
-                    className="picture"
+                    className={"picture"}
                     // onResize={() => console.log("hello")}
                       // favorited={!!photo.favorites && photo.favorites.length} 
                       // onMouseDown={() => console.log("drag",underIndexs.filter((index) => index === (photo.index + 6)))}

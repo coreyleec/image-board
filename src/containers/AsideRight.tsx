@@ -402,7 +402,7 @@ let deleteDemoArrow =  (editDrawerRef.current?.childNodes[0].clientHeight !== 25
 const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.currentUserId)
   return (
     <aside ref={asideRef}  >
-     {props.mobile === false &&
+     {props.mobile &&
       <Sticky>
       <SideWrapper skinny={props.skinny} asideRef={asideRef} onMouseEnter={() => props.setHover(false)}>
       {(((props.directory === 'home' || props.directory === 'by_Corey_Lee' || (props.directory === 'user' && props.subDirectory !== 'about')))) &&  

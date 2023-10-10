@@ -90,6 +90,7 @@ const [photos, setPhotos] = useState([]);
 const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
 const [mobile, setMobile] = useState(null);
+
 useEffect(() => {
   if (directory === 'community') { 
     setOverflow('hidden')
@@ -105,6 +106,10 @@ useEffect(() => {
 
 
 useEffect(() => {
+   
+  if(mobile === null){
+    mobile ? console.log("true") : console.log("false")
+  }
   if (window.innerWidth < 1100) {
     setSkinny(true)
   } 
@@ -1136,7 +1141,7 @@ const [mobileTimer, setMobilTimer] = useState(0)
           nameSubmit={nameSubmit}
           dbVersion={dbVersion}
         />
-        {!mobile && <AsideRight
+        {mobile === false && <AsideRight
           skinny={skinny || mobile}
           mobile={mobile}
           loggedIn={loggedIn}
