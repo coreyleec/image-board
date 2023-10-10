@@ -637,7 +637,6 @@ useEffect(() => {
                     id={photo.index}
                     mobile={props.mobile}
                     edit={props.edit}
-                    draggable={!props.mobile}
                     key={photo.index}
                     orientation={photo.orientation}
                     url={!!photo.url}
