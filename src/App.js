@@ -89,7 +89,7 @@ const [enableDelete , setEnableDelete] = useState(false)
 const [photos, setPhotos] = useState([]);
 const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
-const [mobile, setMobile] = useState(null);
+const [mobile, setMobile] = useState(false);
 
 useEffect(() => {
   if (directory === 'community') { 
@@ -1325,36 +1325,36 @@ const Cont = styled.div`
 `
 /* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '0% 1fr 0%'}; */
   
-const MobileModal = styled.div`
-// top: 60px;
-  // right: 60px;
-  top: 32px;
-  // left: 200px;
-  border-radius: 16px;
+// const MobileModal = styled.div`
+// // top: 60px;
+//   // right: 60px;
+//   top: 32px;
+//   // left: 200px;
+//   border-radius: 16px;
   
-  // ${({timer}) => !timer && 
-`visibility: hidden; opacity: 0%;
-}` }
-  // top: 5px;
-  // left: 210px;
-  max-height: fit-content;
-  position: absolute;
-  // transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateY(-198px)')};
-  transition: left 1s ease, opacity .2s linear .1s;
-  // ${({ sideBar }) => (!sideBar ? `left : 55px` : `left: 200px`)};
-  white-space: normal;
-  cursor: default;
-  padding: 15px;
-  background: #ff7f5080;
-  backdrop-filter: blur(6px);
-  // border-radius: 16px;
-  color: blue;
-  font-size: 16px;
-  opacity: 100%;
-  width: 135px;
-  // transition: transform 1s ease, top .3s ease;
+//   // ${({timer}) => !timer && 
+// `visibility: hidden; opacity: 0%;
+// }` }
+//   // top: 5px;
+//   // left: 210px;
+//   max-height: fit-content;
+//   position: absolute;
+//   // transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateY(-198px)')};
+//   transition: left 1s ease, opacity .2s linear .1s;
+//   // ${({ sideBar }) => (!sideBar ? `left : 55px` : `left: 200px`)};
+//   white-space: normal;
+//   cursor: default;
+//   padding: 15px;
+//   background: #ff7f5080;
+//   backdrop-filter: blur(6px);
+//   // border-radius: 16px;
+//   color: blue;
+//   font-size: 16px;
+//   opacity: 100%;
+//   width: 135px;
+//   // transition: transform 1s ease, top .3s ease;
   
-`
+// `
 
 
 const Footer = styled.footer`
