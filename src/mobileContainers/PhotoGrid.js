@@ -596,7 +596,7 @@ useEffect(() => {
   return (
     <article >
 {/* <Square className="square" xCenter={xCenter} yCenter={yCenter}></Square> */}
-      {openModal && (
+      {/* {openModal && (
         <ImageModal
         setImgUrl={setImgUrl}
         setPhotos={props.setPhotos} 
@@ -610,11 +610,11 @@ useEffect(() => {
           previousPhoto={previousPhoto}
           nextPhoto={nextPhoto}
         />
-      )}
-      <LoadingModal imagesLoaded={imagesLoaded}>
+      )} */}
+      {/* <LoadingModal imagesLoaded={imagesLoaded}>
         <div className="background">iB</div>
         <div className="foreground"></div>
-      </LoadingModal>
+      </LoadingModal> */}
 
 
         <>
