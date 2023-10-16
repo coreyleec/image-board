@@ -538,9 +538,9 @@ const adjustFunction = () => {
   for (let i = 0; i < photos.length; i++) {
     let photo = photos[i]; // each square is "photo"
     // let photoUnder = photos[i + 6]
+    // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
     
     let gridItem = photo.getBoundingClientRect();
-    // console.log("gridItem.left > window.innerWidth", gridItem.left + ">" + window.innerWidth/2)
     let height = +getComputedStyle(photo.firstChild).height.slice(0, -2)
     let fromCenter = (gridItem.left > window.innerWidth/2) ? gridItem.left : -gridItem.right
 
@@ -561,89 +561,8 @@ const adjustFunction = () => {
   setImagesLoaded(true)
 }
 
-// if image is in center then trigger css changes
-// if gridItem.left - gridItem.right = innerWidth * .20
-//  and if gridItem.top - gridItem.bottom = innerHeight * .20
-// 0px = 100% && 100px = 0% 
-// as difference from center decreases 
-// emptyPhoto on outside
-// every 6 photos, all empty photos are on outside, below 3 on left and above 3 on left
 
-const grid = gridRef.current;
-// grid.onbeforeunload = () => {
-//   const gridRect = grid.getBoundingClientRect()
-//   const width = gridRect.width
-//   grid.scrollLeft(width/2);
-//   console.log("scroll")
-// }
-const scrollPosition = () => {
-  if (props.mobile){
- 
- const gridRect = grid.getBoundingClientRect()
- const width = gridRect.width/2
- 
- const photos = grid.children
- 
- const scrollCont = scrollRef.current;
- const scrollRect = scrollCont.getBoundingClientRect()
- const height = scrollRect.height
- 
- 
- for (let i = 0; i < photos.length; i++) {
-   const photo = photos[i]; // each square is "photo"
-   const orientation = !!photo.getElementsByClassName("portrait").length
-   const type = !!photo.getElementsByClassName("tile").length
-   
-   const gridItem = photo.getBoundingClientRect();
-   const top = gridItem.top
-   const left = gridItem.left
 
-   // .50 === 2, .25 === 1, .75 === 1
-   // 1/25
-   // (((top + height)/2) - height)
-   if ((top >= height * .25 && top < height * .5) && (left >= width * .25 && left <= width * .75)){
-     console.log("type", orientation, type)
-     if (!orientation){
-      photo.style.gridColumnEnd = `span 2`
-      photo.style.gridRowEnd = `span 80`
-      photo.firstChild.style.height = '220px'
-      photo.firstChild.style.top = '50%'
-    }
-    else {
-      photo.style.gridColumnEnd = `span 2`
-      photo.style.gridRowEnd = `span 120`
-      photo.firstChild.style.height = '340px'
-      photo.firstChild.style.top = '50%'
-    }
-}
-  else {
-    if (type){
-      photo.style.gridColumnEnd = `span 1`
-      photo.style.gridRowEnd = `span 40`
-      photo.firstChild.style.height = '100px'
-    }
-    else {
-    if (!orientation){
-      photo.style.gridColumnEnd = `span 1`
-      photo.style.gridRowEnd = `span 40`
-      photo.firstChild.style.height = '100px'
-    }
-    else {
-      photo.style.gridColumnEnd = `span 1`
-      photo.style.gridRowEnd = `span 80`
-      photo.firstChild.style.height = '220px'
-      photo.firstChild.style.top = '50%'
-    }
-   }
-   }
-  }
-  
-   
- } 
-}
-// grid-row-end: 1; 
-  //  grid-column-start: 1; 
-    //  grid-column-end: none;
 
 // FIND ME
 useEffect(() => {    
@@ -659,7 +578,7 @@ useEffect(() => {
   !!props.photos && setPhotos([...newPhotos])
   const grid = gridRef.current;}
   // adjustGridItemsHeight(grid, updPhoto);
-}, [props.photos, props.mobile])
+}, [props.photos])
 
   
 
@@ -669,12 +588,9 @@ const dragging = () => {
   setDrag()
 }
 
-const scrollRef = useRef(null)
+
   return (
-    <article 
-    
-    
-    >
+    <article>
       {/* <button onClick={adjustFunction}>adjust</button> */}
       {openModal && (
         <ImageModal
@@ -697,22 +613,16 @@ const scrollRef = useRef(null)
       options={HTML5toTouch}
       >
         <>
-          <div 
-          className="grid"
-          onScroll={() => scrollPosition()}
-          ref={scrollRef}
-          >
-            <div className="bumper"></div>
+          <div className="grid">
             <GridWrapper
               ref={gridRef}
-              
               style={{ opacity: imagesLoaded ? 1 : 0 }}
               // style={{ opacity }}
               >
               {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
                     className="grid-item"
                     edit={props.edit}
-                    
+                    alt={photo.index}
                     key={photo.index}
                     orientation={photo.orientation}
                     url={photo.url}
@@ -727,15 +637,14 @@ const scrollRef = useRef(null)
                     highlight={photo.color}
                   >
                     <PictureFrame
-                    className={!!photo.url ? photo.orientation ? "picture landscape" : "picture portrait" : 'tile landscape'}
-                    // alt={}
+                    className="picture"
                     // onResize={() => console.log("hello")}
                       // favorited={!!photo.favorites && photo.favorites.length} 
                       // onMouseDown={() => console.log("drag",underIndexs.filter((index) => index === (photo.index + 6)))}
                       // onMouseUp={() => console.log(underIndexs.filter((index) => index === (photo.index + 6)))}
 
                       
-                      mobile={props.mobile}
+
                       edit={props.edit}
                       url={photo.url}
                       highlight={photo.color}
@@ -799,7 +708,6 @@ const scrollRef = useRef(null)
                   </DraggableGridItem>
                 ))}
             </GridWrapper>
-            <div className="bumper"></div>
           </div>
       </>
       </DndProvider>
@@ -881,20 +789,14 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
 
 const GridWrapper = styled.div`
   display: grid;
+  justify-content: center;
   grid-gap: 2px;
   grid-auto-rows: 1px;
   grid-template-columns: repeat(6,minmax(120px, 155px));
-  width: min-content;
-
-  @media (max-width: 700px) {
-    position: relative;
-    padding-inline: 10vw;
-    overflow: overlay;
-  }
   .grid-item{
     grid-row-end: span 40;
   }
-  ;
+  
 `;
 // COMPASS 
  /* className={
@@ -909,19 +811,18 @@ const GridWrapper = styled.div`
             : "empty-box" // HAS NO IMAGE URL
         } */
 
-        // width: ${({mobile}) => mobile ? '-webkit-fill-available' : 'min-content' }
+
         
 const PictureFrame = styled.div`
 
     position: relative;
     left: 50%;
-    top: ${({orientation, mobile}) => orientation ? '50%' : '100%' };
-    // top: ${({orientation, mobile}) => orientation ? '50%' : mobile ? '50%' : '100%' };
+    top: ${({orientation}) => orientation ? '50%' : '100%' };
     transform: translate(-50%, -50%);
     padding: 0px;
     overflow: hidden;
-    height: ${({orientation, mobile}) => orientation ? '100px' : '220px'}
-    ;
+    /* height: min-content; */
+    height: ${({orientation}) => orientation ? '100px' : '220px' };
     background-color: ${({edit}) => edit ? 'gainsboro' : 'rgb(255 87 0 / 69%)'};
     backdrop-filter: blur(6px);
     display: flex;
@@ -930,14 +831,9 @@ const PictureFrame = styled.div`
     box-shadow: -3px 3px 5px 2px #aaaaaa;
     outline: ${({highlight, url}) => !!url && highlight !== undefined && ` solid 3px ${highlight}`};
     
-    width: ${({mobile}) => mobile ? ' -webkit-fill-available' : 'min-content' };
-    // max-height: ${({mobile}) => mobile ? '90%' : 'unset' };
+    width: min-content;
     max-width: 90%;
-    // max-width: 96%;
-
     transition: 
-    height .3s ease-in,
-    width .3s ease-in,
     border-radius .2s ease-out, 
     background-color 0s linear 1s, 
     max-width .3s ease-out .2s, 
@@ -960,8 +856,7 @@ const PictureFrame = styled.div`
     /* overflow: visible; */
     /* margin: 0px; */
     overflow-y: clip;
-    // width: max-content;
-    width: ${({mobile}) => mobile ? '100%' : 'max-content' };
+    width: max-content;
     border-radius: 13px;
     transition: border-radius .2s ease-out;
 }
@@ -1015,8 +910,7 @@ const PictureFrame = styled.div`
     /* border-radius: 13px; */
     
     z-index: 9;
-    ${({mobile, orientation}) => mobile ? 
-    'height: -webkit-fill-available; width: 100%;' : orientation ? 
+    ${({orientation}) => orientation ? 
     'max-width: 150px; min-height: 100px;' : 'min-width: 135px; max-height: 220px;' }
 }
 /* height: 100%; */
