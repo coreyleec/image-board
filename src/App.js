@@ -1249,7 +1249,7 @@ useEffect(() => {
   )}
   export default App
 
-const Cont = styled.div`
+  const Cont = styled.div`
   display: grid;
   height: 100vh;
   width: 100vw;
@@ -1264,6 +1264,30 @@ const Cont = styled.div`
 
   @media (max-width: 1100px) {
   grid-template-columns:  0% 1fr 0%;
+}
+// : '2'
+@media (min-width: 1100px) {
+  main{
+    
+    ${({directory}) => directory === "community" && 'height: 100%; overflow: hidden;'}
+    // height: ${props => props.directory === "community" ? 'auto' : '100%'};
+     ;
+  }
+}
+@media (max-width: 700px) {
+  
+  background-color: black;
+  
+  main, header{
+    background-color: black;
+  }
+
+  header{
+    box-shadow: none;
+  }
+  main{
+    box-shadow: none;
+  }
 }
 
 `

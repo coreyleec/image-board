@@ -12,15 +12,20 @@ html {
   min-width: 100%;
 }
 body {
-  overflow-x: hidden;
-  overflow-y: scroll;
+  /* overflow-x: hidden;
+  overflow-y: scroll; */
+  /* overflow: hidden; */
   width: 100vw;
   height: 100vh;
   background-color: hwb(0deg 83% 17%);
+  /* background-color: black; */
   margin: 0;
   -moz-osx-font-smoothing: grayscale;
 }
 body::-webkit-scrollbar {
+  display: none;
+}
+article::-webkit-scrollbar {
   display: none;
 }
 
@@ -46,13 +51,14 @@ main {
   border-radius: 22px 22px 22px 22px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
   display: block;
+  /* overflow: hidden; */
   /* display: unset; */
   /* align-items: center; */
   
 }
-/* main div{
-  display: flex;
-} */
+main div{
+  /* display: flex; */
+}
 aside:nth-child(1) {
   display: block;
   position: relative;
@@ -68,16 +74,11 @@ aside:nth-child(1) {
   border-bottom-right-radius: 22px;
 }
 
-.grid {
-  /* overflow: scroll; */
-  justify-content: center;
-  display: inline;
+.grid-wrapper {
   height: -webkit-fill-available;
   width: -webkit-fill-available;
-  /* height: 100%;
-  width: 100%; */
 }
-.grid::-webkit-scrollbar {
+.grid-wrapper::-webkit-scrollbar {
   display: none;
 }
 aside:nth-child(3) {
@@ -97,42 +98,41 @@ aside:nth-child(3) {
     margin-left: 0px;
   }
   }
+  /* background-color: #474747; */
   @media (max-width: 700px) {
     header {
-      height: 90px;
+      height: 75px;
     }
     main{
       display: flex;
       justify-content: center;
       overflow: hidden;
     }
+    body {
+      background-color: black;
+    }
     article {
-      display: flex;
-      justify-content: center;
       padding-inline: 0;
       padding-top: 0px;
     }
-    .grid {
+    .grid-wrapper {
       padding-block: 20vh;
       padding-inline: 22vw;
       overflow: scroll;
-      /* padding: 80px; */
-      /* padding: 22%; */
-      /* display: flex;
-      justify-content: center; */
-      /* flex-direction: column; */
-    }
-    .bumper{
-      width: 10vw;
-      height: 100vh;
-      display: inline;
+      white-space: nowrap;
     }
     .title-cont {
       font-size: 1rem;
       line-height: 1em;
     }
     .nav-bar-header{
+      all: unset;
       font-size: 25px;
+      color: gainsboro;
+      line-height: 1;
+      margin-bottom: 0px;
+      cursor: pointer;
+
     }
 
     }
@@ -141,20 +141,51 @@ aside:nth-child(3) {
         padding-inline: max(10%);
         padding-top: 80px;
       }
-      .grid{
+      .grid-wrapper{
         display: flex;
+        justify-content: center;
+      }
+      .nav-bar-header{
+        font-style: italic;   
+      -moz-text-fill-color:gainsboro;
+      -webkit-text-fill-color: gainsboro;
+      -moz-text-stroke-color: black;
+      -webkit-text-stroke-color: black;
+      -moz-text-stroke-width: 1.5px;  
+      -webkit-text-stroke-width: 1.5px;
+      font-size: 35px;
+      line-height: 1.2;
+      margin-bottom: 0px;
+      cursor: pointer;
+      text-shadow: 0px 0px #212529;
+        transition: all 0.5s ease-in .2s;
+    }
+    .nav-bar-header:hover {
+        transition: all 0.2s ease-out;
+    
+        transform: translate(3px, -3px); 
+        text-shadow:
+        -3px 3px #212529,
+        -2.75px 2.75px #212529,
+        -2.5px 2.5px #212529,
+        -2.25px 2.25px #212529,
+        -2px 2px #212529,
+        -1.75px 1.75px #212529,
+        -1.5px 1.5px #212529,
+        -1.25px 1.25px #212529,
+        -1px 1px #212529,
+        -0.75px 0.75px #212529,
+        -0.5px 0.5px #212529,
+        -0.25px 0.25px #212529
+    
       }
     }
 article {
-  /* padding-inline: max(10%);
-  padding-top: 80px; */
   /* height: 95rem;
   min-width: 700px; */
-  /* overflow: scroll; */
   height: -webkit-fill-available;
   width: -webkit-fill-available;
-  /* width: min-content; */
-  overflow-x: scroll;
+  /* overflow-x: visible; */
 }
 
 
@@ -262,41 +293,7 @@ input:-webkit-autofill {
   .nav-bar-header-wrapper{
     display: inline-flex
   }
-  .nav-bar-header{
-    font-style: italic;
-    
-  -moz-text-fill-color:gainsboro;
-  -webkit-text-fill-color: gainsboro;
-  -moz-text-stroke-color: black;
-  -webkit-text-stroke-color: black;
-  -moz-text-stroke-width: 1.5px;  
-  -webkit-text-stroke-width: 1.5px;
-  font-size: 35px;
-  line-height: 1.2;
-  margin-bottom: 0px;
-  cursor: pointer;
-  text-shadow: 0px 0px #212529;
-    transition: all 0.5s ease-in .2s;
-}
-.nav-bar-header:hover {
-    transition: all 0.2s ease-out;
-
-    transform: translate(3px, -3px); 
-    text-shadow:
-    -3px 3px #212529,
-    -2.75px 2.75px #212529,
-    -2.5px 2.5px #212529,
-    -2.25px 2.25px #212529,
-    -2px 2px #212529,
-    -1.75px 1.75px #212529,
-    -1.5px 1.5px #212529,
-    -1.25px 1.25px #212529,
-    -1px 1px #212529,
-    -0.75px 0.75px #212529,
-    -0.5px 0.5px #212529,
-    -0.25px 0.25px #212529
-
-  }
+  
   
 
   a {
