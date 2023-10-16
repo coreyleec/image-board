@@ -50,9 +50,9 @@ main {
   /* align-items: center; */
   
 }
-main div{
+/* main div{
   display: flex;
-}
+} */
 aside:nth-child(1) {
   display: block;
   position: relative;
