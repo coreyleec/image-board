@@ -1,156 +1,60 @@
+import React from 'react';
+import styled from "styled-components";
+
+const PhotoFeed = (props) => {
 
 
+return (
 
 
-
-  <RightCont>
-  <p>photos</p>
+  <Cont>
   <div className='coffin-cont'>
   <div className='coffin'>
   <div className='coffin-header'></div>
-  <div className='coffin-footer'></div>
-{!!photos && photos.slice(0, 5).map(photo => 
-    <PhotoCard
-    onClick={() => console.log(photo.id)}>
-    <div className="text-cont">
-    {!!photo.name && <p className="photo-name" ><mark>{photo.name}</mark></p>}
-    {!!photo.details && <p className="photo-details" ><mark>{photo.details}</mark></p>}
-    <p className="user-name" onClick={() => props.fetchUser(photo.user_id)} ><mark>{photo.folder.user.name}</mark></p>
-    {/* <p className="folder-name">{photo.folder.name}</p> */}
-    </div>
-    <img src={photo.url}/>
-    </PhotoCard>)}
+  
+{!!props.catagory && props.catagory.map(group =>
+<div>
+{group.photos.map(photo => 
+    <PhotoCard onClick={() => console.log(photo.id)}>
+
+      <div id={photo.id} className="text-cont">
+        {!!photo.name && <p className="photo-name" ><mark>{photo.name}</mark></p>}
+        {!!photo.details && <p className="photo-details" ><mark>{photo.details}</mark></p>}
+        <p className="user-name" onClick={() => props.fetchUser(photo.u_id)} ><mark>{photo.user_name}</mark></p>
+        {/* <p className="folder-name">{photo.folder.name}</p> */}
+      </div>
+      <img src={photo.url}/>
+
+    </PhotoCard>
+    )
+  }
+  </div>
+    )
+    }
+    <div className='coffin-footer'></div>
     </div>
   </div>
-</RightCont>
+</Cont>
+
+  
+)
+
+}
+
+export default PhotoFeed
 
 
-
-const RightCont = styled.div`
-    background-color: gainsboro;
-    display: block;
-    width: 48%;
-    border-radius: 13px;
-    margin-inline: 15px;
-    
-    /* height: 805px; */
-    height: 100%;
-    max-height: -webkit-fill-available;
-    box-shadow: -3px 3px 5px 2px #aaaaaa;
-    overflow: hidden;
-    padding-top: 15px;
-    /* padding-right: 15px; */
-    /* padding-bottom: 15px; */
-    padding-left: 15px;
-    
-    /* border: solid;
-    padding: 15px; */
-    
-    .coffin-cont {
-    position: relative;
-    overflow: hidden;
-    top: 15px;
-    height: calc(100% - 50px);
-    /* height: -webkit-fill-available; */
-    /* height: 100%; */
-}
-.coffin::-webkit-scrollbar-track {
-    background: transparent;
-}
-.coffin {
-    /* box-sizing: content-box;  */
-    /* border-radius: 13px; */
-    overflow-y: scroll;
-    /* scrollbar-gutter: stable; */
-    /* width: fit-content; */
-    /* height: 29em; */
-    height: 100%;
-    padding-right: 15px;
-    /* box-sizing: content-box;
-    border-radius: 13px;
-    overflow-y: scroll;
-    scrollbar-gutter: stable;
-    width: fit-content;
-    height: 745px;
-    padding-right: 15px; */
-    /* ::-webkit-scrollbar-track {
-    background: gainsboro;
-} */
-}
-.coffin-header {
-    position: absolute;
-    height: 15px;
-    margin-right: 15px;
-    width: -webkit-fill-available;
-    /* margin-bottom: auto; */
-    z-index: 3;
-    /* background: gainsboro; */
-    border-radius: 25px 25px 0px 0;
-    /* top: -15px; */
-    /* &:before {
-        position: absolute;
-        content: " ";
-        background-color: transparent;
-        bottom: -40px;
-        right: 0;
-        width: -webkit-fill-available;
-        height: 40px;
-        border-top-right-radius: 13px;
-        border-top-left-radius: 13px;
-        box-shadow: 0 -25px 0 0 gainsboro;
-    } */
-  }
-    .coffin-header::before {
-        position: absolute;
-        content: " ";
-        background-color: transparent;
-        /* bottom: -40px; */
-        right: 0;
-        width: -webkit-fill-available;
-        height: 40px;
-        border-top-right-radius: 13px;
-        border-top-left-radius: 13px;
-        box-shadow: 0 -25px 0 0 gainsboro;
-}
-.coffin-footer {
-    position: absolute;
-    height: 15px;
-    /* top: 780px; */
-    /* top: calc(100% - 15px); */
-    margin-right: 15px;
-    bottom: calc(0% - 45px);
-    width: -webkit-fill-available;
-    z-index: 4;
-    border-radius: 0 0 25px 25px;
-    
-}
-.coffin-footer::before {
-    content: " ";
-    position: absolute;
-    background-color: transparent;
-    bottom: 50px;
-    /* right: 0; */
-    width: -webkit-fill-available;
-    height: 40px;
-    border-bottom-right-radius: 13px;
-    border-bottom-left-radius: 13px;
-    box-shadow: 0px 30px 0 0 gainsboro;
-}
-    /* img{
-        border-radius: 13px;
-    } */
-`
 
 
 
 const PhotoCard = styled.div`
   position: relative;
   z-index: 4;
-  flex-direction: column;
+  // flex-direction: column;
   height: fit-content;
   border-radius: 13px;
   margin-bottom: 15px;
-  background-color: gainsboro;
+  background-color: black;
 
 /* &:hover .text-cont {
   opacity: 1;
@@ -165,27 +69,27 @@ img {
     border-radius: 13px;
 }
 .text-cont {
+  position: absolute;
+  flex: 0.75 1 0%;
+  overflow-y: auto;
+  // background: gainsboro;
   transition: opacity 0.4s ease;
-  /* opacity: 0; */
-  position: relative;
-  height: 0px;
+  // height: 0px;
   z-index: 3;
-  top: 0px;
-  /* right: -10px; */
-  left: -50%;
+  top: 6px;
+  left: 6px;
   display: flex;
-  width: 92%;
+  width: 98%;
   flex-direction: column;
   justify-content : space-between;
-  /* margin: 10px; */
-  margin-left: 3px;
+
 
   mark {
     transition: background-color .3s ease-in-out, box-shadow .3s ease-in-out;
-    /* color: white; */
-    color: black;
+    color: white; 
+    // color: black;
     overflow: hidden;
-    background-color:transparent;
+    background-color: transparent;
     /* box-shadow: 4px 0 0 transparent, -4px 0 0 transparent; */
     display: -webkit-inline-box;
     -webkit-line-clamp: 2;
@@ -196,20 +100,19 @@ img {
   &:hover mark {
     background-color: black;
     box-shadow: 4px 0 0 black, -4px 0 0 black;
-    /* background: black; */
     transition: background-color .3s ease-in-out, box-shadow .3s ease-in-out;
   }
   p {
+    min-width: fit-content;
+    max-width: min-content;
+    padding-inline: 6px;
+    background-color: #00000091;
+    font-weight: bold;
     /* width: fit-content; */
-    width: 50%;
     /* padding-inline: 4px; */
     /* transition: background .3s ease-in-out; */
   }
- .photo-name {
-  font-weight: bold;
-  color: white;
 
- }
  .photo-details {
   /* display: inline; */
   /* box-shadow: 4px 0 0 black, -4px 0 0 black; */
@@ -222,36 +125,26 @@ img {
   
  }
  .obj-name {
-  color: white;
   cursor: pointer;
  }
  .folder-name {
-  color: white;
   cursor: pointer;
  }
 }
 `
 
 
-const RightCont = styled.div`
-    background-color: gainsboro;
+const Cont = styled.div`
+    // background-color: gainsboro;
     display: block;
-    width: 96%;
     border-radius: 13px;
-    margin-inline: 15px;
     
-    /* height: 805px; */
     height: 100%;
     max-height: -webkit-fill-available;
-    box-shadow: -3px 3px 5px 2px #aaaaaa;
     overflow: hidden;
-    padding-top: 15px;
-    /* padding-right: 15px; */
-    /* padding-bottom: 15px; */
-    padding-left: 15px;
+    // padding-inline: 15px;
     
-    /* border: solid;
-    padding: 15px; */
+
     
     /* .notification{
     background: red;
@@ -266,138 +159,191 @@ const RightCont = styled.div`
     position: relative;
     overflow: hidden;
     top: 15px;
-    height: calc(100% - 50px);
+    height: calc(100% - 32px);
+    // height: calc(100% - 50px);
     /* height: -webkit-fill-available; */
     /* height: 100%; */
 }
 .coffin::-webkit-scrollbar-track {
     background: transparent;
 }
-
+.coffin::-webkit-scrollbar {
+  display: none;
+}
+.coffin::-webkit-scrollbar {
+  display: none;
+}
 .coffin {
-    /* box-sizing: content-box;  */
-    /* border-radius: 13px; */
-    /* overflow-y: scroll; */
-    /* overflow: auto; */
     overflow: scroll;
+    height: -webkit-fill-available;
     /* scrollbar-gutter: stable; */
-    /* width: fit-content; */
-    /* height: 29em; */
-    height: 100%;
-    padding-right: 15px;
 
-    /* box-sizing: content-box;
-    border-radius: 13px;
-    overflow-y: scroll;
-    scrollbar-gutter: stable;
-    width: fit-content;
-    height: 745px;
-    padding-right: 15px; */
-    /* ::-webkit-scrollbar-track {
+ ::-webkit-scrollbar-track {
     background: gainsboro;
-} */
+} 
 }
 .coffin-header {
-    /* position: absolute;
-    height: 15px;
-    margin-right: 15px;
-    width: 49%;
-    left: 49%;
-    z-index: 3;
-    border-radius: 25px 25px 0px 0; */
     position: sticky;
     height: 0px;
-    top: 0;
-    /* margin-right: 15px; */
     width: 100%;
+    top: 0px;
     z-index: 5;
     border-radius: 13px 13px 0px 0;
     
   }
-    .coffin-header::before {
-        position: absolute;
-        content: " ";
-        background-color: transparent;
-        /* bottom: -40px; */
-        right: 0;
-        width: -webkit-fill-available;
-        height: 40px;
-        border-top-right-radius: 13px;
-        border-top-left-radius: 13px;
-        box-shadow: 0 -18px 0 0 gainsboro;
+.coffin-header::before {
+    content: " ";
+    position: absolute;
+    background-color: transparent;
+    width: -webkit-fill-available;
+    height: 40px;
+    border-top-right-radius: 13px;
+    border-top-left-radius: 13px;
+    box-shadow: 0 -18px 0 0 black;
 }
 .coffin-footer {
-  width: 100%;
-    bottom: 0%;
-    /* bottom: calc(0% - 60px); */
     position: sticky;
     height: 0px;
-    /* margin-right: 15px; */
+    width: 100%;
+    bottom: 6vh;
     z-index: 4;
     border-radius: 0 0 13px 13px;
-  
-  /* width: 49%;
-    left: 49%;
-    position: absolute;
-    height: 15px;
-    margin-right: 15px;
-    bottom: calc(0% - 45px);
-    width: -webkit-fill-available;
-    z-index: 4;
-    border-radius: 0 0 25px 25px; */
-    
-}
-.coffin-footer::before {
-  content: " ";
-    position: absolute;
-    bottom: 0px;
-    /* right: 0; */
-    width: -webkit-fill-available;
-    height: 32px;
-    border-bottom-right-radius: 13px;
-    border-bottom-left-radius: 13px;
-    box-shadow: 0px 14px 0 0 gainsboro;
-    background-color: transparent;
-    /* bottom: 50px;
-    box-shadow: 0px 30px 0 0 gainsboro; */
 }
 
-.photo-cont{
-  /* overflow: auto;
-  border-radius: 13px;
-  top: 0;
-  padding-left: 50%; */
-  position: relative;
-  border-radius: 13px;
-  padding-left: 4%;
-  flex-grow: 1;
-  flex-basis: 100px;
+.coffin-footer::before {
+    content: " ";
+    position: absolute;
+    width: -webkit-fill-available;
+    height: 40px;
+    border-bottom-right-radius: 13px;
+    border-bottom-left-radius: 13px;
+    box-shadow: 0px 14px 0 0 black ;
+    background-color: transparent;
 }
-.parent-cont{
-  display: flex;
-  /* flex-direction: row; */
-  position: relative;
-  left: 25%;
-  width: 75%;
-}
+
+
+
     /* img{
         border-radius: 13px;
     } */
 
-    .text-cont{
-      position: sticky;
-    align-self: flex-start;
-    top: 0;
-    flex-grow: .75;
-    flex-shrink: 1;
-    flex-basis: 0%;
-    overflow-y: auto;
-    background: gainsboro;
-    }
 
-.button-cont{
-  display: flex;
-  flex-direction: column;
-}
+
+
 
 `
+
+// const Cont = styled.div`
+//     background-color: gainsboro;
+//     display: block;
+//     width: 48%;
+//     border-radius: 13px;
+//     margin-inline: 15px;
+    
+//     /* height: 805px; */
+//     height: 100%;
+//     max-height: -webkit-fill-available;
+//     box-shadow: -3px 3px 5px 2px #aaaaaa;
+//     overflow: hidden;
+//     padding-top: 15px;
+//     /* padding-right: 15px; */
+//     /* padding-bottom: 15px; */
+//     padding-left: 15px;
+    
+//     /* border: solid;
+//     padding: 15px; */
+    
+//     .coffin-cont {
+//     position: relative;
+//     overflow: hidden;
+//     top: 15px;
+//     height: calc(100% - 50px);
+//     /* height: -webkit-fill-available; */
+//     /* height: 100%; */
+// }
+// .coffin::-webkit-scrollbar-track {
+//     background: transparent;
+// }
+// .coffin {
+//     /* box-sizing: content-box;  */
+//     /* border-radius: 13px; */
+//     overflow-y: scroll;
+//     /* scrollbar-gutter: stable; */
+//     /* width: fit-content; */
+//     /* height: 29em; */
+//     height: 100%;
+//     padding-right: 15px;
+//     /* box-sizing: content-box;
+//     border-radius: 13px;
+//     overflow-y: scroll;
+//     scrollbar-gutter: stable;
+//     width: fit-content;
+//     height: 745px;
+//     padding-right: 15px; */
+//     /* ::-webkit-scrollbar-track {
+//     background: gainsboro;
+// } */
+// }
+// .coffin-header {
+//     position: absolute;
+//     height: 15px;
+//     margin-right: 15px;
+//     width: -webkit-fill-available;
+//     /* margin-bottom: auto; */
+//     z-index: 3;
+//     /* background: gainsboro; */
+//     border-radius: 25px 25px 0px 0;
+//     /* top: -15px; */
+//     /* &:before {
+//         position: absolute;
+//         content: " ";
+//         background-color: transparent;
+//         bottom: -40px;
+//         right: 0;
+//         width: -webkit-fill-available;
+//         height: 40px;
+//         border-top-right-radius: 13px;
+//         border-top-left-radius: 13px;
+//         box-shadow: 0 -25px 0 0 gainsboro;
+//     } */
+//   }
+//     .coffin-header::before {
+//         position: absolute;
+//         content: " ";
+//         background-color: transparent;
+//         /* bottom: -40px; */
+//         right: 0;
+//         width: -webkit-fill-available;
+//         height: 40px;
+//         border-top-right-radius: 13px;
+//         border-top-left-radius: 13px;
+//         box-shadow: 0 -25px 0 0 gainsboro;
+// }
+// .coffin-footer {
+//     position: absolute;
+//     height: 15px;
+//     /* top: 780px; */
+//     /* top: calc(100% - 15px); */
+//     margin-right: 15px;
+//     bottom: calc(0% - 45px);
+//     width: -webkit-fill-available;
+//     z-index: 4;
+//     border-radius: 0 0 25px 25px;
+    
+// }
+// .coffin-footer::before {
+//     content: " ";
+//     position: absolute;
+//     background-color: transparent;
+//     bottom: 50px;
+//     /* right: 0; */
+//     width: -webkit-fill-available;
+//     height: 40px;
+//     border-bottom-right-radius: 13px;
+//     border-bottom-left-radius: 13px;
+//     box-shadow: 0px 30px 0 0 gainsboro;
+// }
+//     /* img{
+//         border-radius: 13px;
+//     } */
+// `

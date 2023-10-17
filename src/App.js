@@ -1287,6 +1287,8 @@ useEffect(() => {
   }
   main{
     box-shadow: none;
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
   }
 }
 

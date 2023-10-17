@@ -37,7 +37,7 @@ return (
 
  <Route path={[ `${match.path}/folders/:id` , `${match.path}/favorites/:id` ]} 
       >
-        <div>
+
          {props.mobile ? <PhotoGrid
             // subDirectory={subDirectory}
             mobile={props.mobile}
@@ -92,7 +92,7 @@ return (
               directory={props.directory}
               dbVersion={props.dbVersion}
               /> }
-</div>
+
               </Route> 
 
 
