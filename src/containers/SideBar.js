@@ -98,7 +98,7 @@ useEffect(() => {
       <Sticky sideBar={sideBar}
       directory={props.directory}
       >
-        {!props.tutorial && (window.innerWidth < 1100) && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
+        {!props.tutorial && (window.innerWidth < 1100) && (window.innerWidth > 700) && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
             <TutorialTip 
             sideBar={sideBar}
             timer={timer}
@@ -182,6 +182,7 @@ useEffect(() => {
                     >
                     {(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
                     <SideBarFolder 
+                    mobile={props.mobile}
                     loggedIn={props.loggedIn}
                     setFolderPhotos={props.setFolderPhotos}
                     createFolder={props.createFolder}
@@ -201,6 +202,7 @@ useEffect(() => {
                     ref={favoriteRef}
                     >
                     <SideBarFavorites  
+                    mobile={props.mobile}
                     loggedIn={props.loggedIn}
                     directory={props.directory}
                     setFavoritePhotos={props.setFavoritePhotos}
@@ -218,6 +220,7 @@ useEffect(() => {
                     ref={linkRef}
                     >
                     <SideBarLinks
+                      mobile={props.mobile}
                       loggedIn={props.loggedIn}
                       updateLink={props.updateLink}
                       createLink={props.createLink}
