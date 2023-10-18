@@ -1,9 +1,10 @@
 import React from 'react'
 import { useEffect, useState, useRef } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
-import CommunityScrollCont from "../components/CommunityScrollCont";
+import CommunityTopFilter from "../components/CommunityTopFilter";
 import ImageModal from '../components/ImageModal';
 import styled from 'styled-components'
+// import recent from '../recent.json'
 
 
 const CommunityPage = (props) => {
@@ -283,6 +284,15 @@ useEffect(() => {
 }, [])
 
 // useEffect(() => {
+//   setCommunity(recent.community)
+//     setFollowing(recent.following)
+//     recent.following.folders.length === 0 && setDegree(false)
+//     // window.store = recentContent
+//     setLoad(true)
+// }, [])
+
+
+// useEffect(() => {
   // let followedFolders = following.folders.length
   // let followedUsers = following.users.length
   // following.folders === 0 &&
@@ -349,8 +359,7 @@ const [search, setSearch] = useState([0])
           ></ImageModal>)}
           {/* make button a styled component and pass color or connected */}
           {/* <p style={{paddingLeft: '15px'}}>search filters</p> */}
-
-              <ControlPanel filters={filters}
+          {!props.mobile && <FilterDrawer filters={filters}
               panel={panel}
               panelHeight={panelRef}
               >
@@ -463,10 +472,11 @@ const [search, setSearch] = useState([0])
             </>
             </div>
             <button className='open-button' onClick={() => setPanel(!panel)} ></button>
-              </ControlPanel >
+              </FilterDrawer >}
             
             {load && 
-            <CommunityScrollCont
+            <CommunityTopFilter
+              mobile={props.mobile}
               modalToggle={modalToggle}
               community={community}
               fetchUser={props.fetchUser}
@@ -498,7 +508,7 @@ const [search, setSearch] = useState([0])
             }
            
             
-            <div></div>
+
         </Body>
     )
 }
@@ -510,7 +520,10 @@ const Body = styled.div`
     /* padding-top: 20px; */
     /* border-radius: 22px 22px 22px 22px; */
     /* background: gainsboro; */
+    // height: inherit;
     height: 100%;
+    margin-bottom: 35px;
+    overflow: hidden;
     
 `
 
@@ -580,7 +593,7 @@ background-color:  #ccc;
 box-shadow: 0px 1px 0px 1px #9e9e9e inset;
 }
 `
-const ControlPanel = styled.div`
+const FilterDrawer = styled.div`
   position: relative;
   display: flex;
   flex-direction: column;

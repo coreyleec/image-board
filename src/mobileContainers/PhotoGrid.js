@@ -803,7 +803,7 @@ const Grid = styled.div`
   width: fit-content;
 
   @media (max-width: 700px) {
-    padding-block-start: 20vh;
+    padding-block-start: 0vh;
     padding-block-end: 40vh;
     padding-inline: 40vw;
   }

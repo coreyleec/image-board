@@ -1,15 +1,118 @@
 import React from 'react'
 import { useSelector, useEffect, useState } from 'react'
 import CommunityPanel from "./CommunityPanel";
-// import ScrollCont from "./ScrollCont";
 import styled from 'styled-components'
-import ScrollCont from './ScrollCont';
+import CommunitySecondaryFilter from './CommunitySecondaryFilter';
 
 
-const CommunityScrollCont = (props) => {
+const CommunityTopFilter = (props) => {
+
+  const sortPhotos = (property) => {
+  props.photos.sort((a, b) => a.property > b.property)
+
+}
+console.log("props", props)
+    return (
+      
+      <Body mobile={props.mobile} panel={props.panel} panelHeight={props.panelHeight}>
+
+     
+            <CommunitySecondaryFilter
+              mobile={props.mobile}
+              modalToggle={props.modalToggle}
+              fetchUser={props.fetchUser}
+              // photos={photos}
+              setCatagory={props.setCatagory} 
+              panel={props.panel}
+              panelHeight={props.panelHeight}
+              catagory={props.filters.catagory
+                ? props.users
+                : props.folders}
+              filters={props.filters}
+
+              />
+ 
+            
+            </Body>
+
+    )
+}
+
+export default CommunityTopFilter;
+
+const Body = styled.div`
+
+    position: relative;
+    margin-bottom: inherit;
+    height: -webkit-fill-available;
+    overflow-y: scroll;
+    top : ${({mobile, panel, panelHeight}) => mobile ? '0px' : panel ? `${panelHeight.current.clientHeight + 10}px` : `10px`};
+  transition: top .2s ease-in;
+  // overflow-x: hidden;
+  /* margin-inline: max(4vw); */
+  /* margin-inline: 4vw; */
+  margin-inline: 15px;
+`
+
+
+const Heart = styled.button`
+    z-index: 8;
+    opacity: 0%;
+    position: absolute;
+    bottom: -4px;
+    right: 13px;
+    font-family: 'Sawarabi Mincho', serif;
+    font-size: medium;
+    color: ${favorited => !!favorited ? `#aaa` : `red`};
+    border-width: 0px;
   
-  const [catagory, setBodyent] = useState(true)
-  // const [users, setUsers] = useState()
+    display: inline-block;
+    width: 10px;
+    margin: 2px;
+    aspect-ratio: 1;
+    background-color: transparent;
+    cursor: pointer;
+   
+`;
+
+
+
+
+// const StyledP = styled.p`
+// font-size: 2rem;
+// text-align: left;
+// width: 85%;
+// color: black;
+// margin-bottom: 0px;
+// cursor: pointer;
+// /* text-decoration: none; */
+// }
+
+      /* :nth-child(2) a {
+  overflow: hidden;
+} */
+
+/* ::after {
+  opacity 1;
+  transform: translate3d(-100%, 0, 0);
+}
+
+:hover::after,
+:focus::after{
+  transform: translate3d(0, 0, 0);
+} */
+// margin-block: 10px;
+// padding: 5px;
+// height: 100px;
+// :hover {
+//     position: initial;
+//     /* border-radius: 13px; */
+//     z-index: -1;
+//   box-shadow: -7px 7px 10px 4px #aaaaaa;
+//   transform: translate(move); 
+//   }}
+
+// const [users, setUsers] = useState()
   // window.store = props.users
 
   
@@ -64,12 +167,7 @@ const CommunityScrollCont = (props) => {
 
 
 
-
-
-  const [expand, setExpand] = useState(false)
-
-const [photos, setPhotos] = useState()
-
+// FILTERS
 
 // useEffect(() => {
 //   if (props.filters.creative && !props.filters.lifestyle) {
@@ -242,192 +340,3 @@ const [photos, setPhotos] = useState()
 //       // props.setLoad(false)
 // }, [props.filters , props.load])
 // console.log('users', users)
-
-
-
-
-
-  const sortPhotos = (property) => {
-  props.photos.sort((a, b) => a.property > b.property)
-
-}
-
-    return (
-      // <ParallaxProvider>
-      // <ScrollSync>
-      <Body panel={props.panel} panelHeight={props.panelHeight}>
-
-      {/* {props.folders.map(folder => 
-        folder.photos.map(photo => 
-        <div>
-          <p>{photo.name}</p>
-          <img src={photo.url}/>
-
-        </div>)
-        )} */}
-        {/* <LeftCont>
-             { props.load &&  */}
-             {/* <> */}
-            {/* {!!props.connected && props.connected ?  */}
-            {/* <CommunityPanel
-              fetchUser={props.fetchUser}
-              setConnected={props.setConnected}
-              setCatagory={props.setCatagory}
-              photos={photos}
-              // users={users}
-              headers={props.filters.catagory
-              ? props.users
-              : props.folders}
-              error={props.error}
-              // folders={props.filters.catagory ? 
-              //   props.following.folders
-              // : props.community.folders}
-              
-              // lifestyle={props.filters.lifestyle}
-              // creative={props.filters.creative}
-              // catagory={props.filters.catagory}
-              // connected={props.connected}
-              // catagory={props.filters.catagory}
-              filters={props.filters}
-              // props.community={props.community}
-              // users={following.users}
-              // folders={following.folders}
-              // photos={props.following.photos} 
-              
-
-              /> */}
-            {/* :  
-            <CommunityPanel
-              fetchUser={props.fetchUser}
-              setConnected={props.setConnected}
-              setBodyent={props.setBodyent}
-              
-              users={props.community.users}
-              folders={props.community.folders}
-              
-              lifestyle={props.filters.lifestyle}
-              creative={props.filters.creative}
-              catagory={props.filters.catagory}
-              connected={props.connected}
-              // catagory={catagory}
-              // props.community={props.community}
-              // photos={props.community.photos}
-              // following={following}
-              // foldersFollowed={foldersFollowed}
-              // usersFollowed={usersFollowed}
-
-              />
-             }  */}
-              {/* </> */}
-              {/* }
-            </LeftCont> */}
-            {/* { props.load &&  */}
-             <>
-            {/* {!!props.following && props.connected ?  */}
-            <ScrollCont
-              modalToggle={props.modalToggle}
-              fetchUser={props.fetchUser}
-              // photos={photos}
-              setCatagory={props.setCatagory} 
-              panel={props.panel}
-              panelHeight={props.panelHeight}
-              catagory={props.filters.catagory
-                ? props.users
-                : props.folders}
-              filters={props.filters}
-
-              />
-            {/* :  
-            <ScrollCont
-              fetchUser={props.fetchUser}
-              photos={photos}
-
-              />
-             } 
-            */}
-            </>
-              {/* } */}
-        {/* <ScrollCont
-              fetchUser={props.fetchUser}
-              users={props.users} 
-              
-              
-
-              /> */}
-     
-
-        
-            
-            </Body>
-            // </ScrollSync>
-    )
-}
-            {/* // </ParallaxProvider> */}
-export default CommunityScrollCont;
-
-const Body = styled.div`
-  /* height: calc(100% - 100px); */
-  position: relative;
-  height: 100%;
-  /* top: -15%; */
-  top : ${({panel, panelHeight}) => panel ? `${panelHeight.current.clientHeight + 10}px` : `10px`};
-  transition: top .2s ease-in;
-`
-
-
-const Heart = styled.button`
-    z-index: 8;
-    opacity: 0%;
-    position: absolute;
-    bottom: -4px;
-    right: 13px;
-    font-family: 'Sawarabi Mincho', serif;
-    font-size: medium;
-    color: ${favorited => !!favorited ? `#aaa` : `red`};
-    border-width: 0px;
-  
-    display: inline-block;
-    width: 10px;
-    margin: 2px;
-    aspect-ratio: 1;
-    background-color: transparent;
-    cursor: pointer;
-   
-`;
-
-
-
-
-// const StyledP = styled.p`
-// font-size: 2rem;
-// text-align: left;
-// width: 85%;
-// color: black;
-// margin-bottom: 0px;
-// cursor: pointer;
-// /* text-decoration: none; */
-// }
-
-      /* :nth-child(2) a {
-  overflow: hidden;
-} */
-
-/* ::after {
-  opacity 1;
-  transform: translate3d(-100%, 0, 0);
-}
-
-:hover::after,
-:focus::after{
-  transform: translate3d(0, 0, 0);
-} */
-// margin-block: 10px;
-// padding: 5px;
-// height: 100px;
-// :hover {
-//     position: initial;
-//     /* border-radius: 13px; */
-//     z-index: -1;
-//   box-shadow: -7px 7px 10px 4px #aaaaaa;
-//   transform: translate(move); 
-//   }}
