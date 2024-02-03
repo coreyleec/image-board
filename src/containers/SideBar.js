@@ -97,6 +97,7 @@ useEffect(() => {
     <aside>
       <Sticky sideBar={sideBar}
       directory={props.directory}
+      mobile={props.mobile}
       >
         {!props.tutorial && (window.innerWidth < 1100) && (window.innerWidth > 700) && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
             <TutorialTip 
@@ -246,8 +247,8 @@ useEffect(() => {
                 ref={aboutRef}
                 className="community-href">
                   <div className="nav-bar-header-wrapper">
-                    {"about".split("").map((n) => (
-                      <p className="nav-bar-header">{n}</p>
+                    {"about".split("").map((n, i) => (
+                      <p className="nav-bar-header" key={i}>{n}</p>
                     ))}
                   </div>
                 </Link>}
@@ -261,8 +262,8 @@ useEffect(() => {
                 ref={communityRef}
                 className="community-href">
                   <div className="nav-bar-header-wrapper">
-                    {"community".split("").map((n) => (
-                      <p className="nav-bar-header">{n}</p>
+                    {"community".split("").map((n, i) => (
+                      <p className="nav-bar-header" key={i}>{n}</p>
                     ))}
                   </div>
                 </Link>
@@ -275,8 +276,8 @@ useEffect(() => {
                   <div className="nav-bar-header-wrapper" 
                   onClick={() => props.fetch()}
                   >
-                    {"home".split("").map((l) => (
-                      <p className="nav-bar-header">{l}</p>
+                    {"home".split("").map((l, i) => (
+                      <p className="nav-bar-header" key={i}>{l}</p>
                     ))}
                   </div>
 
@@ -337,14 +338,22 @@ const Button = styled.button`
       font-size: inherit;
       text-decoration: none;
     }
-    @media (max-width: 1100px) {
+    @media (max-width: 700px) {
+      font-size: medium;
+      transition: transform .5s ease;
+      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
+      position: fixed;
+      top: 79vh;
+      width: fit-content;
+      left : 0%;
+    }
+    @media (max-width: 1100px) and (min-width: 700px){
+      transition: transform 1s ease;
       transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
 
       position: fixed;
-      // top: 0%;
       top: 79vh;
       width: fit-content;
-      transition: transform 1s ease;
       left : 0%;
        
       /* ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')}; */
@@ -455,7 +464,22 @@ const ButtonContainer = styled.div`
   display: flex;
   padding-top: 5px;
   padding-inline: 5px;
-  @media (max-width: 1100px) {
+  @media (max-width: 700px) {
+    bottom: 5px;
+    position: fixed;
+    z-index: 1;
+  }
+  @media only screen and (max-width: 700px) {
+      transition: width .5s ease;
+      width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
+      button {
+          font-size: medium;
+          transform: ${({ sideBar }) => (sideBar ? 'translateX(136px)' : 'translateX(0px)')};
+          transition: transform .5s ease;
+      }
+  }
+
+  @media (max-width: 1100px) and (min-width: 700px){
     transition: width 1s ease;
     width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
       
@@ -484,18 +508,20 @@ const Sticky = styled.div`
   z-index: 3;
   top: 0;
   z-index: 5;
+
 .follow-cont{
-  padding-top: 0px;
-  height: 115px;
-  @media (max-width: 1100px) {
-    padding-top: 25px;
-    height: 130px;
-  }
+    padding-top: 0px;
+    height: 115px;
+    @media (max-width: 1100px) {
+        padding-top: 25px;
+        height: 130px;
+    }
 }
   .side-bar {
+    
     overflow: hidden;
     padding-inline: 5px;
-    height: 90vh;
+    height: 70vh;
     padding-bottom: 5vh;
     overflow-y: scroll;
     padding-bottom: 5px;
@@ -507,7 +533,24 @@ const Sticky = styled.div`
     mask-image: linear-gradient(to bottom, black 50%, transparent 100%); */
 
 
-    @media (max-width: 1100px) {
+    @media only screen and (max-width: 700px) {
+      position: fixed;
+      display: flex;
+      flex-direction: reverse;
+      bottom: 0%;
+      width: 200px;
+      transition: transform .5s ease;
+      left : 0%;
+      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-200px)')};
+      backdrop-filter: blur(6px);
+      background: #6c6f6973;
+      border-top-right-radius: 22px;
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
+    @media only screen and (max-width: 1100px) and (min-width: 700px){
+
       overflow: hidden;
       position: fixed;
       top: 0%;
@@ -516,7 +559,8 @@ const Sticky = styled.div`
       left : 0%;
       transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
       backdrop-filter: blur(6px);
-      border-bottom-right-radius: 22px;
+      background: #cecece38;
+      border-top-right-radius: 22px;
       &::-webkit-scrollbar {
         display: none;
       }
@@ -524,7 +568,19 @@ const Sticky = styled.div`
  
     .scrollable {
       display: block;
-      @media only screen and (max-width: 1100px) {
+      @media only screen and (max-width: 700px) {
+        display: flex;
+        flex-direction: column;
+        margin-top: 10px;
+        margin-top: 10px;
+        height: 60vh;
+        overflow: scroll;
+        &::-webkit-scrollbar {
+          width: 0px;
+        }
+      }
+      @media only screen and (max-width: 1100px) and (min-width: 700px){
+        
         margin-top: 10px;
         margin-top: 10px;
         height: 64vh;

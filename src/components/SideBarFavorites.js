@@ -71,7 +71,7 @@ const [condition, setCondition] = useState()
 {/* FOLDER TOGGLE */}
                     <div className="sidebar-catagory" >
                     <div className="nav-bar-header-wrapper" onClick={() => setCondition(!condition)}>
-                  {("favorites").split('').map(n => (<p className="nav-bar-header">
+                  {("favorites").split('').map((n, i) => (<p className="nav-bar-header" key={i}>
                       {n}
                     </p>))
                     }

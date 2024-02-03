@@ -134,8 +134,8 @@ const SideBarLinks = (props) => {
 export default SideBarLinks;
 const LinkCont = styled.div`
 a {
-    font-size: 1.4rem;
-    line-height: 1.15em;
+    font-size: 1.2rem;
+    font-weight: 600;
     padding-left: 10px;
     padding-top: 3px;
     float: left;

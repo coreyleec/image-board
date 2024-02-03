@@ -1,8 +1,14 @@
 import styled from "styled-components";
 
 export const EditableDiv = styled.div`
+@media only screen and (max-width: 1100px) and (min-width: 700px){
 font-size: 1.4rem;
-line-height: 1.15em;
+line-height: 1.15em;}
+@media only screen and (max-width: 700px) {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
 padding-left: 10px; 
 padding-top: 3px;
 float: left;

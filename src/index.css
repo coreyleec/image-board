@@ -5,7 +5,11 @@
 }
 
 html {
-  height: 100%;
+  /* height: 100%; */
+  /* position: fixed; */
+/* width: -webkit-fill-available; */
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
 }
 #root {
   min-height: 100%;
@@ -14,9 +18,17 @@ html {
 body {
   /* overflow-x: hidden;
   overflow-y: scroll; */
+  /* position: fixed; */
   /* overflow: hidden; */
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  /* height: 100vh; */
+  min-height: 100vh;
+  min-width: 100vh;
+  /* mobile viewport bug fix */
+  min-height: -webkit-fill-available;
+  min-width: -webkit-fill-available;
+  /* width: calc(var(--vw, 1vw) * 100); */
+
   background-color: hwb(0deg 83% 17%);
   /* background-color: black; */
   margin: 0;
@@ -32,7 +44,7 @@ article::-webkit-scrollbar {
 
 header {
   grid-area: header;
-  z-index: 1;
+  z-index: 3;
   height: 130px;
   background-color: gainsboro;
   border-top-width: 0px;
@@ -51,6 +63,8 @@ main {
   border-radius: 22px 22px 22px 22px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
   display: block;
+  width: -webkit-fill-available;
+  /* width: fit-content; */
   /* overflow: hidden; */
   /* display: unset; */
   /* align-items: center; */
@@ -62,7 +76,7 @@ main div{
 aside:nth-child(1) {
   display: block;
   position: relative;
-  z-index: 3;
+  z-index: 5;
   margin-right: 5px;
   grid-area: leftbar;
   background-color: gainsboro;
@@ -74,10 +88,7 @@ aside:nth-child(1) {
   border-bottom-right-radius: 22px;
 }
 
-.grid-wrapper {
-  height: -webkit-fill-available;
-  width: -webkit-fill-available;
-}
+
 .grid-wrapper::-webkit-scrollbar {
   display: none;
 }
@@ -90,18 +101,47 @@ aside:nth-child(3) {
   /* border-left-width: 6px; */
   border-radius: 22px 0px 0px 22px;
   box-shadow: -3px 3px 5px 2px #aaaaaa;
-  margin-left: 6px;
+  /* margin-left: 6px; */
 }
 
 @media (max-width: 1100px) {
   aside:nth-child(3) {
-    margin-left: 0px;
+    /* margin-left: 0px; */
+  }
+  }
+  html.ios {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: auto !important;
+  }
+  html.ios,
+  html.ios body {
+      height: initial !important;
+  }
+
+@media (min-width: 1100px) {
+  .grid-wrapper {
+    height: -webkit-fill-available;
+    width: -webkit-fill-available;
+    display: flex;
+    flex-direction: initial;
+  }
+  aside:nth-child(3) {
+    /* margin-left: 0px; */
+    margin-left: 6px;
   }
   }
   /* background-color: #474747; */
   @media (max-width: 700px) {
+    aside:nth-child(1) {
+      display: flex;
+      flex-direction: column-reverse;
+    }
+    
+    
+
     header {
-      height: 75px;
+      height: 0px;
+      z-index: 1;
     }
     main{
       display: flex;
@@ -115,28 +155,43 @@ aside:nth-child(3) {
       padding-inline: 0;
       padding-top: 0px;
     }
-    .grid-wrapper {
-      padding-block: 20vh;
-      padding-inline: 22vw;
-      overflow: scroll;
-      white-space: nowrap;
+    /* article .one {
+      justify-items: right;
     }
+    article .two {
+      justify-items: left;
+    } */
+    .grid-wrapper {
+      position: relative;
+      z-index: 0;
+      transform: translate3d(0, 0, 0);
+      -webkit-overflow-scrolling: auto !important;
+      -webkit-backface-visibility: hidden;
+      
+      overflow: scroll;
+      /* height: -webkit-fill-available; */
+      height: 100vh;
+      width: 100vw;
+      /* padding-block: 20vh;
+      padding-inline: 40vw; */
+      /* white-space: nowrap; */
+    }
+    
     .title-cont {
       font-size: 1rem;
       line-height: 1em;
     }
     .nav-bar-header{
       all: unset;
-      font-size: 25px;
+      font-size: 1.3rem;
       color: gainsboro;
       line-height: 1;
       margin-bottom: 0px;
       cursor: pointer;
-
     }
 
     }
-    @media (min-width: 700px) {
+    @media screen and (min-width: 700px) {
       article {
         padding-inline: max(10%);
         padding-top: 80px;
@@ -145,6 +200,10 @@ aside:nth-child(3) {
         display: flex;
         justify-content: center;
       }
+
+      /* .grid-item:nth-child(4n+1) {
+        
+    } */
       .nav-bar-header{
         font-style: italic;   
       -moz-text-fill-color:gainsboro;
@@ -183,7 +242,7 @@ aside:nth-child(3) {
 article {
   /* height: 95rem;
   min-width: 700px; */
-  height: -webkit-fill-available;
+  height: fit-content;
   width: -webkit-fill-available;
   /* overflow-x: visible; */
 }

@@ -48,13 +48,23 @@ const Header: React.FC<IProps> = (props) => {
     const [hover, setHover] = useState(true)
     const [timer, setTimer] = useState(true)
 
+    console.log("props", props)
+
     useEffect(() => {
-        if (props.directory === 'community'){
-            setSiteHeader("Community")
+        if (props.subDirectory === 'about'){
+          setSiteHeader("About")
         } 
-        else 
-         {setSiteHeader("ImageBoard") }
-    }, [props.directory])
+        else if (props.subDirectory === 'folders'){
+          setSiteHeader(`${props.userName}`)
+        } 
+        else if (props.directory === 'login'){
+          setSiteHeader("Use ImageBoard")
+        } 
+        else if (props.directory === 'community'){
+          setSiteHeader("Community")
+      } 
+        else {setSiteHeader("ImageBoard") }
+    }, [props.subDirectory || props.directory])
     
 
 useEffect(() => {
@@ -90,7 +100,7 @@ useEffect(() => {
                             onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader mobile={props.mobile} >{(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') ? props.userName : siteHeader }</TitleHeader> 
+                : <TitleHeader mobile={props.mobile} >{siteHeader}</TitleHeader> 
                     }
 
       <Sticky>
@@ -246,23 +256,39 @@ const TutorialTip = styled.div`
 
 `
 
-
 const NameInput = styled.input`
     font-size: 3.5rem;
     font-family: "HelveticaNeue-Light";
     text-align: right;
     float: right;
-    line-height: .75;
+    line-height: 1;
+
     padding-top: 0;
+    padding-right: 20px;
     margin-top: .001rem;
     display: block;
     color: #757575;
-    padding-right: 2%;
-    padding-top: 2%;
 `
+
+// const NameInput = styled.input`
+//     font-size: 3.5rem;
+//     font-family: "HelveticaNeue-Light";
+//     text-align: right;
+//     float: right;
+    
+//     line-height: .75;
+//     padding-top: 0;
+//     margin-top: .001rem;
+//     display: block;
+//     color: #757575;
+//     padding-right: 2%;
+//     padding-top: 2%;
+// `
 const TitleHeader = styled.h1`
-    font-size: 3.5rem;
-    font-family: "HelveticaNeue-Light";
+
+    ${({mobile}) => mobile ? 
+    `font-size: 3.5rem;
+    font-family: HelveticaNeue-Light;
     text-align: right;
     float: right;
     line-height: .75;
@@ -270,9 +296,34 @@ const TitleHeader = styled.h1`
     font-weight: normal;
     cursor: default;
     padding-right: 2%;
-    padding-top: 2%;
-    color: ${({mobile}) => (mobile) ? 'white' : 'black' };
+    padding-top: 2%; 
+    color: white`
+    : 
+    `
+    font-size: 3.5rem;
+    font-family: HelveticaNeue-Light;
+    text-align: right;
+    float: right;
+    width: fit-content;
+    font-weight: normal;
+    padding-right: 20px;
+    cursor: default;
+    color: black;`
+  };
 `
+// const TitleHeader = styled.h1`
+    // font-size: 3.5rem;
+    // font-family: "HelveticaNeue-Light";
+    // text-align: right;
+    // float: right;
+    // line-height: .75;
+    // width: fit-content;
+    // font-weight: normal;
+    // cursor: default;
+    // padding-right: 2%;
+    // padding-top: 2%;
+//     color: ${({mobile}) => (mobile) ? 'white' : 'black' };
+// `
 const Sticky = styled.div`
     position: relative;
     top: 0;

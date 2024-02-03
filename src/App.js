@@ -14,6 +14,7 @@ import DndRoutePrefix from "./containers/DndRoutePrefix";
  
 
 export const App = () => {
+  // useEffect(() => { console.log("useEffect parent render") })
   require("events").EventEmitter.defaultMaxListeners = 20;
   let history = useHistory()
   let navigate = history.push;
@@ -26,13 +27,22 @@ export const App = () => {
     const sub = location.pathname.split('/')[2]
     setDirectory(root)
     setSubDirectory(sub)
-    
+  // console.log("useEffect setDir setSub")  
   }, [location.pathname])
   // console.log("location.pathname", location.pathname, directory)
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
     console.log("scroll")
   }
+  let html = document.querySelector('html');
+window.addEventListener( 'touchend', function( e ){
+    html.scrollTop = html.scrollTop;
+});
+//   window.addEventListener("scroll", function() {
+
+//     const maxWidth = document.body.scrollWidth - window.innerWidth;
+//     console.log("POSITION", (window.pageXOffset * 100) / maxWidth);
+// });
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
   const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
@@ -92,49 +102,70 @@ useEffect(() => {
   else {
     setOverflow('unset')
   }
-  
+  console.log("useEffect setOver")
 }, [skinny, directory])
 
 
+
 useEffect(() => {
-  if (window.innerWidth < 1100) {
+  console.log("useEffect setMob setSkin")
+  if (window.outerWidth < 1100 && window.innerWidth < 1100) {
     setSkinny(true)
   } 
-  else {
+  else if (window.outerWidth > 1100 && window.innerWidth > 1100) {
     setSkinny(false)
   }
-  if (window.outerWidth < 700){
+  if (window.outerWidth < 700 && window.innerWidth < 700){
+    console.log("useEffect setMob true")
     setMobile(true)
   }
-  else {
+  else if (window.outerWidth > 700 || window.innerWidth > 700) {
     setMobile(false)
   }
   const updateMedia = () => {
-    if (window.innerWidth < 1100) {
+    if (window.outerWidth < 1100 || window.innerWidth < 1100) {
       setSkinny(true)
     }  
-    else {
+    else if (window.outerWidth > 1100 || window.innerWidth > 1100){
       setSkinny(false)
     }
-    if (window.outerWidth < 700){
+    if (window.outerWidth < 700 || window.innerWidth < 700){
       setMobile(true)
     }
-    else {
+    else if (window.outerWidth > 700 || window.innerWidth > 700){
       setMobile(false)
     }
   };
+  
   updateMedia()
   window.addEventListener('resize', updateMedia);
   return () => window.removeEventListener('resize', updateMedia);
 }, []);
 
-
+console.log("mobile", mobile, window.innerWidth < 700, window.outerWidth < 700, window.outerWidth, window.innerWidth)
 
 // LOGIN FUNCTIONS
  const useTemplate = () => {
    setUserProfile(!userProfile);
    navigate("/login")
  };
+
+ const makeNeat = (header, values) => {
+  const result = []
+  for (const value in values){
+  let object = { value : eval(value)};
+  result.push(object)
+  }
+  console.log("position neat", result, header, values)
+  for(let [key, value] of result){
+    console.log(header, `${value}:${eval(value)}`)}
+}
+
+const logNeatly = (header, array) => {
+  for(let [key, value] of array){
+    console.log(header, `${value}:${eval(value)}`)}
+}
+
 
 // DEMO STATE
 const [hover, setHover] = useState(false)
@@ -276,12 +307,12 @@ useEffect(() => {
   // if (directory === 'home'){
 
   // }
-  console.log('auto login', !!localStorage.token && !currentUserId && !userId)
+  // console.log('auto login', !!localStorage.token && !currentUserId && !userId)
   
   if (!!localStorage.token && !currentUserId && !userId ){
-    console.log('auto login')
     autoLoggin()
   }
+  console.log("useEffect auto login")
 
 }, [])
 
@@ -289,6 +320,7 @@ useEffect(() => {
 
 if (directory === 'by_Corey_Lee'){
     landingFetch()
+    // console.log("useEffect setDemo")
     setDemo(true)
   }
 
@@ -422,6 +454,7 @@ const hiliteCollaborator = (user) => {
 
 useEffect(() => {
   if (directory === 'login' || 'community'){
+    // console.log("useEffect setEdit setColor")
     setEdit(false)
     setColorArr(colors)
     enableDelete === true && setEnableDelete(false)
@@ -456,6 +489,7 @@ const updateUserFavorites = (photo) => {
 
 
 useEffect(() => {
+  // console.log("useEffect setFavDets")
   let details = !!userFavorites && userFavorites.map(favoriteFolder => (`{"name": "${favoriteFolder.name}", "id": ${favoriteFolder.id}, "index": ${favoriteFolder.index}}`))
   let jsonDetails = !!details && details.map(detail => JSON.parse(detail)) 
   setFavoriteDetails(jsonDetails)
@@ -1153,11 +1187,14 @@ useEffect(() => {
       >
 
           <DndRoutePrefix
+              makeNeat={makeNeat}
+              logNeatly={logNeatly}
               mobile={mobile}
               loggedIn={loggedIn}
               subDirectory={subDirectory}
               about={about}
               setAbout={setAbout}
+              folderDetails={folderDetails}
               folderCollaborators={folderCollaborators}
               photos={!!photos && photos}
               setPhotos={setPhotos}
@@ -1252,7 +1289,8 @@ useEffect(() => {
   const Cont = styled.div`
   display: grid;
   height: 100vh;
-  width: 100vw;
+  max-width: ${window.outerWidth}px;
+  max-height: ${window.outerHeight}px;
   /* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '17% 1fr 17%'}; */
   grid-template-columns: 17% 1fr 17%;
   grid-template-rows: auto 1.5fr auto;
@@ -1283,7 +1321,17 @@ useEffect(() => {
   }
 
   header{
-    box-shadow: none;
+    position: fixed;
+    width: -webkit-fill-available;
+    overflow: visible;
+
+    // box-shadow: none;
+    box-shadow: rgb(0 0 0) 0px 0px 70px 70px;
+    // box-shadow: rgb(0, 0, 0) 0px 24px 40px 40px;
+    // box-shadow: rgb(0, 0, 0) 0px 30px 40px 50px;
+    // box-shadow: 0px 0px 30px 40px #000000;
+    // box-shadow: rgb(0, 0, 0) 0px 0px 40px 50px;
+
   }
   main{
     box-shadow: none;

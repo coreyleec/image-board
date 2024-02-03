@@ -671,7 +671,7 @@ const dragging = () => {
                         // loading="lazy"
                         src={
                           !!photo.url
-                          ? photo.url
+                          ? photo.thumbnail_url
                           : require('../assets/100x135.png')
                         }
                         />
@@ -847,6 +847,9 @@ const PictureFrame = styled.div`
 
   
 .center-image {
+    // overflow-y: hidden;
+    overflow: hidden;
+    justify-content: center;
     display: flex;
     align-self: center;
     align-items: center;
@@ -855,12 +858,13 @@ const PictureFrame = styled.div`
     z-index: 7;
     /* overflow: visible; */
     /* margin: 0px; */
-    overflow-y: clip;
+    // overflow-y: clip;
     width: max-content;
     border-radius: 13px;
     transition: border-radius .2s ease-out;
 }
 &:hover .center-image{
+  // overflow-y: hidden;
   border-radius: 0px;
   transition: border-radius .3s ease-out .6s;
   /* margin: 3px; */
@@ -911,7 +915,7 @@ const PictureFrame = styled.div`
     
     z-index: 9;
     ${({orientation}) => orientation ? 
-    'max-width: 150px; min-height: 100px;' : 'min-width: 135px; max-height: 220px;' }
+    'max-width: 150px; min-height: 100px;' : 'max-height: 220px;' }
 }
 /* height: 100%; */
 .delete-cont{

@@ -132,7 +132,7 @@ const publicRef=useRef()
 
 // const alrt = alert("hello")
         return (
-          <div>
+          <FormWrapper>
             {/* <button onClick={() => handleBlur()}>click</button> */}
            <AboutForm ref={clickContRef} spellcheck={true}
                 >
@@ -160,12 +160,18 @@ const publicRef=useRef()
                 >
               </StyledAbout>
             </AboutForm>
-          </div>
+          </FormWrapper>
         )
 
 }
 
 export default AboutMe
+
+const FormWrapper = styled.div`
+    // margin-top: 15vh;
+    // position: relative;
+    // z-index: 1;
+    `
 
 const AboutForm = styled.form`
 // background: blue;
@@ -186,18 +192,26 @@ const StyledTitle = styled.div`
   text-align: right;
   float: right;  
   width: 100%;
-  // line-height: 1.2;
   font-family: "HelveticaNeue-Light";
   resize: none;
   overflow: overlay;
-  // max-height: 50%;
   padding-bottom: 10px;
-  // padding: 10px;
   border-width: 0;
-  font-size: 3.5rem;
-  color: black;
   cursor: default;
-  // line-height: 53px;
+
+  @media only screen and (max-width: 700px) {
+    margin-top: 5vh;
+    position: relative;
+    z-index: 1;
+    font-size: large;
+    color: white;
+  }
+  @media (max-width: 1100px) and (min-width: 700px){
+    font-size: 3.5rem;
+    color: black;
+  }
+  
+
   >* {font-family: "HelveticaNeue-Light"; >* {font-family: "HelveticaNeue-Light";}}
   ::-webkit-scrollbar {
     display: unset;
@@ -209,30 +223,62 @@ const StyledTitle = styled.div`
   }`
 
 const StyledAbout = styled.div`
-  text-indent: 50px;
   resize: none;
   background-color: transparent;
-  color: black;
-  max-height: 50%;
-  padding-top: 10px;
-  padding-inline: 10px;
-  font-size: 1.5rem;
-  font-family: "HelveticaNeue-Light";
-  text-align: left;
-  border-width: 0;
-  width: 100%;
-  overflow: overlay;
-  cursor: default;
-  >* {
-    font-size: 1.5rem;
-  font-family: "HelveticaNeue-Light";
-  text-indent: 50px;
-  >* {
-    font-size: 1.5rem;
-  font-family: "HelveticaNeue-Light";
-  text-indent: 50px;
+  
+  @media only screen and (max-width: 700px) {
+    height: 500px;
+    width: 100%;
+    overflow: scroll;
+    padding-bottom: 20vh;
+    text-indent: 15px;
+    font-size: medium;
+    color: white;
+
+    >* {
+      font-size: medium;
+    font-family: "HelveticaNeue-Light";
+    text-indent: 15px;
+    >* {
+      font-size: medium;
+    font-family: "HelveticaNeue-Light";
+    text-indent: 15px;
+    }
+    &::-webkit-scrollbar {
+      display: none;
+    }
   }
+  
+  @media (max-width: 1100px) and (min-width: 700px){
+    text-indent: 50px;
+    font-size: 1.5rem;
+    color: black;
+    max-height: 50%;
+    padding-top: 10px;
+    padding-inline: 10px;
+    
+    font-family: "HelveticaNeue-Light";
+    text-align: left;
+    border-width: 0;
+    width: 100%;
+    overflow: overlay;
+    cursor: default;
+
+    >* {
+      font-size: 1.5rem;
+    font-family: "HelveticaNeue-Light";
+    text-indent: 50px;
+    >* {
+      font-size: 1.5rem;
+    font-family: "HelveticaNeue-Light";
+    text-indent: 50px;
+    }
   }
+}
+
+  
+  
+
   div font{
     font-family: "HelveticaNeue-Light";
   }

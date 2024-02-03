@@ -101,7 +101,7 @@ const moveFolder = useCallback((dragIndex, hoverIndex) => {
 {/* FOLDER TOGGLE */}
                     <div className="sidebar-catagory" >
                     <div className="nav-bar-header-wrapper" >
-                  {("folders").split('').map(n => (<p className="nav-bar-header">
+                  {("folders").split('').map((n, i) => (<p className="nav-bar-header" key={i}>
                       {n}
                     </p>))
                     }

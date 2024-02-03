@@ -100,13 +100,13 @@ const signupSubmit = (e, name, email, password, betaCode) => {
   // }
 
   return (
-    <article> 
-      <ButtonFlex>
+    <PageCont> 
+      <ButtonFlex className="child-cont">
         <button onClick={() => signup()}>sign up</button>
         <button onClick={() => login()}>login</button>
       </ButtonFlex>
       {userLogin ? (
-        <form onSubmit={e => loginSubmit(e, name, password)}>
+        <form className="child-form" onSubmit={e => loginSubmit(e, name, password)}>
           <input
             type="text"
             placeholder="name"
@@ -119,11 +119,12 @@ const signupSubmit = (e, name, email, password, betaCode) => {
           />
           <button 
           // onClick={() => history.push("/photos")} 
+          className="submit"
           type="submit">submit</button>
         </form>
       ) : null}
       {userSignUp ? (
-        <form onSubmit={e => signupSubmit(e, name, email,  password, betaCode)}>
+        <form className="child-form" onSubmit={e => signupSubmit(e, name, email,  password, betaCode)}>
           {/* <button onClick={() => setUserSignUp(!userSignUp)} className="closeSidebar">X</button> */}
           {/* <p>sign up</p> */}
           <input
@@ -147,19 +148,59 @@ const signupSubmit = (e, name, email, password, betaCode) => {
             onChange={(e) => setBetaCode(e.target.value)}
           />
 
-          <button 
+          <button className="submit"
           // onMouseOver={() => props.setBaseName('home')} onMouseOut={() => props.setBaseName('')}
           type="submit"
           >submit</button>
         </form>
       ) : null}
-      </article>
+      </PageCont>
 
   );
 };
 export default UserLoginSignup;
 
+const PageCont = styled.div`
+    display: flex;
+    height: 100vh;
+    width: -webkit-fill-available;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 
+
+    button{
+      font-size: medium;
+    }
+    .child-cont{
+      display: flex;
+      width: -webkit-fill-available;
+      flex-direction: row;
+      justify-content: space-evenly;
+      flex-wrap: wrap;
+      padding-bottom: 10px;
+    }
+
+    .child-form{
+      align-content: flex-start;
+      display: flex;
+      flex-direction: column;
+      width: 50vw;
+      height: 20%;
+      flex-flow: wrap;
+      justify-content: right;
+      input{
+        color: white;
+        padding: 2px;
+        font-size: medium;
+        width: -webkit-fill-available;
+      }
+      .submit{
+        align-self: flex-end;
+      }
+    }
+
+`
 const ButtonFlex = styled.div `
   margin: 0;  
   width: 20%;

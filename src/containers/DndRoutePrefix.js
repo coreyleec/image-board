@@ -40,6 +40,8 @@ return (
 
          {props.mobile ? <PhotoGrid
             // subDirectory={subDirectory}
+            logNeatly={props.logNeatly}
+            makeNeat={props.makeNeat}
             mobile={props.mobile}
             loggedIn={props.loggedIn}
             folderCollaborators={props.folderCollaborators}
@@ -51,7 +53,7 @@ return (
               openModal={props.openModal}
               setOpenModal={props.setOpenModal}
               folderShown={props.folderShown}
-              
+              folderDetails={props.folderDetails}
               uuid={props.uuid}
               userId={props.userId}
               currentUserId={props.currentUserId}

@@ -23,7 +23,7 @@ return (
         <p className="user-name" onClick={() => props.fetchUser(photo.u_id)} ><mark>{photo.user_name}</mark></p>
         {/* <p className="folder-name">{photo.folder.name}</p> */}
       </div>
-      <img src={photo.url}/>
+      <img src={photo.thumbnail_url}/>
 
     </PhotoCard>
     )
@@ -160,6 +160,7 @@ const Cont = styled.div`
     overflow: hidden;
     top: 15px;
     height: calc(100% - 32px);
+    margin-top: 60px;
     // height: calc(100% - 50px);
     /* height: -webkit-fill-available; */
     /* height: 100%; */
@@ -205,7 +206,7 @@ const Cont = styled.div`
     position: sticky;
     height: 0px;
     width: 100%;
-    bottom: 6vh;
+    bottom: 7vh;
     z-index: 4;
     border-radius: 0 0 13px 13px;
 }
