@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Route, useLocation, Switch, useHistory, Redirect } from 'react-router-dom';
+import { Route, useLocation, Switch, useHistory, Redirect, useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import Header from "./containers/Header";
 import SideBar from "./containers/SideBar";
@@ -8,16 +8,13 @@ import UserLoginSignup from "./containers/UserLoginSignup";
 import CommunityPage from "./containers/CommunityPage"
 import DndRoutePrefix from "./containers/DndRoutePrefix";
 
-// if viewport width is less than 600 
-// then 
-
- 
 
 export const App = () => {
   // useEffect(() => { console.log("useEffect parent render") })
   require("events").EventEmitter.defaultMaxListeners = 20;
   let history = useHistory()
   let navigate = history.push;
+  // console.log("first", window.constructor)
   const location = useLocation();
   const [directory, setDirectory] = useState("")
   const [subDirectory, setSubDirectory] = useState()
@@ -91,7 +88,7 @@ const [enableDelete , setEnableDelete] = useState(false)
 const [photos, setPhotos] = useState([]);
 const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
-const [mobile, setMobile] = useState(false);
+const [mobile, setMobile] = useState();
 useEffect(() => {
   if (directory === 'community') { 
     setOverflow('hidden')
@@ -320,7 +317,7 @@ useEffect(() => {
 
 if (directory === 'by_Corey_Lee'){
     landingFetch()
-    // console.log("useEffect setDemo")
+    console.log("useEffect setDemo")
     setDemo(true)
   }
 

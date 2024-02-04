@@ -23,6 +23,8 @@ const DndContainer = (props) => {
   const [imgUrl, setImgUrl] = useState(null)
 
 
+
+  
   const imgCounter = () => {
     setImgCount(imgCount + 1)
     if (imgCount + 1 === 60){

@@ -48,7 +48,7 @@ const Header: React.FC<IProps> = (props) => {
     const [hover, setHover] = useState(true)
     const [timer, setTimer] = useState(true)
 
-    console.log("props", props)
+
 
     useEffect(() => {
         if (props.subDirectory === 'about'){

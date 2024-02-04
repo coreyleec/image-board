@@ -413,7 +413,7 @@ const PhotoGrid = (props) => {
         const rowCount = (centeredOrientation ? 3 : 2)
         const first = onRightOfGrid ? rowNum * 8 + 7 : rowNum * 8
         
-        console.log("shrinkMap", rowCount, centeredPhoto, first)
+        // console.log("shrinkMap", rowCount, centeredPhoto, first)
         
         for (let i = 0; i < rowCount; i++){
 
@@ -423,7 +423,7 @@ const PhotoGrid = (props) => {
               ids.push(shrunkIndex)
               shrunkPhotos.push(photoToShrink)
 
-              console.log("shrunkIndex inlarge", i, first, shrunkIndex, rowCount, photoToShrink)
+              // console.log("shrunkIndex inlarge", i, first, shrunkIndex, rowCount, photoToShrink)
 
               if (onRightOfGrid){
                 photoToShrink.style.gridColumnStart = `span 1`
