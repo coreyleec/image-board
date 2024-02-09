@@ -186,7 +186,7 @@ useEffect(() => {
         }
         log_once();
       }
-      else if (photoState.index === id){
+      else if (photoState.place === id){
         
         const gridItem = elem?.getBoundingClientRect();
         
@@ -548,9 +548,6 @@ useEffect(() => {
     centeredId !== undefined && changeCells(centeredId)
   }
 }
-
-
-
 
 
 // useEffect(() => { console.log("useEffect render", photos?.length)})
