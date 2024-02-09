@@ -147,7 +147,7 @@ let path = location.pathname.split("/")[1] */}
                         }}
                         // navigate(`/${match.path}/folders/`)
       // DELETE ^
-                        style={(folder.index === props.folderShown) && (location === "/home/" || "/") ? {textDecoration: "underline"} : null} 
+                        style={(folder.index === props.folderShown) && (props.directory === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
                         onInput={e => setFolderName(e.currentTarget.textContent)}
                         >
                         {folder.name}

@@ -54,25 +54,27 @@ const PhotoGrid = (props) => {
       
       const newArray = [...props.photos.sort(sortPhotos)]
       
-      let portraitPhotos = newArray.filter((photo) => photo.orientation !== true)
+      let portraitPhotos = [...newArray.filter((photo) => photo.orientation !== true)]
 
-      let photosUnder = portraitPhotos.map((photo) => { 
+      
+
+      let photosUnder = [...portraitPhotos.map((photo) => { 
       let photoUnder = newArray[photo.index + 6]
       return photoUnder
-      })
-
+      })]
+      
       const splicedArr = [...props.photos]
 
       photosUnder.forEach(x => splicedArr.splice(splicedArr.findIndex(n => n.id === x.id), 1));
+
+      
 
       const makePhoto = (i) => {
         let photo = {}
         photo.index = newArray.length + i - 1
         photo.id = null
         photo.url = null
-        // require('../assets/100x135.png')
         photo.thumbnail_url = null
-        // require('../assets/100x135.png')
         photo.name = null
         photo.details = null
         photo.u_id = null
@@ -80,12 +82,15 @@ const PhotoGrid = (props) => {
         photo.orientation = true
         return photo
       }
+      const oldVal = [photos?.filter((photo) => photo.orientation !== true)].length - 1
 
-      const addVal = Math.ceil(splicedArr.length/6) + 11
-      
+      const lossVal = Math.ceil((splicedArr.length/6)) 
+      const addVal = !!photosUnder.length ? lossVal : 0
+      console.log("portraits", portraitPhotos, splicedArr, addVal, !!splicedArr.length, lossVal)
+
       const addMore = []
-      
-      for (let i = 0; i < addVal; i++) {
+
+      for (let i = 0; i < (oldVal  + (11 -lossVal)); i++) {
         let photo = makePhoto(i)
         addMore.push(photo);
         }
@@ -106,54 +111,63 @@ const PhotoGrid = (props) => {
       photo.thumbnail_url = null
       photo.name = null
       photo.details = null
-      // photo.url = null
       photo.u_id = null
       photo.folder_id = null
       photo.orientation = true
-      photo.bumper = true
       photo.row = (i*100)+1
       return photo
       }
 
-      for (let i = 0; i < choppedArray.length; i++) {
+      for (let i = 0; i <= (choppedArray?.length); i++) {    
+        // console.log("bumper", i)
           let photo = makeBumper(i)
+          photo.bumper = 'left' 
           let photoB = makeBumper(i)
-          choppedArray[i].unshift(photo);
-          choppedArray[i].push(photoB);
+          photoB.bumper = 'right'
+          choppedArray[i]?.unshift(photo);
+          choppedArray[i]?.push(photoB);
           }
+
+    console.log("choppedArray", choppedArray)
     
-      const flatArr = choppedArray.flat(Infinity)
-    var tally = 0
-      const reindexedArr = flatArr.map((photo, i) => {
+    const flatArr = choppedArray.flat(Infinity)
+    
+    let tally = 0
+    
+    const reindexedArr = flatArr.map((photo, i) => {
         if(photo.orientation !== true){
           tally = tally + 1
-          // return tally
         }
-        photo.index = i
+        photo.place = i
         return photo
       }) 
       
-      const conflictRows = photosUnder.map((x) => Math.floor(x.index/8));
+      const conflictRows = photosUnder.map((x) => Math.floor(x.place/8));
 
       const setData = [...new Set(conflictRows)];
 
       setRowOverlap(setData)
       setPhotos(reindexedArr)
-      console.log("useEffect", reindexedArr)
+      // console.log("useEffect", reindexedArr)
+      
   }
   }, [props.photos])
 
 
   const imgCounter = (i) => {
     // setImgCount(imgCount + 1)
-    // console.log("images loaded", imgCount, props.photos.length, photos.length)
-    if (i + 1 === photos.length){
+    if (i + 1 === photos?.length){
+      console.log("images loaded", i, photos?.length)
       adjustFunction()
       
-      console.log("images loaded")
     }
   }
   
+useEffect(() => {
+  adjustFunction()
+}, [photos])
+
+
   const [photo, setPhoto] = useState(null);
   const [openModal, setOpenModal] = useState(false);
   const [photoPos, setPhotoPos] = useState([0,0,0,0])
@@ -201,51 +215,90 @@ const PhotoGrid = (props) => {
     const unShrink = (photoToSize, bool, rowVal) =>{
       if (!!photoToSize){
         if (bool){
-          photoToSize.style.gridColumnStart = `span 119`
+          photoToSize.style.gridColumnStart = `span 120`
           photoToSize.style.gridRowStart = ` ${rowVal}`
+          photo.firstChild.style.height = '95px'
         }
         else{
-          photoToSize.style.gridColumnEnd = `span 119`
+          photoToSize.style.gridColumnEnd = `span 120`
           photoToSize.style.gridRowStart = ` ${rowVal}`
+          photo.firstChild.style.height = '95px'
         }
       }
     }
 
-    for (let i = 0; i < photos.length; i++) {
+    for (let i = 0; i < (photos?.length + 1); i++) {
       let photo = photos[i]; // each square is "photo"
 
-      if(!!photo.getElementsByClassName("photo")){
+      if(!!photo?.getElementsByClassName("photo")){
         const orientation = !!photo.getElementsByClassName("portrait").length
         const isBumper = !!photo.getElementsByClassName("bumper").length
+        const isTile = !!photo.getElementsByClassName("tile").length
         
         const offTop = photo?.offsetTop
         const topDistOfPhoto = Math.floor(offTop/100)*100 + 1
-
-
+        const onRightOfGrid = photo?.offsetLeft > grid.offsetWidth/2
+        const offLeft = photo?.offsetLeft
+        const rightColNum = (offLeft/119) - 2
+         
 
         if (!isBumper){
+          
+          photo.style.gridRowStart = `auto`
+          if (isTile){
+            photo.style.gridColumnStart = `span 118`
+            photo.style.gridRowEnd = `span 100`
+            photo.firstChild.style.width = '115px'
+            photo.firstChild.style.height = '95px'
+          }
+          else {
+            // if (rightColNum === 4){
+            
+            //   const leftVal = rightColNum * 119
+            //   photo.style.gridColumnStart = `${leftVal}`
+            //   console.log("right", photo, rightColNum, leftVal)
+            // }
+            // else 
+    //         grid-row-start: auto;
+            // grid-column-start: auto;
+            // grid-row-end: span 100;
+            // grid-column-end: span 118;
+            if (rightColNum >= 4){
+              photo.style.gridColumnEnd = `span 118`
+              photo.style.gridColumnStart = `auto`
+            }
+            else {
+              photo.style.gridColumnEnd = `span 118`
+              photo.style.gridColumnStart = `auto`
+            }
             if (!orientation){
-              photo.style.gridRowStart = `${topDistOfPhoto}`
-              photo.style.gridColumn = `span 119`
+              // photo.style.gridRowStart = `${topDistOfPhoto}`
               photo.style.gridRowEnd = `span 100`
               photo.firstChild.style.width = '115px'
               photo.firstChild.style.height = '95px'
             }
             else {
-              photo.style.gridRowStart = `${topDistOfPhoto}`
-              photo.style.gridColumn = `span 119`
+              // photo.style.gridRowStart = `${topDistOfPhoto}`
               photo.style.gridRowEnd = `span 200`
               photo.firstChild.style.width = '115px'
               photo.firstChild.style.height = '190px'
             }
           }
+          }
            else {
-              const bool = !!(i%2)
-              const rowPlace = Math.floor(i/8)
-              const rowVal = rowPlace * 100 + 1
-              ids.push(i)
-              shrunkPhotos.push(photo)
-              // unShrink(photo, bool, rowVal)
+            photo.firstChild.style.height = '95px'
+            photo.style.gridRowStart = ` ${topDistOfPhoto}`
+             photo.firstChild.style.width = '115px'
+            // unShrink(photo, bool, topDistOfPhoto)
+            if (rightColNum >= 4){
+              photo.style.gridColumnEnd = `948`
+              photo.style.gridColumnStart = `span 120`
+            }
+            else {
+              photo.style.gridColumnEnd = `span 118`
+              photo.style.gridColumnStart = `1`
+            }
+            
           }
     }
   }
@@ -268,7 +321,7 @@ const PhotoGrid = (props) => {
       const isPhotoCentered = !!elem[1]?.getElementsByClassName("picture").length 
 
       if (isPhotoCentered && !!id){
-        console.log("scroll")
+        // console.log("scroll")
         const gridItem = elem[1]?.getBoundingClientRect();
         const positionX = gridItem.left + elem[0].offsetWidth/2;
         const positionY = gridItem.top + elem[0].offsetHeight/2
@@ -291,26 +344,44 @@ const PhotoGrid = (props) => {
 
     const centeredId = findCenter()
 
-    console.log("centeredId", centeredId)
+    // console.log("centeredId", centeredId)
 
     const changeCells = (centeredId) => {
       
       if (photoId !== centeredId && id !== photoId){
-        console.log("change")
+        // console.log("change")
         const centeredPhoto = photos[centeredId]
         const centeredOrientation = !!centeredPhoto?.getElementsByClassName("portrait").length
-        
-        // TRUE === RIGHT SIDE OF GRID
-        const onRightOfGrid = centeredPhoto?.offsetLeft > grid.offsetWidth/2
- 
         const offTop = centeredPhoto?.offsetTop
         const offLeft = centeredPhoto?.offsetLeft
-
         const topDistOfPhoto = Math.floor(offTop/100)*100 + 1
+        
 
         // + or - for column start and + 1 for next
-        const leftDistOfRightPhoto = (Math.floor(offLeft/119) - 1) * 119 + 1
-        const rightDistOfLeftPhoto = (Math.floor(offLeft/119)) * 119 + 1
+        // RIGHT
+        const rightColNum = (Math.floor(offLeft/119) - 2)
+        // LEFT
+        const leftColNum = (Math.floor(offLeft/119) - 1)
+
+        // 2 REPRESENTS THE NUMBER OF SQUARES THE PHOTO WILL OCCUPY WHEN IT GROWS
+        // "leftColNum" REPRESENTS THE STARTING POINT TO SUBTRACT FROM
+        // leftColNum - 2 GET THE EXACT DIFFERENCE FROM THE DESIRED START OR END WHEN SETTING THE PHOTO
+
+        // RIGHT
+        const rightCorrection = rightColNum - 2
+        // LEFT
+        const leftCorrection = leftColNum - 2
+
+        const leftDistOfRightPhoto = (rightColNum * 119) - rightCorrection
+        // const leftDistOfRightPhoto = (Math.floor(offLeft/119) - 2) * 119
+        const rightDistOfLeftPhoto = (leftColNum * 119) - leftCorrection
+        // const rightDistOfLeftPhoto = (Math.floor(offLeft/119) - 1) * 119
+
+        // TRUE === RIGHT SIDE OF GRID
+        // const onRightOfGrid = centeredPhoto?.offsetLeft > grid.offsetWidth/2
+        const onRightOfGrid = rightColNum >= 4
+        
+        
         
         const rowConflict = !!rowOverlap.filter((rowNum) => { 
           if (Math.floor(offTop/100) === rowNum){
@@ -321,30 +392,40 @@ const PhotoGrid = (props) => {
         
 
       const unInlarge = () => {
-          // console.log("unInlarge")
-          const oldPhoto = photos[photoId]
+        const oldPhoto = photos[photoId]
+        
           const oldOrientation = !!oldPhoto?.getElementsByClassName("portrait").length
+          const isPrevBumper = !!oldPhoto?.getElementsByClassName("bumper").length
           const oldOffLeft = oldPhoto?.offsetLeft
-          const oldOnRightOfGrid = Math.floor(oldOffLeft/119) > 4
+          const rightColNum = (oldOffLeft/119) - 2
 
-          if (!!oldPhoto){
-            
+          const oldOnRightOfGrid = Math.floor(oldOffLeft/118) > 4
+
+          if (oldPhoto !== undefined){
             // oldPhoto.style.background = `black`
             oldPhoto.firstChild.style.width = '110px'
-
-            if (oldOnRightOfGrid){
+            oldPhoto.style.gridRowStart = `auto`
+            console.log("unInlarge", oldPhoto, rightColNum)
+            // if (rightColNum === 4){
+            //   // LEFT MOST ON RIGHT SIDE
+            //   oldPhoto.style.gridColumnEnd = `span 118`
+            // }
+            // else
+            
+             if (rightColNum >= 4){
               // RIGHT SIDE
-              oldPhoto.style.gridColumnEnd = `span 119`
+              oldPhoto.style.gridColumnEnd = `span 118`
               oldPhoto.style.gridColumnStart = `auto`
             }
             else {
               // LEFT SIDE
-              oldPhoto.style.gridColumnStart = `span 119`
               oldPhoto.style.gridColumnEnd = `auto`
+              oldPhoto.style.gridColumnStart = `span 118`
             }
 
             
             if (!oldOrientation){
+
               oldPhoto.style.gridRowEnd = `span 100`
               oldPhoto.firstChild.style.height = '95px'
             }
@@ -363,7 +444,7 @@ const PhotoGrid = (props) => {
           if (!!(i%2)){
             let photo = photos[i]
             unShrinkPhotos.push(photo)
-            photo.style.gridColumnStart = `span 119`
+            photo.style.gridColumnStart = `span 120`
             return photo
           }
           else {
@@ -376,73 +457,78 @@ const PhotoGrid = (props) => {
         }
       }
       const inlarge = () => {  
-        console.log("inlarge", centeredPhoto, centeredPhoto?.offsetLeft, onRightOfGrid, topDistOfPhoto)
-
-        // centeredPhoto.style.background = `blue`
-
+        
+          if (rightColNum === 4){
+          
+          }
           if (onRightOfGrid){
+            
             // RIGHT SIDE
             // console.log("inlarge right", centeredPhoto, leftDistOfRightPhoto)
 
             centeredPhoto.style.gridRowStart = `${topDistOfPhoto}`
-            centeredPhoto.style.gridColumnEnd = `span 237`
+            centeredPhoto.style.gridColumnEnd = `span 236`
             centeredPhoto.style.gridColumnStart = `${leftDistOfRightPhoto}`
           }
           else {
             // LEFT SIDE
-            // console.log("inlarge left", centeredPhoto, rightDistOfLeftPhoto)
-
+            // console.log("left", offLeft, Math.floor(offLeft/119), rightDistOfLeftPhoto)
             centeredPhoto.style.gridRowStart = `${topDistOfPhoto}`
-            centeredPhoto.style.gridColumnStart = `span 237`
+            centeredPhoto.style.gridColumnStart = `span 236`
             centeredPhoto.style.gridColumnEnd = `${rightDistOfLeftPhoto}`
           }
           if (centeredOrientation){
             centeredPhoto.style.gridRowEnd = `span 300`
-            centeredPhoto.firstChild.style.width = '237px'
+            centeredPhoto.firstChild.style.width = '230px'
             centeredPhoto.firstChild.style.height = '295px'
           }
           else {
             centeredPhoto.style.gridRowEnd = `span 200`
-            centeredPhoto.firstChild.style.width = '237px'
+            centeredPhoto.firstChild.style.width = '230px'
             centeredPhoto.firstChild.style.height = '190px'
           }
       }
       const shrink = () => {
         const ids = []
         const shrunkPhotos = []
-        const rowCount = (centeredOrientation ? 3 : 2)
+        const rowAdd = (rowConflict ? 0 : 1)
+        const rowCount = (centeredOrientation ? 2 : 1) + rowAdd
         const first = onRightOfGrid ? rowNum * 8 + 7 : rowNum * 8
+        const lastRow = (rowCount * 8 + first)
+        const rowSpan = (lastRow < photos.length) ? rowCount : rowCount - rowAdd
         
-        // console.log("shrinkMap", rowCount, centeredPhoto, first)
+        // console.log("shrinkMap", rowSpan, centeredPhoto, first)
         
-        for (let i = 0; i < rowCount; i++){
+        for (let i = 0; i <= rowSpan; i++){
 
               const shrunkIndex = i * 8 + first
               const photoToShrink = photos[shrunkIndex]
               
-              ids.push(shrunkIndex)
+
               shrunkPhotos.push(photoToShrink)
 
-              // console.log("shrunkIndex inlarge", i, first, shrunkIndex, rowCount, photoToShrink)
-
-              if (onRightOfGrid){
+              // console.log("shrunkIndex inlarge", i, first, shrunkIndex, rowSpan, photoToShrink)
+          
+              if (photoToShrink !== undefined){
+                ids.push(shrunkIndex)
+                if (onRightOfGrid){
                 photoToShrink.style.gridColumnStart = `span 1`
-              }
-              else {
+                }
+                else {
                 photoToShrink.style.gridColumnEnd = `span 1`            
+                }
+                
               }
-
-              if (i === rowCount - 1){
+              if (i === rowSpan || photoToShrink === undefined){
                 inlarge() 
               }
-
             }
             setRange(ids)
             return shrunkPhotos
       }
 
 
-      if (centeredId === false){
+      if (centeredId === false && photoId !== false){
           // console.log(`centeredArr${photoId}x`, "un center oldPhoto", photos[photoId], photoId, centeredId, id)
 
           setPhotoId(false)
@@ -450,11 +536,11 @@ const PhotoGrid = (props) => {
           unInlarge()
           // adjustFunction()
       }
-      else {
-          // console.log(`inlarge centered photo ${centeredId}x`, rightDistOfLeftPhoto)
+      else if (photoId === false){
+          console.log(centeredId)
 
           setPhotoId(centeredId)
-          unInlarge()
+          // unInlarge()
           shrink() 
         }
       }
@@ -467,7 +553,8 @@ const PhotoGrid = (props) => {
 
 
 
-useEffect(() => { console.log("useEffect render")})
+// useEffect(() => { console.log("useEffect render", photos?.length)})
+
 const folderName = props.folderDetails[props.folderShown].name
   return (
     <article >
@@ -538,10 +625,11 @@ const folderName = props.folderDetails[props.folderShown].name
               // style={{ opacity }}
               >
               {photos?.map((photo, i) => (<GridItem
-                    className="grid-item"
+
+                    className={photo.url === false ? `grid-item bump ${photo.bumper}` : "grid-item"}
                     id={i}
                     mobile={props.mobile}
-                    key={photo.index}
+                    key={photo.place}
                     row={!!photo.row ? photo.row : false}
                     orientation={photo.orientation}
                     url={!!photo.url}
@@ -552,12 +640,13 @@ const folderName = props.folderDetails[props.folderShown].name
                   >
                     <PictureFrame
                       id={i}
+                      key={photo.place}
                       className={photo.url === false ? "bumper" : photo.url !== null ? photo.orientation ? "picture landscape" : "picture portrait" : 'tile landscape'}
                       // alt={}
                       highlight={photo.color}
                       contentSizing={!!photo.name || !!photo.details}
                       
-                      onLoad={() => imgCounter(i)} 
+                      onLoad={() => imgCounter(photo.index)} 
                       onClick={() => modalToggle(photo)}
 
                       // loading="lazy"
@@ -591,33 +680,40 @@ text-align: end;
 `
 
 const Grid = styled.div`
-// justify-items: center;
   display: grid;
+  // justify-items: center;
+  grid-auto-flow: dense;
+  grid-template-rows: repeat(988, 1px);
+  grid-template-columns: repeat(948, 1px) ;
   grid-gap: 0px;
-  grid-auto-rows: 1px;
+  // grid-auto-rows: 1px;
   // background: black;
   background: #cccccc;
-  grid-template-columns: repeat(955, 1px) ;
   position: relative;
   width: fit-content;
-  .bumper {
-    // background: orange;
-  }
+  margin-block-start: 30vh;
+  margin-block-end: 50vh;
+  // padding-inline: 40vw;
+  padding-inline: 300px;
 
-  @media (max-width: 700px) {
-    margin-block-start: 30vh;
-    // padding-block-end: 20vh;
-    padding-inline: 40vw;
+
+
+  .bumper {
+    background: green;
+    width: 100%;
   }
-  .grid-item:nth-child(8n+1) {
+  .picture {
+    // background: orange;
+    // width: 100%;
+  }
+  .left {
     grid-column-start: 1;
-    grid-column-end: span 119;
-    
-}
-  .grid-item:nth-child(8n+8) {
-    grid-column-end: 955;
-    grid-column-start: span 119;
-}
+    grid-column-end: span 119; 
+  }
+  .right {
+    grid-column-end: 948;
+    grid-column-start: span 120;
+  }
 
 
 `;
@@ -629,15 +725,16 @@ display: flex;
 flex-wrap: wrap;
 justify-content: center;
 align-content: center;
-background-color: ${({url}) => url ? "blue" : "orange"};
+
+background-color: ${({url}) => url ? "blue" : "transparent"};
 // background-color: '#00000000';
 border-radius: 13px;
 overflow: hidden;
 
 // grid-row-end: span 100;
 ${({row}) => row && `grid-row-start: ${row}` }; 
-grid-row-end: ${({orientation}) => orientation ? "span 99" : "span 199"};
-grid-column-end: span 119;
+grid-row-end: ${({orientation}) => orientation ? "span 100" : "span 200"};
+grid-column-end: span 118;
 
 // z-index: ${({url}) => url ? "1" : "-5"};
 z-index: 1;
@@ -752,6 +849,9 @@ ${({ openModal, top, left, viewportY, viewportX }) =>
 //   ? 'height: 190px; width: 227px;' 
 //   : 'height: 295px; width: 227px;'}}
 const PictureFrame = styled.img`
+    // background-color: ${({url}) => url ? "blue" : "orange"};
+    background: orange;
+    // width: 100%;
     position: relative;
     border-radius: 13px;
     object-fit: cover;

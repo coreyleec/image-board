@@ -14,7 +14,6 @@ export const App = () => {
   require("events").EventEmitter.defaultMaxListeners = 20;
   let history = useHistory()
   let navigate = history.push;
-  // console.log("first", window.constructor)
   const location = useLocation();
   const [directory, setDirectory] = useState("")
   const [subDirectory, setSubDirectory] = useState()
@@ -22,11 +21,19 @@ export const App = () => {
   useEffect(() => {
     const root = location.pathname.split('/')[1]
     const sub = location.pathname.split('/')[2]
+    const index = location.pathname.split('/')[3]
     setDirectory(root)
     setSubDirectory(sub)
-  // console.log("useEffect setDir setSub")  
+    const prevLocation = `${root}/${sub}/${index}`
+
+
   }, [location.pathname])
-  // console.log("location.pathname", location.pathname, directory)
+
+  if(history.action === 'POP' && location.pathname !== '/by_Corey_Lee') {
+    window.store = location.pathname
+  }
+
+
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
     console.log("scroll")
@@ -99,21 +106,21 @@ useEffect(() => {
   else {
     setOverflow('unset')
   }
-  console.log("useEffect setOver")
+  
 }, [skinny, directory])
 
-
+// console.log("skinny", skinny, mobile, window.outerWidth , window.innerWidth)
 
 useEffect(() => {
-  console.log("useEffect setMob setSkin")
-  if (window.outerWidth < 1100 && window.innerWidth < 1100) {
+  if (window.outerWidth < 1100 || window.innerWidth < 1100) {
+    console.log("useEffect setMob setSkin")
     setSkinny(true)
   } 
-  else if (window.outerWidth > 1100 && window.innerWidth > 1100) {
+  else if (window.outerWidth > 1100 || window.innerWidth > 1100) {
     setSkinny(false)
   }
   if (window.outerWidth < 700 && window.innerWidth < 700){
-    console.log("useEffect setMob true")
+    // console.log("useEffect setMob true")
     setMobile(true)
   }
   else if (window.outerWidth > 700 || window.innerWidth > 700) {
@@ -139,7 +146,7 @@ useEffect(() => {
   return () => window.removeEventListener('resize', updateMedia);
 }, []);
 
-console.log("mobile", mobile, window.innerWidth < 700, window.outerWidth < 700, window.outerWidth, window.innerWidth)
+
 
 // LOGIN FUNCTIONS
  const useTemplate = () => {
@@ -200,8 +207,19 @@ const profileFetch = () => {
       // setUserComments(user.comments);
       // setUserEmail(user.user.email);
       setTutorial(user.user.tutorial)
-      navigate(`/home/folders/${user.user.folders[0].index}`)
-      console.log("directory", `/home/folders/${user.user.folders[0].index}`)
+      
+      if (window.store !== '/' && !!window.store){
+        const index = window.store.split('/')[3] || 0
+        setPhotos(user.user.folders[index].photos)
+        setFolderShown(+index)
+        setFavoriteShown(null)
+        navigate(`${window.store}`)
+      }
+      else {
+        setFolderShown(user.user.folders[0].index)
+        setFavoriteShown(null)
+        setPhotos(user.user.folders[0].photos)
+        navigate(`/home/folders/${user.user.folders[0].index}`)}
         
   })
 }
@@ -232,11 +250,21 @@ const landingFetch = () => {
       setUuid(user.user.uuid)
       setFolderType(user.user.folders[0].creative)
       setFolderCollaborators(user.user.folders[0].collaborators)
-      setFolderShown(user.user.folders[0].index)
-      setFavoriteShown(null)
-      setPhotos(user.user.folders[0].photos)
+
       // setTutorial(true)
-      navigate(`/by_Corey_Lee/folders/${user.user.folders[0].index}`)
+      if (window.store !== '/' && !!window.store){
+        const index = window.store.split('/')[3] || 0
+        setPhotos(user.user.folders[index].photos)
+        setFolderShown(+index)
+        setFavoriteShown(null)
+        navigate(`${window.store}`)
+      }
+      else {
+        setFolderShown(user.user.folders[0].index)
+        setFavoriteShown(null)
+        setPhotos(user.user.folders[0].photos)
+        navigate(
+        `/by_Corey_Lee/folders/${user.user.folders[0].index}`)}
       
   })
 }
@@ -270,7 +298,21 @@ const fetchUser = (userId, name) => {
       setPhotos(user.user.folders[0].photos)
       setFollow(user.user.follow)
       setTutorial(false)
-      navigate(`/user/folders/${user.user.folders[0].index}`)
+
+      if (window.store !== '/' && !!window.store){
+        const index = window.store.split('/')[3] || 0
+        setPhotos(user.user.folders[+index].photos)
+        setFolderShown(+index)
+        setFavoriteShown(null)
+        navigate(`${window.store}`)
+      }
+      else {
+        setFolderShown(user.user.folders[0].index)
+        setFavoriteShown(null)
+        setPhotos(user.user.folders[0].photos)
+        navigate(`/user/folders/${user.user.folders[0].index}`)}
+
+      
       
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
@@ -301,28 +343,12 @@ const autoLoggin = () => {
   };
 
 useEffect(() => {
-  // if (directory === 'home'){
-
-  // }
-  // console.log('auto login', !!localStorage.token && !currentUserId && !userId)
-  
   if (!!localStorage.token && !currentUserId && !userId ){
     autoLoggin()
   }
-  console.log("useEffect auto login")
-
 }, [])
 
- useEffect(() => {
-
-if (directory === 'by_Corey_Lee'){
-    landingFetch()
-    console.log("useEffect setDemo")
-    setDemo(true)
-  }
-
-
-}, [directory])
+ 
 
 
 
@@ -354,10 +380,10 @@ const publishAbout = () => {
 
 const [favoriteShown, setFavoriteShown] = useState(null)
 const [favorites, setFavorites] = useState(null)
-
+const sortPhotos = (a, b) => a.index - b.index;
 const setFolderPhotos = (index) => {
   const folder = folders.find(folder => folder.index === index)
-  // console.log("folder", folder)
+  console.log("folder", folder.photos, folder?.photos.sort(sortPhotos))
   setFolderShown(index)
   setFavoriteShown(null)
   setFolderPrivacy(folder.public)
@@ -450,6 +476,11 @@ const hiliteCollaborator = (user) => {
 
 
 useEffect(() => {
+  if (directory === 'by_Corey_Lee'){
+    landingFetch()
+    // console.log("useEffect setDemo")
+    setDemo(true)
+  }
   if (directory === 'login' || 'community'){
     // console.log("useEffect setEdit setColor")
     setEdit(false)
@@ -457,6 +488,8 @@ useEffect(() => {
     enableDelete === true && setEnableDelete(false)
   }
 }, [directory])
+
+
 
 
             
@@ -1058,10 +1091,9 @@ useEffect(() => {
         });
   }
   
-  // window.store = state 
 
  
-  
+
 
     return (
       
@@ -1140,7 +1172,7 @@ useEffect(() => {
           nameSubmit={nameSubmit}
           dbVersion={dbVersion}
         />
-        {!mobile && <AsideRight
+        {mobile !== undefined && !mobile && <AsideRight
           skinny={skinny || mobile}
           mobile={mobile}
           loggedIn={loggedIn}
@@ -1218,7 +1250,8 @@ useEffect(() => {
               {/* )} */}
               </Route>    
               
-              {!!localStorage.token ?
+              {window.store === '/' && 
+              !!localStorage.token ?
               <Redirect from="/" to="/home" />
               : <Redirect from="/" to="/by_Corey_Lee" />}
 
@@ -1286,8 +1319,11 @@ useEffect(() => {
   const Cont = styled.div`
   display: grid;
   height: 100vh;
-  max-width: ${window.outerWidth}px;
-  max-height: ${window.outerHeight}px;
+  ${!!window.innerWidth ?
+    `max-width: ${window.innerWidth}px;
+    max-height: ${window.innerHeight}px;`
+  : `max-width: ${window.outerWidth}px;
+  max-height: ${window.outerHeight}px;`}
   /* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '17% 1fr 17%'}; */
   grid-template-columns: 17% 1fr 17%;
   grid-template-rows: auto 1.5fr auto;

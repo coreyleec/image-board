@@ -2,17 +2,20 @@ import { useState } from 'react';
 import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { BrowserRouter as Router, Route, useLocation } from 'react-router-dom';
+import { browserHistory } from 'react-router';
+import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
+import { createHashHistory } from 'history'
+
 
 
 import * as serviceWorker from './serviceWorker';
 
 const Root = () => {
-  
+  const history = createHashHistory()
   return (
     // <React.StrictMode>
-    <Router>
+    <Router history={history}>
     <App/>
   </Router>
   // </React.StrictMode>

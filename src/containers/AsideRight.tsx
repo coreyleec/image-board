@@ -929,7 +929,8 @@ overflow: hidden;
     z-index: 0;
     display: flex;
     flex-direction: column;
-    width: ${props => props.asideRef.current.clientWidth - 20 + 'px'};
+    
+    width: ${({asideRef}) => asideRef.current?.clientWidth - 20 + 'px'};
 overflow: hidden;
     transition: margin-block .3s linear, max-height .3s linear;
     justify-content: ${props => !props.flexStart ? 'flex-start' : 'flex-end' };

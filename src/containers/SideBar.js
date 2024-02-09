@@ -24,6 +24,7 @@ const SideBar = (props) => {
     props.setCurrentUserId(null);
     window.location.reload(false);
     props.setLoggedIn(false)
+    window.store = null
     navigate("/");
   };
 
@@ -64,7 +65,10 @@ const loginDemo = [!!loginRef.current && loginRef.current.offsetTop + loginTopVa
 const [demoText, setDemoText] = useState(folderDemo)
 
 
-
+useEffect(() => {
+  if (props.mobile){
+  setSideBar(false)}
+}, [props.folderShown])
 
 
 useEffect(() => {
@@ -274,7 +278,7 @@ useEffect(() => {
                 
                 
                   <div className="nav-bar-header-wrapper" 
-                  onClick={() => props.fetch()}
+                  onClick={() => props.fetch(window.store = null)}
                   >
                     {"home".split("").map((l, i) => (
                       <p className="nav-bar-header" key={i}>{l}</p>
