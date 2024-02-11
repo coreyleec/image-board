@@ -552,7 +552,7 @@ useEffect(() => {
 
 // useEffect(() => { console.log("useEffect render", photos?.length)})
 
-const folderName = props.folderDetails[props.folderShown].name
+const folderName = props.folderDetails[props.folderShown]?.name
   return (
     <article >
 {/* <Square className="square left" left={left} ></Square>
@@ -696,7 +696,7 @@ const Grid = styled.div`
 
 
   .bumper {
-    background: green;
+    background: orange;
     width: 100%;
   }
   .picture {

@@ -260,28 +260,29 @@ const [users, setUsers] = useState()
 // }, [filters])
 
 
-
 useEffect(() => {
-  !!props.userId &&
+  console.log("props.directory", props.directory)
+  if (props.directory === 'community'){
+  // !!props.userId &&
     fetch(`${props.dbVersion}/community/`, {
         method: "GET",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
         "Content-Type": "application/json",
       },
-    })
-    .then((res) => res.json())
-    .then((recentContent) => 
-    {
-    console.log("recentContent", recentContent)
-    setCommunity(recentContent.community)
-    setFollowing(recentContent.following)
-    recentContent.following.folders.length === 0 && setDegree(false)
-    // window.store = recentContent
-    setLoad(true)
-  }
-    )
-}, [])
+      })
+      .then((res) => res.json())
+      .then((recentContent) => 
+      {
+      console.log("recentContent", recentContent)
+      setCommunity(recentContent.community)
+      setFollowing(recentContent.following)
+      recentContent.following.folders.length === 0 && setDegree(false)
+      // window.store = recentContent
+      setLoad(true)
+    }
+  )}
+}, [props.directory])
 
 // useEffect(() => {
 //   setCommunity(recent.community)

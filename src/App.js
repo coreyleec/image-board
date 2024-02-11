@@ -12,27 +12,7 @@ import DndRoutePrefix from "./containers/DndRoutePrefix";
 export const App = () => {
   // useEffect(() => { console.log("useEffect parent render") })
   require("events").EventEmitter.defaultMaxListeners = 20;
-  let history = useHistory()
-  let navigate = history.push;
-  const location = useLocation();
-  const [directory, setDirectory] = useState("")
-  const [subDirectory, setSubDirectory] = useState()
-
-  useEffect(() => {
-    const root = location.pathname.split('/')[1]
-    const sub = location.pathname.split('/')[2]
-    const index = location.pathname.split('/')[3]
-    setDirectory(root)
-    setSubDirectory(sub)
-    const prevLocation = `${root}/${sub}/${index}`
-
-
-  }, [location.pathname])
-
-  if(history.action === 'POP' && location.pathname !== '/by_Corey_Lee') {
-    window.store = location.pathname
-  }
-
+  
 
   window.onbeforeunload = function () {
     window.scrollTo(0, 0);
@@ -62,6 +42,55 @@ const [userId, setUserId] = useState(null);
 const [uuid, setUuid] = useState(0)
 const [loggedIn, setLoggedIn] = useState(false)
 
+// ROUTING
+let history = useHistory()
+  let navigate = history.push;
+  const location = useLocation();
+  const [directory, setDirectory] = useState("")
+  const [subDirectory, setSubDirectory] = useState()
+
+  useEffect(() => {
+    const root = location.pathname.split('/')[1]
+    const sub = location.pathname.split('/')[2]
+    const index = location.pathname.split('/')[3]
+    setDirectory(root)
+    setSubDirectory(sub)
+    const prevLocation = `${root}/${sub}/${index}`
+    localStorage.root = root
+
+  }, [location.pathname])
+
+// useEffect(() => {
+//   if (!loggedIn){
+//     console.log("loggin change", loggedIn)
+//     window.store = null
+//   }
+// }, [loggedIn])
+
+
+// IF LOGGEDIN FALSE AND POP 
+
+
+  if(history.action === 'POP' && location.pathname !== "/by_Corey_Lee" && location.pathname !== "/home") {
+
+    const root = location.pathname.split('/')[1]
+
+    if(root === localStorage.root){
+      window.store = location.pathname
+    }
+
+    if(!!localStorage.token && location.pathname !== window.store){
+
+      // window.store = location.pathname
+    }
+    console.log("pathname", window.store, location.pathname, history.action)
+
+  }
+
+console.log("window store", window.store, location.pathname, directory, (window.store === '/' && 
+!!localStorage.token))
+console.log("redirect", location.pathname === "/" && directory !== 'user' &&
+!!localStorage.token )
 
 
 // COMMENTS //
@@ -299,26 +328,21 @@ const fetchUser = (userId, name) => {
       setFollow(user.user.follow)
       setTutorial(false)
 
-      if (window.store !== '/' && !!window.store){
-        const index = window.store.split('/')[3] || 0
-        setPhotos(user.user.folders[+index].photos)
-        setFolderShown(+index)
-        setFavoriteShown(null)
-        navigate(`${window.store}`)
-      }
-      else {
         setFolderShown(user.user.folders[0].index)
         setFavoriteShown(null)
         setPhotos(user.user.folders[0].photos)
-        navigate(`/user/folders/${user.user.folders[0].index}`)}
-
+        navigate(`/user/folders/${user.user.folders[0].index}`)
+        localStorage.uuid = user.user.id 
+        localStorage.name = user.user.name
+      }
       
       
         // setUserComments(user.comments);
         // setUserEmail(user.user.email);
-  })
+  // }
+  )
 }
-
+console.log("localStorage.current", localStorage.uuid)
 
 const autoLoggin = () => {
   // console.log("name", name, "password", password)
@@ -342,13 +366,43 @@ const autoLoggin = () => {
     });
   };
 
-useEffect(() => {
-  if (!!localStorage.token && !currentUserId && !userId ){
-    autoLoggin()
-  }
-}, [])
+// useEffect(() => {
+//   if (!!localStorage.token && !currentUserId && !userId ){
+//     autoLoggin()
+//   }
+// }, [])
 
  
+
+useEffect(() => {
+  if (directory === 'by_Corey_Lee'){
+    landingFetch()
+    // console.log("useEffect setDemo")
+    setDemo(true)
+  }
+  if (directory === 'home' && !!localStorage.token){
+    if (!!currentUserId){
+      profileFetch()
+      console.log("profileFetch currentUserId", currentUserId)
+    }
+    else {
+      autoLoggin()
+    }
+    // landingFetch()
+    // console.log("useEffect setDemo")
+    // setDemo(true)
+  }
+  if (directory === "user" && localStorage.uuid !== undefined)
+  {
+    fetchUser(localStorage.uuid, localStorage.name)
+  }
+  if (directory === 'login' || 'community'){
+    // console.log("useEffect setEdit setColor")
+    setEdit(false)
+    setColorArr(colors)
+    enableDelete === true && setEnableDelete(false)
+  }
+}, [directory])
 
 
 
@@ -372,7 +426,7 @@ const publishAbout = () => {
       console.log("about real", publishBool, newAbout, newAbout.publish);
       setAbout(newAbout);
       // props.setAbout(aboutObj);
-      // window.store = aboutObj
+
     })}
 }
 // console.log("about", about, about.publish)
@@ -469,30 +523,7 @@ const hiliteCollaborator = (user) => {
     
 }
 
-
-
-
-
-
-
-useEffect(() => {
-  if (directory === 'by_Corey_Lee'){
-    landingFetch()
-    // console.log("useEffect setDemo")
-    setDemo(true)
-  }
-  if (directory === 'login' || 'community'){
-    // console.log("useEffect setEdit setColor")
-    setEdit(false)
-    setColorArr(colors)
-    enableDelete === true && setEnableDelete(false)
-  }
-}, [directory])
-
-
-
-
-            
+  
 
 const updateUserFavorites = (photo) => {
   console.log("favoriteObj", photo)
@@ -501,7 +532,7 @@ const updateUserFavorites = (photo) => {
   const favoriteFolder = favoriteFolders.find((fFolder) => fFolder.id === photo.favorite_folder_id)
 
   console.log("favoriteFolder", favoriteFolder)
-  // window.store = favoriteFolder
+
   
   const updatedFavoritePhotos = favoriteFolder.favorite_photos.map((fPhoto) => {
     if (fPhoto.id === photo.id) return photo
@@ -1250,10 +1281,18 @@ useEffect(() => {
               {/* )} */}
               </Route>    
               
-              {window.store === '/' && 
+              {location.pathname === "/" && directory !== 'user' &&
+              !!localStorage.token &&
+              <Redirect from="/" to="/home" />}
+              
+              {location.pathname === "/" && directory !== 'user' &&
+              !localStorage.token && 
+              <Redirect from="/" to="/by_Corey_Lee" />}
+
+              {/* {location.pathname === "/" && directory !== 'user' &&
               !!localStorage.token ?
               <Redirect from="/" to="/home" />
-              : <Redirect from="/" to="/by_Corey_Lee" />}
+              : <Redirect from="/" to="/by_Corey_Lee" />} */}
 
          
               <Route path='/login' >
@@ -1284,6 +1323,7 @@ useEffect(() => {
 
                 <Route path="/community" >
                   <CommunityPage
+                    directory={directory}
                     mobile={mobile}
                     loggedIn={loggedIn}
                     userId={userId}

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import { browserHistory } from 'react-router';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
 import { createHashHistory } from 'history'

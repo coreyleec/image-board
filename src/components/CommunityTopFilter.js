@@ -48,10 +48,12 @@ const Body = styled.div`
     overflow-y: scroll;
     top : ${({mobile, panel, panelHeight}) => mobile ? '0px' : panel ? `${panelHeight.current.clientHeight + 10}px` : `10px`};
   transition: top .2s ease-in;
+  margin-inline : ${mobile => mobile ? '10px' : `15px`};
+
   // overflow-x: hidden;
   /* margin-inline: max(4vw); */
   /* margin-inline: 4vw; */
-  margin-inline: 15px;
+  // margin-inline: 15px;
 `
 
 

@@ -657,7 +657,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
               enableDelete={props.enableDelete} >
                 -
               </SubtractButton>}
-              <p>✉</p>
+              {/* <p>✉</p> */}
               </div>
               </CollabLi>))}
               

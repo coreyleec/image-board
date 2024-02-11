@@ -20,11 +20,11 @@ const SideBar = (props) => {
   const sideBarRef = useRef()
   // LOGOUT
   const logout = () => {
-    localStorage.clear();
     props.setCurrentUserId(null);
-    window.location.reload(false);
     props.setLoggedIn(false)
     window.store = null
+    localStorage.clear();
+    window.location.reload(false);
     navigate("/");
   };
 
@@ -119,9 +119,10 @@ useEffect(() => {
           <div className="side-bar" 
           ref={sideBarRef}
           onMouseEnter={() => props.setHover(false)}>
+          
+          {(props.directory === 'user') && props.loggedIn &&
           <div className="follow-cont">
 {/* FOLLOW */}
-          {(props.directory === 'user') && 
           <>
             <Switch>
             <label className="toggle-switch">
@@ -161,7 +162,7 @@ useEffect(() => {
           </>
 
           
-        }
+        
          {!props.mobile && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
          <>
         <Switch>
@@ -178,6 +179,8 @@ useEffect(() => {
             </>        
         }
             </div>
+}
+
             <div className="scrollable">
 
               {true &&     (
@@ -520,6 +523,10 @@ const Sticky = styled.div`
         padding-top: 25px;
         height: 130px;
     }
+    @media only screen and (max-width: 700px) {
+        padding-top: 10px;
+        height: 130px;
+    }
 }
   .side-bar {
     
@@ -540,6 +547,7 @@ const Sticky = styled.div`
     @media only screen and (max-width: 700px) {
       position: fixed;
       display: flex;
+      flex-direction: column;
       flex-direction: reverse;
       bottom: 0%;
       width: 200px;

@@ -111,7 +111,7 @@ const CommunitySecondaryFilter = (props) => {
               <div className="text-cont">
               {!!photo.name && <p className="photo-name" >{photo.name}</p>}
               {!!photo.details && <p className="photo-details" >{photo.details}</p>}
-              <p className="obj-name" onClick={() => props.fetchUser(photo.u_id)} >{photo.obj_name}</p>
+              <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name)} >{photo.obj_name}</p>
               <p className="folder-name">{photo.folder_name}</p>
               </div>
               <div className='photo-cont'>

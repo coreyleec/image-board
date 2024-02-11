@@ -1,7 +1,5 @@
 import React from 'react';
 import { useState, useEffect } from 'react'
-// import { Parallax } from "react-scroll-parallax";
-// import { ScrollSyncPane } from 'react-scroll-sync';
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
 
