@@ -277,11 +277,13 @@ useEffect(() => {
               )}
 
 {/* HOME */}
+
+
               {props.directory !== 'home' && props.directory !== 'by_Corey_Lee' && (
                 
                 
                   <div className="nav-bar-header-wrapper" 
-                  onClick={() => props.fetch(window.store = null)}
+                  onClick={() => navigate("/")}
                   >
                     {"home".split("").map((l, i) => (
                       <p className="nav-bar-header" key={i}>{l}</p>
@@ -346,7 +348,7 @@ const Button = styled.button`
       text-decoration: none;
     }
     @media (max-width: 700px) {
-      font-size: medium;
+      font-size: 14px;
       transition: transform .5s ease;
       transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
       position: fixed;
@@ -480,7 +482,7 @@ const ButtonContainer = styled.div`
       transition: width .5s ease;
       width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
       button {
-          font-size: medium;
+          font-size: 14px;
           transform: ${({ sideBar }) => (sideBar ? 'translateX(136px)' : 'translateX(0px)')};
           transition: transform .5s ease;
       }

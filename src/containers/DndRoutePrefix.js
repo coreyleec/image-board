@@ -102,6 +102,7 @@ return (
               <Route path={`${match.path}/about`} >
                   <AboutMe
                   demo={props.demo}
+                  mobile={props.mobile}
                   loggedIn={props.loggedIn}
                   setAbout={props.setAbout}
                   about={props.about}

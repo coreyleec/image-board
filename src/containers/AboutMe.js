@@ -10,6 +10,9 @@ const AboutMe = (props) => {
     var _ = require('lodash')
     const [newUserName, setNewUserName] = useState()
 
+    console.log("about real", props.loggedIn,  props.demo,  !props.mobile);
+
+    
     const [siteHeader, setSiteHeader] = useState()
     const [about, setAbout] = useState({title: '', about: ''})
     const [newAbout, setNewAbout] = useState({title: props.about.title, about: props.about.about})
@@ -46,7 +49,7 @@ const AboutMe = (props) => {
             })
               .then((res) => res.json())
               .then((aboutObj) => {
-                console.log("about real", aboutObj, aboutObj);
+                console.log("about real", aboutObj);
                 setNewAbout(aboutObj);
                 // props.setAbout(aboutObj);
                 // window.store = aboutObj
@@ -140,7 +143,7 @@ const publicRef=useRef()
               ref={publicRef}
               autocapitalize="sentences"
               placeholder="add a title to your about section"
-              type="text" contentEditable={!!(props.loggedIn || props.demo)}
+              type="text" contentEditable={!!(props.loggedIn || props.demo) && !props.mobile}
               dangerouslySetInnerHTML={{__html: props.about.title}}
               onKeyDown={handleKeyDown}
               onBlur={handleBlur}
@@ -153,7 +156,7 @@ const publicRef=useRef()
               <StyledAbout
                 onKeyDown={handleKeyDown}
                 onBlur={handleBlur}
-                type="text" contentEditable={!!(props.loggedIn || props.demo)} autocapitalize="sentences"
+                type="text" contentEditable={!!(props.loggedIn || props.demo) && !props.mobile} autocapitalize="sentences"
                 placeholder="tell us about yourself or body of work"
                 dangerouslySetInnerHTML={{__html: props.about.about}}
                 onInput={(e) => setNewAbout({title: newAbout.title, about: e.currentTarget.innerHTML})}
@@ -290,7 +293,7 @@ const StyledAbout = styled.div`
     content:attr(placeholder);
   }
   ::-webkit-scrollbar {
-    display: unset;
+    // display: unset;
   }
   :hover {
     display: show;

@@ -4,14 +4,14 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { BrowserRouter as Router } from 'react-router-dom';
 import App from './App';
-import { createHashHistory } from 'history'
+import { createBrowserHistory } from 'history'
 
 
 
 import * as serviceWorker from './serviceWorker';
 
 const Root = () => {
-  const history = createHashHistory()
+  const history = createBrowserHistory()
   return (
     // <React.StrictMode>
     <Router history={history}>

@@ -87,8 +87,7 @@ let history = useHistory()
 
   }
 
-console.log("window store", window.store, location.pathname, directory, (window.store === '/' && 
-!!localStorage.token))
+console.log("window store", window.store, location.pathname, directory, history.action)
 console.log("redirect", location.pathname === "/" && directory !== 'user' &&
 !!localStorage.token )
 
@@ -281,9 +280,9 @@ const landingFetch = () => {
       setFolderCollaborators(user.user.folders[0].collaborators)
 
       // setTutorial(true)
-      if (window.store !== '/' && !!window.store){
+      if (history.action === 'POP' && window.store !== '/by_Corey_Lee/folders/0' && !!window.store){
         const index = window.store.split('/')[3] || 0
-        setPhotos(user.user.folders[index].photos)
+        setPhotos(user.user.folders[+index].photos)
         setFolderShown(+index)
         setFavoriteShown(null)
         navigate(`${window.store}`)
@@ -299,6 +298,7 @@ const landingFetch = () => {
 }
 
 const fetchUser = (userId, name) => {
+  window.store = null
   console.log('here it is', userId, name)
   userId === currentUserId 
   ? profileFetch()
@@ -401,6 +401,9 @@ useEffect(() => {
     setEdit(false)
     setColorArr(colors)
     enableDelete === true && setEnableDelete(false)
+  }
+  if(subDirectory !== 'folders'){
+    setFolderShown(null)
   }
 }, [directory])
 
@@ -1123,7 +1126,11 @@ useEffect(() => {
   }
   
 
- 
+  const fetchHome = () => 
+  { window.store = null
+    if (!!localStorage.token){ profileFetch() } 
+    else {landingFetch()}
+  }
 
 
     return (
@@ -1152,7 +1159,7 @@ useEffect(() => {
           lifestyleFollow={lifestyleFollow}
           tutorial={tutorial}
           setTutorial={setTutorial}
-          fetch={!!localStorage.token ? profileFetch : landingFetch}
+          fetch={fetchHome}
           directory={directory}
           setFavoritePhotos={setFavoritePhotos}
           setFolderPhotos={setFolderPhotos}
