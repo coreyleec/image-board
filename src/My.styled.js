@@ -10,7 +10,7 @@ line-height: 1.15em;}
 }
 
 padding-left: 10px; 
-padding-top: 3px;
+padding-block: 6px;
 float: left;
 text-align: left;
 width: 100%; 

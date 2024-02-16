@@ -22,16 +22,16 @@ export const App = () => {
 window.addEventListener( 'touchend', function( e ){
     html.scrollTop = html.scrollTop;
 });
-//   window.addEventListener("scroll", function() {
 
-//     const maxWidth = document.body.scrollWidth - window.innerWidth;
-//     console.log("POSITION", (window.pageXOffset * 100) / maxWidth);
-// });
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
+
   const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
   
-
+// DEMO STATE
+const [hover, setHover] = useState(false)
+const [tutorial, setTutorial] = useState(false)
+const [demo, setDemo] = useState(false)
 
   // OPEN LOGIN
  const [userProfile, setUserProfile] = useState(true);
@@ -42,63 +42,21 @@ const [userId, setUserId] = useState(null);
 const [uuid, setUuid] = useState(0)
 const [loggedIn, setLoggedIn] = useState(false)
 
-// ROUTING
-let history = useHistory()
-  let navigate = history.push;
-  const location = useLocation();
-  const [directory, setDirectory] = useState("")
-  const [subDirectory, setSubDirectory] = useState()
-
-  useEffect(() => {
-    const root = location.pathname.split('/')[1]
-    const sub = location.pathname.split('/')[2]
-    const index = location.pathname.split('/')[3]
-    setDirectory(root)
-    setSubDirectory(sub)
-    const prevLocation = `${root}/${sub}/${index}`
-    localStorage.root = root
-
-  }, [location.pathname])
-
-// useEffect(() => {
-//   if (!loggedIn){
-//     console.log("loggin change", loggedIn)
-//     window.store = null
-//   }
-// }, [loggedIn])
-
-
-// IF LOGGEDIN FALSE AND POP 
-
-
-  if(history.action === 'POP' && location.pathname !== "/by_Corey_Lee" && location.pathname !== "/home") {
-
-    const root = location.pathname.split('/')[1]
-
-    if(root === localStorage.root){
-      window.store = location.pathname
-    }
-
-    if(!!localStorage.token && location.pathname !== window.store){
-
-      // window.store = location.pathname
-    }
-    console.log("pathname", window.store, location.pathname, history.action)
-
-  }
-
-console.log("window store", window.store, location.pathname, directory, history.action)
-console.log("redirect", location.pathname === "/" && directory !== 'user' &&
-!!localStorage.token )
-
-
 // COMMENTS //
 
+
+ // MODAL
+ const [openModal, setOpenModal] = useState(false);
+ 
+// FOLLOW
+ const [follow, setFollow] = useState(null)
+   const [creative, setCreative] = useState(false)
+   const [lifestyle, setLifestyle] = useState(false)
 // FOLDERS //
 // const [folderDescription, setFolderDetails] = useState();
-
 const [folders, setFolders] = useState();
 const [folderShown, setFolderShown] = useState(null);
+const [newFolder, setNewFolder] = useState(false)
 const [folderType, setFolderType] = useState(null)
 //userFavorites// 
 const [folderCollaborators, setFolderCollaborators] = useState([])
@@ -106,6 +64,8 @@ const [folderPrivacy, setFolderPrivacy] = useState()
 const [userFavorites, setUserFavorites] = useState();
 const [favoriteDetails, setFavoriteDetails] = useState()
 const [folderDetails, setFolderDetails] = useState()
+const [favoriteShown, setFavoriteShown] = useState(null)
+const [favorites, setFavorites] = useState(null)
 
 // LINKS //
 const [userLinks, setUserLinks] = useState([]);
@@ -119,25 +79,249 @@ const [userAboutMe, setUserAboutMe] = useState("");
 // EDIT HOOK
 const [edit, setEdit] = useState(false);
 const [enableDelete , setEnableDelete] = useState(false)
-// ADD PHOTO
+// PHOTOS
 const [photos, setPhotos] = useState([]);
+const [reorderedPhotos, setReorderedPhotos] = useState()
+
+// STYLES
 const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
 const [mobile, setMobile] = useState();
-useEffect(() => {
-  if (directory === 'community') { 
-    setOverflow('hidden')
-  } 
-  else if (window.outerWidth < 500){
-    setOverflow('hidden')
-  }
-  else {
-    setOverflow('unset')
-  }
-  
-}, [skinny, directory])
 
-// console.log("skinny", skinny, mobile, window.outerWidth , window.innerWidth)
+
+// ROUTING
+let history = useHistory()
+let navigate = history.push;
+const location = useLocation();
+const [directory, setDirectory] = useState("")
+const [subDirectory, setSubDirectory] = useState()
+
+const profileFetch = () => {
+  console.log('profile fetch', localStorage.token)
+  fetch(`${dbVersion}/profile/`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.token}`,
+          "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((user) => 
+    {
+      console.log("User Profile", user.user, typeof user.user.about)
+      setUserId(user.user.id)
+      // setCurrentUserId(user.user.id)
+      setUserName(user.user.name);
+      setAbout(user.user.about);
+      setUserLinks(user.user.links);
+      setFolders(user.user.folders);
+      setFavorites(user.user.favorites);
+      setUserFavorites(user.user.favorite_folders)
+      // setFolderPhotos(user.user.folders[0].index)
+      setFolderType(user.user.folders[0].creative)
+      setFolderShown(user.user.folders[0].index)
+      setFavoriteShown(null)
+      setFolderCollaborators(user.user.folders[0].collaborators)
+      setPhotos(user.user.folders[0].photos)
+      // setUserComments(user.comments);
+      // setUserEmail(user.user.email);
+      setTutorial(user.user.tutorial)
+      
+      if (history.action === 'POP'){
+        const sub = location.pathname.split('/')[2]
+        const index = location.pathname.split('/')[3] || ''
+        if(sub === 'folders'){
+          setPhotos(user.user.folders[+index].photos)
+          setFolderShown(+index)
+          setFavoriteShown(null)
+          setFolderType(user.user.folders[+index].creative)
+        }
+        if(sub === 'favorites'){
+          setPhotos(user.user.favorite_folders[+index].favorite_photos)
+          setFolderShown(null)
+          setFavoriteShown(+index)
+          // setFolderType(user.user.folders[+index].creative)
+        }
+        navigate(`/home/${sub}/${index}`)
+      }
+      else {
+        setFolderShown(user.user.folders[0].index)
+        setFavoriteShown(null)
+        setPhotos(user.user.folders[0].photos)
+        navigate('/home/folders/0')
+      }
+
+      
+        
+  })
+}
+
+
+
+const landingFetch = () => {
+  fetch(`${dbVersion}/landing_page`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((user) => 
+    {
+      console.log("tutorialUser", user, typeof user.user.about, typeof user.user.folders)
+      setCurrentUserId(user.user.id)
+      setUserId(user.user.id)
+      setUserName(user.user.name);
+      setUserAboutMe(user.user.details);
+      setUserLinks(user.user.links);
+      setFolders(user.user.folders);
+      setFavorites(user.user.favorites);
+      setUserFavorites(user.user.favorite_folders)
+      setAbout(user.user.about)
+      setDemo(user.user.demo)
+      setUuid(user.user.uuid)
+      setFolderType(user.user.folders[0].creative)
+      setFolderCollaborators(user.user.folders[0].collaborators)
+
+      // setTutorial(true)
+
+      if (history.action === 'POP' && window.store?.split('/').length > 1){
+        console.log("pop", window.store, history.action, location.pathname, directory)
+        const sub = location.pathname.split('/')[2]
+        const index = location.pathname.split('/')[3] || ''
+        if(sub === 'folders'){
+          setPhotos(user.user.folders[+index].photos)
+          setFolderShown(+index)
+          setFavoriteShown(null)
+          setFolderType(user.user.folders[+index].creative)
+        }
+        if(sub === 'favorites'){
+          setPhotos(user.user.favorite_folders[+index].favorite_photos)
+          setFolderShown(null)
+          setFavoriteShown(+index)
+          // setFolderType(user.user.folders[+index].creative)
+        }
+        navigate(`/by_Corey_Lee/${sub}/${index}`)
+      }
+      else {
+        setFolderShown(user.user.folders[0].index)
+        setFavoriteShown(null)
+        setPhotos(user.user.folders[0].photos)
+        navigate('/by_Corey_Lee/folders/0')
+      }
+
+      
+  })
+}
+
+const fetchUser = (userId, name) => {
+  window.store = null
+  console.log('here it is', userId, name)
+  userId === currentUserId 
+  ? profileFetch()
+  : (name === 'Corey Lee') 
+  ? landingFetch()
+  : fetch(`${dbVersion}/users/${userId}/`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.token}`,
+          "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((user) => 
+    {
+      console.log("user", user, user.user.folders[0].creative)
+      setUserId(user.user.id);
+      // props.setUuid(user.user.uuid)
+      setUserName(user.user.name);
+      setAbout(user.user.about);
+      setFolders(user.user.folders);
+      setFolderShown(user.user.folders[0].index)
+      setFolderCollaborators(user.user.folders[0].collaborators)
+      setUserLinks(user.user.links);
+      setPhotos(user.user.folders[0].photos)
+      setFollow(user.user.follow)
+      setTutorial(false)
+      const root = location.pathname.split('/')[1]
+      if (history.action === 'POP' && root !== 'community'){
+        const sub = location.pathname?.split('/')[2]
+        const index = location.pathname?.split('/')[3] || ''
+        if(sub === 'folders'){
+          setPhotos(user.user.folders[+index].photos)
+          setFolderShown(+index)
+          setFavoriteShown(null)
+          setFolderType(user.user.folders[+index].creative)
+        }
+        if(sub === 'favorites'){
+          setPhotos(user.user.favorite_folders[+index].favorite_photos)
+          setFolderShown(null)
+          setFavoriteShown(+index)
+          // setFolderType(user.user.folders[+index].creative)
+        }
+        navigate(`/user/${sub}/${index}`)
+        localStorage.uuid = user.user.id 
+        localStorage.name = user.user.name
+      }
+      else {
+        setFolderShown(user.user.folders[0].index)
+        setFolderType(user.user.folders[0].creative)
+        setPhotos(user.user.folders[0].photos)
+        navigate('/user/folders/0')
+        localStorage.uuid = user.user.id 
+        localStorage.name = user.user.name
+      }
+
+
+      }
+      
+      
+        // setUserComments(user.comments);
+        // setUserEmail(user.user.email);
+  // }
+  )
+}
+console.log("folderType", folderType)
+
+const autoLoggin = () => {
+  // console.log("name", name, "password", password)
+  console.log('auto login function', uuid)
+  fetch(`${dbVersion}/auto_login`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+        "Content-Type": "application/json",
+    },
+  })
+    .then((res) => res.json())
+    .then((user) => {
+      console.log('auto login function', user, user.uuid)
+      setCurrentUserId(user.uuid)
+      setDemo(false)
+      setLoggedIn(true)
+      if (directory === 'home'){ profileFetch()}
+    }
+    );
+  };
+
+// useEffect(() => {
+//   if (!!localStorage.token && !currentUserId && !userId ){
+//     autoLoggin()
+//   }
+// }, [])
+
+ 
+
+
+
+const fetchHome = () => 
+  {
+    if (!!localStorage.token){ profileFetch() } 
+    else {landingFetch()}
+  }
+
+
+
 
 useEffect(() => {
   if (window.outerWidth < 1100 || window.innerWidth < 1100) {
@@ -174,7 +358,18 @@ useEffect(() => {
   return () => window.removeEventListener('resize', updateMedia);
 }, []);
 
-
+useEffect(() => {
+  if (directory === 'community') { 
+    setOverflow('hidden')
+  } 
+  else if (window.outerWidth < 500){
+    setOverflow('hidden')
+  }
+  else {
+    setOverflow('unset')
+  }
+  
+}, [skinny, directory])
 
 // LOGIN FUNCTIONS
  const useTemplate = () => {
@@ -198,218 +393,6 @@ const logNeatly = (header, array) => {
     console.log(header, `${value}:${eval(value)}`)}
 }
 
-
-// DEMO STATE
-const [hover, setHover] = useState(false)
-const [tutorial, setTutorial] = useState(false)
-const [demo, setDemo] = useState(false)
-
-
-const profileFetch = () => {
-  console.log('profile fetch', localStorage.token)
-  fetch(`${dbVersion}/profile/`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.token}`,
-          "Content-Type": "application/json",
-        },
-    })
-    .then((res) => res.json())
-    .then((user) => 
-    {
-      console.log("User Profile", user.user, typeof user.user.about)
-      setUserId(user.user.id)
-      // setCurrentUserId(user.user.id)
-      setUserName(user.user.name);
-      setAbout(user.user.about);
-      setUserLinks(user.user.links);
-      setFolders(user.user.folders);
-      setFavorites(user.user.favorites);
-      setUserFavorites(user.user.favorite_folders)
-      // setFolderPhotos(user.user.folders[0].index)
-      setFolderType(user.user.folders[0].creative)
-      setFolderShown(user.user.folders[0].index)
-      setFavoriteShown(null)
-      setFolderCollaborators(user.user.folders[0].collaborators)
-      setPhotos(user.user.folders[0].photos)
-      // setUserComments(user.comments);
-      // setUserEmail(user.user.email);
-      setTutorial(user.user.tutorial)
-      
-      if (window.store !== '/' && !!window.store){
-        const index = window.store.split('/')[3] || 0
-        setPhotos(user.user.folders[index].photos)
-        setFolderShown(+index)
-        setFavoriteShown(null)
-        navigate(`${window.store}`)
-      }
-      else {
-        setFolderShown(user.user.folders[0].index)
-        setFavoriteShown(null)
-        setPhotos(user.user.folders[0].photos)
-        navigate(`/home/folders/${user.user.folders[0].index}`)}
-        
-  })
-}
-
-
-
-const landingFetch = () => {
-  fetch(`${dbVersion}/landing_page`, {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-    })
-    .then((res) => res.json())
-    .then((user) => 
-    {
-      console.log("tutorialUser", user, typeof user.user.about, typeof user.user.folders)
-      setCurrentUserId(user.user.id)
-      setUserId(user.user.id)
-      setUserName(user.user.name);
-      setUserAboutMe(user.user.details);
-      setUserLinks(user.user.links);
-      setFolders(user.user.folders);
-      setFavorites(user.user.favorites);
-      setUserFavorites(user.user.favorite_folders)
-      setAbout(user.user.about)
-      setDemo(user.user.demo)
-      setUuid(user.user.uuid)
-      setFolderType(user.user.folders[0].creative)
-      setFolderCollaborators(user.user.folders[0].collaborators)
-
-      // setTutorial(true)
-      if (history.action === 'POP' && window.store !== '/by_Corey_Lee/folders/0' && !!window.store){
-        const index = window.store.split('/')[3] || 0
-        setPhotos(user.user.folders[+index].photos)
-        setFolderShown(+index)
-        setFavoriteShown(null)
-        navigate(`${window.store}`)
-      }
-      else {
-        setFolderShown(user.user.folders[0].index)
-        setFavoriteShown(null)
-        setPhotos(user.user.folders[0].photos)
-        navigate(
-        `/by_Corey_Lee/folders/${user.user.folders[0].index}`)}
-      
-  })
-}
-
-const fetchUser = (userId, name) => {
-  window.store = null
-  console.log('here it is', userId, name)
-  userId === currentUserId 
-  ? profileFetch()
-  : (name === 'Corey Lee') 
-  ? landingFetch()
-  : fetch(`${dbVersion}/users/${userId}/`, {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.token}`,
-          "Content-Type": "application/json",
-        },
-    })
-    .then((res) => res.json())
-    .then((user) => 
-    {
-      console.log("user", user, typeof user.user.about)
-      setUserId(user.user.id);
-      // props.setUuid(user.user.uuid)
-      setUserName(user.user.name);
-      setAbout(user.user.about);
-      setFolders(user.user.folders);
-      setFolderShown(user.user.folders[0].index)
-      setFavoriteShown(null)
-      setFolderCollaborators(user.user.folders[0].collaborators)
-      setUserLinks(user.user.links);
-      setPhotos(user.user.folders[0].photos)
-      setFollow(user.user.follow)
-      setTutorial(false)
-
-        setFolderShown(user.user.folders[0].index)
-        setFavoriteShown(null)
-        setPhotos(user.user.folders[0].photos)
-        navigate(`/user/folders/${user.user.folders[0].index}`)
-        localStorage.uuid = user.user.id 
-        localStorage.name = user.user.name
-      }
-      
-      
-        // setUserComments(user.comments);
-        // setUserEmail(user.user.email);
-  // }
-  )
-}
-console.log("localStorage.current", localStorage.uuid)
-
-const autoLoggin = () => {
-  // console.log("name", name, "password", password)
-  console.log('auto login function', uuid)
-  fetch(`${dbVersion}/auto_login`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${localStorage.token}`,
-        "Content-Type": "application/json",
-    },
-  })
-    .then((res) => res.json())
-    .then((user) => {
-      console.log('auto login function', user, user.uuid)
-      setCurrentUserId(user.uuid)
-      setDemo(false)
-      setLoggedIn(true)
-      profileFetch()
-      // navigate("/home")
-      
-    });
-  };
-
-// useEffect(() => {
-//   if (!!localStorage.token && !currentUserId && !userId ){
-//     autoLoggin()
-//   }
-// }, [])
-
- 
-
-useEffect(() => {
-  if (directory === 'by_Corey_Lee'){
-    landingFetch()
-    // console.log("useEffect setDemo")
-    setDemo(true)
-  }
-  if (directory === 'home' && !!localStorage.token){
-    if (!!currentUserId){
-      profileFetch()
-      console.log("profileFetch currentUserId", currentUserId)
-    }
-    else {
-      autoLoggin()
-    }
-    // landingFetch()
-    // console.log("useEffect setDemo")
-    // setDemo(true)
-  }
-  if (directory === "user" && localStorage.uuid !== undefined)
-  {
-    fetchUser(localStorage.uuid, localStorage.name)
-  }
-  if (directory === 'login' || 'community'){
-    // console.log("useEffect setEdit setColor")
-    setEdit(false)
-    setColorArr(colors)
-    enableDelete === true && setEnableDelete(false)
-  }
-  if(subDirectory !== 'folders'){
-    setFolderShown(null)
-  }
-}, [directory])
-
-
-
-
 const publishAbout = () => {
   if (demo){
   const demoAbout = Object.assign({}, about, {publish: !about.publish});
@@ -432,11 +415,7 @@ const publishAbout = () => {
 
     })}
 }
-// console.log("about", about, about.publish)
 
-
-const [favoriteShown, setFavoriteShown] = useState(null)
-const [favorites, setFavorites] = useState(null)
 const sortPhotos = (a, b) => a.index - b.index;
 const setFolderPhotos = (index) => {
   const folder = folders.find(folder => folder.index === index)
@@ -566,7 +545,7 @@ useEffect(() => {
 
 
 
-const [newFolder, setNewFolder] = useState(false)
+
 const createFolder = (e, folderName) => {
     e.preventDefault();
     const nextIndex = folderDetails[folderDetails.length - 1].index + 1
@@ -950,17 +929,18 @@ const deletePhoto = (photo) => {
   }
   else if (loggedIn){
     fetch(`${dbVersion}/photos/${photo.id}/`, {
-    method: "PATCH",
+    method: "DELETE",
     headers: {
       Authorization: `Bearer ${localStorage.token}`,
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
+      u_id: currentUserId,
       name: null,
       url: null,
+      thumbnail_url: null,
       details: null, 
       orientation: true,
-      image_file: null, 
     }),
   })
     .then((res) => res.json())
@@ -977,9 +957,7 @@ const deletePhoto = (photo) => {
 
 
 
-const [reorderedPhotos, setReorderedPhotos] = useState()
 
-// console.log("reorderedPhotos", reorderedPhotos, !isNaN(folderShown))
 
 const reorderSubmit = () => {
   console.log("reorderedPhotos", !!reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderShown))
@@ -1013,14 +991,7 @@ if (!!reorderedPhotos){
     console.log("reorderedPhotos", reorderedPhotos)
     
   };
-  /// MODAL
-  const [openModal, setOpenModal] = useState(false);
-  const [token, setToken] = useState(localStorage.getItem('token'));
-  
-
-  const [follow, setFollow] = useState(null)
-    const [creative, setCreative] = useState(false)
-    const [lifestyle, setLifestyle] = useState(false)
+ 
     
 useEffect(() => {
 
@@ -1126,12 +1097,63 @@ useEffect(() => {
   }
   
 
-  const fetchHome = () => 
-  { window.store = null
-    if (!!localStorage.token){ profileFetch() } 
-    else {landingFetch()}
-  }
+  useEffect(() => {
+    console.log("on load directory push")
+    const root = location.pathname.split('/')[1]
+    const sub = location.pathname.split('/')[2]
+    const index = location.pathname.split('/')[3]
+    const prevLocation = `${root}/${sub}/${index}`
+    setDirectory(root)
+    setSubDirectory(sub)  
 
+
+    if (root === 'by_Corey_Lee' && history.action === 'REPLACE'){
+      landingFetch()
+      // console.log("useEffect setDemo")
+      setDemo(true)
+    }
+    if (root === 'by_Corey_Lee' && history.action === 'POP'){
+      landingFetch()
+      // console.log("useEffect setDemo")
+      setDemo(true)
+    }
+    if (!!localStorage.token){
+      console.log("on load token", !!localStorage.token, root, !!currentUserId)
+
+      console.log("auto login currentUserId", currentUserId)
+
+      if (currentUserId === 0){
+        autoLoggin()
+      }
+      else if (root === 'home' && !!localStorage.token && history.action === 'POP'){
+        profileFetch()
+        console.log("profileFetch currentUserId", currentUserId)
+      }
+    }
+    else if (root === 'home'){
+      landingFetch()
+      setDemo(true)
+    }
+    if (root === "user" && localStorage.uuid !== undefined)
+    {
+      fetchUser(localStorage.uuid, localStorage.name)
+    }
+    if(history.action === 'POP'){
+    if (root === 'login' || 'community'){
+      // console.log("useEffect setEdit setColor")
+      setEdit(false)
+      setColorArr(colors)
+      enableDelete === true && setEnableDelete(false)
+    }
+    if(sub !== 'folders'){
+      setFolderShown(null)
+    }
+    if(sub !== 'favorite_folders'){
+      // setFavoriterShown(null)
+    }
+  }
+  }, [location.pathname])
+  
 
     return (
       
@@ -1158,6 +1180,7 @@ useEffect(() => {
           creativeFollow={creativeFollow}
           lifestyleFollow={lifestyleFollow}
           tutorial={tutorial}
+          landingFetch={landingFetch}
           setTutorial={setTutorial}
           fetch={fetchHome}
           directory={directory}
@@ -1180,7 +1203,7 @@ useEffect(() => {
           createLink={createLink}
           userLinks={userLinks}
           updateLink={updateLink}
-
+          fetchHome={fetchHome}
           userId={userId}
           setUserId={setUserId}
           currentUserId={currentUserId}
@@ -1291,6 +1314,9 @@ useEffect(() => {
               {location.pathname === "/" && directory !== 'user' &&
               !!localStorage.token &&
               <Redirect from="/" to="/home" />}
+{/* 
+              {history.action === 'POP' && directory === 'user' &&
+            <Redirect from="/" to="/user" />} */}
               
               {location.pathname === "/" && directory !== 'user' &&
               !localStorage.token && 

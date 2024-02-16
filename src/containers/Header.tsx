@@ -51,20 +51,21 @@ const Header: React.FC<IProps> = (props) => {
 
 
     useEffect(() => {
-        if (props.subDirectory === 'about'){
+      console.log("HEADER", props.subDirectory, props.directory)
+        if (props?.subDirectory === 'about'){
           setSiteHeader("About")
         } 
-        else if (props.subDirectory === 'folders'){
-          setSiteHeader(`${props.userName}`)
+        else if (props?.subDirectory === 'folders'){
+          setSiteHeader(props?.userName)
         } 
-        else if (props.directory === 'login'){
+        else if (props?.directory === 'login'){
           setSiteHeader("Use ImageBoard")
         } 
-        else if (props.directory === 'community'){
+        else if (props?.directory === 'community'){
           setSiteHeader("Community")
       } 
         else {setSiteHeader("ImageBoard") }
-    }, [props.subDirectory || props.directory])
+    }, [props?.subDirectory, props?.directory])
     
 
 useEffect(() => {

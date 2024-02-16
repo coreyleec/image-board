@@ -20,11 +20,14 @@ const SideBar = (props) => {
   const sideBarRef = useRef()
   // LOGOUT
   const logout = () => {
+    localStorage.uuid = null 
+    localStorage.name = null
     props.setCurrentUserId(null);
     props.setLoggedIn(false)
     window.store = null
     localStorage.clear();
-    window.location.reload(false);
+    // window.location.reload(false);
+    // props.landingFetch()
     navigate("/");
   };
 
@@ -120,9 +123,9 @@ useEffect(() => {
           ref={sideBarRef}
           onMouseEnter={() => props.setHover(false)}>
           
-          {(props.directory === 'user') && props.loggedIn &&
           <div className="follow-cont">
-{/* FOLLOW */}
+            {/* FOLLOW */}
+          {(props.directory === 'user') && props.loggedIn &&
           <>
             <Switch>
             <label className="toggle-switch">
@@ -161,7 +164,7 @@ useEffect(() => {
           }
           </>
 
-          
+}
         
          {!props.mobile && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
          <>
@@ -178,8 +181,8 @@ useEffect(() => {
             
             </>        
         }
+
             </div>
-}
 
             <div className="scrollable">
 
@@ -283,7 +286,8 @@ useEffect(() => {
                 
                 
                   <div className="nav-bar-header-wrapper" 
-                  onClick={() => navigate("/")}
+                  // onClick={() => navigate("/")}
+                  onClick={() => props.fetchHome()}
                   >
                     {"home".split("").map((l, i) => (
                       <p className="nav-bar-header" key={i}>{l}</p>
@@ -351,10 +355,13 @@ const Button = styled.button`
       font-size: 14px;
       transition: transform .5s ease;
       transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
+      margin-top: 0px;
       position: fixed;
-      top: 79vh;
+      // top: 79vh;
+      bottom: 5px;
       width: fit-content;
       left : 0%;
+      z-index: 1;
     }
     @media (max-width: 1100px) and (min-width: 700px){
       transition: transform 1s ease;
@@ -527,7 +534,7 @@ const Sticky = styled.div`
     }
     @media only screen and (max-width: 700px) {
         padding-top: 10px;
-        height: 130px;
+        height: 70px;
     }
 }
   .side-bar {
@@ -564,7 +571,7 @@ const Sticky = styled.div`
       }
     }
     @media only screen and (max-width: 1100px) and (min-width: 700px){
-
+      height: 90vh;
       overflow: hidden;
       position: fixed;
       top: 0%;

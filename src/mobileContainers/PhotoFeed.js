@@ -20,7 +20,7 @@ return (
       <div id={photo.id} className="text-cont">
         {!!photo.name && <p className="photo-name" ><mark>{photo.name}</mark></p>}
         {!!photo.details && <p className="photo-details" ><mark>{photo.details}</mark></p>}
-        <p className="user-name" onClick={() => props.fetchUser(photo.u_id)} ><mark>{photo.user_name}</mark></p>
+        <p className="user-name" onClick={() => props.fetchUser(group.uuid)} ><mark>{photo.user_name}</mark></p>
         {/* <p className="folder-name">{photo.folder.name}</p> */}
       </div>
       <img src={photo.thumbnail_url}/>

@@ -53,21 +53,17 @@ const PhotoGrid = (props) => {
     if (!!props.photos.length){
       
       const newArray = [...props.photos.sort(sortPhotos)]
-      
+      // find all portrait photos in array
       let portraitPhotos = [...newArray.filter((photo) => photo.orientation !== true)]
-
-      
-
+      // find the photo under each portrait photo. this is due to how the dnd grid is ordered on desktop
       let photosUnder = [...portraitPhotos.map((photo) => { 
       let photoUnder = newArray[photo.index + 6]
       return photoUnder
       })]
       
       const splicedArr = [...props.photos]
-
+      // remove the photos under to maintain order
       photosUnder.forEach(x => splicedArr.splice(splicedArr.findIndex(n => n.id === x.id), 1));
-
-      
 
       const makePhoto = (i) => {
         let photo = {}
@@ -82,26 +78,30 @@ const PhotoGrid = (props) => {
         photo.orientation = true
         return photo
       }
+      // the number of photos removed from the previous folder
       const oldVal = [photos?.filter((photo) => photo.orientation !== true)].length - 1
-
+      // the number of photos to fill up the current row
       const lossVal = Math.ceil((splicedArr.length/6)) 
+      // because 60/6 is 10 addVal negates getting an incorrect count
+      // ^THIS  MAY BE ACTUALLY REVERSED ie lossVal - 6?
       const addVal = !!photosUnder.length ? lossVal : 0
+
       console.log("portraits", portraitPhotos, splicedArr, addVal, !!splicedArr.length, lossVal)
 
       const addMore = []
 
+      // add the total counts to make two rows of padding and make up the difference
       for (let i = 0; i < (oldVal  + (11 -lossVal)); i++) {
         let photo = makePhoto(i)
         addMore.push(photo);
         }
-
-      const combinedArr = [splicedArr, addMore].flat(Infinity)
-
-      const choppedArray = combinedArr.sort(sortPhotos).reduce(function (rows, key, index) { 
+        // combine the two new arrays
+       const combinedArr = [splicedArr, addMore].flat(Infinity)
+       // chop into multiple arrays of 6
+       const choppedArray = combinedArr.sort(sortPhotos).reduce(function (rows, key, index) { 
         return (index % 6 == 0 ? rows.push([key]) 
           : rows[rows.length-1].push(key)) && rows;
       }, []);
-
     
       const makeBumper = (i) => {
       let photo = {}
@@ -118,6 +118,7 @@ const PhotoGrid = (props) => {
       return photo
       }
 
+      // add a "bumper" photo at both ends of each array
       for (let i = 0; i <= (choppedArray?.length); i++) {    
         // console.log("bumper", i)
           let photo = makeBumper(i)
@@ -134,6 +135,7 @@ const PhotoGrid = (props) => {
     
     let tally = 0
     
+    // update indexes of the new array under the new value of "place" so not to alter the original index and break the reordering on future renders
     const reindexedArr = flatArr.map((photo, i) => {
         if(photo.orientation !== true){
           tally = tally + 1
@@ -141,7 +143,7 @@ const PhotoGrid = (props) => {
         photo.place = i
         return photo
       }) 
-      
+      // find rows where there are multiple portriat photos so we can adjust how many bumpers we shrink later to keep the grid in order
       const conflictRows = photosUnder.map((x) => Math.floor(x.place/8));
 
       const setData = [...new Set(conflictRows)];
@@ -173,6 +175,7 @@ useEffect(() => {
   const [photoPos, setPhotoPos] = useState([0,0,0,0])
 
   const modalToggle = (photoState) => {
+    // find element in the top center of screen
     const elem = document?.elementsFromPoint(gridWrapperWidth * .5, height * .4)[1]
     const id = +elem.id
 
@@ -328,7 +331,7 @@ useEffect(() => {
         const offleftDiff =  Math.abs(gridWrapperWidth * .5 - positionX)
         const offTopDiff = Math.abs(height * .3 - positionY)
   
-        const val = !!photoId ? .5 : .3
+        const val = !!photoId ? .5 : .4
         const maxLeft = (elem[0].offsetWidth*val)
         const maxTop = (elem[0].offsetHeight*val)
 
