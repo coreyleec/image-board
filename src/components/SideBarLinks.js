@@ -137,7 +137,7 @@ a {
     font-size: 1.2rem;
     font-weight: 600;
     padding-left: 10px;
-    padding-top: 3px;
+    padding-block: 6px;
     float: left;
     text-align: left;
     width: 100%;
@@ -148,7 +148,7 @@ a {
 
 
 const StyledInput = styled.input`
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   padding: 0px;
   padding-left: 10px;
   text-align: left;

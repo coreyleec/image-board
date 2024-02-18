@@ -84,7 +84,7 @@ const signupSubmit = (e, name, email, password, betaCode) => {
         console.log("token", localStorage.token)
         props.setUserId(user.user.id);
         props.setCurrentUserId(user.user.id)
-        
+        navigate("/home")
       });
     }
     else
@@ -190,7 +190,7 @@ const PageCont = styled.div`
       flex-flow: wrap;
       justify-content: right;
       input{
-        color: white;
+        color: black;
         padding: 2px;
         font-size: medium;
         width: -webkit-fill-available;

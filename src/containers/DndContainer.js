@@ -382,6 +382,7 @@ useEffect(() => {
       updatedPhoto.orientation = orientation
       updatedPhoto.index = photo.index
       updatedPhoto.id = photo.id
+      updatedPhoto.thumbnail_url = imgUrl
       updatedPhoto.url = imgUrl
       console.log("updatedPhoto", updatedPhoto)
       props.setPhotos(photos.map((photo) => {
