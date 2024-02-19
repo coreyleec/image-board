@@ -51,6 +51,7 @@ const loginSubmit = (e, name, password) => {
       props.setCurrentUserId(user.user.id)
       props.setDemo(false)
       props.setLoggedIn(true)
+      if(!!user.admin) {props.setAddy(true)}
       props.profileFetch()
       // navigate("/home")
       

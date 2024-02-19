@@ -8,9 +8,16 @@ import styled from "styled-components";
 //       t.boolean :creative_follow, default: false
 //       t.boolean :lifestyle_follow, default: false
 //       t.integer :folder_exceptions, array: true, default: []
+// interface Collabotor {
+//   uuid: string;
+//   name: string;
+//   prevState: undefined;
+// }
+
 
 
 interface IProps {
+  // folderCollaborators: null | Collabotor[];
   skinny: boolean;
   mobile: boolean;
   loggedIn: boolean;
@@ -47,6 +54,16 @@ const Header: React.FC<IProps> = (props) => {
 
     const [hover, setHover] = useState(true)
     const [timer, setTimer] = useState(true)
+    const [collab, setCollab] = useState()
+    
+// useEffect(() => {
+//   let collaborators = props.folderCollaborators
+//   if(collaborators.length > 1){
+//     let otherNames = collaborators.filter((collaber) => collaber.name !== props.userName)
+//     console.log("otherNames", otherNames)
+//     setCollab(otherNames)
+//   }
+// }, [props.folderCollaborators])
 
 
 

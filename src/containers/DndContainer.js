@@ -34,7 +34,12 @@ const DndContainer = (props) => {
     }
   }
   
-  
+
+
+  // FOLDERS = ARRAY OF TWO OBJECTS
+  // MAP FOLDER MAP PHOTOS
+  // MAP COLLABS MAP PHOTOS
+  // FOLDERS.SORT(ASC).MAP(FOLDER) => FOLDER.POHTOS.MAP
   // useEffect(() => {
   //   setPhotos(photos)
   // }, [props.colorArr])
@@ -382,6 +387,7 @@ useEffect(() => {
       updatedPhoto.orientation = orientation
       updatedPhoto.index = photo.index
       updatedPhoto.id = photo.id
+      updatedPhoto.u_id = props.currentUserId
       updatedPhoto.thumbnail_url = imgUrl
       updatedPhoto.url = imgUrl
       console.log("updatedPhoto", updatedPhoto)

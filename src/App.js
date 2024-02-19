@@ -27,7 +27,16 @@ window.addEventListener( 'touchend', function( e ){
   const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
 
   // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
-  
+  const [localDb, setLocalDb] = useState(false)
+  useEffect(() => {
+    localDb ? setDbVersion(`http://127.0.0.1:3000/api/v1`) : setDbVersion(`https://image-board-backend.herokuapp.com/api/v1`)
+  }, [localDb])
+  const setDB = () =>{
+    setLocalDb(!localDb)
+  }
+const [addy, setAddy] = useState(false)
+
+
 // DEMO STATE
 const [hover, setHover] = useState(false)
 const [tutorial, setTutorial] = useState(false)
@@ -56,16 +65,25 @@ const [loggedIn, setLoggedIn] = useState(false)
 // const [folderDescription, setFolderDetails] = useState();
 const [folders, setFolders] = useState();
 const [folderShown, setFolderShown] = useState(null);
+const [folderDetails, setFolderDetails] = useState()
 const [newFolder, setNewFolder] = useState(false)
 const [folderType, setFolderType] = useState(null)
+
 //userFavorites// 
 const [folderCollaborators, setFolderCollaborators] = useState([])
-const [folderPrivacy, setFolderPrivacy] = useState()
-const [userFavorites, setUserFavorites] = useState();
-const [favoriteDetails, setFavoriteDetails] = useState()
-const [folderDetails, setFolderDetails] = useState()
-const [favoriteShown, setFavoriteShown] = useState(null)
 const [favorites, setFavorites] = useState(null)
+const [favoriteShown, setFavoriteShown] = useState(null)
+const [favoriteDetails, setFavoriteDetails] = useState()
+const [folderPrivacy, setFolderPrivacy] = useState()
+// OTHER USER 
+const [userFavorites, setUserFavorites] = useState();
+
+// COLLABS
+const [collabs, setCollabs] = useState();
+const [collabShown, setCollabShown] = useState(null);
+const [collabDetails, setCollabDetails] = useState()
+const [collabPrivacy, setCollabPrivacy] = useState()
+const [collabType, setCollabType] = useState(null)
 
 // LINKS //
 const [userLinks, setUserLinks] = useState([]);
@@ -82,6 +100,8 @@ const [enableDelete , setEnableDelete] = useState(false)
 // PHOTOS
 const [photos, setPhotos] = useState([]);
 const [reorderedPhotos, setReorderedPhotos] = useState()
+
+
 
 // STYLES
 const [overflow, setOverflow] = useState('unset')
@@ -115,11 +135,13 @@ const profileFetch = () => {
       setAbout(user.user.about);
       setUserLinks(user.user.links);
       setFolders(user.user.folders);
+      setCollabs(user.user.collab_folders);
       setFavorites(user.user.favorites);
       setUserFavorites(user.user.favorite_folders)
       // setFolderPhotos(user.user.folders[0].index)
       setFolderType(user.user.folders[0].creative)
       setFolderShown(user.user.folders[0].index)
+      setCollabShown(null)
       setFavoriteShown(null)
       setFolderCollaborators(user.user.folders[0].collaborators)
       setPhotos(user.user.folders[0].photos)
@@ -146,6 +168,7 @@ const profileFetch = () => {
       }
       else {
         setFolderShown(user.user.folders[0].index)
+        setCollabShown(null)
         setFavoriteShown(null)
         setPhotos(user.user.folders[0].photos)
         navigate('/home/folders/0')
@@ -175,6 +198,7 @@ const landingFetch = () => {
       setUserAboutMe(user.user.details);
       setUserLinks(user.user.links);
       setFolders(user.user.folders);
+      setCollabs(user.user.collab_folders);
       setFavorites(user.user.favorites);
       setUserFavorites(user.user.favorite_folders)
       setAbout(user.user.about)
@@ -205,6 +229,7 @@ const landingFetch = () => {
       }
       else {
         setFolderShown(user.user.folders[0].index)
+        setCollabShown(null)
         setFavoriteShown(null)
         setPhotos(user.user.folders[0].photos)
         navigate('/by_Corey_Lee/folders/0')
@@ -237,7 +262,9 @@ const fetchUser = (userId, name) => {
       setUserName(user.user.name);
       setAbout(user.user.about);
       setFolders(user.user.folders);
+      setCollabs(user.user.collab_folders);
       setFolderShown(user.user.folders[0].index)
+      setCollabShown(null)
       setFolderCollaborators(user.user.folders[0].collaborators)
       setUserLinks(user.user.links);
       setPhotos(user.user.folders[0].photos)
@@ -265,6 +292,7 @@ const fetchUser = (userId, name) => {
       }
       else {
         setFolderShown(user.user.folders[0].index)
+        setCollabShown(null)
         setFolderType(user.user.folders[0].creative)
         setPhotos(user.user.folders[0].photos)
         navigate('/user/folders/0')
@@ -316,7 +344,9 @@ const autoLoggin = () => {
 
 const fetchHome = () => 
   {
-    if (!!localStorage.token){ profileFetch() } 
+    if (!!localStorage.token){ 
+    console.log("tokin", localStorage.token) 
+    profileFetch() } 
     else {landingFetch()}
   }
 
@@ -421,6 +451,7 @@ const setFolderPhotos = (index) => {
   const folder = folders.find(folder => folder.index === index)
   console.log("folder", folder.photos, folder?.photos.sort(sortPhotos))
   setFolderShown(index)
+  setCollabShown(null)
   setFavoriteShown(null)
   setFolderPrivacy(folder.public)
   setFolderType(folder.creative)
@@ -428,11 +459,25 @@ const setFolderPhotos = (index) => {
   setPhotos(folder.photos)
   navigate(`/${directory}/folders/${index}`)
 }
+const setCollabPhotos = (index) => {
+  const collab = collabs.find(folder => folder.index === index)
+  console.log("folder", index, collabs, collab)
+  // collabs.photos, collabs?.photos.sort(sortPhotos)
+  setCollabShown(index)
+  setFavoriteShown(null)
+  setFolderShown(null)
+  setCollabPrivacy(collab.public)
+  setCollabType(collab.creative)
+  setFolderCollaborators(collab.collaborators)
+  setPhotos(collab.photos)
+  navigate(`/${directory}/folders/${index}`)
+}
 
 const setFavoritePhotos = (index) => {
   const favoriteFolder = userFavorites.filter(favorites => favorites.index === index)
   setFavoriteShown(index)
   setFolderShown(null)
+  setCollabShown(index)
   // setFolderCollaborators(folder.collaborators)
   setPhotos(favoriteFolder[0].favorite_photos)
   navigate(`/${directory}/favorites/${index}`)
@@ -537,6 +582,13 @@ useEffect(() => {
   let jsonDetails = !!details && details.map(detail => JSON.parse(detail)) 
   setFavoriteDetails(jsonDetails)
 }, [userFavorites])
+
+useEffect(() => {
+  // console.log("useEffect setFavDets")
+  let details = !!collabs && collabs.map(collabFolder => (`{"name": "${collabFolder.name}", "id": ${collabFolder.id}, "index": ${collabFolder.index}}`))
+  let jsonDetails = !!details && details.map(detail => JSON.parse(detail)) 
+  setCollabDetails(jsonDetails)
+}, [collabs])
 
 
 
@@ -1161,6 +1213,9 @@ useEffect(() => {
       <Cont directory={directory} >
          
         <SideBar
+          addy={addy}
+          setLocalDb={setLocalDb}
+          localDb={localDb}
           mobile={mobile}
           overflow={overflow}
           loggedIn={loggedIn}
@@ -1169,8 +1224,6 @@ useEffect(() => {
           published={about.publish}
           subDirectory={subDirectory}
           // clickAboutLink={clickAboutLink}
-          setFolderShown={setFolderShown}
-          setFavoriteShown={setFavoriteShown}
           hover={hover} 
           setHover={setHover}
           follow={!!follow}
@@ -1184,15 +1237,28 @@ useEffect(() => {
           setTutorial={setTutorial}
           fetch={fetchHome}
           directory={directory}
+          setFolderShown={setFolderShown}
+          setCollabShown={setCollabShown}
+          setFavoriteShown={setFavoriteShown}
+
           setFavoritePhotos={setFavoritePhotos}
           setFolderPhotos={setFolderPhotos}
+          setCollabPhotos={setCollabPhotos}
+
           setFolders={setFolders}
-          updateUserFavorites={updateUserFavorites}
-          favoriteDetails={favoriteDetails}
-          folderDetails={folderDetails}
-          setFolderDetails={setFolderDetails}
+          setCollabs={setCollabs}
+
           folderShown={folderShown}
           favoriteShown={favoriteShown}
+          collabShown={collabShown}
+
+          favoriteDetails={favoriteDetails}
+          folderDetails={folderDetails}
+          collabDetails={collabDetails}
+
+          updateUserFavorites={updateUserFavorites}
+          setCollabDetails={setCollabDetails}
+          
           edit={edit}
           enableDelete={enableDelete}
           deleteLink={deleteLink}
@@ -1214,6 +1280,7 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <Header
+        folderCollaborators={folderCollaborators}
           mobile={mobile}
           skinny={skinny}
           loggedIn={loggedIn}
@@ -1251,6 +1318,7 @@ useEffect(() => {
           updateFolderPrivacy={updateFolderPrivacy}
           folderPrivacy={folderPrivacy}
           folderDetails={folderDetails}
+          collabDetails={collabDetails}
           folderCollaborators={folderCollaborators}
           enableDelete={enableDelete}
           setEnableDelete={setEnableDelete}
@@ -1285,6 +1353,7 @@ useEffect(() => {
               about={about}
               setAbout={setAbout}
               folderDetails={folderDetails}
+              collabDetails={collabDetails}
               folderCollaborators={folderCollaborators}
               photos={!!photos && photos}
               setPhotos={setPhotos}
@@ -1330,6 +1399,7 @@ useEffect(() => {
          
               <Route path='/login' >
                 <UserLoginSignup 
+                setAddy={setAddy}
                 mobile={mobile}
                 loggedIn={loggedIn}
                 setLoggedIn={setLoggedIn}
@@ -1343,7 +1413,9 @@ useEffect(() => {
                 setUserAboutMe={setUserAboutMe}
                 setUserLinks={setUserLinks}
                 setFolders={setFolders}
+                setCollabs={setCollabs}
                 setFolderShown={setFolderShown}
+                setCollabShown={setCollabShown}
                 setPhotos={setPhotos}
                 setUserName={setUserName}
                 navigate={navigate}
@@ -1364,9 +1436,11 @@ useEffect(() => {
                     setUserName={setUserName}
                     setUserAboutMe={setUserAboutMe}
                     setFolders={setFolders}
+                    setCollabs={setCollabs}
                     setPhotos={setPhotos}
                     setUserLinks={setUserLinks}
                     setFolderShown={setFolderShown}
+                    setCollabShown={setCollabShown}
                     setUserId={setUserId}
                     setFolderCollaborators={setFolderCollaborators}
                     setUuid={setUuid}

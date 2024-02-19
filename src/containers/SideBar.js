@@ -3,6 +3,7 @@ import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import SideBarLinks from "../components/SideBarLinks";
 import SideBarFolder from "../components/SideBarFolder";
+import SideBarCollabs from "../components/SideBarCollabs";
 import SideBarFavorites from "../components/SideBarFavorites";
 import styled from "styled-components";
 import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider";
@@ -181,18 +182,34 @@ useEffect(() => {
             
             </>        
         }
+         {props.addy === true && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
+         <>
+        <Switch>
+            <label className="toggle-switch">
+            <input type="checkbox" 
+            checked={props.localDb}
+            onChange={() => props.setLocalDb(!props.localDb)}
+            />
+            <span className="switch" />
+            </label>
+            <p>DB</p> 
+            </Switch>
+            
+            </>        
+        }
 
             </div>
 
             <div className="scrollable">
 
-              {true &&     (
-                  <>
+              
+                  <div>
+                    {(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
                     <div onMouseOver={() => setDemoText(folderDemo)}
                     ref={folderRef}
                     >
-                    {(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
                     <SideBarFolder 
+                    folders={'folders'}
                     mobile={props.mobile}
                     loggedIn={props.loggedIn}
                     setFolderPhotos={props.setFolderPhotos}
@@ -206,8 +223,23 @@ useEffect(() => {
                     directory={props.directory}
                     // key={props.userId} 
                     dbVersion={props.dbVersion}
+                    />
+                    
+                   {!!props.collabDetails.length &&<SideBarCollabs 
+                    collabs={'collabs'}
+                    mobile={props.mobile}
+                    loggedIn={props.loggedIn}
+                    setCollabPhotos={props.setCollabPhotos}
+                    edit={props.edit}
+                    collabShown={props.collabShown}
+                    collabDetails={props.collabDetails}
+                    setCollabDetails={props.setCollabDetails}
+                    enableDelete={props.enableDelete}
+                    directory={props.directory}
+                    // key={props.userId} 
+                    dbVersion={props.dbVersion}
                     />}
-                    </div>
+                    </div>}
                     {(props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
                     <div onMouseOver={() => setDemoText(favoriteDemo)}
                     ref={favoriteRef}
@@ -244,8 +276,9 @@ useEffect(() => {
                     </div>
                     }
 
-                  </>
-                )}
+                  </div>
+                
+
 {/* ((props.directory === 'by_Corey_Lee' || props.directory === 'user' || props.directory === 'home') ||(props.published || props.edit)) */}
 
 {/* ABOUT */}
@@ -282,7 +315,7 @@ useEffect(() => {
 {/* HOME */}
 
 
-              {props.directory !== 'home' && props.directory !== 'by_Corey_Lee' && (
+              {props.directory !== 'home' && (!props.loggedIn && props.directory !== 'by_Corey_Lee') && (
                 
                 
                   <div className="nav-bar-header-wrapper" 

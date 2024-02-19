@@ -590,12 +590,14 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
             </button>
 
            {/* {expand &&  */}
+           {/* <form onSubmit={search?.map((user) => (<li onClick={() => () => props.addCollaborator(user.uuid, user.name)} ))} > */}
            <input
              ref={inputRef}
              autoFocus
              type="text" onChange={(e) => searchUser(e.target.value)} 
              onFocus={() => changeFlex(true)}
              onBlur={() => changeFlex(false)} placeholder="search user"/>
+             {/* </form> */}
              {/* } */}
             <ul>
               {search?.map((user) => (<li onClick={() => props.addCollaborator(user.uuid, user.name)}>
