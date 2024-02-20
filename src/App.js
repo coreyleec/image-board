@@ -29,7 +29,7 @@ window.addEventListener( 'touchend', function( e ){
   // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
   const [localDb, setLocalDb] = useState(false)
   useEffect(() => {
-    !localDb ? setDbVersion(`http://127.0.0.1:3000/api/v1`) : setDbVersion(`https://image-board-backend.herokuapp.com/api/v1`)
+    localDb ? setDbVersion(`http://127.0.0.1:3000/api/v1`) : setDbVersion(`https://image-board-backend.herokuapp.com/api/v1`)
   }, [localDb])
   const setDB = () =>{
     setLocalDb(!localDb)
