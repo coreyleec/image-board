@@ -29,7 +29,7 @@ window.addEventListener( 'touchend', function( e ){
   // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
   const [localDb, setLocalDb] = useState(false)
   useEffect(() => {
-    localDb ? setDbVersion(`http://127.0.0.1:3000/api/v1`) : setDbVersion(`https://image-board-backend.herokuapp.com/api/v1`)
+    !localDb ? setDbVersion(`http://127.0.0.1:3000/api/v1`) : setDbVersion(`https://image-board-backend.herokuapp.com/api/v1`)
   }, [localDb])
   const setDB = () =>{
     setLocalDb(!localDb)
@@ -70,7 +70,7 @@ const [newFolder, setNewFolder] = useState(false)
 const [folderType, setFolderType] = useState(null)
 
 //userFavorites// 
-const [folderCollaborators, setFolderCollaborators] = useState([])
+
 const [favorites, setFavorites] = useState(null)
 const [favoriteShown, setFavoriteShown] = useState(null)
 const [favoriteDetails, setFavoriteDetails] = useState()
@@ -79,7 +79,8 @@ const [folderPrivacy, setFolderPrivacy] = useState()
 const [userFavorites, setUserFavorites] = useState();
 
 // COLLABS
-const [collabs, setCollabs] = useState();
+const [collaborators, setCollaborators] = useState([])
+const [collabs, setCollabs] = useState([]);
 const [collabShown, setCollabShown] = useState(null);
 const [collabDetails, setCollabDetails] = useState()
 const [collabPrivacy, setCollabPrivacy] = useState()
@@ -143,7 +144,7 @@ const profileFetch = () => {
       setFolderShown(user.user.folders[0].index)
       setCollabShown(null)
       setFavoriteShown(null)
-      setFolderCollaborators(user.user.folders[0].collaborators)
+      
       setPhotos(user.user.folders[0].photos)
       // setUserComments(user.comments);
       // setUserEmail(user.user.email);
@@ -154,20 +155,30 @@ const profileFetch = () => {
         const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
           setPhotos(user.user.folders[+index].photos)
+          setCollaborators(user.user.folders[+index].collaborators)
           setFolderShown(+index)
           setFavoriteShown(null)
+          setCollabShown(null)
           setFolderType(user.user.folders[+index].creative)
         }
         if(sub === 'favorites'){
           setPhotos(user.user.favorite_folders[+index].favorite_photos)
+          setCollaborators(user.user.folders[0].collaborators)
           setFolderShown(null)
+          setCollabShown(null)
           setFavoriteShown(+index)
-          // setFolderType(user.user.folders[+index].creative)
+        }
+        if(sub === 'collaborations'){
+          setPhotos(user.user.collab_folders[+index].photos)
+          setCollaborators(user.user.collab_folders[+index].collaborators)
+          setFolderShown(null)
+          setFavoriteShown(null)
         }
         navigate(`/home/${sub}/${index}`)
       }
       else {
         setFolderShown(user.user.folders[0].index)
+        setCollaborators(user.user.folders[0].collaborators)
         setCollabShown(null)
         setFavoriteShown(null)
         setPhotos(user.user.folders[0].photos)
@@ -192,7 +203,7 @@ const landingFetch = () => {
     .then((user) => 
     {
       console.log("tutorialUser", user, typeof user.user.about, typeof user.user.folders)
-      setCurrentUserId(user.user.id)
+      // setCurrentUserId(user.user.id)
       setUserId(user.user.id)
       setUserName(user.user.name);
       setUserAboutMe(user.user.details);
@@ -205,7 +216,7 @@ const landingFetch = () => {
       setDemo(user.user.demo)
       setUuid(user.user.uuid)
       setFolderType(user.user.folders[0].creative)
-      setFolderCollaborators(user.user.folders[0].collaborators)
+      setCollaborators(user.user.folders[0].collaborators)
 
       // setTutorial(true)
 
@@ -215,20 +226,30 @@ const landingFetch = () => {
         const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
           setPhotos(user.user.folders[+index].photos)
+          setCollaborators(user.user.folders[+index].collaborators)
           setFolderShown(+index)
           setFavoriteShown(null)
+          setCollabShown(null)
           setFolderType(user.user.folders[+index].creative)
         }
         if(sub === 'favorites'){
           setPhotos(user.user.favorite_folders[+index].favorite_photos)
+          setCollaborators(user.user.folders[0].collaborators)
           setFolderShown(null)
+          setCollabShown(null)
           setFavoriteShown(+index)
-          // setFolderType(user.user.folders[+index].creative)
+        }
+        if(sub === 'collaborations'){
+          setPhotos(user.user.collab_folders[+index].photos)
+          setCollaborators(user.user.collab_folders[+index].collaborators)
+          setFolderShown(null)
+          setFavoriteShown(null)
         }
         navigate(`/by_Corey_Lee/${sub}/${index}`)
       }
       else {
         setFolderShown(user.user.folders[0].index)
+        setCollaborators(user.user.folders[0].collaborators)
         setCollabShown(null)
         setFavoriteShown(null)
         setPhotos(user.user.folders[0].photos)
@@ -265,7 +286,7 @@ const fetchUser = (userId, name) => {
       setCollabs(user.user.collab_folders);
       setFolderShown(user.user.folders[0].index)
       setCollabShown(null)
-      setFolderCollaborators(user.user.folders[0].collaborators)
+      setCollaborators(user.user.folders[0].collaborators)
       setUserLinks(user.user.links);
       setPhotos(user.user.folders[0].photos)
       setFollow(user.user.follow)
@@ -276,28 +297,34 @@ const fetchUser = (userId, name) => {
         const index = location.pathname?.split('/')[3] || ''
         if(sub === 'folders'){
           setPhotos(user.user.folders[+index].photos)
+          setCollaborators(user.user.folders[+index].collaborators)
           setFolderShown(+index)
           setFavoriteShown(null)
+          setCollabShown(null)
           setFolderType(user.user.folders[+index].creative)
         }
         if(sub === 'favorites'){
           setPhotos(user.user.favorite_folders[+index].favorite_photos)
+          setCollaborators(user.user.folders[0].collaborators)
           setFolderShown(null)
+          setCollabShown(null)
           setFavoriteShown(+index)
-          // setFolderType(user.user.folders[+index].creative)
+        }
+        if(sub === 'collaborations'){
+          setPhotos(user.user.collab_folders[+index].photos)
+          setCollaborators(user.user.collab_folders[+index].collaborators)
+          setFolderShown(null)
+          setFavoriteShown(null)
         }
         navigate(`/user/${sub}/${index}`)
-        localStorage.uuid = user.user.id 
-        localStorage.name = user.user.name
       }
       else {
         setFolderShown(user.user.folders[0].index)
+        setCollaborators(user.user.folders[0].collaborators)
         setCollabShown(null)
-        setFolderType(user.user.folders[0].creative)
+        setFavoriteShown(null)
         setPhotos(user.user.folders[0].photos)
         navigate('/user/folders/0')
-        localStorage.uuid = user.user.id 
-        localStorage.name = user.user.name
       }
 
 
@@ -309,7 +336,7 @@ const fetchUser = (userId, name) => {
   // }
   )
 }
-console.log("folderType", folderType)
+
 
 const autoLoggin = () => {
   // console.log("name", name, "password", password)
@@ -449,28 +476,28 @@ const publishAbout = () => {
 const sortPhotos = (a, b) => a.index - b.index;
 const setFolderPhotos = (index) => {
   const folder = folders.find(folder => folder.index === index)
-  console.log("folder", folder.photos, folder?.photos.sort(sortPhotos))
+  // console.log("folder", folder.photos, folder?.photos.sort(sortPhotos))
   setFolderShown(index)
   setCollabShown(null)
   setFavoriteShown(null)
   setFolderPrivacy(folder.public)
   setFolderType(folder.creative)
-  setFolderCollaborators(folder.collaborators)
+  setCollaborators(folder.collaborators)
   setPhotos(folder.photos)
   navigate(`/${directory}/folders/${index}`)
 }
 const setCollabPhotos = (index) => {
   const collab = collabs.find(folder => folder.index === index)
-  console.log("folder", index, collabs, collab)
+  // console.log("folder", index, collabs, collab)
   // collabs.photos, collabs?.photos.sort(sortPhotos)
   setCollabShown(index)
   setFavoriteShown(null)
   setFolderShown(null)
   setCollabPrivacy(collab.public)
   setCollabType(collab.creative)
-  setFolderCollaborators(collab.collaborators)
+  setCollaborators(collab.collaborators)
   setPhotos(collab.photos)
-  navigate(`/${directory}/folders/${index}`)
+  navigate(`/${directory}/collaborations/${index}`)
 }
 
 const setFavoritePhotos = (index) => {
@@ -478,7 +505,7 @@ const setFavoritePhotos = (index) => {
   setFavoriteShown(index)
   setFolderShown(null)
   setCollabShown(index)
-  // setFolderCollaborators(folder.collaborators)
+  // setCollaborators(folder.collaborators)
   setPhotos(favoriteFolder[0].favorite_photos)
   navigate(`/${directory}/favorites/${index}`)
 }
@@ -508,7 +535,7 @@ const hiliteCollaborator = (user) => {
     })
     
 
-  } else if (user.color !== undefined && folderCollaborators.filter(collaborator => collaborator.color === user.color).length === 1) {
+  } else if (user.color !== undefined && collaborators.filter(collaborator => collaborator.color === user.color).length === 1) {
     
     let color = {}
 
@@ -522,15 +549,15 @@ const hiliteCollaborator = (user) => {
     
     setColorArr(colorArray)
 
-    const userIndex = folderCollaborators.indexOf(user)
+    const userIndex = collaborators.indexOf(user)
     
     delete user.color
     
-    const updatedArr = [...folderCollaborators]
+    const updatedArr = [...collaborators]
     
     updatedArr.splice(userIndex, 1, user)
     
-    setFolderCollaborators(updatedArr)
+    setCollaborators(updatedArr)
 
     filtered.map(photo => {delete photo.color})
 
@@ -546,7 +573,7 @@ const hiliteCollaborator = (user) => {
     })
   
   }
-  setCount(folderCollaborators.filter(user => user.color !== undefined).length)
+  setCount(collaborators.filter(user => user.color !== undefined).length)
     
 }
 
@@ -767,7 +794,7 @@ const catagorize = (boolean) => {
 
     if (demo){
       const collaborator = {name: name, uuid: uuid}
-      setFolderCollaborators([...folderCollaborators, collaborator])
+      setCollaborators([...collaborators, collaborator])
     }
     else if (loggedIn) {
       fetch(`${dbVersion}/add_collaborator/${folder.id}`, {
@@ -786,7 +813,7 @@ const catagorize = (boolean) => {
       .then((res) => res.json())
       .then((collaborator) => {
         console.log("collaborator", collaborator);
-        setFolderCollaborators([...folderCollaborators, collaborator])
+        setCollaborators([...collaborators, collaborator])
         // setFolders(
         //   folders.map((folder) => {
         //     if (folder.id === folderObj.id) 
@@ -1150,14 +1177,14 @@ useEffect(() => {
   
 
   useEffect(() => {
-    console.log("on load directory push")
+    
     const root = location.pathname.split('/')[1]
     const sub = location.pathname.split('/')[2]
     const index = location.pathname.split('/')[3]
     const prevLocation = `${root}/${sub}/${index}`
     setDirectory(root)
     setSubDirectory(sub)  
-
+    console.log("on load directory push", prevLocation)
 
     if (root === 'by_Corey_Lee' && history.action === 'REPLACE'){
       landingFetch()
@@ -1186,7 +1213,7 @@ useEffect(() => {
       landingFetch()
       setDemo(true)
     }
-    if (root === "user" && localStorage.uuid !== undefined)
+    if (root === "user" && localStorage.uuid !== undefined && history.action === 'POP')
     {
       fetchUser(localStorage.uuid, localStorage.name)
     }
@@ -1201,7 +1228,10 @@ useEffect(() => {
       setFolderShown(null)
     }
     if(sub !== 'favorite_folders'){
-      // setFavoriterShown(null)
+      setFavoriteShown(null)
+    }
+    if(sub !== 'collaborations'){
+      setCollabShown(null)
     }
   }
   }, [location.pathname])
@@ -1280,7 +1310,8 @@ useEffect(() => {
           dbVersion={dbVersion}
         />
         <Header
-        folderCollaborators={folderCollaborators}
+          collabs={collaborators?.filter((collaber) => collaber.name !== userName)}
+          setCollaborators={setCollaborators}
           mobile={mobile}
           skinny={skinny}
           loggedIn={loggedIn}
@@ -1319,7 +1350,7 @@ useEffect(() => {
           folderPrivacy={folderPrivacy}
           folderDetails={folderDetails}
           collabDetails={collabDetails}
-          folderCollaborators={folderCollaborators}
+          collaborators={collaborators}
           enableDelete={enableDelete}
           setEnableDelete={setEnableDelete}
           editToggle={editToggle}
@@ -1354,7 +1385,7 @@ useEffect(() => {
               setAbout={setAbout}
               folderDetails={folderDetails}
               collabDetails={collabDetails}
-              folderCollaborators={folderCollaborators}
+              collaborators={collaborators}
               photos={!!photos && photos}
               setPhotos={setPhotos}
               openModal={openModal}
@@ -1362,6 +1393,7 @@ useEffect(() => {
               folderShown={folderShown}
               colorArr={colorArr}
               userId={userId}
+              userName={userName}
               uuid={uuid}
               currentUserId={currentUserId}
               // tutorial={demo || tutorial}
@@ -1442,7 +1474,7 @@ useEffect(() => {
                     setFolderShown={setFolderShown}
                     setCollabShown={setCollabShown}
                     setUserId={setUserId}
-                    setFolderCollaborators={setFolderCollaborators}
+                    setCollaborators={setCollaborators}
                     setUuid={setUuid}
                     dbVersion={dbVersion}
                     fetchUser={fetchUser}
@@ -1504,9 +1536,9 @@ useEffect(() => {
     position: fixed;
     width: -webkit-fill-available;
     overflow: visible;
-
+    box-shadow: rgb(0, 0, 0) 0px 0px 55px 55px;
     // box-shadow: none;
-    box-shadow: rgb(0 0 0) 0px 0px 70px 70px;
+    // box-shadow: rgb(0 0 0) 0px 0px 70px 70px;
     // box-shadow: rgb(0, 0, 0) 0px 24px 40px 40px;
     // box-shadow: rgb(0, 0, 0) 0px 30px 40px 50px;
     // box-shadow: 0px 0px 30px 40px #000000;
@@ -1574,7 +1606,7 @@ const Footer = styled.footer`
 //     setTutorial(false)
 //   }
 // }, [directory])
-// (props.directory === "user" &&  props.folderCollaborators.some(c => c.uuid === props.currentUserId))
+// (props.directory === "user" &&  props.collaborators.some(c => c.uuid === props.currentUserId))
 
 //  useEffect(() => {
 //   console.log('here it is')

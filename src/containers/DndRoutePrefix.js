@@ -9,17 +9,17 @@ const DndRoutePrefix = (props) => {
     // console.log("directory", match.path, props.directory)
 
     // useEffect(() => {
-        // console.log("hi", props.folderCollaborators.map((colab) => ({
+        // console.log("hi", props.collaborators.map((colab) => ({
         //     match: props.photos.some((photo) => photo.color === colab.color),
         //   })))
-        //   let hi = props.folderCollaborators.map((colab) => {
+        //   let hi = props.collaborators.map((colab) => {
         //     let colaber = props.photos.find(photo => photo.u_id === colab.uuid)  
         //     if (colaber.color){
         //         photo.color = colaber.color
         //     }
         //     return photo \
     //     const photo = props.photos.map(photo => {
-    //     const collaber = props.folderCollaborators.find(user => user.uuid === photo.u_id)  
+    //     const collaber = props.collaborators.find(user => user.uuid === photo.u_id)  
     //     if (!!collaber.color){
     //         collaber.color = photo.color
     //     }
@@ -36,16 +36,16 @@ return (
     <Switch>
  
 
- <Route path={[ `${match.path}/folders/:id` , `${match.path}/favorites/:id` ]} 
+ <Route path={[ `${match.path}/folders/:id` , `${match.path}/favorites/:id`, `${match.path}/collaborations/:id` ]} 
       >
 
          {props.mobile ? <PhotoGrid
             // subDirectory={subDirectory}
-            logNeatly={props.logNeatly}
-            makeNeat={props.makeNeat}
-            mobile={props.mobile}
-            loggedIn={props.loggedIn}
-            folderCollaborators={props.folderCollaborators}
+              logNeatly={props.logNeatly}
+              makeNeat={props.makeNeat}
+              mobile={props.mobile}
+              loggedIn={props.loggedIn}
+              collabs={props?.collaborators?.filter((collaber) => collaber.name !== props?.userName)}
               hightlighted={props.hightlighted}
               setBaseName={props.setBaseName}
               photos={props.photos}
@@ -72,7 +72,7 @@ return (
             // subDirectory={subDirectory}
             mobile={props.mobile}
             loggedIn={props.loggedIn}
-            folderCollaborators={props.folderCollaborators}
+            collaborators={props.collaborators}
               hightlighted={props.hightlighted}
               setBaseName={props.setBaseName}
               photos={props.photos}

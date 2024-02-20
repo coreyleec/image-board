@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect, useState, useRef, useCallback, cloneElement} from "react";
 import styled from "styled-components";
+import { useLocation } from 'react-router-dom';
 import { Heart } from '../My.styled'
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
@@ -9,6 +10,7 @@ import { debounce} from "lodash";
 
 
 const PhotoGrid = (props) => {
+  const location = useLocation();
 //   window.addEventListener('wheel', function(e) {  
 //     e.preventDefault();
 //     // add custom scroll code if you want
@@ -556,6 +558,8 @@ useEffect(() => {
 // useEffect(() => { console.log("useEffect render", photos?.length)})
 
 const folderName = props.folderDetails[props.folderShown]?.name
+const index = +(location.pathname.split('/')[3])
+console.log("props.collabs", props.collabs, !!props?.collabs?.length)
   return (
     <article >
 {/* <Square className="square left" left={left} ></Square>
@@ -576,7 +580,7 @@ const folderName = props.folderDetails[props.folderShown]?.name
                     orientation={photo.orientation}
                     url={!!photo.url}
                     photo={photo}
-                    collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
+                    collaborator={!!photo.u_id && props.collaborators.filter(user => user.uuid === photo.u_id)}
                   >
                     <PictureFrame
                       className={photo.orientation ? "picture landscape" : "picture portrait"}
@@ -617,7 +621,13 @@ const folderName = props.folderDetails[props.folderShown]?.name
           onScroll={() => scrollPosition()}
           ref={gridWrapperRef}
           >
+           {!!props.collabs.length && props.mobile && props.collabs.length !== undefined && (!Number.isNaN(index)) && (typeof index === "number") && <span>
+            {props.collabs.map((collab) => <CollabName>& {collab.name}</CollabName>)}
+            </span>}
+
             <FolderName>{folderName}</FolderName>
+            
+
             <Grid
               ref={gridRef}
               className="grid"
@@ -634,7 +644,7 @@ const folderName = props.folderDetails[props.folderShown]?.name
                     orientation={photo.orientation}
                     url={!!photo.url}
                     photo={photo}
-                    collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
+                    collaborator={!!photo.u_id && props.collabs.filter(user => user.uuid === photo.u_id)}
                     colorArr={props.colorArr}
                     highlight={photo.color}
                   >
@@ -676,6 +686,17 @@ position: sticky;
 left: 0%;
 transform: translateY(30vh);
 padding: 10px;
+text-align: end;
+`
+const CollabName = styled.p`
+font-family: "HelveticaNeue-light";
+font-size: xxx-large;
+color: white;
+position: sticky;
+left: 0%;
+transform: translateY(25vh);
+padding-right: 2%;
+// padding: 10px;
 text-align: end;
 `
 

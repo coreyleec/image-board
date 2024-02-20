@@ -22,7 +22,7 @@ interface IProps {
   updateFolderPrivacy: (params: null) => object;
   folderPrivacy: undefined | boolean;
   folderDetails: undefined | string;
-  folderCollaborators: undefined | [ICollaborator];
+  collaborators: undefined | [ICollaborator];
   setEnableDelete: React.Dispatch<React.SetStateAction<boolean>>;
   enableDelete: boolean;
   editToggle: (params: boolean) => object;
@@ -211,7 +211,7 @@ useEffect(() => {
         // console.log("editSwitch", editSwitch)
       }
       else {
-        setDrawer(25)
+        setDrawer(25 + collabUl)
       }
     }
     else {
@@ -275,7 +275,7 @@ useEffect(() => {
       // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
     }
     else if (!controlDock) {setDrawer(0)}
-  //   let height = (props.folderType === null) ? 60 : (props.folderCollaborators.length >= 2 && !!listRef.current) ? (35 + listRef.current.clientHeight) : 25
+  //   let height = (props.folderType === null) ? 60 : (props.collaborators.length >= 2 && !!listRef.current) ? (35 + listRef.current.clientHeight) : 25
   // props.skinny ? 
   //   controlDock ? 
   //     setDrawer(height) 
@@ -283,7 +283,7 @@ useEffect(() => {
   // : props.edit ? 
   //   setDrawer(height + 150) 
   //   : setDrawer(height)
-  // console.log("drawer", drawer, height, props.folderCollaborators.length * 28.8, drawerHeight)
+  // console.log("drawer", drawer, height, props.collaborators.length * 28.8, drawerHeight)
   }
   else {
     
@@ -314,7 +314,7 @@ useEffect(() => {
       console.log("here")
   }
   }
-}, [props.folderType, props.folderCollaborators, controlDock, props.edit, search, props.skinny, props.subDirectory])
+}, [props.folderType, props.collaborators, controlDock, props.edit, search, props.skinny, props.subDirectory])
 
 // console.log("drawer", drawer, !!editDrawerRef.current && editDrawerRef.current.clientHeight, !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight)
 
@@ -398,8 +398,8 @@ let deleteDemoArrow =  (editDrawerRef.current?.childNodes[0].clientHeight !== 25
 // console.log("deleteDemoArrow", deleteDemoArrow)
 
 // const [hover, setHover] = useState(false)
-// console.log("tru", props.folderCollaborators.some(c => c.uuid === props.currentUserId))
-const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.currentUserId)
+// console.log("tru", props.collaborators.some(c => c.uuid === props.currentUserId))
+const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUserId)
   return (
     <aside ref={asideRef}  >
      
@@ -418,7 +418,7 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
             ref={panelRef}
             contHeight={height}
             listRef={listRef}
-            collabLength={props.folderCollaborators.length} 
+            collabLength={props.collaborators.length} 
             expand={expand}
             searchUl={searchUl}
             flexStart={flexStart}
@@ -641,14 +641,14 @@ const isCollaborator = props.folderCollaborators.some(c => c.uuid === props.curr
            
       } */}
 
-            {!!props.folderCollaborators.length &&
-            props.folderCollaborators.length >= 2 && props.subDirectory !== 'about' &&
+            {!!props.collaborators.length &&
+            props.collaborators.length >= 2 && props.subDirectory !== 'about' &&
             <CollabotorList ref={listRef} className="collabUl" 
             // onMouseEnter={() => changeFlex(true)}
             // onMouseLeave={() => changeFlex(false)}
             >
                 
-              {!!props.folderCollaborators.length && props.folderCollaborators.map((collaborator) => (
+              {!!props.collaborators.length && props.collaborators.map((collaborator) => (
               <CollabLi 
               collaborator={collaborator}
               onClick={() => props.hiliteCollaborator(collaborator)}
@@ -1467,6 +1467,6 @@ ul li {
   // console.log("flexStart", bool)
 // const [isCollabor, setIsCollabor] = useEffect(false)
 // useEffect(() => {
-  // console.log("props.folderCollaborators", props.folderCollaborators) 
-  // !!props.currentUserId && props.folderCollaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) setIsCollabor(true)})
-// }, [props.folderCollaborators])
+  // console.log("props.collaborators", props.collaborators) 
+  // !!props.currentUserId && props.collaborators.map((collaborator) => {if (collaborator.id === props.currentUserId) setIsCollabor(true)})
+// }, [props.collaborators])

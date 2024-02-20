@@ -575,10 +575,8 @@ const adjustFunction = () => {
 
 // FIND ME
 useEffect(() => {    
-  // console.log("photos", props.photos)
-  // console.log("useEffect", props.photos, props.colorArr)
   if (!!props.photos.length){
-  console.log("useEffect", props.photos)
+  // console.log("useEffect", props.photos)
   let newPhotos = [...props.photos]; // copy of array
   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
@@ -636,7 +634,7 @@ const dragging = () => {
                     orientation={photo.orientation}
                     url={photo.url}
                     photo={photo}
-                    collaborator={!!photo.u_id && props.folderCollaborators.filter(user => user.uuid === photo.u_id)}
+                    collaborator={!!photo.u_id && props.collaborators.filter(user => user.uuid === photo.u_id)}
                     colorArr={props.colorArr}
                     // onDrop={onDrop}
                     onDrop={underIndexs.includes(photo.index) ? false : onDrop}

@@ -11,7 +11,6 @@ const CommunityTopFilter = (props) => {
   props.photos.sort((a, b) => a.property > b.property)
 
 }
-console.log("props", props)
     return (
       
       <Body mobile={props.mobile} panel={props.panel} panelHeight={props.panelHeight}>

@@ -2,6 +2,8 @@ import { Dispatch, SetStateAction, useState, useEffect, useRef } from 'react'
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import styled from "styled-components";
+// import {MediumText} from '../../src/'
+
 
 // t.string :u_id
 //       t.integer :user_id
@@ -14,10 +16,15 @@ import styled from "styled-components";
 //   prevState: undefined;
 // }
 
-
+interface ICollab {
+  uuid: '';
+  name: '';
+  prevState: undefined;
+}
 
 interface IProps {
-  // folderCollaborators: null | Collabotor[];
+  // collaborators: null | Collabotor[];
+  collabs: undefined | [ICollab];
   skinny: boolean;
   mobile: boolean;
   loggedIn: boolean;
@@ -38,6 +45,7 @@ interface IProps {
   userName: string;
   edit: boolean;
   dbVersion: string;
+  setCollaborators: (params: any) => any;
   followToggle: (params: any) => any;
   creativeFollow: (params: any) => any;
   lifestyleFollow: (params: any) => any;
@@ -50,40 +58,51 @@ const Header: React.FC<IProps> = (props) => {
     
     const [newUserName, setNewUserName] = useState("")
 
-    const [siteHeader, setSiteHeader] = useState("")
+    const [siteHeader, setSiteHeader] = useState("ImageBoard")
 
     const [hover, setHover] = useState(true)
     const [timer, setTimer] = useState(true)
-    const [collab, setCollab] = useState()
+    // const [collabs, setCollabs] = useState<Iprops | null>([])
     
 // useEffect(() => {
-//   let collaborators = props.folderCollaborators
-//   if(collaborators.length > 1){
-//     let otherNames = collaborators.filter((collaber) => collaber.name !== props.userName)
-//     console.log("otherNames", otherNames)
-//     setCollab(otherNames)
+  // let collaborators = [...props?.collaborators]
+
+//   if(props.collaborators?.length > 1){
+//       let collabers = props.collaborators?.filter((collaber) => collaber.name !== props.userName)
+//     console.log("otherNames", collabers)
+
+//     setCollabs(collabers)
 //   }
-// }, [props.folderCollaborators])
+// }, [props.collaborators])
+
+let collabers = props.collabs?.filter((collaber) => collaber.name !== props.userName)
+
+
+
+const index = +(location.pathname.split('/')[3])
+
 
 
 
     useEffect(() => {
-      console.log("HEADER", props.subDirectory, props.directory)
         if (props?.subDirectory === 'about'){
           setSiteHeader("About")
-        } 
-        else if (props?.subDirectory === 'folders'){
-          setSiteHeader(props?.userName)
-        } 
+        }  
         else if (props?.directory === 'login'){
           setSiteHeader("Use ImageBoard")
         } 
         else if (props?.directory === 'community'){
           setSiteHeader("Community")
-      } 
-        else {setSiteHeader("ImageBoard") }
-    }, [props?.subDirectory, props?.directory])
+        } 
+        else {setSiteHeader(props?.userName)}
+        if ((Number.isNaN(index)) && (typeof index !== "number")) {
+          props.setCollaborators([])
+        }
+
+    }, [location.pathname, props?.subDirectory, props?.directory])
     
+
+
 
 useEffect(() => {
   setTimeout(() => {
@@ -118,7 +137,7 @@ useEffect(() => {
                             onChange={(e) => setNewUserName(e.target.value)}
                         ></NameInput>
                 </form>
-                : <TitleHeader mobile={props.mobile} >{siteHeader}</TitleHeader> 
+                : <TitleHeader defaultValue={props.userName} mobile={props.mobile} >{siteHeader}</TitleHeader> 
                     }
 
       <Sticky>
@@ -186,6 +205,19 @@ useEffect(() => {
                   {props.tutorial && <ViewPortTip hover={hover} >resize your window to allow room to browse through your local files
                   {/* <div className="arrow"></div> */}
                   </ViewPortTip>}
+                  {!props.mobile && (!Number.isNaN(index)) && (typeof index === "number") && <div>
+                  {/* {!!props?.collabs?.length && props.collabs.map((collab) =>{ */}
+                  {props?.collabs.map((collab)=> <MediumText>
+                    & {collab.name}
+                    </MediumText>)
+                    }
+                {/* } */}
+                {/*   )} */}
+                  </div>}
+
+                  
+                  
+                  
                   </header>
               )
 
@@ -433,5 +465,28 @@ box-shadow: 0px 0px 0px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color: #ccc;
 }
+
+`
+const MediumText = styled.h2`
+    float: right;
+    text-align: right;
+    font-family: "HelveticaNeue";
+    font-weight: normal;
+    padding-right: 20px;
+    width: 100%; 
+    cursor: pointer;
+
+    @media only screen and (max-width: 1100px) and (min-width: 700px){
+      color: black;
+      font-size: 2.4rem;
+    }
+
+    @media only screen and (max-width: 700px) {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: white;
+    }
+
+
 
 `

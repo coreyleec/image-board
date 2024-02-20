@@ -44,6 +44,30 @@ ${({ edit }) => edit && `
   padding-right: 10px;
 } 
 `
+export const MediumText = styled.div`
+@media only screen and (max-width: 1100px) and (min-width: 700px){
+font-size: 1.2rem;
+line-height: 1.15em;}
+@media only screen and (max-width: 700px) {
+  font-size: 1.2rem;
+  font-weight: 600;
+}
+
+padding-left: 10px; 
+padding-block: 6px;
+float: left;
+text-align: left;
+width: 100%; 
+color: black;
+cursor: pointer;
+
+.title-cont {
+  display:flex;
+  justify-content: space-between;
+  width: 100%;
+  padding-right: 10px;
+} 
+`
 export const SubtractButton = styled.button`
 ${({enableDelete}) => enableDelete ? 'opacity: 1;' : 'opacity: 0;'}
 transition: opacity .2s linear;
