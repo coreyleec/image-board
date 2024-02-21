@@ -136,7 +136,12 @@ aside:nth-child(3) {
       display: flex;
       flex-direction: column-reverse;
     }
-    
+    a {
+      /* font-size: 2rem; */
+      text-align: left;
+      width: 240px;
+      color: black;
+    }
     
 
     header {
@@ -200,7 +205,12 @@ aside:nth-child(3) {
         display: flex;
         justify-content: center;
       }
-
+      a {
+        font-size: 2rem;
+        text-align: left;
+        width: 240px;
+        color: black;
+      }
       /* .grid-item:nth-child(4n+1) {
         
     } */
@@ -355,12 +365,7 @@ input:-webkit-autofill {
   
   
 
-  a {
-    font-size: 2rem;
-    text-align: left;
-    width: 240px;
-    color: black;
-  }
+  
 
 
 

@@ -556,8 +556,10 @@ useEffect(() => {
 
 
 // useEffect(() => { console.log("useEffect render", photos?.length)})
+// const folderName = props?.folderDetails[props?.folderShown]?.name
+    // const favoritesName = !!props?.favoriteDetails && props?.favoriteDetails[props?.folderShown]?.name
+    // const collabName = !!props.collabDetails && props.collabDetails[props.folderShown]?.name
 
-const folderName = props.folderDetails[props.folderShown]?.name
 const index = +(location.pathname.split('/')[3])
 console.log("props.collabs", props.collabs, !!props?.collabs?.length)
   return (
@@ -625,7 +627,7 @@ console.log("props.collabs", props.collabs, !!props?.collabs?.length)
             {props.collabs.map((collab) => <CollabName>& {collab.name}</CollabName>)}
             </span>}
 
-            <FolderName>{folderName}</FolderName>
+            <FolderName>{props.folderName}</FolderName>
             
 
             <Grid
@@ -690,11 +692,11 @@ text-align: end;
 `
 const CollabName = styled.p`
 font-family: "HelveticaNeue-light";
-font-size: xxx-large;
+font-size: xx-large;
 color: white;
 position: sticky;
 left: 0%;
-transform: translateY(25vh);
+transform: translateY(32vh);
 padding-right: 2%;
 // padding: 10px;
 text-align: end;

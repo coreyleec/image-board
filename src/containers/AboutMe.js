@@ -230,6 +230,9 @@ const StyledAbout = styled.div`
   background-color: transparent;
   
   @media only screen and (max-width: 700px) {
+    -webkit-mask-mask: linear-gradient(transparent 0%,black 5% 87%,transparent 93%);
+    mask: linear-gradient(transparent 0%,black 5% 87%,transparent 93%);
+
     height: 500px;
     width: 100%;
     overflow: scroll;

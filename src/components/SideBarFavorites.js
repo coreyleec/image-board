@@ -114,7 +114,7 @@ const [condition, setCondition] = useState()
                         onKeyDown={(e) => submitFavorites(e, favorite)}
 // SET FOLDER SHOWN TO NULL
                         onClick={() => {
-                          props.setFavoritePhotos(favorite.index)
+                          props.setFolderPhotos(favorite.index, 'favorites')
                         }}
                         // navigate(`/favorites/${favorite.id}`)
 // DELETE NAVIGATE ^

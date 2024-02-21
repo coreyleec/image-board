@@ -229,7 +229,7 @@ useEffect(() => {
                     collabs={'collabs'}
                     mobile={props.mobile}
                     loggedIn={props.loggedIn}
-                    setCollabPhotos={props.setCollabPhotos}
+                    setFolderPhotos={props.setFolderPhotos}
                     edit={props.edit}
                     collabShown={props.collabShown}
                     collabDetails={props.collabDetails}
@@ -245,6 +245,7 @@ useEffect(() => {
                     ref={favoriteRef}
                     >
                     <SideBarFavorites  
+                    setFolderPhotos={props.setFolderPhotos}
                     mobile={props.mobile}
                     loggedIn={props.loggedIn}
                     directory={props.directory}
@@ -387,7 +388,7 @@ const Button = styled.button`
     @media (max-width: 700px) {
       font-size: 14px;
       transition: transform .5s ease;
-      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
+      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-136px)')};
       margin-top: 0px;
       position: fixed;
       // top: 79vh;
@@ -520,7 +521,7 @@ const ButtonContainer = styled.div`
   }
   @media only screen and (max-width: 700px) {
       transition: width .5s ease;
-      width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
+      // width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
       button {
           font-size: 14px;
           transform: ${({ sideBar }) => (sideBar ? 'translateX(136px)' : 'translateX(0px)')};
@@ -625,17 +626,21 @@ const Sticky = styled.div`
       @media only screen and (max-width: 700px) {
         display: flex;
         flex-direction: column;
-        margin-top: 10px;
-        margin-top: 10px;
-        height: 60vh;
+        // margin-top: 10px;
+        padding-block: 5vh;
+        height: 55vh;
         overflow: scroll;
+        // -webkit-mask-image: linear-gradient(to bottom, rgb(108 111 105) 84%, transparent 92%);
+        // -webkit-mask-mask: linear-gradient(transparent 0%,black 5% 88%,transparent 95%);
+        -webkit-mask: linear-gradient(transparent 0%,black 5% 87%,transparent 93%);
+        mask: linear-gradient(transparent 0%,black 5% 87%,transparent 93%);
+
         &::-webkit-scrollbar {
           width: 0px;
         }
       }
       @media only screen and (max-width: 1100px) and (min-width: 700px){
         
-        margin-top: 10px;
         margin-top: 10px;
         height: 64vh;
         overflow: scroll;

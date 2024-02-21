@@ -143,7 +143,7 @@ let path = location.pathname.split("/")[1] */}
                         draggable={true}
                         onKeyDown={(e) => submitFolderEdit(e, folder)}
       // SET FAVORITE SHOWN TO NULL
-                        onClick={(e) => {props.setFolderPhotos(folder.index)
+                        onClick={(e) => {props.setFolderPhotos(folder.index, 'folders')
                         }}
                         // navigate(`/${match.path}/folders/`)
       // DELETE ^

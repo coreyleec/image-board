@@ -28,19 +28,35 @@ const DndRoutePrefix = (props) => {
     //     console.log('hi', photo)
     // }, [props.colorArr])
 
-  
+    // const [folderName, setFolderName] = useEffect()
+    // useEffect(() => {
+    //   if(props.folderDetails && props.subDirectory === 'folders'){
+    //     eval(props.subDirectory)
+    //     setFolderName(props?.folderDetails[+props?.folderShown]?.name)
+    //   }
+    //   if (!!props?.collabDetails && props?.subDirectory === 'collabs'){
+    //     setFolderName(props?.collabDetails[+props?.collabShown]?.name)
+    //   }  
+    // }, [props.subDirectory])
     
+    
+    // const folderName = props?.folderDetails[props?.folderShown]?.name
+    // const favoritesName = !!props?.favoriteDetails ? props?.favoriteDetails[props?.folderShown]?.name : ''
+    // const collabName = !!props.collabDetails ? props.collabDetails[props.folderShown]?.name : ''
 
+
+    
 
 return (
     <Switch>
  
 
- <Route path={[ `${match.path}/folders/:id` , `${match.path}/favorites/:id`, `${match.path}/collaborations/:id` ]} 
+ <Route path={[ `${match.path}/folders/:id` , `${match.path}/favorites/:id`, `${match.path}/collabs/:id` ]} 
       >
 
          {props.mobile ? <PhotoGrid
             // subDirectory={subDirectory}
+              folderName={props.folderName}
               logNeatly={props.logNeatly}
               makeNeat={props.makeNeat}
               mobile={props.mobile}
@@ -48,6 +64,7 @@ return (
               collabs={props?.collaborators?.filter((collaber) => collaber.name !== props?.userName)}
               hightlighted={props.hightlighted}
               setBaseName={props.setBaseName}
+              // folderName={props.subDirectory === 'folders' ? folderName : props?.subDirectory === 'collabs' ? collabName : props.subDirectory === 'favorites' ? favoritesName : ''}
               photos={props.photos}
               colorArr={props.colorArr}
               setPhotos={props.setPhotos}

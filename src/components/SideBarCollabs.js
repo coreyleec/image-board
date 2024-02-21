@@ -121,7 +121,7 @@ const moveCollab = useCallback((dragIndex, hoverIndex) => {
                         draggable={true}
                         onKeyDown={(e) => submitCollabEdit(e, collab)}
       // SET FAVORITE SHOWN TO NULL
-                        onClick={(e) => {props.setCollabPhotos(collab.index)
+                        onClick={(e) => {props.setFolderPhotos(collab.index, 'collabs')
                         }}
                         // navigate(`/${match.path}/collabs/`)
       // DELETE ^

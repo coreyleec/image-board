@@ -24,7 +24,7 @@ window.addEventListener( 'touchend', function( e ){
 });
 
   // SWITCH DATABASE VERSION
-  const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
+  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
 
   // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
   const [localDb, setLocalDb] = useState(false)
@@ -68,7 +68,9 @@ const [folderShown, setFolderShown] = useState(null);
 const [folderDetails, setFolderDetails] = useState()
 const [newFolder, setNewFolder] = useState(false)
 const [folderType, setFolderType] = useState(null)
-
+const [folderName, setFolderName] = useState(null)
+const [favoriteName, setFavoriteName] = useState(null)
+const [collabName, setCollabName] = useState(null)
 //userFavorites// 
 
 const [favorites, setFavorites] = useState(null)
@@ -109,6 +111,8 @@ const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
 const [mobile, setMobile] = useState();
 
+const [loaded, setLoaded] = useState(false)
+
 
 // ROUTING
 let history = useHistory()
@@ -137,8 +141,8 @@ const profileFetch = () => {
       setUserLinks(user.user.links);
       setFolders(user.user.folders);
       setCollabs(user.user.collab_folders);
-      setFavorites(user.user.favorites);
-      setUserFavorites(user.user.favorite_folders)
+      setFavorites(user.user.favorite_folders);
+      // setUserFavorites(user.user.favorite_folders)
       // setFolderPhotos(user.user.folders[0].index)
       setFolderType(user.user.folders[0].creative)
       setFolderShown(user.user.folders[0].index)
@@ -168,7 +172,7 @@ const profileFetch = () => {
           setCollabShown(null)
           setFavoriteShown(+index)
         }
-        if(sub === 'collaborations'){
+        if(sub === 'collabs'){
           setPhotos(user.user.collab_folders[+index].photos)
           setCollaborators(user.user.collab_folders[+index].collaborators)
           setFolderShown(null)
@@ -184,13 +188,11 @@ const profileFetch = () => {
         setPhotos(user.user.folders[0].photos)
         navigate('/home/folders/0')
       }
-
+      setLoaded(true)
       
         
   })
 }
-
-
 
 const landingFetch = () => {
   fetch(`${dbVersion}/landing_page`, {
@@ -202,7 +204,7 @@ const landingFetch = () => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("tutorialUser", user, typeof user.user.about, typeof user.user.folders)
+      console.log("tutorialUser", user, user.user.favorites)
       // setCurrentUserId(user.user.id)
       setUserId(user.user.id)
       setUserName(user.user.name);
@@ -210,8 +212,8 @@ const landingFetch = () => {
       setUserLinks(user.user.links);
       setFolders(user.user.folders);
       setCollabs(user.user.collab_folders);
-      setFavorites(user.user.favorites);
-      setUserFavorites(user.user.favorite_folders)
+      setFavorites(user.user.favorite_folders);
+      // setUserFavorites(user.user.favorite_folders)
       setAbout(user.user.about)
       setDemo(user.user.demo)
       setUuid(user.user.uuid)
@@ -239,7 +241,7 @@ const landingFetch = () => {
           setCollabShown(null)
           setFavoriteShown(+index)
         }
-        if(sub === 'collaborations'){
+        if(sub === 'collabs'){
           setPhotos(user.user.collab_folders[+index].photos)
           setCollaborators(user.user.collab_folders[+index].collaborators)
           setFolderShown(null)
@@ -255,11 +257,11 @@ const landingFetch = () => {
         setPhotos(user.user.folders[0].photos)
         navigate('/by_Corey_Lee/folders/0')
       }
-
+      setLoaded(true)
       
   })
 }
-
+console.log("favorites", favorites)
 const fetchUser = (userId, name) => {
   window.store = null
   console.log('here it is', userId, name)
@@ -310,7 +312,7 @@ const fetchUser = (userId, name) => {
           setCollabShown(null)
           setFavoriteShown(+index)
         }
-        if(sub === 'collaborations'){
+        if(sub === 'collabs'){
           setPhotos(user.user.collab_folders[+index].photos)
           setCollaborators(user.user.collab_folders[+index].collaborators)
           setFolderShown(null)
@@ -326,7 +328,7 @@ const fetchUser = (userId, name) => {
         setPhotos(user.user.folders[0].photos)
         navigate('/user/folders/0')
       }
-
+      setLoaded(true)
 
       }
       
@@ -474,17 +476,23 @@ const publishAbout = () => {
 }
 
 const sortPhotos = (a, b) => a.index - b.index;
-const setFolderPhotos = (index) => {
-  const folder = folders.find(folder => folder.index === index)
-  // console.log("folder", folder.photos, folder?.photos.sort(sortPhotos))
-  setFolderShown(index)
+const setFolderPhotos = (index, type) => {
+  const setFunc = type.charAt(0).toUpperCase() + type.slice(1, -1)
+  console.log("folder", eval(type), setFunc)
+  const folder = eval(type).find(folder => folder.index === index)
+
+  eval(`set${setFunc}Shown(${index})`)
+  // setShown(index)
   setCollabShown(null)
   setFavoriteShown(null)
-  setFolderPrivacy(folder.public)
-  setFolderType(folder.creative)
+  
+  if(type !== 'favorites'){
+  eval(`set${setFunc}Privacy(${folder.public})`)
+  eval(`set${setFunc}Type(${folder.type})`)}
+  eval(`setFolderName("${folder.name}")`)
   setCollaborators(folder.collaborators)
   setPhotos(folder.photos)
-  navigate(`/${directory}/folders/${index}`)
+  navigate(`/${directory}/${type}/${index}`)
 }
 const setCollabPhotos = (index) => {
   const collab = collabs.find(folder => folder.index === index)
@@ -497,17 +505,32 @@ const setCollabPhotos = (index) => {
   setCollabType(collab.creative)
   setCollaborators(collab.collaborators)
   setPhotos(collab.photos)
-  navigate(`/${directory}/collaborations/${index}`)
+  navigate(`/${directory}/collabs/${index}`)
 }
 
 const setFavoritePhotos = (index) => {
   const favoriteFolder = userFavorites.filter(favorites => favorites.index === index)
   setFavoriteShown(index)
   setFolderShown(null)
-  setCollabShown(index)
-  // setCollaborators(folder.collaborators)
+  setCollabShown(null)
+  setCollaborators([])
   setPhotos(favoriteFolder[0].favorite_photos)
   navigate(`/${directory}/favorites/${index}`)
+}
+
+
+const setVarPhotos = (index, type) => {
+  const folder = eval(type).find(folder => folder.index === index)
+  
+  // console.log("folder", folder.photos, folder?.photos.sort(sortPhotos))
+  setFolderShown(index)
+  setCollabShown(null)
+  setFavoriteShown(null)
+  setFolderPrivacy(folder.public)
+  setFolderType(folder.creative)
+  setCollaborators(folder.collaborators)
+  setPhotos(folder.photos)
+  navigate(`/${directory}/folders/${index}`)
 }
 
 
@@ -605,17 +628,10 @@ const updateUserFavorites = (photo) => {
 
 useEffect(() => {
   // console.log("useEffect setFavDets")
-  let details = !!userFavorites && userFavorites.map(favoriteFolder => (`{"name": "${favoriteFolder.name}", "id": ${favoriteFolder.id}, "index": ${favoriteFolder.index}}`))
+  let details = !!favorites && favorites.map(favoriteFolder => (`{"name": "${favoriteFolder.name}", "id": ${favoriteFolder.id}, "index": ${favoriteFolder.index}}`))
   let jsonDetails = !!details && details.map(detail => JSON.parse(detail)) 
   setFavoriteDetails(jsonDetails)
-}, [userFavorites])
-
-useEffect(() => {
-  // console.log("useEffect setFavDets")
-  let details = !!collabs && collabs.map(collabFolder => (`{"name": "${collabFolder.name}", "id": ${collabFolder.id}, "index": ${collabFolder.index}}`))
-  let jsonDetails = !!details && details.map(detail => JSON.parse(detail)) 
-  setCollabDetails(jsonDetails)
-}, [collabs])
+}, [favorites])
 
 
 
@@ -623,6 +639,27 @@ useEffect(() => {
 
 
 
+// IF SUB CHANGES
+  // IF SUB ==== 'COLLABORATIONS'
+  // IF SUB ==== 'FOLDERS'
+  // IF SUB ==== 'FAVORITES'
+    // SET HEADER
+    // SETPHOTOS
+    // SETCOLLABS
+    // SETINDEX
+  // ELSE SET TO NULL
+  // useEffect(() => {
+    
+    // if(subDirectory === 'folders'){
+    //   eval(subDirectory)
+    // }
+    // if(subDirectory === 'collabs'){}
+  //   if(subDirectory === 'favorites'){}
+  //   else{
+
+  //   }
+  // }, [subDirectory])
+  
 
 
 const createFolder = (e, folderName) => {
@@ -690,12 +727,20 @@ const createFolder = (e, folderName) => {
     setNewFolder(false)
   }, [newFolder])
 
+  useEffect(() => {
+    // console.log("useEffect setFavDets")
+    let details = !!collabs && collabs.map(collabFolder => (`{"name": "${collabFolder.name}", "id": ${collabFolder.id}, "index": ${collabFolder.index}}`))
+    let jsonDetails = !!details && details.map(detail => JSON.parse(detail)) 
+    setCollabDetails(jsonDetails)
+  }, [collabs])
+
 useEffect(() => {
   // console.log("folder", folders)
   let details = !!folders && folders.map(folder => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`))
   let jsonDetails = !!details && details.map(detail => JSON.parse(detail))
   setFolderDetails(jsonDetails)
 }, [folders])
+
 
   // FOLDER FUNCTIONS
 
@@ -1034,10 +1079,6 @@ const deletePhoto = (photo) => {
     });}
 };
 
-
-
-
-
 const reorderSubmit = () => {
   console.log("reorderedPhotos", !!reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderShown))
 if (!!reorderedPhotos){
@@ -1201,6 +1242,10 @@ useEffect(() => {
 
       console.log("auto login currentUserId", currentUserId)
 
+if(location.pathname === "/" && directory !== 'user'){
+  profileFetch()
+}
+
       if (currentUserId === 0){
         autoLoggin()
       }
@@ -1208,6 +1253,10 @@ useEffect(() => {
         profileFetch()
         console.log("profileFetch currentUserId", currentUserId)
       }
+    }
+    else if(location.pathname === "/" && directory !== 'user'){
+      landingFetch()
+      setDemo(true)
     }
     else if (root === 'home'){
       landingFetch()
@@ -1230,12 +1279,17 @@ useEffect(() => {
     if(sub !== 'favorite_folders'){
       setFavoriteShown(null)
     }
-    if(sub !== 'collaborations'){
+    if(sub !== 'collabs'){
       setCollabShown(null)
     }
   }
   }, [location.pathname])
   
+  useEffect(() => {
+    setLoaded(false)
+  }, [directory])
+  
+
 
     return (
       
@@ -1376,6 +1430,7 @@ useEffect(() => {
       >
 
           <DndRoutePrefix
+            folderName={folderName}
               makeNeat={makeNeat}
               logNeatly={logNeatly}
               mobile={mobile}
@@ -1460,6 +1515,7 @@ useEffect(() => {
 
                 <Route path="/community" >
                   <CommunityPage
+                  setLoaded={setLoaded}
                     directory={directory}
                     mobile={mobile}
                     loggedIn={loggedIn}
