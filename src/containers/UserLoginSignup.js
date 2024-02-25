@@ -182,6 +182,7 @@ const PageCont = styled.div`
       padding-bottom: 10px;
     }
 
+    
     .child-form{
       align-content: flex-start;
       display: flex;
@@ -191,11 +192,31 @@ const PageCont = styled.div`
       flex-flow: wrap;
       justify-content: right;
       input{
+        margin-bottom: 10px;
+        padding-block: 4px;
+        padding-inline: 5px;
+
+        @media (max-width: 700px) {
+          color: white;
+          font-size: medium;
+          width: -webkit-fill-available;
+          border-width: 2px;
+          border-top-style: inset;
+          border-right-style: outset;
+          border-bottom-style: inset;
+          border-left-style: outset;
+          border-color: rgb(120 119 119 / 37%);
+      }
+      
+        @media (min-width: 700px) {
         color: black;
-        padding: 2px;
         font-size: medium;
         width: -webkit-fill-available;
+        }
       }
+      
+
+
       .submit{
         align-self: flex-end;
       }

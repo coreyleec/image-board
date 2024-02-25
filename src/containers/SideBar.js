@@ -100,6 +100,8 @@ useEffect(() => {
  
 }, [skinny, sideBar])
 
+console.log((props.directory !== 'home') || (!props.loggedIn && props.directory !== 'by_Corey_Lee'))
+
   return (
     <aside>
       <Sticky sideBar={sideBar}
@@ -161,10 +163,9 @@ useEffect(() => {
             <p>lifestyle</p> 
             </Switch>
             </>
-          }
+            }
           </>
-
-}
+        }
         
          {!props.mobile && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
          <>
@@ -178,7 +179,6 @@ useEffect(() => {
             </label>
             <p>tutorial</p> 
             </Switch>
-            
             </>        
         }
          {props.addy === true && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
@@ -193,15 +193,11 @@ useEffect(() => {
             </label>
             <p>DB</p> 
             </Switch>
-            
-            </>        
-        }
+            </>
+            }
 
             </div>
-
-            <div className="scrollable">
-
-              
+              <div className="scrollable">
                   <div>
                     {(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
                     <div onMouseOver={() => setDemoText(folderDemo)}
@@ -224,8 +220,7 @@ useEffect(() => {
                     subDirectory={props.subDirectory}
                     // key={props.userId} 
                     dbVersion={props.dbVersion}
-                    />
-                    
+                    /> 
                     </div>}
 
                     {(!!props.userLinks || props.edit) && (props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
@@ -245,11 +240,7 @@ useEffect(() => {
                     />
                     </div>
                     }
-
                   </div>
-                
-
-{/* ((props.directory === 'by_Corey_Lee' || props.directory === 'user' || props.directory === 'home') ||(props.published || props.edit)) */}
 
 {/* ABOUT */}
           {!!(props.published && props.directory === 'user') || !!(!!(props.directory === 'home' || props.directory === 'by_Corey_Lee') && (props.published || props.edit)) && 
@@ -285,9 +276,7 @@ useEffect(() => {
 {/* HOME */}
 
 
-              {props.directory !== 'home' && (!props.loggedIn && props.directory !== 'by_Corey_Lee') && (
-                
-                
+              {(props.directory !== 'home') && (props.directory !== 'by_Corey_Lee') && 
                   <div className="nav-bar-header-wrapper" 
                   // onClick={() => navigate("/")}
                   onClick={() => props.fetchHome()}
@@ -297,17 +286,10 @@ useEffect(() => {
                     ))}
                   </div>
 
-              )}
+              }
             </div>
-
-
-
-              {/* props.setLoggedIn(false) */}
-              {/* <p>image board is a visual tool for image curation, and digital portfolio</p> */}
             </div>
           </div>
-          {/* </div>
-        </div> */}
         </>
         {/* LOGIN */}              
         {props.loggedIn ? (
@@ -620,7 +602,7 @@ const Sticky = styled.div`
     }
     .community-href {
       text-decoration-line: none;
-      line-height: 2em;
+      padding-block: 6px;
       
     }
   }

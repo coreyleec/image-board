@@ -34,6 +34,9 @@ return (
     <div className='coffin-footer'></div>
     </div>
   </div>
+  <ControlPanel>
+    {/* <button>help</button> */}
+    </ControlPanel>
 </Cont>
 
   
@@ -44,7 +47,13 @@ return (
 export default PhotoFeed
 
 
-
+const ControlPanel = styled.div`
+    position: fixed;
+    z-index: 2;
+    width: 100%;
+    display: flex;
+    justify-content: space-evenly;
+`
 
 
 const PhotoCard = styled.div`
@@ -144,6 +153,7 @@ const Cont = styled.div`
     overflow: hidden;
     // padding-inline: 15px;
     
+
 
     
     /* .notification{
