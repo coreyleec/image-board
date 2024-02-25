@@ -33,7 +33,6 @@ const SideBar = (props) => {
   };
 
   const clickAboutLink = () => {
-    props.setFavoriteShown(null)
     props.setFolderShown(null)
     setSideBar(false) 
   }
@@ -209,6 +208,7 @@ useEffect(() => {
                     ref={folderRef}
                     >
                     <SideBarFolder 
+                    details={props.details}
                     folders={'folders'}
                     mobile={props.mobile}
                     loggedIn={props.loggedIn}
@@ -221,42 +221,11 @@ useEffect(() => {
                     setFolderDetails={props.setFolderDetails}
                     enableDelete={props.enableDelete}
                     directory={props.directory}
+                    subDirectory={props.subDirectory}
                     // key={props.userId} 
                     dbVersion={props.dbVersion}
                     />
                     
-                   {!!props.collabDetails.length &&<SideBarCollabs 
-                    collabs={'collabs'}
-                    mobile={props.mobile}
-                    loggedIn={props.loggedIn}
-                    setFolderPhotos={props.setFolderPhotos}
-                    edit={props.edit}
-                    collabShown={props.collabShown}
-                    collabDetails={props.collabDetails}
-                    setCollabDetails={props.setCollabDetails}
-                    enableDelete={props.enableDelete}
-                    directory={props.directory}
-                    // key={props.userId} 
-                    dbVersion={props.dbVersion}
-                    />}
-                    </div>}
-                    {(props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
-                    <div onMouseOver={() => setDemoText(favoriteDemo)}
-                    ref={favoriteRef}
-                    >
-                    <SideBarFavorites  
-                    setFolderPhotos={props.setFolderPhotos}
-                    mobile={props.mobile}
-                    loggedIn={props.loggedIn}
-                    directory={props.directory}
-                    setFavoritePhotos={props.setFavoritePhotos}
-                    favoriteDetails={props.favoriteDetails}
-                    favoriteShown={props.favoriteShown}
-                    enableDelete={props.enableDelete}
-                    // key={props.userId}
-                    edit={props.edit}
-                    dbVersion={props.dbVersion}
-                    />
                     </div>}
 
                     {(!!props.userLinks || props.edit) && (props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
@@ -651,6 +620,7 @@ const Sticky = styled.div`
     }
     .community-href {
       text-decoration-line: none;
+      line-height: 2em;
       
     }
   }

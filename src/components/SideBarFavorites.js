@@ -104,7 +104,7 @@ const [condition, setCondition] = useState()
                   >
                     {!!props.favoriteDetails  && props.favoriteDetails.map(favorite => 
                     <div 
-                        className="title-cont" key={favorite.id} favorite={favorite}>
+                        className="title-cont" key={favorite.indexcat} favorite={favorite}>
                         <EditableDiv
                         suppressContentEditableWarning={true}
                         type="text" contentEditable={props.edit} edit={props.edit}

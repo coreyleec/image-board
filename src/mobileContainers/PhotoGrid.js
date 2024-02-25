@@ -88,7 +88,7 @@ const PhotoGrid = (props) => {
       // ^THIS  MAY BE ACTUALLY REVERSED ie lossVal - 6?
       const addVal = !!photosUnder.length ? lossVal : 0
 
-      console.log("portraits", portraitPhotos, splicedArr, addVal, !!splicedArr.length, lossVal)
+      // console.log("portraits", portraitPhotos, splicedArr, addVal, !!splicedArr.length, lossVal)
 
       const addMore = []
 
@@ -131,7 +131,7 @@ const PhotoGrid = (props) => {
           choppedArray[i]?.push(photoB);
           }
 
-    console.log("choppedArray", choppedArray)
+    // console.log("choppedArray", choppedArray)
     
     const flatArr = choppedArray.flat(Infinity)
     
@@ -561,11 +561,10 @@ useEffect(() => {
     // const collabName = !!props.collabDetails && props.collabDetails[props.folderShown]?.name
 
 const index = +(location.pathname.split('/')[3])
-console.log("props.collabs", props.collabs, !!props?.collabs?.length)
+// console.log("props.collabs", props.collabs, !!props?.collabs?.length)
   return (
     <article >
-{/* <Square className="square left" left={left} ></Square>
-<Square className="square top" top={top}></Square> */}
+
       
               {!!photo && 
               <GridItem

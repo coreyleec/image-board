@@ -263,6 +263,12 @@ button {
   background-color: gainsboro;
   
 }
+.catagory-cont {
+  height: fit-content;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 .sidebar-catagory {
   display:flex;
   justify-content: space-between;  
