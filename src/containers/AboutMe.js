@@ -33,7 +33,7 @@ const AboutMe = (props) => {
 
           console.log("about", about, newAbout, newAbout.title + newAbout.about, _.isEqual(about, newAbout), _.isEqual(newAbout, empty))
 
-            if ((props.demo && props.directory === 'by_Corey_Lee')){
+            if ((props.demo && props.root === 'by_Corey_Lee')){
             setNewAbout(copy);
             }
             else if (props.loggedIn){

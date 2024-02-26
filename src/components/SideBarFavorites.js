@@ -60,10 +60,10 @@ const updateFavorites = (e, favoriteName, favorite) => {
 // }
 const [condition, setCondition] = useState()
 // useEffect(() => {
-//   (props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') ?
+//   (props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') ?
 //   setCondition(false)
 //   : setCondition(true)
-// }, [props.directory])
+// }, [props.root])
 
 // console.log("props.favoriteDetails", props.favoriteDetails)
     return (

@@ -261,8 +261,8 @@ const [users, setUsers] = useState()
 
 
 useEffect(() => {
-  console.log("props.directory", props.directory)
-  if (props.directory === 'community'){
+  console.log("props.root", props.root)
+  if (props.root === 'community'){
   // !!props.userId &&
     fetch(`${props.dbVersion}/community/`, {
         method: "GET",
@@ -282,7 +282,7 @@ useEffect(() => {
       setLoad(true)
     }
   )}
-}, [props.directory])
+}, [props.root])
 
 // useEffect(() => {
 //   setCommunity(recent.community)
@@ -318,7 +318,7 @@ useEffect(() => {
 
 
 const [search, setSearch] = useState([0])
-  // console.log("props.directory", props.directory)
+  // console.log("props.root", props.root)
   const searchUser = (input) => {
     console.log(input)
     // setSearch(...search, input)

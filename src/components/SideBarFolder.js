@@ -38,12 +38,12 @@ const SideBarFolder = (props) => {
 //   }
 // }
 
-  const submitNewFolder = (e, folder) => {
-  if (e.key === 'Enter' && e.shiftKey === false) {props.createFolder(e, folderName) 
+  const submitNewFolder = (e, type) => {
+  if (e.key === 'Enter' && e.shiftKey === false) {props.createFolder(e, folderName, type) 
   e.currentTarget.blur();
   setNewFolder(!newFolder)
 }}
-const submitFolderEdit = (e, folder) => {
+const submitFolderEdit = (e, folder, type) => {
   if (e.key === 'Enter' && e.shiftKey === false) {updateFolder(e, folderName, folder) 
   e.currentTarget.blur();
 }}
@@ -128,43 +128,46 @@ const moveFolder = useCallback((dragIndex, hoverIndex) => {
             id={"folderInput"}
             type="text" edit={props.edit}
             ref={inputRef}
-            
             contentEditable={newFolder} 
             placeholder={"add folder name"}
+
             style={{"cursor": props.edit ? "text" : "default"}}
-            onKeyDown={(e) => submitNewFolder(e)}
-            onInput={(e) => setFolderName(e.currentTarget.textContent, Object?.keys(props?.details[value])[0])}>
+
+            onKeyDown={(e) => submitNewFolder(e, Object?.keys(props?.details[value])[0])}
+            onInput={(e) => setFolderName(e.currentTarget.textContent)}>
             </EditableDiv> }
 
           {/* {Object.values(props.details[value])[0].map((folders, index)=> 
             folders.map(folder => 
-            console.log(Object?.keys(props?.details[value]), props.subDirectory, Object?.keys(props?.details[value])[0] === props.subDirectory)
+            console.log(Object?.keys(props?.details[value]), props.sub, Object?.keys(props?.details[value])[0] === props.sub)
                 )
             )
           } */}
-            {Object.values(props.details[value])[0].map((folders, index)=> 
-              folders.map(folder => 
-                <div className="title-cont" key={folder.id} folder={folder}>
-                <EditableDiv
-                  suppressContentEditableWarning={true}
-                  type="text" contentEditable={props.edit} edit={props.edit}
-                  // folderDetails={props.folderDetails}
-                  index={folder.index}
-                  moveFolder={moveFolder}
-                  defaultValue={folder.name}
-                  draggable={true}
-                  onKeyDown={(e) => submitFolderEdit(e, folder, Object?.keys(props?.details[value])[0])}
-                  onClick={(e) => {props.setFolderPhotos(folder.index, Object?.keys(props?.details[value])[0])
-                  }}
-                  style={(Object?.keys(props?.details[value])[0] === props.subDirectory && folder.index === props.folderShown) && (props.directory === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
-                  onInput={e => setFolderName(e.currentTarget.textContent)}
 
-                > 
-              {folder.name}
-              </EditableDiv>
+            {Object.values(props.details[value])[0].map((folders, index)=> 
+              folders.sort((a, b) => a.index - b.index).map(folder => 
+                <div className="title-cont" key={folder.id} folder={folder}>
+                  <EditableDiv
+                    suppressContentEditableWarning={true}
+                    type="text" 
+                    contentEditable={props.edit} edit={props.edit}
+                    folderDetails={props.folder}
+                    index={folder.index}
+                    moveFolder={moveFolder}
+                    defaultValue={folder.name}
+                    draggable={true}
+                    onKeyDown={(e) => submitFolderEdit(e, folder, Object?.keys(props?.details[value])[0])}
+                    onClick={(e) => {props.setFolderPhotos(folder.index, Object?.keys(props?.details[value])[0])
+                    }}
+                    style={(Object?.keys(props?.details[value])[0] === props.sub && folder.index === props.folderShown) && (props.root === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
+                    onInput={e => setFolderName(e.currentTarget.textContent)}
+                    id={folder.id}
+                  > 
+                {folder.name}
+                </EditableDiv>
               {Object?.keys(props?.details[value])[0] === 'folders' &&<SubtractButton
                 enableDelete={props.enableDelete} 
-                onClick={() => props.deleteFolder(folder, Object?.keys(props?.details[value])[0])} >-</SubtractButton>}
+                onClick={() => props.deleteFolder(folder, Object?.keys(props?.details[value])[0], folder.id)} >-</SubtractButton>}
                 </div>
                 )
               )}

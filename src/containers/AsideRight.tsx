@@ -7,7 +7,7 @@ interface IProps {
   skinny: boolean;
   mobile: boolean;
   loggedIn: boolean;
-  subDirectory: string;
+  sub: string;
   hover: boolean; 
   setHover: React.Dispatch<React.SetStateAction<boolean>>;
   catagorize: (params: boolean) => boolean;
@@ -16,7 +16,7 @@ interface IProps {
   tutorial: boolean;
   newFolder: boolean;
   uuid: string;
-  directory: string;
+  root: string;
   setType: React.Dispatch<React.SetStateAction<boolean>>;
   hiliteCollaborator: (params: object) => null;
   updateFolderPrivacy: (params: null) => object;
@@ -201,7 +201,7 @@ useEffect(() => {
   !!search.length ? setSearchUl(length + 6) : 
   setSearchUl([])
   // console.log("deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
-  if (props.directory === 'user' && !isCollaborator){
+  if (props.root === 'user' && !isCollaborator){
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
     if (props.skinny){
       // WINDOW IS SKINNY
@@ -218,7 +218,7 @@ useEffect(() => {
       setDrawer(50 + collabUl)
     }
   } 
-  else if (props.subDirectory === 'about'){
+  else if (props.sub === 'about'){
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
     
     if (props.skinny){
@@ -244,7 +244,7 @@ useEffect(() => {
       setDrawer(drawerMath)
       // console.log("editSwitch", editSwitch)
     }
-    else if (controlDock && props.subDirectory === 'about'){
+    else if (controlDock && props.sub === 'about'){
       // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
       setDrawer(25)
     }
@@ -314,7 +314,7 @@ useEffect(() => {
       console.log("here")
   }
   }
-}, [props.folderType, props.collaborators, controlDock, props.edit, search, props.skinny, props.subDirectory])
+}, [props.folderType, props.collaborators, controlDock, props.edit, search, props.skinny, props.sub])
 
 // console.log("drawer", drawer, !!editDrawerRef.current && editDrawerRef.current.clientHeight, !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight)
 
@@ -349,14 +349,14 @@ const typeToggle = () => {
 }
 
 useEffect(() => {
-  if (props.directory === 'login' || 'community'){
+  if (props.root === 'login' || 'community'){
     setExpand(false)
     setControlDock(false)
     setSearch([])
   }
 
 
-}, [props.directory])
+}, [props.root])
 
 
 useEffect(() => {
@@ -368,9 +368,9 @@ useEffect(() => {
       } 
       else if (controlDock){
         if (!props.edit) { 
-          if (props.directory === 'by_Corey_Lee'){
+          if (props.root === 'by_Corey_Lee'){
            setDemoText("feel free to explore the site using my account. use the edit switch to edit my account")}
-           else if (props.directory === 'home'){ 
+           else if (props.root === 'home'){ 
             setDemoText("use the edit switch to edit your projects. all personal information will become editable.")}
         setDemoArrow("49px")}
         else if (props.edit){
@@ -382,9 +382,9 @@ useEffect(() => {
           }
         else {
         if (!props.edit){
-            if (props.directory === 'by_Corey_Lee') {
+            if (props.root === 'by_Corey_Lee') {
             setDemoText("feel free to explore the site as if you were me. use the edit switch to edit my account")}
-            else if (props.directory === 'home') {
+            else if (props.root === 'home') {
             setDemoText("use the edit switch to edit your projects. all personal information will become editable.")}
             setDemoArrow("16px")}
           else {
@@ -392,7 +392,7 @@ useEffect(() => {
             setDemoArrow("49px")
             }}
 }
-}, [props.tutorial, props.skinny, controlDock, props.directory, props.edit])
+}, [props.tutorial, props.skinny, controlDock, props.root, props.edit])
 
 let deleteDemoArrow =  (editDrawerRef.current?.childNodes[0].clientHeight !== 25) ? 19 : 0
 // console.log("deleteDemoArrow", deleteDemoArrow)
@@ -405,7 +405,7 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
      
       <Sticky>
       <SideWrapper skinny={props.skinny} asideRef={asideRef} onMouseEnter={() => props.setHover(false)}>
-      {(((props.directory === 'home' || props.directory === 'by_Corey_Lee' || (props.directory === 'user' && props.subDirectory !== 'about')))) &&  
+      {(((props.root === 'home' || props.root === 'by_Corey_Lee' || (props.root === 'user' && props.sub !== 'about')))) &&  
             <Container
             controlDock={controlDock}
             asideRef={asideRef}
@@ -453,8 +453,8 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
 {/* THIS SECTION ROTATES THE EDIT AND CATAGORIZE TO HIDE EDIT IF A NEW FOLDER HAS NOT YET BEEN CATAGORIZED */}
 
  {/* FIRST IS PUBLISH ABOUT SWITCH */}           
-             {(props.directory === 'home' || props.directory === 'by_Corey_Lee') || (props.directory === "user" &&  isCollaborator) 
-             ? (props.subDirectory === 'about') 
+             {(props.root === 'home' || props.root === 'by_Corey_Lee') || (props.root === "user" &&  isCollaborator) 
+             ? (props.sub === 'about') 
              ? <CatagorySwitch>
               <label className="toggle-switch edit-switch" >
              <input type="checkbox" checked={props.published}
@@ -618,7 +618,7 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
            }
 
 {/* FOLDER FOLLOW */}
-            {(props.directory === 'user') && !isCollaborator && 
+            {(props.root === 'user') && !isCollaborator && 
             <CatagorySwitch
             isCollaborator={isCollaborator}
             asideRef={asideRef}
@@ -642,7 +642,7 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
       } */}
 
             {!!props.collaborators.length &&
-            props.collaborators.length >= 2 && props.subDirectory !== 'about' &&
+            props.collaborators.length >= 2 && props.sub !== 'about' &&
             <CollabotorList ref={listRef} className="collabUl" 
             // onMouseEnter={() => changeFlex(true)}
             // onMouseLeave={() => changeFlex(false)}
@@ -666,7 +666,7 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
               </CollabotorList>}
             </div>
             </div>
-            { props.tutorial &&  (props.subDirectory !== 'about') && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&
+            { props.tutorial &&  (props.sub !== 'about') && (props.root === 'home' || props.root === 'by_Corey_Lee') &&
           <TutorialTip 
           asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={props.skinny}
           flexStart={flexStart} edit={props.edit} delay={delay}

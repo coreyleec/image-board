@@ -6,7 +6,7 @@ import PhotoGrid from "../mobileContainers/PhotoGrid";
 
 const DndRoutePrefix = (props) => {
     const match  = useRouteMatch();
-    // console.log("directory", match.path, props.directory)
+    // console.log("root", match.path, props.root)
 
     // useEffect(() => {
         // console.log("hi", props.collaborators.map((colab) => ({
@@ -30,14 +30,14 @@ const DndRoutePrefix = (props) => {
 
     // const [folderName, setFolderName] = useEffect()
     // useEffect(() => {
-    //   if(props.folderDetails && props.subDirectory === 'folders'){
-    //     eval(props.subDirectory)
+    //   if(props.folderDetails && props.sub === 'folders'){
+    //     eval(props.sub)
     //     setFolderName(props?.folderDetails[+props?.folderShown]?.name)
     //   }
-    //   if (!!props?.collabDetails && props?.subDirectory === 'collabs'){
+    //   if (!!props?.collabDetails && props?.sub === 'collabs'){
     //     setFolderName(props?.collabDetails[+props?.collabShown]?.name)
     //   }  
-    // }, [props.subDirectory])
+    // }, [props.sub])
     
     
     // const folderName = props?.folderDetails[props?.folderShown]?.name
@@ -55,7 +55,7 @@ return (
       >
 
          {props.mobile ? <PhotoGrid
-            // subDirectory={subDirectory}
+            // sub={sub}
               folderName={props.folderName}
               logNeatly={props.logNeatly}
               makeNeat={props.makeNeat}
@@ -64,7 +64,7 @@ return (
               collabs={props?.collaborators?.filter((collaber) => collaber.name !== props?.userName)}
               hightlighted={props.hightlighted}
               setBaseName={props.setBaseName}
-              // folderName={props.subDirectory === 'folders' ? folderName : props?.subDirectory === 'collabs' ? collabName : props.subDirectory === 'favorites' ? favoritesName : ''}
+              // folderName={props.sub === 'folders' ? folderName : props?.sub === 'collabs' ? collabName : props.sub === 'favorites' ? favoritesName : ''}
               photos={props.photos}
               colorArr={props.colorArr}
               setPhotos={props.setPhotos}
@@ -82,11 +82,11 @@ return (
               edit={props.edit}
               reorderSubmit={props.reorderSubmit}
               updateUserFavorites={props.updateUserFavorites}
-              directory={props.directory}
+              root={props.root}
               dbVersion={props.dbVersion}
               /> 
               : <DndContainer
-            // subDirectory={subDirectory}
+            // sub={sub}
             mobile={props.mobile}
             loggedIn={props.loggedIn}
             collaborators={props.collaborators}
@@ -109,7 +109,7 @@ return (
               edit={props.edit}
               reorderSubmit={props.reorderSubmit}
               updateUserFavorites={props.updateUserFavorites}
-              directory={props.directory}
+              root={props.root}
               dbVersion={props.dbVersion}
               /> }
 

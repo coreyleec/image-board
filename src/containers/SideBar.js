@@ -100,15 +100,15 @@ useEffect(() => {
  
 }, [skinny, sideBar])
 
-console.log((props.directory !== 'home') || (!props.loggedIn && props.directory !== 'by_Corey_Lee'))
+
 
   return (
     <aside>
       <Sticky sideBar={sideBar}
-      directory={props.directory}
+      root={props.root}
       mobile={props.mobile}
       >
-        {!props.tutorial && (window.innerWidth < 1100) && (window.innerWidth > 700) && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && 
+        {!props.tutorial && (window.innerWidth < 1100) && (window.innerWidth > 700) && (props.root === 'home' || props.root === 'by_Corey_Lee') && 
             <TutorialTip 
             sideBar={sideBar}
             timer={timer}
@@ -127,7 +127,7 @@ console.log((props.directory !== 'home') || (!props.loggedIn && props.directory 
           
           <div className="follow-cont">
             {/* FOLLOW */}
-          {(props.directory === 'user') && props.loggedIn &&
+          {(props.root === 'user') && props.loggedIn &&
           <>
             <Switch>
             <label className="toggle-switch">
@@ -167,7 +167,7 @@ console.log((props.directory !== 'home') || (!props.loggedIn && props.directory 
           </>
         }
         
-         {!props.mobile && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
+         {!props.mobile && (props.root === 'home' || props.root === 'by_Corey_Lee') &&   
          <>
         <Switch>
             <label className="toggle-switch">
@@ -181,7 +181,7 @@ console.log((props.directory !== 'home') || (!props.loggedIn && props.directory 
             </Switch>
             </>        
         }
-         {props.addy === true && (props.directory === 'home' || props.directory === 'by_Corey_Lee') &&   
+         {props.addy === true && (props.root === 'home' || props.root === 'by_Corey_Lee') &&   
          <>
         <Switch>
             <label className="toggle-switch">
@@ -199,7 +199,7 @@ console.log((props.directory !== 'home') || (!props.loggedIn && props.directory 
             </div>
               <div className="scrollable">
                   <div>
-                    {(props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
+                    {(props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') && 
                     <div onMouseOver={() => setDemoText(folderDemo)}
                     ref={folderRef}
                     >
@@ -216,14 +216,14 @@ console.log((props.directory !== 'home') || (!props.loggedIn && props.directory 
                     folderDetails={props.folderDetails}
                     setFolderDetails={props.setFolderDetails}
                     enableDelete={props.enableDelete}
-                    directory={props.directory}
-                    subDirectory={props.subDirectory}
+                    root={props.root}
+                    sub={props.sub}
                     // key={props.userId} 
                     dbVersion={props.dbVersion}
                     /> 
                     </div>}
 
-                    {(!!props.userLinks || props.edit) && (props.directory === 'home' || props.directory === 'by_Corey_Lee' || props.directory === 'user') && 
+                    {(!!props.userLinks || props.edit) && (props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') && 
                     <div onMouseOver={() => setDemoText(linkDemo)}
                     ref={linkRef}
                     >
@@ -243,9 +243,9 @@ console.log((props.directory !== 'home') || (!props.loggedIn && props.directory 
                   </div>
 
 {/* ABOUT */}
-          {!!(props.published && props.directory === 'user') || !!(!!(props.directory === 'home' || props.directory === 'by_Corey_Lee') && (props.published || props.edit)) && 
+          {!!(props.published && props.root === 'user') || !!(!!(props.root === 'home' || props.root === 'by_Corey_Lee') && (props.published || props.edit)) && 
               <Link 
-              as={Link} to={`/${props.directory}/about`} 
+              as={Link} to={`/${props.root}/about`} 
                 onMouseOver={() => setDemoText(aboutDemo)}
                 onClick={() => clickAboutLink()}
                 ref={aboutRef}
@@ -260,7 +260,7 @@ console.log((props.directory !== 'home') || (!props.loggedIn && props.directory 
             <div 
             onClick={() => setSideBar(!sideBar)} 
             style={{"width": "min-content"}}>
-              {props.directory !== 'community' && (
+              {props.root !== 'community' && (
                 <Link as={Link} to="/community" 
                 onMouseOver={() => setDemoText(communityDemo)}
                 ref={communityRef}
@@ -276,7 +276,7 @@ console.log((props.directory !== 'home') || (!props.loggedIn && props.directory 
 {/* HOME */}
 
 
-              {(props.directory !== 'home') && (props.directory !== 'by_Corey_Lee') && 
+              {(props.root !== 'home') && (props.root !== 'by_Corey_Lee') && 
                   <div className="nav-bar-header-wrapper" 
                   // onClick={() => navigate("/")}
                   onClick={() => props.fetchHome()}
@@ -307,7 +307,7 @@ console.log((props.directory !== 'home') || (!props.loggedIn && props.directory 
                   use ImageBoard
                 </Button>
               )}
-        {(props.subDirectory !== 'about') && (props.directory === 'home' || props.directory === 'by_Corey_Lee') && props.tutorial &&
+        {(props.sub !== 'about') && (props.root === 'home' || props.root === 'by_Corey_Lee') && props.tutorial &&
         <CatagoryTip 
           sideBar={sideBar} 
           sideBarWidth={!!sideBarRef.current && sideBarRef.current.clientWidth}
@@ -329,7 +329,7 @@ const Button = styled.button`
     margin-top: 40px;
     margin-inline: 5px;
     position: relative;
-    transition: right 1s ease;
+    transition: right .5s ease;
     white-space: nowrap;
     ${({ sideBar }) => (sideBar ? `right : 0%` : `right: 100%`)};
     a {
@@ -349,7 +349,7 @@ const Button = styled.button`
       z-index: 1;
     }
     @media (max-width: 1100px) and (min-width: 700px){
-      transition: transform 1s ease;
+      transition: transform .5s ease;
       transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
 
       position: fixed;
@@ -357,7 +357,7 @@ const Button = styled.button`
       width: fit-content;
       left : 0%;
        
-      /* ${({ directory }) => (directory !== "community" && 'backdrop-filter: blur(6px)')}; */
+      /* ${({ root }) => (root !== "community" && 'backdrop-filter: blur(6px)')}; */
       backdrop-filter: blur(6px);
       
 
@@ -380,7 +380,7 @@ const TutorialTip = styled.div`
   max-height: fit-content;
   position: absolute;
   // transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
-  transition: left 1s ease, opacity .2s linear .1s;
+  transition: left .5s ease, opacity .2s linear ..5s;
   ${({ sideBar }) => (!sideBar ? `left : 55px` : `left: 200px`)};
   white-space: normal;
   cursor: default;
@@ -392,7 +392,7 @@ const TutorialTip = styled.div`
   font-size: 16px;
   opacity: 100%;
   width: 135px;
-  // transition: transform 1s ease, top .3s ease;
+  // transition: transform .5s ease, top .3s ease;
   
 
   
@@ -430,10 +430,10 @@ const CatagoryTip = styled.div`
   font-size: 16px;
   opacity: 100%;
   width: 168px;
-  transition: transform 1s ease, top .3s ease;
+  transition: transform .5s ease, top .3s ease;
   
   ${({hover}) => hover && 
-`visibility: hidden; opacity: 0%; transition: opacity .2s linear .1s;
+`visibility: hidden; opacity: 0%; transition: opacity .2s linear ..5s;
 }` }
   @media (max-width: 1100px) {
     transform: ${({ sideBar }) => (sideBar ? 'translateX(205px)' : 'translateX(-200px)')};
@@ -454,7 +454,7 @@ const CatagoryTip = styled.div`
     border-width: 10px;
     border-style: solid;
     border-color: transparent #ff7f5080 transparent transparent;
-    transition: ${({flexStart, controlDock, edit, delay}) => flexStart ?  !controlDock ? edit ? 'top .3s linear' :  'top .3s linear' : edit ? 'top .3s linear' : 'top ' + delay : 'top .1s linear'};
+    transition: ${({flexStart, controlDock, edit, delay}) => flexStart ?  !controlDock ? edit ? 'top .3s linear' :  'top .3s linear' : edit ? 'top .3s linear' : 'top ' + delay : 'top ..5s linear'};
   }}
 
 
@@ -481,20 +481,20 @@ const ButtonContainer = styled.div`
   }
 
   @media (max-width: 1100px) and (min-width: 700px){
-    transition: width 1s ease;
+    transition: width .5s ease;
     width: ${({ sideBar }) => (sideBar ? '200px' : '0px')};
       
       button {
         position: sticky;
         z-index: 4;
-        transition: transform 1s ease;
-        transform: ${({ sideBar }) => (sideBar ? 'translateX(143px)' : 'translateX(0px)')};
+        transition: transform .5s ease;
+        transform: ${({ sideBar }) => (sideBar ? 'translateX(140px)' : 'translateX(0px)')};
       }
     }
     @media (min-width: 1100px) {
   button {
     position: sticky;
-    transition: left 1s;
+    transition: left .5s;
     z-index: 4;
     ${({ sideBar }) => (sideBar ? `left : 25%` : `left: 0%`)};
   }
@@ -515,11 +515,13 @@ const Sticky = styled.div`
     height: 115px;
     @media (max-width: 1100px) {
         padding-top: 25px;
-        height: 130px;
+        height: max-content;
     }
     @media only screen and (max-width: 700px) {
         padding-top: 10px;
-        height: 70px;
+        height: max-content;
+        
+    
     }
 }
   .side-bar {
@@ -531,7 +533,7 @@ const Sticky = styled.div`
     overflow-y: scroll;
     padding-bottom: 5px;
     position: relative;
-    transition: right 1s ease;
+    transition: right .5s ease;
     ${({ sideBar }) => (sideBar ? `right : 0%` : `right: 100%`)};
     /* transform: ${({ sideBar }) => (sideBar ? 'translateX(5px)' : 'translateX(-198px)')}; */
     /* -webkit-mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
@@ -539,6 +541,7 @@ const Sticky = styled.div`
 
 
     @media only screen and (max-width: 700px) {
+      box-shadow: rgb(65 64 64 / 35%) -3px 3px 5px 2px inset;
       position: fixed;
       display: flex;
       flex-direction: column;
@@ -556,17 +559,18 @@ const Sticky = styled.div`
       }
     }
     @media only screen and (max-width: 1100px) and (min-width: 700px){
-      height: 90vh;
-      overflow: hidden;
       position: fixed;
       top: 0%;
-      width: 200px;
-      transition: transform 1s ease;
       left : 0%;
-      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
-      backdrop-filter: blur(6px);
+      height: 90vh;
+      width: 200px;
+      overflow: hidden;
       background: #cecece38;
-      border-top-right-radius: 22px;
+      backdrop-filter: blur(6px);
+      box-shadow: inset -3px -3px 4px 3px #4140401f;
+      transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
+      transition: transform .5s ease;
+      border-bottom-right-radius: 22px;
       &::-webkit-scrollbar {
         display: none;
       }
@@ -575,14 +579,13 @@ const Sticky = styled.div`
     .scrollable {
       display: block;
       @media only screen and (max-width: 700px) {
+        margin-left: 5px;
         display: flex;
         flex-direction: column;
         // margin-top: 10px;
         padding-block: 5vh;
         height: 55vh;
         overflow: scroll;
-        // -webkit-mask-image: linear-gradient(to bottom, rgb(108 111 105) 84%, transparent 92%);
-        // -webkit-mask-mask: linear-gradient(transparent 0%,black 5% 88%,transparent 95%);
         -webkit-mask: linear-gradient(transparent 0%,black 5% 87%,transparent 93%);
         mask: linear-gradient(transparent 0%,black 5% 87%,transparent 93%);
 
@@ -591,7 +594,7 @@ const Sticky = styled.div`
         }
       }
       @media only screen and (max-width: 1100px) and (min-width: 700px){
-        
+        margin-left: 5px;
         margin-top: 10px;
         height: 64vh;
         overflow: scroll;

@@ -23,8 +23,8 @@ const [userLogin, setUserLogin] = useState(false);
 
   let history = useHistory()
   let navigate = history.push
-  const { url, path } = useRouteMatch();
-  console.log("url, path", url, path)
+  // const { url, path } = useRouteMatch();
+  // console.log("url, path", url, path)
 
 
 // USER LOGIN
@@ -163,7 +163,7 @@ export default UserLoginSignup;
 
 const PageCont = styled.div`
     display: flex;
-    height: 100vh;
+    height: 100%;
     width: -webkit-fill-available;
     flex-direction: column;
     align-items: center;
@@ -175,7 +175,7 @@ const PageCont = styled.div`
     }
     .child-cont{
       display: flex;
-      width: -webkit-fill-available;
+      width: 40vw;
       flex-direction: row;
       justify-content: space-evenly;
       flex-wrap: wrap;
@@ -187,7 +187,7 @@ const PageCont = styled.div`
       align-content: flex-start;
       display: flex;
       flex-direction: column;
-      width: 50vw;
+      width: 40vw;
       height: 20%;
       flex-flow: wrap;
       justify-content: right;
@@ -209,9 +209,15 @@ const PageCont = styled.div`
       }
       
         @media (min-width: 700px) {
-        color: black;
-        font-size: medium;
-        width: -webkit-fill-available;
+          border-width: 3px;
+          border-style: solid;
+          border-top-color: #aaaaaaad;
+          border-right-color: #aaaaaa9e;
+          border-bottom-color: #d3d3d3;
+          border-left-color: #d3d3d3;
+          color: black;
+          font-size: medium;
+          width: -webkit-fill-available;
         }
       }
       

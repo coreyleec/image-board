@@ -378,7 +378,7 @@ useEffect(() => {
   
   const addPhoto = (e, formData, orientation, photoName, photoDetails, photo) => {
     e.preventDefault();
-    
+    console.log("props.currentUserId", props.currentUserId)
     if (props.demo) {
       e.preventDefault();
       const updatedPhoto = Object.create(photo)

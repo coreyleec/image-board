@@ -118,9 +118,14 @@ const [loaded, setLoaded] = useState(false)
 let history = useHistory()
 let navigate = history.push;
 const location = useLocation();
-const [directory, setDirectory] = useState("")
-const [subDirectory, setSubDirectory] = useState()
+const root = location.pathname.split('/')[1]
+const sub = location.pathname.split('/')[2]
+const index = location.pathname.split('/')[3]
+const prevLocation = `${root}/${sub}/${index}`
+
 const [groups, setGroups] = useState()
+
+console.log("render", location.pathname, location.pathname.includes("undefined"), history.action)
 
 const profileFetch = () => {
   console.log('profile fetch', localStorage.token)
@@ -134,7 +139,7 @@ const profileFetch = () => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("User Profile", user.user.all_groups, user.user)
+      // console.log("User Profile", user.user.all_groups, user.user)
 
 const groups = user.user.all_groups
 
@@ -152,7 +157,8 @@ for (const i of Object.keys(groups)) {
 }
 // console.log("object", Object.keys(groups));
 
-      setGroups(groups)
+      // setGroups(groups)
+      mapDetails(groups)
       setUserId(user.user.id)
       // setCurrentUserId(user.user.id)
       setUserName(user.user.name);
@@ -160,7 +166,9 @@ for (const i of Object.keys(groups)) {
       setUserLinks(user.user.links);
       setTutorial(user.user.tutorial)
       
-      if (history.action === 'POP'){
+      console.log("profile push", location.pathname, root)
+
+      if (history.action === 'POP' && !(location.pathname.includes("undefined")) && root !== 'login'){
         const sub = location.pathname.split('/')[2]
         const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
@@ -242,7 +250,7 @@ const landingFetch = () => {
 
 
       if (history.action === 'POP' && window.store?.split('/').length > 1){
-        console.log("pop", window.store, history.action, location.pathname, directory)
+        console.log("pop", window.store, history.action, location.pathname, root)
         const sub = location.pathname.split('/')[2]
         const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
@@ -375,11 +383,11 @@ const autoLoggin = () => {
   })
     .then((res) => res.json())
     .then((user) => {
-      console.log('auto login function', user, user.uuid)
-      setCurrentUserId(user.uuid)
+      console.log('auto login function', user, location.pathname, root, user.user.id)
+      setCurrentUserId(user.user.id)
       setDemo(false)
       setLoggedIn(true)
-      if (directory === 'home'){ profileFetch()}
+      if (root === 'home'){ profileFetch()}
     }
     );
   };
@@ -441,7 +449,7 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  if (directory === 'community') { 
+  if (root === 'community') { 
     setOverflow('hidden')
   } 
   else if (window.outerWidth < 500){
@@ -451,7 +459,7 @@ useEffect(() => {
     setOverflow('unset')
   }
   
-}, [skinny, directory])
+}, [skinny, root])
 
 // LOGIN FUNCTIONS
  const useTemplate = () => {
@@ -502,11 +510,11 @@ const sortPhotos = (a, b) => a.index - b.index;
 
 
 const setFolderPhotos = (index, type) => {
-
+console.log("index", index)
   const setFunc = type.charAt(0).toUpperCase() + type.slice(1, -1)
   const folder = eval(type).find(folder => folder.index === index)
-  // eval(`set${setFunc}Shown(${index})`)
-  // setShown(index)
+  // // eval(`set${setFunc}Shown(${index})`)
+  // // setShown(index)
   setFolderShown(folder.index)
   if(type !== 'favorites'){
   eval(`set${setFunc}Privacy(${folder.public})`)
@@ -516,51 +524,74 @@ const setFolderPhotos = (index, type) => {
   }
   else setPhotos(folder.favorite_photos)
   eval(`setFolderName("${folder.name}")`)
-  navigate(`/${directory}/${type}/${index}`)
+  navigate(`/${root}/${type}/${index}`)
 }
 
 const [details, setDetails] = useState([])
 
-useEffect(() => {
-if (!!groups){
-  const details = []
-  for (const i of Object.keys(groups)) {
-    const key = Object.keys(groups[i]);
-
-    const detail = eval(`groups[i].${key}`).map((folder, i) => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`))
-    // console.log(detail)
-
-    let jsonDetail = detail.map(d => JSON.parse(d))
-    let jsonKey = eval(key)[0]
-
-    let obj = {}
-    obj[jsonKey] = [jsonDetail]
-
-    // details.push([jsonDetail])
-    details.push(obj)
+const mapDetails = (groups) => {
+  if (!!groups){
+    const details = []
+    for (const i of Object.keys(groups)) {
+      const key = Object.keys(groups[i]);
+  
+      const detail = eval(`groups[i].${key}`).map((folder, i) => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`))
+      // console.log(detail)
+  
+      let jsonDetail = detail.map(d => JSON.parse(d))
+      let jsonKey = eval(key)[0]
+  
+      let obj = {}
+      obj[jsonKey] = [jsonDetail]
+  
+      // details.push([jsonDetail])
+      details.push(obj)
+    }
+    setDetails(details)  
   }
-  setDetails(details)  
 }
-}, [groups])
+
+const newDetail = (obj, key) => {
+  const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}}`
+  const detailObj = JSON.parse(detail)
+  // const mapDetail = eval(`details[i].${key}`).map((folder, i) => ())
+return detailObj
+}
+
+// !!details[0] && console.log("details[0].folders", details[0].folders[0])
+// useEffect(() => {
+// if (!!groups){
+//   const details = []
+//   for (const i of Object.keys(groups)) {
+//     const key = Object.keys(groups[i]);
+
+//     const detail = eval(`groups[i].${key}`).map((folder, i) => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`))
+//     // console.log(detail)
+
+//     let jsonDetail = detail.map(d => JSON.parse(d))
+//     let jsonKey = eval(key)[0]
+
+//     let obj = {}
+//     obj[jsonKey] = [jsonDetail]
+
+//     // details.push([jsonDetail])
+//     details.push(obj)
+//   }
+//   setDetails(details)  
+// }
+// }, [groups])
 // useEffect(() => {
 //   folders !== undefined && detailFunc('folders')
 // }, [folders])
 // useEffect(() => {
 //   folders !== undefined && detailFunc('folders')
 // }, [folders])
-
-
-
-
-
 
 const [colorArr, setColorArr] = useState([{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}])
 
 const colors = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}]
 
-
 const [count, setCount] = useState([])
-
 
 const hiliteCollaborator = (user) => {
   const filtered = photos.filter(photo => photo.u_id === user.uuid)
@@ -619,8 +650,6 @@ const hiliteCollaborator = (user) => {
     
 }
 
-  
-
 const updateUserFavorites = (photo) => {
   console.log("favoriteObj", photo)
 
@@ -644,45 +673,12 @@ const updateUserFavorites = (photo) => {
   }))
 }
 
-
-
-
-// {Object.values(props.details[value])[0].map((folders, index)=> 
-//   folders.map(folder =>console.log(folder))
-//   )}
-
-
-
-
-
-// IF SUB CHANGES
-  // IF SUB ==== 'COLLABORATIONS'
-  // IF SUB ==== 'FOLDERS'
-  // IF SUB ==== 'FAVORITES'
-    // SET HEADER
-    // SETPHOTOS
-    // SETCOLLABS
-    // SETINDEX
-  // ELSE SET TO NULL
-  // useEffect(() => {
-    
-    // if(subDirectory === 'folders'){
-    //   eval(subDirectory)
-    // }
-    // if(subDirectory === 'collabs'){}
-  //   if(subDirectory === 'favorites'){}
-  //   else{
-
-  //   }
-  // }, [subDirectory])
-  
-
-
-const createFolder = (e, folderName) => {
+const createFolder = (e, folderName, type) => {
     e.preventDefault();
     const nextIndex = folders[folders.length - 1].index + 1
 
     if (demo) {
+      // THIS DOES NOT SEND ACTUAL REQUESTS
     let folder = {}
     folder.id = folders[folders.length - 1].id + 1
     folder.name = folderName
@@ -732,7 +728,15 @@ const createFolder = (e, folderName) => {
     })
       .then((res) => res.json())
       .then((folderObj) => {
-        console.log("folder", folderObj, "folder photos", folderObj.photos);
+        const newDetails = [...details]
+
+        const newFolders = [...newDetails[0].folders[0], newDetail(folderObj, type)]
+
+        newDetails[0].folders[0] = newFolders
+
+        console.log("folder", folderObj, "folder photos", folderObj.photos, newFolders);
+        setDetails(newDetails)
+        // setGroups(groups[0].folders)
         setFolders([...folders, folderObj]);
         setNewFolder(true)
         setFolderType(folderObj.creative)
@@ -907,32 +911,34 @@ const catagorize = (boolean) => {
 
   
 
-    const deleteFolder = (folderObj) => {
+    const deleteFolder = (folderObj, type, id) => {
       // GETS INDEX OF DELETED FOLDER
-      //  console.log(folderObj)
-      const folderIndex = folders.findIndex(
+      const folderIndex = folders.sort((a, b) => a.index - b.index).findIndex(
         (folder) => folder.index === folderObj.index);
-      // console.log("folderIndex", folderIndex)
-      // GETS INDEX OF FOLDER NEXT TO DELETED FOLDER
-       const previousFolder = (folderShown === folders[0].index)
-       ? folders[1] 
-       : folders[folderIndex - 1]
-      // IF VIEWED FOLDER IS DELETED, SHOW PREVIOUS FOLDER. IF THIS FOLDER IS THE FIRST IN THE ARRAY, THEN SELECT THE NEXT FOLDER IN ARRAY
-        folderShown === folderObj.index && setFolderShown(previousFolder.index)
-        // UPDATE FOLDERS ARRAY
-      const updatedFoldersArr = folders.filter((folder) => folder.index !== folderObj.index);
-      setFolders(updatedFoldersArr)
-      // CONSOLE LOG VALUES
-        // console.log("folderIndex", folderIndex)
-        // console.log("folders", folders)
-        // console.log("previous folder", previousFolder)
-        // THERE'S AN ISSUE WITH THE FETCH. RECIEVING ERROR: Uncaught (in promise) SyntaxError: Unexpected end of JSON input
-        // SO FUNCTION IS OPTIMISTIC UNTIL RESOLVED
-      loggedIn && fetch(`${dbVersion}/folders/${folderObj.index}/`, {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
-    })
+
+        if (folders.length > 1){
+
+          if(folderIndex === 0){
+            setFolderPhotos(folders.at(-1).index, type)
+          }
+          else{
+          setFolderPhotos(folders[folderIndex - 1].index, type)}
+
+          const spreadDetails = [...details]
+          const reducedFolders = spreadDetails[0].folders[0].filter((folder) => folder.id !== id);
+          spreadDetails[0].folders[0] = reducedFolders
+          setDetails(spreadDetails)
+
+          loggedIn && fetch(`${dbVersion}/folders/${folderObj.index}/`, {
+            method: "DELETE",
+            headers: {
+            Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
+            })
+          .then((res) => res.json())
+          .then((folderObj) => {console.log("folderObj", folderObj)})
+        }
+
+
   };
 
 // LINK FUNCTIONS
@@ -1227,15 +1233,11 @@ useEffect(() => {
   }
   
 
+  
   useEffect(() => {
     
-    const root = location.pathname.split('/')[1]
-    const sub = location.pathname.split('/')[2]
-    const index = location.pathname.split('/')[3]
-    const prevLocation = `${root}/${sub}/${index}`
-    setDirectory(root)
-    setSubDirectory(sub)  
-    console.log("on load directory push", prevLocation)
+
+    console.log("on load root", prevLocation, history.action)
 
     if (root === 'by_Corey_Lee' && history.action === 'REPLACE'){
       landingFetch()
@@ -1252,7 +1254,7 @@ useEffect(() => {
 
       console.log("auto login currentUserId", currentUserId)
 
-if(location.pathname === "/" && directory !== 'user'){
+if(location.pathname === "/" && root !== 'user'){
   profileFetch()
 }
 
@@ -1264,7 +1266,7 @@ if(location.pathname === "/" && directory !== 'user'){
         console.log("profileFetch currentUserId", currentUserId)
       }
     }
-    else if(location.pathname === "/" && directory !== 'user'){
+    else if(location.pathname === "/" && root !== 'user'){
       landingFetch()
       setDemo(true)
     }
@@ -1297,14 +1299,14 @@ if(location.pathname === "/" && directory !== 'user'){
   
   useEffect(() => {
     setLoaded(false)
-  }, [directory])
+  }, [root])
   
 
 
     return (
       
       <Switch> 
-      <Cont directory={directory} >
+      <Cont root={root} >
          
         <SideBar
         details={details}
@@ -1317,7 +1319,7 @@ if(location.pathname === "/" && directory !== 'user'){
           setLoggedIn={setLoggedIn}
           // about={about}
           published={about.publish}
-          subDirectory={subDirectory}
+          sub={sub}
           // clickAboutLink={clickAboutLink}
           hover={hover} 
           setHover={setHover}
@@ -1331,7 +1333,7 @@ if(location.pathname === "/" && directory !== 'user'){
           landingFetch={landingFetch}
           setTutorial={setTutorial}
           fetch={fetchHome}
-          directory={directory}
+          root={root}
           folderShown={folderShown}
           setFolderShown={setFolderShown}
           setFolderPhotos={setFolderPhotos}
@@ -1368,7 +1370,7 @@ if(location.pathname === "/" && directory !== 'user'){
           mobile={mobile}
           skinny={skinny}
           loggedIn={loggedIn}
-          subDirectory={subDirectory}
+          sub={sub}
           tutorial={tutorial}
           setTutorial={setTutorial}
           userId={userId}
@@ -1378,7 +1380,7 @@ if(location.pathname === "/" && directory !== 'user'){
           followToggle={followToggle}
           creativeFollow={creativeFollow}
           lifestyleFollow={lifestyleFollow}
-          directory={directory}
+          root={root}
           userName={userName}
           edit={!edit}
           nameSubmit={nameSubmit}
@@ -1388,7 +1390,7 @@ if(location.pathname === "/" && directory !== 'user'){
           skinny={skinny || mobile}
           mobile={mobile}
           loggedIn={loggedIn}
-          subDirectory={subDirectory}
+          sub={sub}
           hover={hover} 
           setHover={setHover}
           catagorize={catagorize}
@@ -1397,7 +1399,7 @@ if(location.pathname === "/" && directory !== 'user'){
           tutorial={tutorial}
           newFolder={newFolder}
           uuid={uuid}
-          directory={directory}
+          root={root}
           hiliteCollaborator={hiliteCollaborator}
           updateFolderPrivacy={updateFolderPrivacy}
           folderPrivacy={folderPrivacy}
@@ -1434,7 +1436,7 @@ if(location.pathname === "/" && directory !== 'user'){
               logNeatly={logNeatly}
               mobile={mobile}
               loggedIn={loggedIn}
-              subDirectory={subDirectory}
+              sub={sub}
               about={about}
               setAbout={setAbout}
               folderDetails={folderDetails}
@@ -1460,24 +1462,24 @@ if(location.pathname === "/" && directory !== 'user'){
               edit={edit}
               reorderSubmit={reorderSubmit}
               dbVersion={dbVersion}
-              directory={directory}
+              root={root}
               /> 
               {/* />  */}
               {/* )} */}
               </Route>    
               
-              {location.pathname === "/" && directory !== 'user' &&
+              {location.pathname === "/" && root !== 'user' &&
               !!localStorage.token &&
               <Redirect from="/" to="/home" />}
 {/* 
-              {history.action === 'POP' && directory === 'user' &&
+              {history.action === 'POP' && root === 'user' &&
             <Redirect from="/" to="/user" />} */}
               
-              {location.pathname === "/" && directory !== 'user' &&
+              {location.pathname === "/" && root !== 'user' &&
               !localStorage.token && 
               <Redirect from="/" to="/by_Corey_Lee" />}
 
-              {/* {location.pathname === "/" && directory !== 'user' &&
+              {/* {location.pathname === "/" && root !== 'user' &&
               !!localStorage.token ?
               <Redirect from="/" to="/home" />
               : <Redirect from="/" to="/by_Corey_Lee" />} */}
@@ -1514,7 +1516,7 @@ if(location.pathname === "/" && directory !== 'user'){
                 <Route path="/community" >
                   <CommunityPage
                   setLoaded={setLoaded}
-                    directory={directory}
+                    root={root}
                     mobile={mobile}
                     loggedIn={loggedIn}
                     userId={userId}
@@ -1556,7 +1558,7 @@ if(location.pathname === "/" && directory !== 'user'){
     max-height: ${window.innerHeight}px;`
   : `max-width: ${window.outerWidth}px;
   max-height: ${window.outerHeight}px;`}
-  /* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '17% 1fr 17%'}; */
+  /* grid-template-columns: ${props => props.root === "community" ? '18% 1fr 0%' : '17% 1fr 17%'}; */
   grid-template-columns: 17% 1fr 17%;
   grid-template-rows: auto 1.5fr auto;
   grid-template-areas: 
@@ -1572,8 +1574,8 @@ if(location.pathname === "/" && directory !== 'user'){
 @media (min-width: 1100px) {
   main{
     
-    ${({directory}) => directory === "community" && 'height: 100%; overflow: hidden;'}
-    // height: ${props => props.directory === "community" ? 'auto' : '100%'};
+    ${({root}) => root === "community" && 'height: 100%; overflow: hidden;'}
+    // height: ${props => props.root === "community" ? 'auto' : '100%'};
      ;
   }
 }
@@ -1606,7 +1608,7 @@ if(location.pathname === "/" && directory !== 'user'){
 }
 
 `
-/* grid-template-columns: ${props => props.directory === "community" ? '18% 1fr 0%' : '0% 1fr 0%'}; */
+/* grid-template-columns: ${props => props.root === "community" ? '18% 1fr 0%' : '0% 1fr 0%'}; */
   
 const Footer = styled.footer`
   /* transition-delay: .2s; */
@@ -1638,8 +1640,8 @@ const Footer = styled.footer`
   // userId === currentUserId && profileFetch(userId);
   // if token && !currentUserId && !userId
 
-// if (directory === 'home' && !!localStorage.token){
-//   console.log('profile login', directory === 'home' && userId !== currentUserId && !currentUserId, userId, currentUserId)
+// if (root === 'home' && !!localStorage.token){
+//   console.log('profile login', root === 'home' && userId !== currentUserId && !currentUserId, userId, currentUserId)
 //   autoLoggin()  
 //   // setLoggedIn(true)
 //   //   profileFetch()
@@ -1647,19 +1649,19 @@ const Footer = styled.footer`
 //   }
 // else 
 // useEffect(() => {
-//   (directory === 'by_Corey_Lee') && setTutorial(true)
+//   (root === 'by_Corey_Lee') && setTutorial(true)
 //   // console.log("user tutorial set")
-// }, [directory])
+// }, [root])
 
 
 
 
 // useEffect(() => {
-//   if (directory !== 'by_Corey_Lee' && tutorial === true){
+//   if (root !== 'by_Corey_Lee' && tutorial === true){
 //     setTutorial(false)
 //   }
-// }, [directory])
-// (props.directory === "user" &&  props.collaborators.some(c => c.uuid === props.currentUserId))
+// }, [root])
+// (props.root === "user" &&  props.collaborators.some(c => c.uuid === props.currentUserId))
 
 //  useEffect(() => {
 //   console.log('here it is')

@@ -125,7 +125,7 @@ const moveCollab = useCallback((dragIndex, hoverIndex) => {
                         }}
                         // navigate(`/${match.path}/collabs/`)
       // DELETE ^
-                        style={(collab.index === props.collabShown) && (props.directory === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
+                        style={(collab.index === props.collabShown) && (props.root === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
                         onInput={e => setCollabName(e.currentTarget.textContent)}
                         >
                         {collab.name}

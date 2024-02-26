@@ -28,7 +28,7 @@ interface IProps {
   skinny: boolean;
   mobile: boolean;
   loggedIn: boolean;
-  subDirectory: string;
+  sub: string;
   tutorial: boolean;
   setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
   userId: string;
@@ -41,7 +41,7 @@ interface IProps {
     };
   creative: boolean;
   lifestyle: boolean;
-  directory: string;
+  root: string;
   userName: string;
   edit: boolean;
   dbVersion: string;
@@ -85,13 +85,13 @@ const index = +(location.pathname.split('/')[3])
 
 
     useEffect(() => {
-        if (props?.subDirectory === 'about'){
+        if (props?.sub === 'about'){
           setSiteHeader("About")
         }  
-        else if (props?.directory === 'login'){
+        else if (props?.root === 'login'){
           setSiteHeader("Use ImageBoard")
         } 
-        else if (props?.directory === 'community'){
+        else if (props?.root === 'community'){
           setSiteHeader("Community")
         } 
         else {setSiteHeader(props?.userName)}
@@ -99,7 +99,7 @@ const index = +(location.pathname.split('/')[3])
           props.setCollaborators([])
         }
 
-    }, [location.pathname, props?.subDirectory, props?.directory])
+    }, [location.pathname, props?.sub, props?.root])
     
 
 
@@ -142,7 +142,7 @@ useEffect(() => {
 
       <Sticky>
       {/* FOLLOW */}
-      {(props.directory === 'user') && 
+      {(props.root === 'user') && 
               <div>
                   <Switch>
                   <label className="toggle-switch">
@@ -181,7 +181,7 @@ useEffect(() => {
                   }
                   </div>
       }
-          {(props.directory === 'home' || props.directory === 'by_Corey_Lee') &&           
+          {(props.root === 'home' || props.root === 'by_Corey_Lee') &&           
               <>
               <Switch>
                   <label className="toggle-switch">
