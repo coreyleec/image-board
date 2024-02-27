@@ -553,7 +553,7 @@ useEffect(() => {
     centeredId !== undefined && changeCells(centeredId)
   }
 }
-
+console.log("props.collaborators", props.collaborators)
 
 // useEffect(() => { console.log("useEffect render", photos?.length)})
 // const folderName = props?.folderDetails[props?.folderShown]?.name

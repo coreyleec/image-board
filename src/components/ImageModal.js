@@ -8,7 +8,7 @@ const ImageModal = (props) => {
   let photo = props.photo;
   let modalToggle = props.modalToggle;
   const [orientation, setOrientation] = useState(true)
-  const [photoSrc, setPhotoSrc] = useState(photo.url)
+  const [photoSrc, setPhotoSrc] = useState(photo.thumbnail_url)
   const [photoName, setPhotoName] = useState(props.photo.name)
   const [photoDetails, setPhotoDetails] = useState(props.photo.details)
 
@@ -38,11 +38,11 @@ const ImageModal = (props) => {
   
 
   useEffect(() => {
-    setPhotoSrc(props.photo.url)
+    setPhotoSrc(props.photo.thumbnail_url)
     setPhotoName(props.photo.name)
     setPhotoDetails(props.photo.details)
   }, [props.photo])
-
+console.log("props.photo", props.photo)
   
   const imageHandler = (image) => {
      setPhotoSrc(image)
@@ -87,7 +87,7 @@ const ImageModal = (props) => {
           </button>
         </div>
 {/* Photo Preview and Edit */}
-            <ModelContent>
+            <ModelContent edit={props.edit}>
               <form ref={form}
                 onSubmit={(e) => props.addPhoto(e, form.current, orientation, photoName, photoDetails, props.photo, 
                 console.log("photoName", photoName, "photoDetails", photoDetails),
@@ -97,11 +97,7 @@ const ImageModal = (props) => {
 {/* IMAGE FORM EDIT AND PREVIEW */}
               <div className="modal-img-cont">
               {!props.edit && photo !== undefined && photo.url != null 
-                ? <div 
-                  className="image-preview-cont" 
-                  style={{"backgroundColor": contColor}}>
-                    <img src={photoSrc} />
-                  </div>
+                ? <img src={photoSrc} />
                 : <div className="image-preview-cont" style={{"backgroundColor": contColor}}>
                 <>
                 {photoSrc!== null 
@@ -243,12 +239,15 @@ const ModelContent = styled.div`
       min-width: 50%;
       button {
         clear: both;
-        display: block;
-        margin-inline: auto
+        // display: block;
+        margin-inline: auto;
+        margin-bottom: 10px;
       }
       img {width: -webkit-fill-available;
           max-height: 90vh;
-          object-fit: contain;}
+          padding: 10px;
+          background-color: ${({ edit }) => !edit ? `rgba(0, 0, 0, 0.3)` : `transparent`};
+      }
 
       h2 {
           cursor: pointer;
@@ -265,7 +264,7 @@ const ModelContent = styled.div`
       .file-dialog-button input {background-color: none;}
 
     .image-preview-cont {
-      padding: 10px;
+      // padding: 10px;
     } 
     
     }

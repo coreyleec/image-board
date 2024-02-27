@@ -70,8 +70,13 @@ const CommunitySecondaryFilter = (props) => {
 
             >
               <div className='tabs'>
-              <p className='side-tab' onClick={() => props.setCatagory(true)} ><mark className="true" >users</mark></p>
-              <p className='side-tab' onClick={() => props.setCatagory(false)} ><mark className="false" >folders</mark></p>
+              <p className='side-tab users' onClick={() => props.setCatagory('users')} ><mark className="users" >user</mark></p>
+              <p className='side-tab folders' onClick={() => props.setCatagory('folders')} ><mark className="folders" >folder</mark></p>
+              <p className='side-tab photos' 
+              // onClick={() => props.setCatagory('photos')} 
+              ><mark
+              className="photos"
+              >photo</mark></p>
               </div>
                 
             {!!props.error ?
@@ -81,17 +86,17 @@ const CommunitySecondaryFilter = (props) => {
             :
             <div className='coffin-cont'>
             <div className='coffin'  >
-            {props.filters.catagory ?
+            {props.filters.catagory === 'users' ?
             <>
+ {/* FILTER BY USERS */}
+ 
             {props?.catagory?.map((obj, n) => (
               
               
-              
               <div className='user-cont' key={n} 
-              //  style={{'z-index': `${n}`}}
-              
-               >
-
+              //  style={{'z-index': `${n}`}} 
+              >
+                {console.log("obj name", obj)}
                <UserCard identifier={obj.uuid} onClick={() => props.fetchUser(obj.uuid, obj.name)}>
                    <div className="catagory"> 
                    <h4>{obj.name}</h4>
@@ -109,10 +114,10 @@ const CommunitySecondaryFilter = (props) => {
           {obj.photos.map(photo => 
                <PhotoCard >
               <div className="text-cont">
-              {!!photo.name && <p className="photo-name" >{photo.name}</p>}
-              {!!photo.details && <p className="photo-details" >{photo.details}</p>}
-              <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name)} >{photo.obj_name}</p>
-              <p className="folder-name">{photo.folder_name}</p>
+                {!!photo.name && <p className="photo-name" >{photo.name}</p>}
+                {!!photo.details && <p className="photo-details" >{photo.details}</p>}
+                {(obj.name !== photo.user_name) && <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name)} >by {photo.user_name}</p>}
+                <p className="folder-name">{photo.folder_name}</p>
               </div>
               <div className='photo-cont'>
                 <div className='photo-header'></div>
@@ -162,7 +167,7 @@ const CommunitySecondaryFilter = (props) => {
                <div className='user-cont' key={n} 
               //  style={{'z-index': `${n}`}}
                >
-
+{/* FILTER BY FOLDERS */}
                <UserCard identifier={obj.uuid} onClick={() => props.fetchUser(obj.uuid)}>
                    <div className="catagory"> 
                    <h4>{obj.name}</h4>
@@ -180,10 +185,15 @@ const CommunitySecondaryFilter = (props) => {
             </UserCard>
           {obj.photos.map(photo => 
                <PhotoCard >
+                {console.log("obj name", obj)}
               <div className="text-cont">
               {!!photo.name && <p className="photo-name" >{photo.name}</p>}
               {!!photo.details && <p className="photo-details" >{photo.details}</p>}
-              <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo)} >{photo.obj_name}</p>
+              <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo)} >{photo.user_name}</p>
+
+              
+
+                 {(obj.user_name !== photo.user_name) && <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name)} >by {photo.user_name}</p>} 
               {/* <p className="folder-name">{photo.folder_name}</p> */}
               </div>
               <div className='photo-cont'>
@@ -293,26 +303,42 @@ const Cont = styled.div`
     padding-left: 15px;
     
   .tabs{
-    z-index: 1;
+    padding-inline: 15px;
+    z-index: 0;
     display: flex;
-    flex-direction: column;
-    transform: rotate(0deg);
-    justify-content: space-evenly;
-    width: 0px;
-    height: -webkit-fill-available;
+    flex-direction: row;
+    justify-content: space-between;
+    height: fit-content;
     cursor: pointer;
+    position: absolute;
+    width: 100%;
+  }
+  .side-tab.users{
+    flex: 0.67 1 0%;
+    width: 48%;
+    // flex: 0.7 1 0%;
+  }
+  .side-tab.folders{
+    flex: 0.75 1 0%;
+  }
+  .side-tab.photos{
+    flex-grow: 1;
+    flex-basis: 100px;
   }
   .side-tab{
-    transform: rotate(-90deg);
-    ${({catagory}) => catagory ? 
-    '.true {color: white; box-shadow: 6px 0 0 black, -4px 0 0 black; background-color: black;}'
-    : '.false {color: white; box-shadow: 6px 0 0 black, -4px 0 0 black; background-color: black;}'
+    ${({catagory}) => catagory === 'users' ? 
+    '.users {text-decoration: underline;}'
+    : '.folders {text-decoration: underline;}'
   }
+  // color: white; box-shadow: 6px 0 0 black, -4px 0 0 black; background-color: black;
+
     mark {
       color: black; 
       background-color: gainsboro;
-      font-style: italic;
-      
+      font-size: 18px;
+      // font-style: italic;
+      // font-style: normal;
+      // font-weight: bold;      
     
   }
 }
@@ -320,7 +346,7 @@ const Cont = styled.div`
 
     .coffin-cont {
     position: relative;
-    top: 15px;
+    top: 35px;
     // height: calc(100% - 50px);
 }
 .coffin::-webkit-scrollbar-track {
@@ -332,7 +358,7 @@ const Cont = styled.div`
       }
 .coffin {
     padding-inline: 15px;
-    padding-bottom: 15px;
+    padding-bottom: 40px;
     overflow: scroll;
     /* height: 100%; */
     transition: height .2s ease;
@@ -397,6 +423,7 @@ const PhotoCard = styled.div`
     flex-direction: column;
     position: sticky;
     top: 0;
+    z-index: 4;
     align-self: flex-start;
   }
 
@@ -486,7 +513,7 @@ background-color: gainsboro;
     line-height: 20px;
     left: 1%;
     background: gainsboro;
-    width: 50%;
+
 }
 h4{
   cursor: pointer;

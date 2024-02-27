@@ -28,22 +28,7 @@ const DndRoutePrefix = (props) => {
     //     console.log('hi', photo)
     // }, [props.colorArr])
 
-    // const [folderName, setFolderName] = useEffect()
-    // useEffect(() => {
-    //   if(props.folderDetails && props.sub === 'folders'){
-    //     eval(props.sub)
-    //     setFolderName(props?.folderDetails[+props?.folderShown]?.name)
-    //   }
-    //   if (!!props?.collabDetails && props?.sub === 'collabs'){
-    //     setFolderName(props?.collabDetails[+props?.collabShown]?.name)
-    //   }  
-    // }, [props.sub])
     
-    
-    // const folderName = props?.folderDetails[props?.folderShown]?.name
-    // const favoritesName = !!props?.favoriteDetails ? props?.favoriteDetails[props?.folderShown]?.name : ''
-    // const collabName = !!props.collabDetails ? props.collabDetails[props.folderShown]?.name : ''
-
 
     
 
@@ -64,7 +49,7 @@ return (
               collabs={props?.collaborators?.filter((collaber) => collaber.name !== props?.userName)}
               hightlighted={props.hightlighted}
               setBaseName={props.setBaseName}
-              // folderName={props.sub === 'folders' ? folderName : props?.sub === 'collabs' ? collabName : props.sub === 'favorites' ? favoritesName : ''}
+              collaborators={props.collaborators}
               photos={props.photos}
               colorArr={props.colorArr}
               setPhotos={props.setPhotos}

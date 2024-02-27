@@ -12,15 +12,19 @@ return (
   <div className='coffin'>
   <div className='coffin-header'></div>
   
-{!!props.catagory && props.catagory.map(group =>
+{!!props.catagory && props.catagory.map(owner =>
 <div>
-{group.photos.map(photo => 
+{owner.photos.map(photo => 
     <PhotoCard onClick={() => console.log(photo.id)}>
 
       <div id={photo.id} className="text-cont">
-        {!!photo.name && <p className="photo-name" ><mark>{photo.name}</mark></p>}
-        {!!photo.details && <p className="photo-details" ><mark>{photo.details}</mark></p>}
-        <p className="user-name" onClick={() => props.fetchUser(group.uuid)} ><mark>{photo.user_name}</mark></p>
+        {!!photo.name && <p className="photo-name" >
+          <mark>{photo.name}</mark>
+          </p>}
+        {!!photo.details && <p className="photo-details" >
+          <mark>{photo.details}</mark>
+          </p>}
+        <p className="user-name" onClick={() => props.fetchUser(owner.uuid, photo.user_name)} ><mark>{photo.user_name}</mark></p>
         {/* <p className="folder-name">{photo.folder.name}</p> */}
       </div>
       <img src={photo.thumbnail_url}/>

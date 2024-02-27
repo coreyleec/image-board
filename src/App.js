@@ -24,9 +24,9 @@ window.addEventListener( 'touchend', function( e ){
 });
 
   // SWITCH DATABASE VERSION
-  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
+  // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
 
-  // const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
+  const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
   const [localDb, setLocalDb] = useState(false)
   // useEffect(() => {
   //   !localDb ? setDbVersion(`http://127.0.0.1:3000/api/v1`) : setDbVersion(`https://image-board-backend.herokuapp.com/api/v1`)
@@ -125,7 +125,7 @@ const prevLocation = `${root}/${sub}/${index}`
 
 const [groups, setGroups] = useState()
 
-console.log("render", location.pathname, location.pathname.includes("undefined"), history.action)
+console.log("render", prevLocation)
 
 const profileFetch = () => {
   console.log('profile fetch', localStorage.token)
@@ -139,10 +139,10 @@ const profileFetch = () => {
     .then((res) => res.json())
     .then((user) => 
     {
-      // console.log("User Profile", user.user.all_groups, user.user)
+      
 
 const groups = user.user.all_groups
-
+console.log("User Profile", user.user.all_groups, user.user, groups[0].folders[+index])
 for (const i of Object.keys(groups)) {
   const key = Object.keys(groups[i]);
   const value = JSON.stringify(eval(`groups[i].${key}`))
@@ -155,12 +155,9 @@ for (const i of Object.keys(groups)) {
   // console.log(`index: ${i}, Keys: ${key}, Values: ${value}`, string.charAt(0).toUpperCase(), string.slice(1),setFunc);
   
 }
-// console.log("object", Object.keys(groups));
 
-      // setGroups(groups)
       mapDetails(groups)
       setUserId(user.user.id)
-      // setCurrentUserId(user.user.id)
       setUserName(user.user.name);
       setAbout(user.user.about);
       setUserLinks(user.user.links);
@@ -203,7 +200,7 @@ for (const i of Object.keys(groups)) {
         
   })
 }
-
+console.log("collaborators", collaborators)
 const landingFetch = () => {
   fetch(`${dbVersion}/landing_page`, {
         method: "GET",
@@ -214,9 +211,9 @@ const landingFetch = () => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("tutorialUser", user, user.user.favorites)
-
+      
       const groups = user.user.all_groups
+      console.log("tutorialUser", user, groups)
 
       for (const i of Object.keys(groups)) {
         const key = Object.keys(groups[i]);
@@ -229,7 +226,7 @@ const landingFetch = () => {
         
       }
 
-      setGroups(groups)
+      mapDetails(groups)
       // setCurrentUserId(user.user.id)
       setUserId(user.user.id)
       setUserName(user.user.name);
@@ -242,17 +239,19 @@ const landingFetch = () => {
       setAbout(user.user.about)
       setDemo(user.user.demo)
       setUuid(user.user.uuid)
-      setFolderType(user.user.folders[0].creative)
-      setCollaborators(user.user.folders[0].collaborators)
+      // setFolderType(user.user.folders[0].creative)
+      // setCollaborators(user.user.folders[0].collaborators)
 
 
 
 
 
-      if (history.action === 'POP' && window.store?.split('/').length > 1){
+      
+      if (history.action === 'POP' && location.pathname.includes("undefined") && root === 'by_Corey_Lee'){
+
         console.log("pop", window.store, history.action, location.pathname, root)
-        const sub = location.pathname.split('/')[2]
-        const index = location.pathname.split('/')[3] || ''
+        // const sub = location.pathname.split('/')[2]
+        // const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
           setPhotos(groups[0].folders[+index].photos)
           setCollaborators(groups[0].folders[+index].collaborators)
@@ -302,7 +301,7 @@ const fetchUser = (userId, name) => {
     .then((res) => res.json())
     .then((user) => 
     {
-      console.log("user", user, user.user.folders[0].creative)
+      console.log("user", user)
       const groups = user.user.all_groups
 
       for (const i of Object.keys(groups)) {
@@ -317,14 +316,14 @@ const fetchUser = (userId, name) => {
         // console.log(`index: ${i}, Keys: ${key}, Values: ${value}`, string.charAt(0).toUpperCase(), string.slice(1),setFunc);
         
       }
-      setGroups(groups)
+
+      mapDetails(groups)
       setUserId(user.user.id);
       setUserName(user.user.name);
       setAbout(user.user.about);
       setUserLinks(user.user.links);
       setTutorial(false)
       setFollow(user.user.follow)
-      setCollaborators(user.user.folders[0].collaborators)
       
 
       const root = location.pathname.split('/')[1]
@@ -710,6 +709,14 @@ const createFolder = (e, folderName, type) => {
     setFolders([...folders, folder])
     setNewFolder(true)
     setFolderType(folder.creative)
+    const newDetails = [...details]
+
+    const newFolders = [...newDetails[0].folders[0], newDetail(folder, type)]
+
+    newDetails[0].folders[0] = newFolders
+
+    console.log("folder", folder, "folder photos", folder.photos, newFolders);
+    setDetails(newDetails)
     }
     else if (loggedIn){
       fetch(`${dbVersion}/folders/`, {
@@ -1570,10 +1577,12 @@ if(location.pathname === "/" && root !== 'user'){
   @media (max-width: 1100px) {
   grid-template-columns:  0% 1fr 0%;
 }
-// : '2'
-@media (min-width: 1100px) {
+header{transition: width .4s ease;}
+@media (min-width: 700px) {
+  header{
+    ${({root}) => root === "community" ? 'height: 80px;' :'height: 130px;'}
+  }
   main{
-    
     ${({root}) => root === "community" && 'height: 100%; overflow: hidden;'}
     // height: ${props => props.root === "community" ? 'auto' : '100%'};
      ;

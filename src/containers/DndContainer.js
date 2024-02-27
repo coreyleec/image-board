@@ -842,12 +842,12 @@ const PictureFrame = styled.div`
     max-width: 90%;
     transition: 
     border-radius .2s ease-out, 
-    background-color 0s linear 1s, 
-    max-width .3s ease-out .2s, 
-    padding-right .2s ease-out .1s, 
-    padding-left .2s ease-out .1s, 
-    padding-block .2s ease-out .1s, 
-    ${({url}) => !!url ? 'box-shadow .2s ease-in .6s' : 'box-shadow .3s ease-in'};
+    background-color 0s linear, 
+    max-width .2s ease-out .2s, 
+    padding-right .1s ease-out .1s, 
+    padding-left .1s ease-out .1s, 
+    padding-block .1s ease-out .1s, 
+    ${({url}) => !!url ? 'box-shadow .2s ease-in .5s' : 'box-shadow .3s ease-in'};
     /* transition: border-radius .5s ease-out 0ms, background-color 0s linear, max-width 0.5s ease-in, padding-right 0.5s ease-in, box-shadow .2s ease-out .4s; */
 
   

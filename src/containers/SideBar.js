@@ -11,7 +11,7 @@ import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider";
 const SideBar = (props) => {
   // TOGGLE SIDEBAR
   const [sideBar, setSideBar] = useState(false);
-  // console.log("new props", !!props.userState && props.userState.openModal);
+  console.log("props.details", props.details);
   const [skinny, setSkinny] = useState(false);
   const [hover, setHover] = useState(true)
   const [timer, setTimer] = useState(true)
@@ -43,6 +43,7 @@ const SideBar = (props) => {
     else {setSkinny(false)}
   
     const updateMedia = () => {
+      console.log("resize")
       if (window.innerWidth < 1100) {setSkinny(true)} 
       else {setSkinny(false)}
     };
