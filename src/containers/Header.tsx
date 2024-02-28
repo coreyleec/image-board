@@ -181,7 +181,7 @@ useEffect(() => {
                   }
                   </div>
       }
-          {(props.root === 'home' || props.root === 'by_Corey_Lee') &&           
+          {/* {(props.root === 'home' || props.root === 'by_Corey_Lee') &&           
               <>
               <Switch>
                   <label className="toggle-switch">
@@ -200,7 +200,7 @@ useEffect(() => {
                   <div className="arrow"></div>
                   </TutorialTip>}
                 </>
-              }
+              } */}
                   </Sticky>
                   {props.tutorial && <ViewPortTip hover={hover} >resize your window to allow room to browse through your local files
                   {/* <div className="arrow"></div> */}

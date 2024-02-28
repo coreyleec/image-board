@@ -26,6 +26,7 @@ window.addEventListener( 'touchend', function( e ){
   // SWITCH DATABASE VERSION
   // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
 
+
   const [dbVersion, setDbVersion] = useState(`https://image-board-backend.herokuapp.com/api/v1`)
   const [localDb, setLocalDb] = useState(false)
   // useEffect(() => {
@@ -125,7 +126,7 @@ const prevLocation = `${root}/${sub}/${index}`
 
 const [groups, setGroups] = useState()
 
-console.log("render", prevLocation)
+// console.log("render", prevLocation)
 
 const profileFetch = () => {
   console.log('profile fetch', localStorage.token)
@@ -200,7 +201,7 @@ for (const i of Object.keys(groups)) {
         
   })
 }
-console.log("collaborators", collaborators)
+
 const landingFetch = () => {
   fetch(`${dbVersion}/landing_page`, {
         method: "GET",
@@ -213,7 +214,7 @@ const landingFetch = () => {
     {
       
       const groups = user.user.all_groups
-      console.log("tutorialUser", user, groups)
+      // console.log("tutorialUser", user, groups)
 
       for (const i of Object.keys(groups)) {
         const key = Object.keys(groups[i]);
@@ -249,7 +250,7 @@ const landingFetch = () => {
       
       if (history.action === 'POP' && location.pathname.includes("undefined") && root === 'by_Corey_Lee'){
 
-        console.log("pop", window.store, history.action, location.pathname, root)
+        // console.log("pop", window.store, history.action, location.pathname, root)
         // const sub = location.pathname.split('/')[2]
         // const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
@@ -509,7 +510,7 @@ const sortPhotos = (a, b) => a.index - b.index;
 
 
 const setFolderPhotos = (index, type) => {
-console.log("index", index)
+
   const setFunc = type.charAt(0).toUpperCase() + type.slice(1, -1)
   const folder = eval(type).find(folder => folder.index === index)
   // // eval(`set${setFunc}Shown(${index})`)
@@ -706,8 +707,8 @@ const createFolder = (e, folderName, type) => {
       folder.photos.push(photo)
     }
     console.log("folder", folder)
-    setFolders([...folders, folder])
     setNewFolder(true)
+    setFolders([...folders, folder])
     setFolderType(folder.creative)
     const newDetails = [...details]
 
@@ -1394,38 +1395,38 @@ if(location.pathname === "/" && root !== 'user'){
           dbVersion={dbVersion}
         />
         {mobile !== undefined && !mobile && <AsideRight
+          userId={userId}
+          currentUserId={currentUserId}
+          uuid={uuid}
+          dbVersion={dbVersion}
+          root={root}
+          sub={sub}
+          tutorial={tutorial}
+          setTutorial={setTutorial}
           skinny={skinny || mobile}
           mobile={mobile}
           loggedIn={loggedIn}
-          sub={sub}
           hover={hover} 
           setHover={setHover}
-          catagorize={catagorize}
+          folderShown={folderShown}
           folderType={folderType}
           setFolderType={setFolderType}
-          tutorial={tutorial}
-          newFolder={newFolder}
-          uuid={uuid}
-          root={root}
-          hiliteCollaborator={hiliteCollaborator}
-          updateFolderPrivacy={updateFolderPrivacy}
+          catagorize={catagorize}
           folderPrivacy={folderPrivacy}
+          updateFolderPrivacy={updateFolderPrivacy}
           folderDetails={folderDetails}
+          newFolder={newFolder}
+          hiliteCollaborator={hiliteCollaborator}
           collabDetails={collabDetails}
           collaborators={collaborators}
+          addCollaborator={addCollaborator}
+          edit={edit}
+          editToggle={editToggle}
           enableDelete={enableDelete}
           setEnableDelete={setEnableDelete}
-          editToggle={editToggle}
-          addCollaborator={addCollaborator}
           publishAbout={publishAbout}
-          published={about.publish}
-          folderShown={folderShown}
-          
-          edit={edit}
+          published={about.publish}         
           reorderSubmit={reorderSubmit}
-          userId={userId}
-          currentUserId={currentUserId}
-          dbVersion={dbVersion}
           // options={{unmountOnBlur: true}}
         />}
         {/* if main state says community, overflow === hidden */}
@@ -1561,9 +1562,9 @@ if(location.pathname === "/" && root !== 'user'){
   display: grid;
   height: 100vh;
   ${!!window.innerWidth ?
-    `max-width: ${window.innerWidth}px;
+    `max-width: 100%;
     max-height: ${window.innerHeight}px;`
-  : `max-width: ${window.outerWidth}px;
+  : `max-width: 100%;
   max-height: ${window.outerHeight}px;`}
   /* grid-template-columns: ${props => props.root === "community" ? '18% 1fr 0%' : '17% 1fr 17%'}; */
   grid-template-columns: 17% 1fr 17%;

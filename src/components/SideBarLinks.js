@@ -31,10 +31,10 @@ const SideBarLinks = (props) => {
         {(props.edit || !!props.userLinks.length) && 
         <> 
          <div className="nav-bar-header-wrapper" >
-                  {("links").split('').map(n => (<p className="nav-bar-header">
-                      {n}
-                    </p>))
-                    }
+                  <p className="nav-bar-header">
+                  links
+                    </p>
+                    
                     </div>
 
           <AddButton
@@ -134,9 +134,10 @@ const SideBarLinks = (props) => {
 export default SideBarLinks;
 const LinkCont = styled.div`
 a {
-    font-size: 1.2rem;
-    font-weight: 600;
-    padding-left: 10px;
+    font-size: 1.1rem;
+    line-height: .9em;
+    // font-weight: 600;
+    padding-left: 15px;
     padding-block: 6px;
     float: left;
     text-align: left;

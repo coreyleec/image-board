@@ -1,20 +1,71 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import SideBarLinks from "../components/SideBarLinks";
 import SideBarFolder from "../components/SideBarFolder";
-import SideBarCollabs from "../components/SideBarCollabs";
-import SideBarFavorites from "../components/SideBarFavorites";
 import styled from "styled-components";
+import { EditableDiv, SubtractButton, AddButton } from '../My.styled'
 import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider";
+import update from 'immutability-helper'
 
 const SideBar = (props) => {
+  const [newFolder, setNewFolder] = useState(false)
+  const [folderName, setFolderName] = useState("")
+  const inputRef = useRef(null);
+  const submitNewFolder = (e, type) => {
+    if (e.key === 'Enter' && e.shiftKey === false) {props.createFolder(e, folderName, type) 
+    e.currentTarget.blur();
+    setNewFolder(!newFolder)
+  }}
+  const submitFolderEdit = (e, folder, type) => {
+    if (e.key === 'Enter' && e.shiftKey === false) {updateFolder(e, folderName, folder) 
+    e.currentTarget.blur();
+  }}
+
+const updateFolder = (e, folderName, folder) => {
+  e.preventDefault();
+  fetch(`${props.dbVersion}/folders/${folder.id}`, {
+    method: "PATCH",
+    headers: {
+      Authorization: `Bearer ${localStorage.token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      name: folderName,
+      // details: folderDetais,
+      // link: folderLink,
+      // user_id: currentUser.id
+    }),
+  })
+    .then((res) => res.json())
+    .then((folderObj) => {
+      console.log("folderObj", folderObj);
+      props.setFolderDetails(
+        props.folderDetails.map((folder) => {
+          if (folder.id === folderObj.id) return folderObj;
+          else return folder;
+        })
+      );
+    });
+};
+const [folders, setFolders] = useState()
+const moveFolder = useCallback((dragIndex, hoverIndex) => {
+  setFolders((prevFolders) =>
+    update(prevFolders, {
+      $splice: [
+        [dragIndex, 1],
+        [hoverIndex, 0, prevFolders[dragIndex]],
+      ],
+    }),
+  )
+}, [])
+  
+  
   // TOGGLE SIDEBAR
   const [sideBar, setSideBar] = useState(false);
-  console.log("props.details", props.details);
   const [skinny, setSkinny] = useState(false);
   const [hover, setHover] = useState(true)
-  const [timer, setTimer] = useState(true)
+  
   const location = useLocation();
   let history = useHistory();
   let navigate = history.push;
@@ -54,19 +105,21 @@ const SideBar = (props) => {
 let topVal = skinny ? -6 : 20
 let loginTopVal = skinny ? -14 : 11
 // console.log("top", topVal)
-const folderRef = useRef()
-const folderDemo = [!!folderRef.current && folderRef.current.offsetTop + topVal, 'these folders can be used to organize photos as you develope bodies of work']
-const favoriteRef = useRef()
-const favoriteDemo = [!!favoriteRef.current && favoriteRef.current.offsetTop + topVal, "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
-const linkRef = useRef()
-const linkDemo = [!!linkRef.current && linkRef.current.offsetTop + topVal, "here you can add external links to projects or any relevant content you would like to share. i've added my GitHub and LinkedIn for example"]
+const foldersRef = useRef()
+const foldersDemo = [!!foldersRef.current && foldersRef.current.offsetTop + topVal, 'folders can be used to organize photos as you develope bodies of work']
+const collabsRef = useRef()
+const collabsDemo = [!!collabsRef.current && collabsRef.current.offsetTop + topVal, 'these are folders that you contribute to']
+const favoritesRef = useRef()
+const favoritesDemo = [!!favoritesRef.current && favoritesRef.current.offsetTop + topVal, "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
+const linksRef = useRef()
+const linkDemo = [!!linksRef.current && linksRef.current.offsetTop + topVal, "here you can add external links to projects or any relevant content you would like to share. i've added my GitHub and LinkedIn for example"]
 const communityRef = useRef()
 const communityDemo = [!!communityRef.current && communityRef.current.offsetTop + topVal, "the community page allows you to explore the site and see what other people are taking photos of"]
 const aboutRef = useRef()
 const aboutDemo = [!!aboutRef.current && aboutRef.current.offsetTop + topVal, "click here for more information on the project, myself, and projects to come!"]
 const loginRef = useRef()
 const loginDemo = [!!loginRef.current && loginRef.current.offsetTop + loginTopVal, "open beta will be available after some more tweaks!"]
-const [demoText, setDemoText] = useState(folderDemo)
+const [demoText, setDemoText] = useState(foldersDemo)
 
 
 useEffect(() => {
@@ -81,7 +134,7 @@ useEffect(() => {
 
 useEffect(() => {
   if(props.tutorial){
-    setDemoText(folderDemo)
+    setDemoText(foldersDemo)
   }
 }, [props.tutorial, props.edit, props.enableDelete])
 
@@ -93,13 +146,7 @@ useEffect(() => {
 useEffect(() => {
   
 }, [sideBar])
-useEffect(() => {
-  sideBar ? setTimer(false) : setTimer(true)
-  setTimeout(() => {
-    setTimer(false)
-  }, 7000);
- 
-}, [skinny, sideBar])
+
 
 
 
@@ -109,13 +156,6 @@ useEffect(() => {
       root={props.root}
       mobile={props.mobile}
       >
-        {!props.tutorial && (window.innerWidth < 1100) && (window.innerWidth > 700) && (props.root === 'home' || props.root === 'by_Corey_Lee') && 
-            <TutorialTip 
-            sideBar={sideBar}
-            timer={timer}
-            >click here to access the guided tutorial
-            <div className="arrow"></div>
-            </TutorialTip>}
         <>
           <ButtonContainer sideBar={sideBar}>
             <button onClick={() => setSideBar(!sideBar)}>
@@ -168,7 +208,7 @@ useEffect(() => {
           </>
         }
         
-         {!props.mobile && (props.root === 'home' || props.root === 'by_Corey_Lee') &&   
+         {/* {!props.mobile && (props.root === 'home' || props.root === 'by_Corey_Lee') &&   
          <>
         <Switch>
             <label className="toggle-switch">
@@ -181,7 +221,7 @@ useEffect(() => {
             <p>tutorial</p> 
             </Switch>
             </>        
-        }
+        } */}
          {props.addy === true && (props.root === 'home' || props.root === 'by_Corey_Lee') &&   
          <>
         <Switch>
@@ -201,32 +241,94 @@ useEffect(() => {
               <div className="scrollable">
                   <div>
                     {(props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') && 
-                    <div onMouseOver={() => setDemoText(folderDemo)}
-                    ref={folderRef}
+                    <div 
+                    
                     >
-                    <SideBarFolder 
-                    details={props.details}
-                    folders={'folders'}
-                    mobile={props.mobile}
-                    loggedIn={props.loggedIn}
-                    setFolderPhotos={props.setFolderPhotos}
-                    createFolder={props.createFolder}
-                    deleteFolder={props.deleteFolder}
-                    edit={props.edit}
-                    folderShown={props.folderShown}
-                    folderDetails={props.folderDetails}
-                    setFolderDetails={props.setFolderDetails}
-                    enableDelete={props.enableDelete}
-                    root={props.root}
-                    sub={props.sub}
-                    // key={props.userId} 
-                    dbVersion={props.dbVersion}
-                    /> 
+    {props.details.map((name, value)=> {
+       return <>
+       <div className='catagory-cont'  >
+        
+        <div className="sidebar-catagory" onMouseOver={() => setDemoText(eval(`${Object.keys(props?.details[value])[0]}Demo`))}>
+          <div className="nav-bar-header-wrapper" 
+          >
+
+            <p className="nav-bar-header" ref={eval(`${Object.keys(props?.details[value])[0]}Ref`)} 
+            key={value}
+            
+            >
+              {Object.keys(props?.details[value])[0]}
+            </p>
+            </div>
+            {Object?.keys(props?.details[value])[0] === 'folders' &&
+            <AddButton edit={props.edit} 
+              onClick={() => {setNewFolder(!newFolder)}}
+                 >+</AddButton>}
+      
+        </div>
+   {/* NEW FOLDER */}
+
+   {newFolder && props.edit && 
+            <EditableDiv 
+            suppressContentEditableWarning={true}
+            id={"folderInput"}
+            type="text" edit={props.edit}
+            ref={inputRef}
+            contentEditable={newFolder} 
+            placeholder={"add folder name"}
+
+            style={{"cursor": props.edit ? "text" : "default"}}
+
+            onKeyDown={(e) => submitNewFolder(e, Object?.keys(props?.details[value])[0])}
+            onInput={(e) => setFolderName(e.currentTarget.textContent)}>
+            </EditableDiv> }
+
+          {/* {Object.values(props.details[value])[0].map((folders, index)=> 
+            folders.map(folder => 
+            console.log(Object?.keys(props?.details[value]), props.sub, Object?.keys(props?.details[value])[0] === props.sub)
+                )
+            )
+          } */}
+
+            {Object.values(props.details[value])[0].map((folders, index)=> 
+              folders.sort((a, b) => a.index - b.index).map(folder => 
+                <div className="title-cont" key={folder.id} folder={folder}>
+                  <EditableDiv
+                    suppressContentEditableWarning={true}
+                    type="text" 
+                    contentEditable={props.edit} edit={props.edit}
+                    folderDetails={props.folder}
+                    index={folder.index}
+                    moveFolder={moveFolder}
+                    defaultValue={folder.name}
+                    draggable={true}
+                    onKeyDown={(e) => submitFolderEdit(e, folder, Object?.keys(props?.details[value])[0])}
+                    onClick={(e) => {props.setFolderPhotos(folder.index, Object?.keys(props?.details[value])[0])
+                    }}
+                    style={(Object?.keys(props?.details[value])[0] === props.sub && folder.index === props.folderShown) && (props.root === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
+                    onInput={e => setFolderName(e.currentTarget.textContent)}
+                    id={folder.id}
+                  > 
+                {folder.name}
+                </EditableDiv>
+              {Object?.keys(props?.details[value])[0] === 'folders' &&<SubtractButton
+                enableDelete={props.enableDelete} 
+                onClick={() => props.deleteFolder(folder, Object?.keys(props?.details[value])[0], folder.id)} >-</SubtractButton>}
+                </div>
+                )
+              )}
+
+  
+
+        </div>
+
+       </>
+}
+          )}
                     </div>}
 
                     {(!!props.userLinks || props.edit) && (props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') && 
                     <div onMouseOver={() => setDemoText(linkDemo)}
-                    ref={linkRef}
+                    ref={linksRef}
                     >
                     <SideBarLinks
                       mobile={props.mobile}
@@ -247,29 +349,25 @@ useEffect(() => {
           {!!(props.published && props.root === 'user') || !!(!!(props.root === 'home' || props.root === 'by_Corey_Lee') && (props.published || props.edit)) && 
               <Link 
               as={Link} to={`/${props.root}/about`} 
-                onMouseOver={() => setDemoText(aboutDemo)}
+              style={{"width": "170px"}}
                 onClick={() => clickAboutLink()}
                 ref={aboutRef}
                 className="community-href">
-                  <div className="nav-bar-header-wrapper">
-                    {"about".split("").map((n, i) => (
-                      <p className="nav-bar-header" key={i}>{n}</p>
-                    ))}
+              <div onMouseOver={() => setDemoText(aboutDemo)}className="nav-bar-header-wrapper">
+                <p className="nav-bar-header" >about</p>
                   </div>
                 </Link>}
 {/* COMMUNITY */}
             <div 
             onClick={() => setSideBar(!sideBar)} 
-            style={{"width": "min-content"}}>
+            style={{"width": "-webkit-fill-available"}}>
               {props.root !== 'community' && (
                 <Link as={Link} to="/community" 
                 onMouseOver={() => setDemoText(communityDemo)}
                 ref={communityRef}
                 className="community-href">
                   <div className="nav-bar-header-wrapper">
-                    {"community".split("").map((n, i) => (
-                      <p className="nav-bar-header" key={i}>{n}</p>
-                    ))}
+                      <p className="nav-bar-header" >community</p>
                   </div>
                 </Link>
               )}
@@ -364,55 +462,6 @@ const Button = styled.button`
 
 `;
 
-const TutorialTip = styled.div`
-  // top: 60px;
-  // right: 60px;
-  top: 32px;
-  // left: 200px;
-  border-top-left-radius: 0px;
-  border-top-right-radius: 16px;
-  border-bottom-right-radius: 16px;
-  border-bottom-left-radius: 16px;
-  ${({timer}) => !timer && 
-`visibility: hidden; opacity: 0%;
-}` }
-  // top: 5px;
-  // left: 210px;
-  max-height: fit-content;
-  position: absolute;
-  // transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
-  transition: left .5s ease, opacity .2s linear ..5s;
-  ${({ sideBar }) => (!sideBar ? `left : 55px` : `left: 200px`)};
-  white-space: normal;
-  cursor: default;
-  padding: 15px;
-  background: #ff7f5080;
-  backdrop-filter: blur(6px);
-  // border-radius: 16px;
-  color: blue;
-  font-size: 16px;
-  opacity: 100%;
-  width: 135px;
-  // transition: transform .5s ease, top .3s ease;
-  
-
-  
-  .arrow {
-    &:after {
-    // content: "";
-    position: relative;
-    // left: 23px;
-    // top: -20px;
-    left: -15px;
-    top: 21px;
-    position: absolute;    
-    margin-left: -5px;
-    border-width: 10px;
-    border-style: solid;
-    border-color: transparent #ff7f5080 transparent transparent;
-  }}
-
-`
 
 const CatagoryTip = styled.div`
   top: ${({demoTop}) => demoTop + 'px'};
@@ -607,7 +656,8 @@ const Sticky = styled.div`
     .community-href {
       text-decoration-line: none;
       padding-block: 6px;
-      
+      display: ruby;
+      width: 100%;
     }
   }
 `;
@@ -690,3 +740,25 @@ background-color: #ccc;
 }
 
 `
+
+
+
+
+{/* <SideBarFolder 
+                    details={props.details}
+                    folders={'folders'}
+                    mobile={props.mobile}
+                    loggedIn={props.loggedIn}
+                    setFolderPhotos={props.setFolderPhotos}
+                    createFolder={props.createFolder}
+                    deleteFolder={props.deleteFolder}
+                    edit={props.edit}
+                    folderShown={props.folderShown}
+                    folderDetails={props.folderDetails}
+                    setFolderDetails={props.setFolderDetails}
+                    enableDelete={props.enableDelete}
+                    root={props.root}
+                    sub={props.sub}
+                    // key={props.userId} 
+                    dbVersion={props.dbVersion}
+                    />  */}

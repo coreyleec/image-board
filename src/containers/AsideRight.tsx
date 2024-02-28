@@ -7,16 +7,17 @@ interface IProps {
   skinny: boolean;
   mobile: boolean;
   loggedIn: boolean;
+  root: string;
   sub: string;
   hover: boolean; 
   setHover: React.Dispatch<React.SetStateAction<boolean>>;
+  setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
   catagorize: (params: boolean) => boolean;
   folderType: null | boolean;
   setFolderType: React.Dispatch<React.SetStateAction<boolean>>;
   tutorial: boolean;
   newFolder: boolean;
   uuid: string;
-  root: string;
   setType: React.Dispatch<React.SetStateAction<boolean>>;
   hiliteCollaborator: (params: object) => null;
   updateFolderPrivacy: (params: null) => object;
@@ -167,11 +168,6 @@ useEffect(() => {
 })
 
 
-
-
-
-
-
 useEffect(() => {
   // console.log("searchUl", searchUl, search)
   let length = (search.length * 20) + 6 
@@ -189,9 +185,12 @@ useEffect(() => {
 
 // !!editDrawerRef.current && console.log("switch", editDrawerRef.current.clientHeight)
 useEffect(() => {
-  let deleteSwitch = editDrawerRef.current?.childNodes[0].clientHeight
-  let editSwitch = !props.skinny ? 25 : controlDock ? 25 : 0
-  let editDrawer = !props.skinny ? (105 + deleteSwitch) : props.edit ? 130 : 0
+  
+  let deleteSwitch = 0
+  // editDrawerRef.current?.childNodes[0].clientHeight
+  let editSwitch = !props.skinny ? 60 : controlDock ? 60 : 0
+  let editDrawer = !props.skinny ? (105 + deleteSwitch) : props.edit ? 95 : 0
+  // ^130 WHEN PUBLIC TOGGLE IS INCLUDED IN EDIT DRAWER OR 4 TOGGLES ARE IN EDIT DRAWER. UNTIL PUBLIC TOGGLE IS READY THE VALUE IS 95
   let follow = 50
   let collabUl = (!!listRef.current) ? (listRef.current.clientHeight) + 10 : 0
   // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
@@ -200,35 +199,47 @@ useEffect(() => {
   let searchList = (!!search.length) ? (search.length * 20 + 6) : 0
   !!search.length ? setSearchUl(length + 6) : 
   setSearchUl([])
-  // console.log("deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
+  console.log( "deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
+
   if (props.root === 'user' && !isCollaborator){
+    console.log("user == root & iscollaborator", props.root === 'user' && !isCollaborator)
+    
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
     if (props.skinny){
+      console.log("props.skinny", props.skinny)
       // WINDOW IS SKINNY
+      
       if (!controlDock) {
+        console.log("!controlDock", !controlDock, 0)
         // CLOSED CONTROL DOCK
         setDrawer(0)
         // console.log("editSwitch", editSwitch)
       }
       else {
+        console.log("setDrawer(", 25, "+",  collabUl, ")")
         setDrawer(25 + collabUl)
       }
     }
     else {
+      console.log("setDrawer(", 50, "+",  collabUl, ")")
       setDrawer(50 + collabUl)
     }
   } 
   else if (props.sub === 'about'){
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
+    console.log("sub === 'about'", props.sub === 'about')
     
     if (props.skinny){
+      console.log("props.skinny", props.skinny)
       // WINDOW IS SKINNY
       if (!controlDock) {
+        console.log("!controlDock", !controlDock, 0)
         // CLOSED CONTROL DOCK
         setDrawer(0)
         // console.log("editSwitch", editSwitch)
       }
       else {
+        console.log("setDrawer(25)")
         setDrawer(25)
       }
     }
@@ -237,6 +248,7 @@ useEffect(() => {
     }
   } 
   else if (props.skinny){
+    console.log("props.skinny", props.skinny)
     // WINDOW IS SKINNY
     if (!controlDock) {
       // CLOSED CONTROL DOCK
@@ -292,26 +304,29 @@ useEffect(() => {
      
       if(!props.edit) {
         // OPEN CONTROL DOCK WITH EDIT BUTTON AND COLLABORATOR DRAWER
-        let drawerMath = editSwitch + collabUl + 10
+        let drawerMath = editSwitch + collabUl
+        //  + 10
         setDrawer(drawerMath)
-      // console.log("editSwitch", editSwitch, "collabUl", collabUl )
+      console.log("editSwitch", editSwitch, "collabUl", collabUl )
     }
     else if(props.edit && !search.length) {
-      let drawerMath = editSwitch + collabUl + editDrawer + 10
+      let drawerMath = editSwitch + collabUl + editDrawer 
+      // + 10
       setDrawer(drawerMath)
-      // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
+      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer )
     }
     else if (props.edit && !!search.length) {
-      let drawerMath = editSwitch + collabUl + editDrawer + searchList + 10
+      let drawerMath = editSwitch + collabUl + editDrawer + searchList
+      //  + 10
       setDrawer(drawerMath)
-      // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
+      console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
     }
   }
   // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
-  else if (props.folderDetails && props.folderType === null){
+  else if (props.folderType === null){
     let drawerMath = catagoryPrompt
       setDrawer(drawerMath)
-      console.log("here")
+      console.log("here", drawerMath)
   }
   }
 }, [props.folderType, props.collaborators, controlDock, props.edit, search, props.skinny, props.sub])
@@ -326,14 +341,6 @@ useEffect(() => {
   } else {
     setControlDock(true)
   }},[])
-
-
-
-
-
-
-
-
 
 
 // if folder is creative type is set to true
@@ -358,19 +365,21 @@ useEffect(() => {
 
 }, [props.root])
 
-
+console.log("props.tutorial", props.tutorial)
 useEffect(() => {
   if (props.tutorial){
     if (props.skinny) {
-      if (controlDock === false){
-      setDemoText("flip this switch to edit the profile settings")
-      setDemoArrow("16px")
-      } 
-      else if (controlDock){
+      // if (controlDock === false){
+      // setDemoText("flip this switch to access profile settings as well as a tutorial if you get lost")
+      // setDemoArrow("16px")
+      // } 
+      // else
+       if (controlDock){
         if (!props.edit) { 
           if (props.root === 'by_Corey_Lee'){
-           setDemoText("feel free to explore the site using my account. use the edit switch to edit my account")}
-           else if (props.root === 'home'){ 
+           setDemoText("this switch opens edit settings")}
+           else
+          if (props.root === 'home'){ 
             setDemoText("use the edit switch to edit your projects. all personal information will become editable.")}
         setDemoArrow("49px")}
         else if (props.edit){
@@ -400,6 +409,18 @@ let deleteDemoArrow =  (editDrawerRef.current?.childNodes[0].clientHeight !== 25
 // const [hover, setHover] = useState(false)
 // console.log("tru", props.collaborators.some(c => c.uuid === props.currentUserId))
 const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUserId)
+console.log("isCollaborator", isCollaborator)
+
+const [timer, setTimer] = useState(true)
+useEffect(() => {
+  controlDock ? setTimer(false) : setTimer(true)
+  setTimeout(() => {
+    setTimer(false)
+  }, 10000);
+ 
+}, [props.skinny, controlDock])
+
+
   return (
     <aside ref={asideRef}  >
      
@@ -446,9 +467,9 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
 {/* FOLDER TYPE */}
             {/* {controlDock  
             &&  */}
+            {console.log(props?.folderType )}
             <div className="drawer-cont">
             <div ref={drawerRef} className="drawer" >
-            
             
 {/* THIS SECTION ROTATES THE EDIT AND CATAGORIZE TO HIDE EDIT IF A NEW FOLDER HAS NOT YET BEEN CATAGORIZED */}
 
@@ -464,7 +485,7 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
              </label>
              <p>{props.published ? "privatize?" : "publish?"}</p>
              </CatagorySwitch> 
-             : (props?.folderDetails && props.folderDetails === null) 
+             : (!!props.collaborators.length && props?.folderType === null) 
              ? 
              <>
 {/* CATAGORIZE FOLDERS CREATIVE OR LIFESTYLE */}
@@ -485,7 +506,7 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
            >
            <label className="toggle-switch">
            <input type="checkbox" 
-           checked={props.folderType === false}
+           checked={!!props.folderType !== false}
            onChange={() => props.catagorize(false)}
            />
            <span className="switch" />
@@ -497,7 +518,8 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
            <>
            
            
-           <Switch className="edit" 
+{/* EDIT */}
+           <Switch className="edit lower" 
           //  onMouseLeave={() => {
           //   ReactTooltip.show(onloadTutorialRef.current);
           // }}
@@ -505,7 +527,6 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
           //   ReactTooltip.hide(onloadTutorialRef.current);
           // }}
           >
-{/* EDIT */}
            <label className="toggle-switch edit-switch" >
            <input type="checkbox" checked={props.edit}
             onChange={editToggle}
@@ -517,14 +538,17 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
            <p>edit</p>
            </Switch>
            
-           {/* ENABLE DELETE */}
-
-
+           
+      
 
 
             <div className="edit-drawer" ref={editDrawerRef}>
             
-            <Switch className="delete" >
+
+
+
+{/* ENABLE DELETE */}
+            <Switch className="delete lower" >
             
               <label className="toggle-switch" >
               <input type="checkbox" 
@@ -550,30 +574,33 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
            />
            <span className="switch" />
            </label>
-           <p>{props.folderType == false ? "creative" : "lifestyle"}</p> 
+           <p>{props.folderType == false ? "lifestyle" : "creative"}</p> 
            </CatagorySwitch>
            {/* } */}
           </>
 
 {/* TOGGLE PRIVACY */}
             {/* {!!props.folderPrivacy &&  */}
-            <Switch
+            {/* <Switch
             className="public"
             >
             <label className="toggle-switch">
             <input type="checkbox" 
+            checked={false}
             // checked={props.folder.public}
             //  onChange={() => props.updateFolderPrivacy()}
               />
             <span className="switch" />
             </label>
-            <p>public</p>
-            </Switch>
+            <p>under cunstruction</p>
+            // <p>public</p> 
+            </Switch> 
+            */}
 
              
   {/* ENABLE COLLABORATION */}
             <InputSwitch
-            className="collaborate"
+            className="collaborate lower"
             inputWidth={inputWidth}
             panelRef={panelRef}
             skinny={props.skinny}
@@ -664,9 +691,33 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
               </CollabLi>))}
               
               </CollabotorList>}
+                  {/* TUTORIAL */}
+          {(!props.skinny || controlDock) && !props.mobile && (props.root === 'home' || props.root === 'by_Corey_Lee') &&   
+
+            <Switch className="tutorial">
+                <label className="toggle-switch">
+                <input type="checkbox" 
+                checked={props.tutorial}
+                onChange={() => props.setTutorial(!props.tutorial)}
+                />
+                <span className="switch" />
+                </label>
+                <p>tutorial</p> 
+              </Switch>
+
+            }
             </div>
+        
             </div>
-            { props.tutorial &&  (props.sub !== 'about') && (props.root === 'home' || props.root === 'by_Corey_Lee') &&
+            {!props.tutorial && (window.innerWidth < 1100) && (window.innerWidth > 700) && (props.root === 'home' || props.root === 'by_Corey_Lee') && 
+              <OpenTip 
+              controlDock={controlDock}
+              timer={timer}
+              >flip this switch to access profile settings as well as a tutorial if you get lost
+              <div className="arrow"></div>
+              </OpenTip>}
+
+            {props.tutorial &&  (props.sub !== 'about') && (props.root === 'home' || props.root === 'by_Corey_Lee') &&
           <TutorialTip 
           asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={props.skinny}
           flexStart={flexStart} edit={props.edit} delay={delay}
@@ -681,7 +732,7 @@ const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUse
             <div className="arrow"></div>
             <div className="arrow cat"></div>
             <div className="arrow pub"></div>
-            <div className="arrow collab"></div>
+            {/* <div className="arrow collab"></div> */}
           </TutorialTip>
            }
             </Container>
@@ -707,6 +758,53 @@ const SideWrapper = styled.div`
 
     }
     
+`
+
+
+
+const OpenTip = styled.div`
+  top: 0px;
+  border-radius: 16px;
+  
+  ${({timer}) => !timer && 
+  `visibility: hidden; opacity: 0%;
+  }` }
+
+  max-height: fit-content;
+  position: absolute;
+  // transform: ${({ controlDock }) => (controlDock ? 'translateX(80px)' : 'translateX(230px)')};
+
+  transition: right .5s ease, opacity .2s linear .5s;
+  transition: right ${props => !props.controlDock ? '0.3s linear .3s' : '0.3s linear'};
+  ${({ controlDock }) => (!controlDock ? `right : 80px` : `right: 230px`)};
+  
+  white-space: normal;
+  cursor: default;
+  padding: 15px;
+  background: #ff7f5080;
+  backdrop-filter: blur(6px);
+  // border-radius: 16px;
+  color: blue;
+  font-size: 16px;
+  opacity: 100%;
+  width: 135px;
+  // transition: transform .5s ease, top .3s ease;
+  
+
+  
+  .arrow {
+    &:after {
+    content: "";
+    position: relative;
+    left: 140px;
+    top: 15px;
+    position: absolute;    
+    margin-left: -5px;
+    border-width: 10px;
+    border-style: solid;
+    border-color: transparent transparent transparent #ff7f5080;
+  }}
+
 `
 
 const TutorialTip = styled.div`
@@ -885,7 +983,7 @@ const Container = styled.div`
 
 
   .drawer-cont{
-    margin-bottom: auto;
+    // margin-bottom: auto;
     height: max-content;
     border-radius: 13px;
 // overflow: hidden;
@@ -1001,9 +1099,11 @@ overflow: hidden;
 
 const Switch = styled.label`
   display:flex;
-  z-index : ${({catagorized}) => catagorized === null ? '1' : '-1'  };
-  /* margin-bottom: 10px; */
+  &.lower{
+  z-index : ${({catagorized}) => catagorized === null ? '-1' : '1'  };
+}  /* margin-bottom: 10px; */
   width: ${({asideRef}) => asideRef?.current?.clientWidth - 20 + 'px'};
+  &.tutorial{margin-top: 10px;}
   p {
     padding-left: 10px;
     font-size: 16px; 
@@ -1054,18 +1154,18 @@ const Switch = styled.label`
   content: "";
   width: 13px;
   height: 13px;
-  background-color: #aaa;
-  box-shadow: 0px 0px 1px 3px rgb(189 189 189 / 71%), 0px 0px 0px 1px rgb(120 121 122 / 76%), 0px -1px 0px 2px rgb(255 255 255), 0px 1px 0px 2px rgb(2 2 3);
-  /* box-shadow: 0px 0px 1px 3px rgb(189 189 189 / 70%), 0px 0px 0px 1px rgb(120 121 122 / 76%), 0px -1px 0px 2px rgb(255 255 255), 0px 1px 0px 2px rgb(2 2 3); */
+  background-color: #ff0000;
+  box-shadow: 0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0) ;
+  
   border-radius: 25px;
   transition: transform 0.3s ease;
   }
   .toggle-switch input[type="checkbox"]:checked + .switch::before {
-  transform: translateX(25px);
-  background-color: #ff0000;
-  box-shadow: 0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0);
-  .toggle-switch input[type="checkbox"]:checked + .switch {
-  background-color:  #ccc;
+    background-color: green;
+    box-shadow: 0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%);
+    transform: translateX(25px);
+
+  
   }
   
 `
@@ -1123,18 +1223,14 @@ content: "";
     /* margin: 2px; */
 width: 13px;
 height: 13px;
-// background-color: green;
-// box-shadow: 0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%);
 
-background-color: #ff0000;
-    box-shadow: 0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0);
-border-radius: 25px;
-transition: transform 0.3s ease;
+background-color: #aaa;
+  box-shadow: 0px 0px 1px 3px rgb(189 189 189 / 71%), 0px 0px 0px 1px rgb(120 121 122 / 76%), 0px -1px 0px 2px rgb(255 255 255), 0px 1px 0px 2px rgb(2 2 3);
+  border-radius: 25px;
+  transition: transform 0.3s ease;
 }
 .toggle-switch input[type="checkbox"]:checked + .switch::before {
 transform: translateX(25px);
-background-color: green;
-box-shadow: 0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%);
 }
 .toggle-switch input[type="checkbox"]:checked + .switch {
 background-color:  #ccc;
@@ -1143,7 +1239,7 @@ background-color:  #ccc;
 `
 
 const CollabotorList = styled.ul` 
-    margin-bottom: auto;
+    // margin-bottom: auto;
     background-color: #aaa;
     border-radius: 14px;
     // /*  */
@@ -1283,8 +1379,8 @@ const OpenSwitch = styled.label`
       /* left: ${props => !props.controlDock ? '6px' : '232px'}; */
       transform: translateX(${props => !props.controlDock ? '0px' : '175px'});
       /* color: ${props => !props.controlDock ? 'white' : '#9d6b6b' } */
-      background-color: ${props => !props.controlDock ? 'green' : '#ff0000' };
-      box-shadow: ${props => !props.controlDock ? '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)' : '0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0)' };
+      background-color: ${props => props.controlDock ? 'green' : '#ff0000' };
+      box-shadow: ${props => props.controlDock ? '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)' : '0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0)' };
     }
     .checkbox .arrow{
       /* line-height: 12px;
@@ -1425,8 +1521,8 @@ ul li {
     
     
     /* ${props => !props.expand ? 'left: 0%; right: unset' : 'right: 0%; left: unset'}; */
-    background-color: ${props => !props.expand ? '#aaa' : 'green'};
-    box-shadow: ${props => !props.expand ? '0px 0px 1px 3px rgb(189 189 189 / 71%), 0px 0px 0px 1px rgb(120 121 122 / 76%), 0px -1px 0px 2px rgb(255 255 255), 0px 1px 0px 2px rgb(2 2 3)' : '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)'};
+    background-color: ${props => !props.expand ? '#ff0000' : 'green'};
+    box-shadow: ${props => !props.expand ? '0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0)' : '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)'};
   }
 
 
