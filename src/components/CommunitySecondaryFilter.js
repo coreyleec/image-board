@@ -205,7 +205,7 @@ const CommunitySecondaryFilter = (props) => {
                 folderId={photo.folder_id}
                 onClick={() => console.log(photo.folder_id)}>
                     
-                    <img src={photo.url} onClick={() => props.modalToggle(photo, photos)}/>
+                    <img src={photo.thumbnail_url} onClick={() => props.modalToggle(photo, photos)}/>
                   </PhotoCont>
                   <div>
               </div>

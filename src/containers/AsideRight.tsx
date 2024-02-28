@@ -185,11 +185,11 @@ useEffect(() => {
 
 // !!editDrawerRef.current && console.log("switch", editDrawerRef.current.clientHeight)
 useEffect(() => {
-  
+  const tutorial = (props.root ==='home') ? 35 : 0
   let deleteSwitch = 0
   // editDrawerRef.current?.childNodes[0].clientHeight
   let editSwitch = !props.skinny ? 60 : controlDock ? 60 : 0
-  let editDrawer = !props.skinny ? (105 + deleteSwitch) : props.edit ? 95 : 0
+  let editDrawer = !props.skinny ? (105 + deleteSwitch + tutorial) : props.edit ? 95 : 0
   // ^130 WHEN PUBLIC TOGGLE IS INCLUDED IN EDIT DRAWER OR 4 TOGGLES ARE IN EDIT DRAWER. UNTIL PUBLIC TOGGLE IS READY THE VALUE IS 95
   let follow = 50
   let collabUl = (!!listRef.current) ? (listRef.current.clientHeight) + 10 : 0

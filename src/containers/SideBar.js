@@ -380,9 +380,7 @@ useEffect(() => {
                   // onClick={() => navigate("/")}
                   onClick={() => props.fetchHome()}
                   >
-                    {"home".split("").map((l, i) => (
-                      <p className="nav-bar-header" key={i}>{l}</p>
-                    ))}
+                      <p className="nav-bar-header" >home</p>
                   </div>
 
               }

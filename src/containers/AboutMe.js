@@ -209,8 +209,8 @@ const StyledTitle = styled.div`
     font-size: large;
     color: white;
   }
-  @media (max-width: 1100px) and (min-width: 700px){
-    font-size: 3.5rem;
+  @media (min-width: 1100px){
+    font-size: 3rem;
     color: black;
   }
   
