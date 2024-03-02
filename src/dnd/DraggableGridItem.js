@@ -8,6 +8,10 @@ const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }
   // console.log("photo", photo, "onDrop", onDrop, "children", children, "...p", p)
   // console.log( "onDrop", onDrop)
 // console.log("props", p)
+
+// photoRef is grid item styled div
+const photoRef = useRef(null);
+
   const useDragAndDrop = (photoRef, payloadPhoto) => {
  // useDrag return value array - collected props: isDragging is Boolean, drag is function
     const [{ isDragging }, drag] = useDrag({
@@ -32,8 +36,7 @@ const DraggableGridItem = ({  photo, onDrop, children, orientation, edit, ...p }
     }
   }
 
-  // photoRef is grid item styled div
-  const photoRef = useRef(null);
+  
   // console.log("photoRef",photoRef)
   // console.log("draggable", photo)
 

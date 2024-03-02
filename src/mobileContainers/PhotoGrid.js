@@ -65,7 +65,7 @@ const PhotoGrid = (props) => {
       
       const splicedArr = [...props.photos]
       // remove the photos under to maintain order
-      photosUnder.forEach(x => splicedArr.splice(splicedArr.findIndex(n => n.id === x.id), 1));
+      photosUnder?.forEach(x => splicedArr?.splice(splicedArr?.findIndex(n => n?.id === x?.id), 1));
 
       const makePhoto = (i) => {
         let photo = {}

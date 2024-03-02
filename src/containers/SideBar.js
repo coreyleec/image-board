@@ -247,8 +247,8 @@ useEffect(() => {
     {props.details.map((name, value)=> {
        return <>
        <div className='catagory-cont'  >
-        
-        <div className="sidebar-catagory" onMouseOver={() => setDemoText(eval(`${Object.keys(props?.details[value])[0]}Demo`))}>
+        {props.tutorial && <div className="hover-div" onMouseOver={() => setDemoText(eval(`${Object.keys(props?.details[value])[0]}Demo`))}></div>}
+        <div className="sidebar-catagory" >
           <div className="nav-bar-header-wrapper" 
           >
 
@@ -326,10 +326,14 @@ useEffect(() => {
           )}
                     </div>}
 
-                    {(!!props.userLinks || props.edit) && (props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') && 
-                    <div onMouseOver={() => setDemoText(linkDemo)}
+                    {(!!props.userLinks || props.edit) && (props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') &&
+                    <div 
+                    onClick={() => setSideBar(!sideBar)} 
+                    style={{"width": "-webkit-fill-available"}}>
+
+          {props.tutorial && <div className="hover-div" onMouseOver={() => setDemoText(linkDemo)}
                     ref={linksRef}
-                    >
+                    ></div>}
                     <SideBarLinks
                       mobile={props.mobile}
                       loggedIn={props.loggedIn}
@@ -340,37 +344,52 @@ useEffect(() => {
                       enableDelete={props.enableDelete}
                       deleteLink={props.deleteLink}
                       dbVersion={props.dbVersion}
-                    />
-                    </div>
+                      />
+                      </div>
                     }
                   </div>
 
+{/* COMMUNITY */}
+<div 
+            onClick={() => setSideBar(!sideBar)} 
+            style={{"width": "-webkit-fill-available"}}>
+              
+              {props.tutorial && <div className="hover-div" onMouseOver={() => setDemoText(communityDemo)}></div>}
+
+              {props.root !== 'community' && (
+                <Link as={Link} to="/community" 
+                ref={communityRef}
+                className="community-href">
+                  <div className="nav-bar-header-wrapper">
+                      <p className="nav-bar-header" >community</p>
+                  </div>
+                  
+                </Link>
+              )}
+              </div>
+
 {/* ABOUT */}
           {!!(props.published && props.root === 'user') || !!(!!(props.root === 'home' || props.root === 'by_Corey_Lee') && (props.published || props.edit)) && 
+          <div 
+            onClick={() => setSideBar(!sideBar)} 
+            style={{"width": "-webkit-fill-available"}}>
+{props.tutorial && <div className="hover-div" onMouseOver={() => setDemoText(aboutDemo)}></div>}
+
               <Link 
               as={Link} to={`/${props.root}/about`} 
               style={{"width": "170px"}}
                 onClick={() => clickAboutLink()}
                 ref={aboutRef}
                 className="community-href">
-              <div onMouseOver={() => setDemoText(aboutDemo)}className="nav-bar-header-wrapper">
+              
+              <div className="nav-bar-header-wrapper">
                 <p className="nav-bar-header" >about</p>
                   </div>
-                </Link>}
-{/* COMMUNITY */}
-            <div 
-            onClick={() => setSideBar(!sideBar)} 
-            style={{"width": "-webkit-fill-available"}}>
-              {props.root !== 'community' && (
-                <Link as={Link} to="/community" 
-                onMouseOver={() => setDemoText(communityDemo)}
-                ref={communityRef}
-                className="community-href">
-                  <div className="nav-bar-header-wrapper">
-                      <p className="nav-bar-header" >community</p>
-                  </div>
+
                 </Link>
-              )}
+                  </div>
+                }
+
 
 {/* HOME */}
 
@@ -384,7 +403,6 @@ useEffect(() => {
                   </div>
 
               }
-            </div>
             </div>
           </div>
         </>
@@ -551,7 +569,11 @@ const ButtonContainer = styled.div`
 
 const Sticky = styled.div`
     
-
+.hover-div{
+  position: absolute;
+  height: 32px;
+  width: inherit;
+}
   position: sticky;
   // position: relative;
   z-index: 3;

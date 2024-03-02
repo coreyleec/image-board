@@ -185,11 +185,13 @@ useEffect(() => {
 
 // !!editDrawerRef.current && console.log("switch", editDrawerRef.current.clientHeight)
 useEffect(() => {
+
   const tutorial = (props.root ==='home') ? 35 : 0
+  // console.log("tutorial", tutorial)
   let deleteSwitch = 0
   // editDrawerRef.current?.childNodes[0].clientHeight
-  let editSwitch = !props.skinny ? 60 : controlDock ? 60 : 0
-  let editDrawer = !props.skinny ? (105 + deleteSwitch + tutorial) : props.edit ? 95 : 0
+  let editSwitch = !props.skinny ? 60 : controlDock ? 25 : 0
+  let editDrawer = !props.skinny ? (105 + deleteSwitch) : props.edit ? 95 : 0
   // ^130 WHEN PUBLIC TOGGLE IS INCLUDED IN EDIT DRAWER OR 4 TOGGLES ARE IN EDIT DRAWER. UNTIL PUBLIC TOGGLE IS READY THE VALUE IS 95
   let follow = 50
   let collabUl = (!!listRef.current) ? (listRef.current.clientHeight) + 10 : 0
@@ -199,25 +201,25 @@ useEffect(() => {
   let searchList = (!!search.length) ? (search.length * 20 + 6) : 0
   !!search.length ? setSearchUl(length + 6) : 
   setSearchUl([])
-  console.log( "deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
+  // console.log( "deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
 
   if (props.root === 'user' && !isCollaborator){
-    console.log("user == root & iscollaborator", props.root === 'user' && !isCollaborator)
+    // console.log("user == root & iscollaborator", props.root === 'user' && !isCollaborator)
     
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
     if (props.skinny){
-      console.log("props.skinny", props.skinny)
+      // console.log("props.skinny", props.skinny)
       // WINDOW IS SKINNY
       
       if (!controlDock) {
-        console.log("!controlDock", !controlDock, 0)
+        // console.log("!controlDock", !controlDock, 0)
         // CLOSED CONTROL DOCK
         setDrawer(0)
         // console.log("editSwitch", editSwitch)
       }
       else {
-        console.log("setDrawer(", 25, "+",  collabUl, ")")
-        setDrawer(25 + collabUl)
+        // console.log("setDrawer(", 25, "+",  collabUl, ")")
+        setDrawer(25 + collabUl + tutorial)
       }
     }
     else {
@@ -248,7 +250,7 @@ useEffect(() => {
     }
   } 
   else if (props.skinny){
-    console.log("props.skinny", props.skinny)
+    // console.log("props.skinny", props.skinny)
     // WINDOW IS SKINNY
     if (!controlDock) {
       // CLOSED CONTROL DOCK
@@ -365,7 +367,7 @@ useEffect(() => {
 
 }, [props.root])
 
-console.log("props.tutorial", props.tutorial)
+// console.log("props.tutorial", props.tutorial)
 useEffect(() => {
   if (props.tutorial){
     if (props.skinny) {
@@ -409,7 +411,7 @@ let deleteDemoArrow =  (editDrawerRef.current?.childNodes[0].clientHeight !== 25
 // const [hover, setHover] = useState(false)
 // console.log("tru", props.collaborators.some(c => c.uuid === props.currentUserId))
 const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUserId)
-console.log("isCollaborator", isCollaborator)
+// console.log("isCollaborator", isCollaborator)
 
 const [timer, setTimer] = useState(true)
 useEffect(() => {
@@ -419,7 +421,6 @@ useEffect(() => {
   }, 10000);
  
 }, [props.skinny, controlDock])
-
 
   return (
     <aside ref={asideRef}  >
@@ -467,7 +468,7 @@ useEffect(() => {
 {/* FOLDER TYPE */}
             {/* {controlDock  
             &&  */}
-            {console.log(props?.folderType )}
+            {/* {console.log(props?.folderType )} */}
             <div className="drawer-cont">
             <div ref={drawerRef} className="drawer" >
             
@@ -669,7 +670,7 @@ useEffect(() => {
       } */}
 
             {!!props.collaborators.length &&
-            props.collaborators.length >= 2 && props.sub !== 'about' &&
+            props.collaborators.length >= 2 && props.sub !== 'about'  &&
             <CollabotorList ref={listRef} className="collabUl" 
             // onMouseEnter={() => changeFlex(true)}
             // onMouseLeave={() => changeFlex(false)}

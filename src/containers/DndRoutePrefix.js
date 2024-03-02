@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useCallback, useMemo} from "react";
 import { BrowserRouter as Routes, Route, useLocation, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import DndContainer from "./DndContainer";
 import AboutMe from "./AboutMe";
@@ -28,8 +28,13 @@ const DndRoutePrefix = (props) => {
     //     console.log('hi', photo)
     // }, [props.colorArr])
 
-    
-
+    const useCallbackObj = React.useCallback(() => {
+      console.log('callback is called!');
+   }, [props.photos, props.edit]);
+  //  const setFolderPhotos = useCallback((index, type) => {
+  //   console.log('death', index, type)
+  //   setFolderArray(index, type);
+  // }, [folders, collabs, favorites]);
     
 
 return (
@@ -39,7 +44,7 @@ return (
  <Route path={[ `${match.path}/folders/:id` , `${match.path}/favorites/:id`, `${match.path}/collabs/:id` ]} 
       >
 
-         {props.mobile ? <PhotoGrid
+         {props?.mobile ? <PhotoGrid
             // sub={sub}
               folderName={props.folderName}
               logNeatly={props.logNeatly}
@@ -70,33 +75,10 @@ return (
               root={props.root}
               dbVersion={props.dbVersion}
               /> 
-              : <DndContainer
-            // sub={sub}
-            mobile={props.mobile}
-            loggedIn={props.loggedIn}
-            collaborators={props.collaborators}
-              hightlighted={props.hightlighted}
-              setBaseName={props.setBaseName}
-              photos={props.photos}
-              colorArr={props.colorArr}
-              setPhotos={props.setPhotos}
-              openModal={props.openModal}
-              setOpenModal={props.setOpenModal}
-              folderShown={props.folderShown}
+              : <Child 
+            props={props}
               
-              uuid={props.uuid}
-              userId={props.userId}
-              currentUserId={props.currentUserId}
-              demo={props.demo}
-              setReorderedPhotos={props.setReorderedPhotos}
-              deletePhoto={props.deletePhoto}
-              enableDelete={props.enableDelete}
-              edit={props.edit}
-              reorderSubmit={props.reorderSubmit}
-              updateUserFavorites={props.updateUserFavorites}
-              root={props.root}
-              dbVersion={props.dbVersion}
-              /> }
+              />}
 
               </Route> 
 
@@ -117,3 +99,37 @@ return (
 )}
 
 export default DndRoutePrefix
+
+const Child = React.memo(( props ) => {
+      return <DndContainer
+            // sub={sub}
+
+            mobile={props.props.mobile}
+            loggedIn={props.props.loggedIn}
+            collaborators={props.props.collaborators}
+              hightlighted={props.props.hightlighted}
+              setBaseName={props.props.setBaseName}
+              photos={props.props.photos}
+              colorArr={props.props.colorArr}
+              setPhotos={props.props.setPhotos}
+              openModal={props.props.openModal}
+              setOpenModal={props.props.setOpenModal}
+              folderShown={props.props.folderShown}
+              
+              uuid={props.props.uuid}
+              userId={props.props.userId}
+              currentUserId={props.props.currentUserId}
+              demo={props.props.demo}
+              setReorderedPhotos={props.props.setReorderedPhotos}
+              deletePhoto={props.props.deletePhoto}
+              enableDelete={props.props.enableDelete}
+              edit={props.props.edit}
+              reorderSubmit={props.props.reorderSubmit}
+              updateUserFavorites={props.props.updateUserFavorites}
+              root={props.props.root}
+              dbVersion={props.props.dbVersion}
+              
+              
+              /> 
+
+})

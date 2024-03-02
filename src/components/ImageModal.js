@@ -3,7 +3,7 @@ import { Modal } from "react-bootstrap";
 import styled from "styled-components";
 
 const ImageModal = (props) => {
-  
+  // ESCAP KEY BUG
   let openModal = props.openModal;
   let photo = props.photo;
   let modalToggle = props.modalToggle;

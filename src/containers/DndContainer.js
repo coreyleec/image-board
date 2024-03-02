@@ -1,5 +1,5 @@
 import React from "react";
-import { useEffect, useState, useRef, useCallback} from "react";
+import { useEffect, useState, useRef, useCallback, useMemo} from "react";
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import styled from "styled-components";
 import { Heart } from '../My.styled'
@@ -22,16 +22,24 @@ const DndContainer = (props) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [imgUrl, setImgUrl] = useState(null)
 
+  const renderCount = useRef(0);
+  useEffect(() => {
+    renderCount.current = renderCount.current + 1;
+  });
+console.log("renderCount", renderCount)
 
+  const useCallbackObj = React.useCallback(() => {
+    console.log('callback is called!');
+ }, [props.photos]);
 
   
-  const imgCounter = () => {
+  const imgCounter = (i) => {
     setImgCount(imgCount + 1)
-    if (imgCount + 1 === 60){
-      adjustFunction()
-      setImagesLoaded(true)
-      console.log("images loaded")
-    }
+    console.log("photos loaded", i)
+    // if ((i + 1) === 60){
+    //   adjustFunction()
+    //   setImagesLoaded(true)
+    // }
   }
   
 
@@ -46,11 +54,7 @@ const DndContainer = (props) => {
 
 
   // ONDROP ERROR HANDLING
-  useEffect(() => {
-    
-  }, [
-    
-  ])
+  
   
   
 const [undo, setUndo] = useState()
@@ -361,19 +365,19 @@ let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex) > 1
     }
   };
 
-const cntrlZ = useCallback(
-  (e) => {
-  if (e.ctrlKey && e.key === 'z') {
-    // alert('Undo!');
-    console.log('Undo!', undo)
-    // props.setPhotos(undo)
-  }
-}, [])
+// const cntrlZ = useCallback(
+//   (e) => {
+//   if (e.ctrlKey && e.key === 'z') {
+//     // alert('Undo!');
+//     console.log('Undo!', undo)
+//     // props.setPhotos(undo)
+//   }
+// }, [])
 
-useEffect(() => {
-  document.addEventListener("keydown", cntrlZ);
-  return () => document.removeEventListener("keydown", cntrlZ);
-}, []);
+// useEffect(() => {
+//   document.addEventListener("keydown", cntrlZ);
+//   return () => document.removeEventListener("keydown", cntrlZ);
+// }, []);
 
   
   const addPhoto = (e, formData, orientation, photoName, photoDetails, photo) => {
@@ -571,24 +575,42 @@ const adjustFunction = () => {
 }
 
 
-
+const transformPhotos = (photos) =>{
+ 
+    // adjustGridItemsHeight(grid, updPhoto);
+}
 
 // FIND ME
-useEffect(() => {    
-  if (!!props.photos.length){
-  // console.log("useEffect", props.photos)
+// FIND ME
+// useEffect(() => {    
+//   if (!!props.photos.length){
+//   console.log("useEffect", photos)
+//   let newPhotos = [...props.photos]; // copy of array
+//   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
+//   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
+
+//   setUnderIndexs(photosUnder)
+//   !!props.photos && setPhotos([...newPhotos])
+//   const grid = gridRef.current;}
+//   // adjustGridItemsHeight(grid, updPhoto);
+// }, [props.photos])
+
+const transformePhotos = useMemo(() => 
+{ if (!!props?.photos?.length){
+  console.log("useMemo photo")
   let newPhotos = [...props.photos]; // copy of array
   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
 
   setUnderIndexs(photosUnder)
-  !!props.photos && setPhotos([...newPhotos])
-  const grid = gridRef.current;}
-  // adjustGridItemsHeight(grid, updPhoto);
-}, [props.photos])
+  // !!props.photos && setPhotos([...newPhotos])
+  // const grid = gridRef.current;
+  return [...newPhotos]
+}
+},
+[props.photos]);
 
-  
-
+console.log("photo trans", transformePhotos)
 
 const [drag, setDrag] = useState(false)
 const dragging = () => {
@@ -623,96 +645,19 @@ const dragging = () => {
           <div className="grid">
             <GridWrapper
               ref={gridRef}
-              style={{ opacity: imagesLoaded ? 1 : 0 }}
+              key={"grid"}
+              // style={{ opacity: imagesLoaded ? 1 : 0 }}
               // style={{ opacity }}
               >
-              {!photos !== !null && photos !== undefined && photos.sort(sortPhotos).map((photo) => (<DraggableGridItem
-                    className="grid-item"
-                    edit={props.edit}
-                    alt={photo.index}
-                    key={photo.index}
-                    orientation={photo.orientation}
-                    url={photo.url}
-                    photo={photo}
-                    collaborator={!!photo.u_id && props.collaborators.filter(user => user.uuid === photo.u_id)}
-                    colorArr={props.colorArr}
-                    // onDrop={onDrop}
-                    onDrop={underIndexs.includes(photo.index) ? false : onDrop}
-                    onMouseDown={() => setUnderIndexs(underIndexs.filter((index) => index !== (photo.index + 6)))}
-                      onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
-                    // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
-                    highlight={photo.color}
-                  >
-                    <PictureFrame
-                    className="picture"
-                    // onResize={() => console.log("hello")}
-                      // favorited={!!photo.favorites && photo.favorites.length} 
-                      // onMouseDown={() => console.log("drag",underIndexs.filter((index) => index === (photo.index + 6)))}
-                      // onMouseUp={() => console.log(underIndexs.filter((index) => index === (photo.index + 6)))}
-
-                      
-
-                      edit={props.edit}
-                      url={photo.url}
-                      highlight={photo.color}
-                      contentSizing={!!photo.name || !!photo.details}
-                      enableDelete={props.enableDelete}
-                      
-                      details={!!photo.name || !!photo.details}
-                      orientation={photo.orientation}
-                      >  
-                      <div className="center-image">
-                        
-                      <img
-                        className={"photo"}
-                        // alt="photo"
-                        // ref={imgRef}
-                        // key={photo.index}
-                        // key={!!photo.url && photo.url}
-                        onLoad={() => imgCounter() }
-                        // onLoad={() => props.edit ? onLoadFunc() : onLoadFunc() }
-                        // onLoad keeps tall images from overlapping the photo on the next line
-                        
-                        onClick={() => modalToggle(photo)}
-
-                        // loading="lazy"
-                        src={
-                          !!photo.url
-                          ? photo.thumbnail_url
-                          : require('../assets/100x135.png')
-                        }
-                        />
-                        </div>
-
-                      {(photo.details || photo.name) 
-                      && <div className="content-drawer">
-                        <div className="card-content" >
-                       
-                          {/* {photo.name.map(line =><h4>{line}</h4>)} */}
-                          <h4>{photo.name}</h4>
-                        <p className={"card-details"} >{photo.details}</p>
-                        {!!photo.username && <p className={"card-details"} >{photo.username.name}</p>}
-                      </div>
-                      </div>}
-{/* FAVORITE BUTTON */}
-{/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
-                        {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && 
-                        <Heart 
-                        favorited={photo.favorites !== undefined && !!photo.favorites.length}
-                        className="heart"
-                        onClick={() => favoriteToggle
-                        (photo)} >♥</Heart>}
-  {/* DELETE BUTTON */}
-                         
-                        <div className="delete-cont">
-                        <button
-                        className="delete-photo-button" 
-                        style={{display}}
-                        onClick={() => props.deletePhoto(photo)} >+</button>
-                        </div>
-
-                    </PictureFrame>
-                  </DraggableGridItem>
+              {!transformePhotos !== !null && transformePhotos !== undefined && transformePhotos.sort(sortPhotos).map((photo) => (<Child obj={useCallbackObj} props={props} photo={photo} 
+              onDrop={onDrop}
+              setUnderIndexs={setUnderIndexs}
+              underIndexs={underIndexs}
+              modalToggle={modalToggle}
+              favoriteToggle={favoriteToggle}
+              display={display}
+              imgCounter={imgCounter}
+              />
                 ))}
             </GridWrapper>
           </div>
@@ -723,6 +668,103 @@ const dragging = () => {
   );
 };
 export default DndContainer;
+
+
+const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDrop, display, favoriteToggle, modalToggle, imgCounter }) => {
+   
+
+   return <DraggableGridItem
+   className="grid-item"
+   edit={props.edit}
+   alt={photo.index}
+   key={photo.index}
+   orientation={photo.orientation}
+   url={photo.url}
+   photo={photo}
+   collaborator={!!photo.u_id && props.collaborators.filter(user => user.uuid === photo.u_id)}
+   colorArr={props.colorArr}
+   // onDrop={onDrop}
+   onDrop={underIndexs?.includes(photo.index) ? false : onDrop}
+   onMouseDown={() => setUnderIndexs(underIndexs?.filter((index) => index !== (photo.index + 6)))}
+     onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
+   // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
+   highlight={photo.color}
+ >
+   {/* {() => imgCounter(photo.index)} */}
+   
+   <PictureFrame
+   className="picture"
+   key={photo.index}
+   // onResize={() => console.log("hello")}
+     // favorited={!!photo.favorites && photo.favorites.length} 
+     // onMouseDown={() => console.log("drag",underIndexs.filter((index) => index === (photo.index + 6)))}
+     // onMouseUp={() => console.log(underIndexs.filter((index) => index === (photo.index + 6)))}
+
+     
+
+     edit={props.edit}
+     url={photo.url}
+     highlight={photo.color}
+     contentSizing={!!photo.name || !!photo.details}
+     enableDelete={props.enableDelete}
+     
+     details={!!photo.name || !!photo.details}
+     orientation={photo.orientation}
+     >  
+     <div className="center-image">
+     {console.log("photo render")}
+     <img
+       className={"photo"}
+       // alt="photo"
+       // ref={imgRef}
+       // key={photo.index}
+       // key={!!photo.url && photo.url}
+      //  onLoad={() => imgCounter(photo.index) }
+       // onLoad={() => props.edit ? onLoadFunc() : onLoadFunc() }
+       // onLoad keeps tall images from overlapping the photo on the next line
+       
+       onClick={() => modalToggle(photo)}
+
+       loading="lazy"
+       src={
+         !!photo.url
+         ? photo.thumbnail_url
+         : require('../assets/100x135.png')
+       }
+       />
+       </div>
+
+     {(photo.details || photo.name) 
+     && <div className="content-drawer">
+       <div className="card-content" >
+      
+         {/* {photo.name.map(line =><h4>{line}</h4>)} */}
+         <h4>{photo.name}</h4>
+       <p className={"card-details"} >{photo.details}</p>
+       {!!photo.username && <p className={"card-details"} >{photo.username.name}</p>}
+     </div>
+     </div>}
+{/* FAVORITE BUTTON */}
+{/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
+       {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && 
+       <Heart 
+       favorited={photo.favorites !== undefined && !!photo.favorites.length}
+       className="heart"
+       onClick={() => favoriteToggle
+       (photo)} >♥</Heart>}
+{/* DELETE BUTTON */}
+        
+       <div className="delete-cont">
+       <button
+       className="delete-photo-button" 
+       style={{display}}
+       onClick={() => props.deletePhoto(photo)} >+</button>
+       </div>
+
+   </PictureFrame>
+ </DraggableGridItem>;
+});
+
 
 
 // const adjustHover = (grid) => {

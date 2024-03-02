@@ -229,7 +229,7 @@ const CommunitySecondaryFilter = (props) => {
                    borderTop: 'solid',
                    borderTopWidth: '2px',
                    top: '0px',
-                   zIndex: 6,
+                   zIndex: 4,
                    height: '1px',
                    paddingBottom: '18px',
                  }}
@@ -416,6 +416,7 @@ const PhotoCard = styled.div`
     flex-direction: column;
     justify-content: space-between;
     height: 13vh;
+    margin-bottom: 20px;
     }
 
   .button-cont{
