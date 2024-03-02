@@ -117,6 +117,7 @@ const PhotoGrid = (props) => {
       photo.folder_id = null
       photo.orientation = true
       photo.row = (i*100)+1
+      photo.place = 0
       return photo
       }
 
@@ -133,13 +134,13 @@ const PhotoGrid = (props) => {
 
     // console.log("choppedArray", choppedArray)
     
-    const flatArr = choppedArray.flat(Infinity)
+    const flatArr = choppedArray?.flat(Infinity)
     
     let tally = 0
     
     // update indexes of the new array under the new value of "place" so not to alter the original index and break the reordering on future renders
-    const reindexedArr = flatArr.map((photo, i) => {
-        if(photo.orientation !== true){
+    const reindexedArr = flatArr?.map((photo, i) => {
+        if(photo?.orientation !== true){
           tally = tally + 1
         }
         photo.place = i
@@ -155,7 +156,7 @@ const PhotoGrid = (props) => {
       // console.log("useEffect", reindexedArr)
       
   }
-  }, [props.photos])
+  }, [props?.photos])
 
 
   const imgCounter = (i) => {

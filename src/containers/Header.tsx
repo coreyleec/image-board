@@ -207,8 +207,8 @@ useEffect(() => {
                   </ViewPortTip>}
                   {!props.mobile && (!Number.isNaN(index)) && (typeof index === "number") && <div>
                   {/* {!!props?.collabs?.length && props.collabs.map((collab) =>{ */}
-                  {props?.collabs.map((collab)=> <MediumText>
-                    & {collab.name}
+                  {!!props?.collabs.length && props?.collabs.map((collab)=> <MediumText>
+                    {collab.name}
                     </MediumText>)
                     }
                 {/* } */}

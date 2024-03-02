@@ -175,7 +175,7 @@ console.log(`set${setFunc}(${value})`)
         const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
           setPhotos(groups[0]?.folders[+index].photos)
-          photos[0] = groups[0]?.folders[+index].photos
+          // photos[0] = groups[0]?.folders[+index].photos
           collaborators[0] = groups[0]?.folders[+index].collaborators
           setCollaborators(groups[0]?.folders[+index].collaborators)
           setFolderShown(+index)
@@ -196,8 +196,8 @@ console.log(`set${setFunc}(${value})`)
         navigate(`/home/${sub}/${index}`)
       }
       else {
-        // photos[0] = groups[0]?.folders[0].photos
-        setCollaborators(groups[0]?.folders[0].collaborators)
+        setPhotos(groups[0]?.folders[0].photos)
+        // setCollaborators(groups[0]?.folders[0].collaborators)
         collaborators[0] = groups[0]?.folders[0].collaborators
         setFolderShown(groups[0]?.folders[0].index)
         setFolderType(groups[0]?.folders[0].creative)
