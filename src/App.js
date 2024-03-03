@@ -150,7 +150,7 @@ for (const i of Object.keys(groups)) {
 
   const string = JSON.stringify(key[0]).replace(/^"(.+)"$/,'$1')
   const setFunc = string.charAt(0).toUpperCase() + string.slice(1)
-console.log(`set${setFunc}(${value})`)
+// console.log(`set${setFunc}(${value})`)
   eval(`set${setFunc}(${value})`)
 
   // console.log(`index: ${i}, Keys: ${key}, Values: ${value}`, string.charAt(0).toUpperCase(), string.slice(1),setFunc);
@@ -565,7 +565,7 @@ const mapDetails = (groups) => {
     setDetails(detailArr)  
   }
 }
-console.log("details", details)
+// console.log("details", details)
 const newDetail = (obj, key) => {
   const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}}`
   const detailObj = JSON.parse(detail)
@@ -1470,8 +1470,8 @@ if(location.pathname === "/" && root !== 'user'){
 
           <DndRoutePrefix
             folderName={folderName}
-              makeNeat={makeNeat}
-              logNeatly={logNeatly}
+              // makeNeat={makeNeat}
+              // logNeatly={logNeatly}
               mobile={mobile}
               loggedIn={loggedIn}
               sub={sub}

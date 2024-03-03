@@ -1,10 +1,11 @@
-import React, {useEffect, useState, useCallback, useMemo} from "react";
+import React, {memo, useEffect, useState, useCallback, useMemo} from "react";
 import { BrowserRouter as Routes, Route, useLocation, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import DndContainer from "./DndContainer";
 import AboutMe from "./AboutMe";
 import PhotoGrid from "../mobileContainers/PhotoGrid";
 
-const DndRoutePrefix = (props) => {
+
+const DndRoutePrefix = React.memo(( props ) => {
     const match  = useRouteMatch();
     // console.log("root", match.path, props.root)
 
@@ -28,13 +29,10 @@ const DndRoutePrefix = (props) => {
     //     console.log('hi', photo)
     // }, [props.colorArr])
 
-    const useCallbackObj = React.useCallback(() => {
-      console.log('callback is called!');
-   }, [props.photos, props.edit]);
-  //  const setFolderPhotos = useCallback((index, type) => {
-  //   console.log('death', index, type)
-  //   setFolderArray(index, type);
-  // }, [folders, collabs, favorites]);
+  //   const useCallbackObj = React.useCallback(() => {
+  //     console.log('callback is called!');
+  //  }, [props.photos, props.edit]);
+
     
 
 return (
@@ -47,8 +45,6 @@ return (
          {props?.mobile ? <PhotoGrid
             // sub={sub}
               folderName={props.folderName}
-              logNeatly={props.logNeatly}
-              makeNeat={props.makeNeat}
               mobile={props.mobile}
               loggedIn={props.loggedIn}
               collabs={props?.collaborators?.filter((collaber) => collaber.name !== props?.userName)}
@@ -75,10 +71,26 @@ return (
               root={props.root}
               dbVersion={props.dbVersion}
               /> 
-              : <Child 
-            props={props}
-              
-              />}
+              : <DndContainer
+                collaborators={props.collaborators}
+                hightlighted={props.hightlighted}
+                photos={props.photos}
+                colorArr={props.colorArr}
+                setPhotos={props.setPhotos}
+                folderShown={props.folderShown}
+                userId={props.userId}
+                currentUserId={props.currentUserId}
+                demo={props.demo}
+                setReorderedPhotos={props.setReorderedPhotos}
+                deletePhoto={props.deletePhoto}
+                enableDelete={props.enableDelete}
+                edit={props.edit}
+                reorderSubmit={props.reorderSubmit}
+                updateUserFavorites={props.updateUserFavorites}
+                dbVersion={props.dbVersion}
+                
+                
+                /> }
 
               </Route> 
 
@@ -95,41 +107,7 @@ return (
                 />
                 </Route>
               </Switch>   
+)
+         })
 
-)}
-
-export default DndRoutePrefix
-
-const Child = React.memo(( props ) => {
-      return <DndContainer
-            // sub={sub}
-
-            mobile={props.props.mobile}
-            loggedIn={props.props.loggedIn}
-            collaborators={props.props.collaborators}
-              hightlighted={props.props.hightlighted}
-              setBaseName={props.props.setBaseName}
-              photos={props.props.photos}
-              colorArr={props.props.colorArr}
-              setPhotos={props.props.setPhotos}
-              openModal={props.props.openModal}
-              setOpenModal={props.props.setOpenModal}
-              folderShown={props.props.folderShown}
-              
-              uuid={props.props.uuid}
-              userId={props.props.userId}
-              currentUserId={props.props.currentUserId}
-              demo={props.props.demo}
-              setReorderedPhotos={props.props.setReorderedPhotos}
-              deletePhoto={props.props.deletePhoto}
-              enableDelete={props.props.enableDelete}
-              edit={props.props.edit}
-              reorderSubmit={props.props.reorderSubmit}
-              updateUserFavorites={props.props.updateUserFavorites}
-              root={props.props.root}
-              dbVersion={props.props.dbVersion}
-              
-              
-              /> 
-
-})
+export default DndRoutePrefix;

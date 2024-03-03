@@ -12,8 +12,9 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
 
-const DndContainer = (props) => {
+const DndContainer = React.memo(( props ) => {
   const location = useLocation();
+  const root = location?.pathname.split('/')[1]
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState(null)
   const [updPhoto, setUpdPhoto] = useState(null)
@@ -22,19 +23,13 @@ const DndContainer = (props) => {
   const [imagesLoaded, setImagesLoaded] = useState(false);
   const [imgUrl, setImgUrl] = useState(null)
 
-  const renderCount = useRef(0);
-  useEffect(() => {
-    renderCount.current = renderCount.current + 1;
-  });
-console.log("renderCount", renderCount)
-
   const useCallbackObj = React.useCallback(() => {
     console.log('callback is called!');
  }, [props.photos]);
 
   
   const imgCounter = (i) => {
-    setImgCount(imgCount + 1)
+    // setImgCount(imgCount + 1)
     console.log("photos loaded", i)
     // if ((i + 1) === 60){
     //   adjustFunction()
@@ -58,7 +53,7 @@ console.log("renderCount", renderCount)
   
   
 const [undo, setUndo] = useState()
-const [underIndexs, setUnderIndexs] = useState()
+const [underIndexs, setUnderIndexs] = useState([])
 
   const onDrop = (firstPhotoId, secondPhotoId) => {
     // PORTRAIT === FALSE & LANDSCAPE === TRUE
@@ -350,14 +345,14 @@ let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex) > 1
         console.log("error text", !errorBool, missingBool)
       if (!errorBool && missingBool){
         console.log("error text", !errorBool, missingBool)
-        setUnderIndexs(photosUnder)
+        underIndexs[0] = photosUnder
         props.setPhotos(newPhotos);
         props.setReorderedPhotos(newPhotos)}
       else if (errorBool && !missingBool) {
         console.log("error text", errorBool, !missingBool)
         let portraitPhotos = props.photos.filter((photo) => photo.orientation !== true)
         let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
-        setUnderIndexs(photosUnder)
+        underIndexs[0] = photosUnder
         props.setReorderedPhotos(props.photos)
         // props.setPhotos(props.photos)
         setPhotos(props.photos)
@@ -382,6 +377,7 @@ let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex) > 1
   
   const addPhoto = (e, formData, orientation, photoName, photoDetails, photo) => {
     e.preventDefault();
+
     console.log("props.currentUserId", props.currentUserId)
     if (props.demo) {
       e.preventDefault();
@@ -400,7 +396,7 @@ let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex) > 1
         else return photo;}))
     }
 
-    else if (props.loggedIn)  {
+    else if (!!props.currentUserId)  {
       const data = new FormData(formData)
       orientation !== undefined && orientation !== true && data.append('orientation', orientation)        
       photoName !== undefined && photoName !== null && data.append('name', photoName)
@@ -589,7 +585,7 @@ const transformPhotos = (photos) =>{
 //   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
 //   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
 
-//   setUnderIndexs(photosUnder)
+//   underIndexs[0] = photosUnder
 //   !!props.photos && setPhotos([...newPhotos])
 //   const grid = gridRef.current;}
 //   // adjustGridItemsHeight(grid, updPhoto);
@@ -602,7 +598,7 @@ const transformePhotos = useMemo(() =>
   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
 
-  setUnderIndexs(photosUnder)
+  underIndexs[0] = photosUnder
   // !!props.photos && setPhotos([...newPhotos])
   // const grid = gridRef.current;
   return [...newPhotos]
@@ -616,7 +612,7 @@ const [drag, setDrag] = useState(false)
 const dragging = () => {
   setDrag()
 }
-
+// folderShown, collaborators
 
   return (
     <article>
@@ -649,7 +645,7 @@ const dragging = () => {
               // style={{ opacity: imagesLoaded ? 1 : 0 }}
               // style={{ opacity }}
               >
-              {!transformePhotos !== !null && transformePhotos !== undefined && transformePhotos.sort(sortPhotos).map((photo) => (<Child obj={useCallbackObj} props={props} photo={photo} 
+              {!transformePhotos !== !null && transformePhotos !== undefined && transformePhotos.sort(sortPhotos).map((photo, i) => (<Child obj={useCallbackObj} props={props} photo={photo} 
               onDrop={onDrop}
               setUnderIndexs={setUnderIndexs}
               underIndexs={underIndexs}
@@ -657,6 +653,7 @@ const dragging = () => {
               favoriteToggle={favoriteToggle}
               display={display}
               imgCounter={imgCounter}
+              root={root}
               />
                 ))}
             </GridWrapper>
@@ -666,11 +663,11 @@ const dragging = () => {
       {/* <div className="bottom-curtain"></div> */}
       </article>
   );
-};
+})
 export default DndContainer;
 
 
-const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDrop, display, favoriteToggle, modalToggle, imgCounter }) => {
+const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDrop, display, favoriteToggle, modalToggle, imgCounter, root }) => {
    
 
    return <DraggableGridItem
@@ -685,6 +682,7 @@ const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDr
    colorArr={props.colorArr}
    // onDrop={onDrop}
    onDrop={underIndexs?.includes(photo.index) ? false : onDrop}
+  //  photos[0] = groups[0]?.folders[+index].photos
    onMouseDown={() => setUnderIndexs(underIndexs?.filter((index) => index !== (photo.index + 6)))}
      onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
    // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
@@ -746,8 +744,9 @@ const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDr
      </div>}
 {/* FAVORITE BUTTON */}
 {/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
-       {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && 
-       <Heart 
+{console.log("root", root)}
+       {(!!props.currentUserId) && (root === ("user" || "favorites")) && 
+      <Heart 
        favorited={photo.favorites !== undefined && !!photo.favorites.length}
        className="heart"
        onClick={() => favoriteToggle
