@@ -9,7 +9,7 @@ import { debounce} from "lodash";
 // import ImageModal from "../components/ImageModal";
 
 
-const PhotoGrid = (props) => {
+const PhotoGrid = React.memo(( props ) => {
   const location = useLocation();
 //   window.addEventListener('wheel', function(e) {  
 //     e.preventDefault();
@@ -314,7 +314,7 @@ useEffect(() => {
 
   const scrollPosition = () => {
 
-    if (props.mobile && photo === null){
+    if (photo === null){
     
     const photos = grid?.children
     
@@ -554,12 +554,12 @@ useEffect(() => {
     centeredId !== undefined && changeCells(centeredId)
   }
 }
-console.log("props.collaborators", props.collaborators)
+console.log("props?.folderDetails?.collaborators", props?.folderDetails?.collaborators)
 
 // useEffect(() => { console.log("useEffect render", photos?.length)})
-// const folderName = props?.folderDetails[props?.folderShown]?.name
-    // const favoritesName = !!props?.favoriteDetails && props?.favoriteDetails[props?.folderShown]?.name
-    // const collabName = !!props.collabDetails && props.collabDetails[props.folderShown]?.name
+// const folderName = props?.folderDetails[props?.folderDetails?.id]?.name
+    // const favoritesName = !!props?.favoriteDetails && props?.favoriteDetails[props?.folderDetails?.id]?.name
+    // const collabName = !!props.collabDetails && props.collabDetails[props?.folderDetails?.id]?.name
 
 const index = +(location.pathname.split('/')[3])
 // console.log("props.collabs", props.collabs, !!props?.collabs?.length)
@@ -582,7 +582,7 @@ const index = +(location.pathname.split('/')[3])
                     orientation={photo.orientation}
                     url={!!photo.url}
                     photo={photo}
-                    collaborator={!!photo.u_id && props.collaborators.filter(user => user.uuid === photo.u_id)}
+                    collaborator={!!photo.u_id && props?.folderDetails?.collaborators.filter(user => user.uuid === photo.u_id)}
                   >
                     <PictureFrame
                       className={photo.orientation ? "picture landscape" : "picture portrait"}
@@ -623,11 +623,11 @@ const index = +(location.pathname.split('/')[3])
           onScroll={() => scrollPosition()}
           ref={gridWrapperRef}
           >
-           {!!props.collabs.length && props.mobile && props.collabs.length !== undefined && (!Number.isNaN(index)) && (typeof index === "number") && <span>
-            {props.collabs.map((collab) => <CollabName>& {collab.name}</CollabName>)}
+           {!!props?.collabs?.length && props?.collabs?.length !== undefined && (!Number.isNaN(index)) && (typeof index === "number") && <span>
+            {props?.collabs?.map((collab) => <CollabName>& {collab?.name}</CollabName>)}
             </span>}
 
-            <FolderName>{props.folderName}</FolderName>
+            <FolderName>{props?.folderDetails?.name}</FolderName>
             
 
             <Grid
@@ -636,40 +636,40 @@ const index = +(location.pathname.split('/')[3])
               style={{ opacity: imagesLoaded ? 1 : 0 }}
               // style={{ opacity }}
               >
-              {photos?.map((photo, i) => (<GridItem
+              {photos?.map((photo, i) => (
+                <GridItem
 
-                    className={photo.url === false ? `grid-item bump ${photo.bumper}` : "grid-item"}
-                    id={i}
-                    mobile={props.mobile}
-                    key={photo.place}
-                    row={!!photo.row ? photo.row : false}
-                    orientation={photo.orientation}
-                    url={!!photo.url}
-                    photo={photo}
-                    collaborator={!!photo.u_id && props.collabs.filter(user => user.uuid === photo.u_id)}
-                    colorArr={props.colorArr}
-                    highlight={photo.color}
-                  >
-                    <PictureFrame
-                      id={i}
-                      key={photo.place}
-                      className={photo.url === false ? "bumper" : photo.url !== null ? photo.orientation ? "picture landscape" : "picture portrait" : 'tile landscape'}
-                      // alt={}
-                      highlight={photo.color}
-                      contentSizing={!!photo.name || !!photo.details}
-                      
-                      onLoad={() => imgCounter(photo.index)} 
-                      onClick={() => modalToggle(photo)}
-
-                      // loading="lazy"
-                      loading="eager"
-                      src={
-                        !!photo.thumbnail_url
-                        ? photo.thumbnail_url
-                        : require('../assets/100x135.png')
-                      }
-                    />
-                  </GridItem>
+                className={photo.url === false ? `grid-item bump ${photo.bumper}` : "grid-item"}
+                id={i}
+                key={photo.place}
+                row={!!photo.row ? photo.row : false}
+                orientation={photo.orientation}
+                url={!!photo.url}
+                photo={photo}
+                collaborator={!!photo.u_id && props?.collabs?.filter(user => user.uuid === photo.u_id)}
+                // colorArr={props.colorArr}
+                highlight={photo.color}
+              >
+                <PictureFrame
+                  id={i}
+                  key={photo.place}
+                  className={photo.url === false ? "bumper" : photo.url !== null ? photo.orientation ? "picture landscape" : "picture portrait" : 'tile landscape'}
+                  // alt={}
+                  highlight={photo.color}
+                  contentSizing={!!photo.name || !!photo.details}
+                  
+                  // onLoad={() => imgCounter(photo.index)} 
+                  onClick={() => modalToggle(photo)}
+              
+                  // loading="lazy"
+                  loading="lazy"
+                  src={
+                    !!photo.thumbnail_url
+                    ? photo.thumbnail_url
+                    : require('../assets/100x135.png')
+                  }
+                />
+              </GridItem>
                 ))}
             </Grid>
           </div>
@@ -678,8 +678,15 @@ const index = +(location.pathname.split('/')[3])
 
       </article>
   );
-};
+});
+
 export default PhotoGrid;
+
+// const Child = React.memo(({ colorArr, photo, props, collabs, setUnderIndexs, underIndexs, display, favoriteToggle, modalToggle, imgCounter, root, i }) => { return 
+
+// })
+
+
 
 const FolderName = styled.p`
 font-size: xx-large;

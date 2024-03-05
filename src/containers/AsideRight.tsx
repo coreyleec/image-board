@@ -3,6 +3,19 @@ import { Dispatch, SetStateAction, useState, useEffect, useRef, useCallback } fr
 import { useLocation } from 'react-router-dom';
 import styled, { keyframes } from "styled-components";
 
+interface ICollaborator {
+  uuid: string;
+  name: string;
+}
+
+interface IDetails {
+  id: number;
+  name: string;
+  creative: boolean;
+  index: number;
+  collaborators: [ICollaborator];
+}
+
 interface IProps {
   skinny: boolean;
   mobile: boolean;
@@ -22,7 +35,7 @@ interface IProps {
   hiliteCollaborator: (params: object) => null;
   updateFolderPrivacy: (params: null) => object;
   folderPrivacy: undefined | boolean;
-  folderDetails: undefined | string;
+  folderDetails: undefined | IDetails;
   collaborators: undefined | [ICollaborator];
   setEnableDelete: React.Dispatch<React.SetStateAction<boolean>>;
   enableDelete: boolean;
@@ -33,15 +46,14 @@ interface IProps {
   folderShown: number;
   
   edit: boolean;
-  reorderSubmit: () => null;
+  reorder: () => null;
   userId: string;
   currentUserId: string;
   dbVersion: string;
 }
- interface ICollaborator {
-  uuid: string;
-  name: string;
-}
+ 
+
+
 interface IState {
   delay: string;
   search: [];
@@ -106,10 +118,10 @@ const AsideRight: React.FC<IProps> = (props) => {
       }, 500)
     }
     props.edit === true && 
-    props.reorderSubmit()
+    props.reorder()
   };
 
-  
+  console.log("props.folderDetails", props?.folderDetails)
   
   const searchUser = (input) => {
     console.log(input)
@@ -219,12 +231,12 @@ useEffect(() => {
       }
       else {
         // console.log("setDrawer(", 25, "+",  collabUl, ")")
-        setDrawer(25 + collabUl + tutorial)
+        setDrawer(50 + collabUl + tutorial)
       }
     }
     else {
       console.log("setDrawer(", 50, "+",  collabUl, ")")
-      setDrawer(50 + collabUl)
+      setDrawer(25 + collabUl)
     }
   } 
   else if (props.sub === 'about'){
@@ -242,7 +254,7 @@ useEffect(() => {
       }
       else {
         console.log("setDrawer(25)")
-        setDrawer(25)
+        setDrawer(50)
       }
     }
     else {
@@ -274,7 +286,7 @@ useEffect(() => {
     }
     else if(controlDock && !props.edit) {
       // OPEN CONTROL DOCK WITH EDIT BUTTON AND COLLABORATOR DRAWER
-      let drawerMath = editSwitch + collabUl
+      let drawerMath = editSwitch + collabUl + 35
       setDrawer(drawerMath)
       // console.log("editSwitch", editSwitch, "collabUl", collabUl )
     }
@@ -331,7 +343,7 @@ useEffect(() => {
       console.log("here", drawerMath)
   }
   }
-}, [props.folderType, props.collaborators, controlDock, props.edit, search, props.skinny, props.sub])
+}, [props.folderDetails, controlDock, props.edit, search, props.skinny, props.sub])
 
 // console.log("drawer", drawer, !!editDrawerRef.current && editDrawerRef.current.clientHeight, !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight)
 
@@ -410,7 +422,7 @@ let deleteDemoArrow =  (editDrawerRef.current?.childNodes[0].clientHeight !== 25
 
 // const [hover, setHover] = useState(false)
 // console.log("tru", props.collaborators.some(c => c.uuid === props.currentUserId))
-const isCollaborator = props.collaborators.some(c => c.uuid === props.currentUserId)
+const isCollaborator = props?.folderDetails?.collaborators?.some(c => c.uuid === props.currentUserId)
 // console.log("isCollaborator", isCollaborator)
 
 const [timer, setTimer] = useState(true)
@@ -440,7 +452,7 @@ useEffect(() => {
             ref={panelRef}
             contHeight={height}
             listRef={listRef}
-            collabLength={props.collaborators.length} 
+            collabLength={props?.folderDetails?.collaborators?.length} 
             expand={expand}
             searchUl={searchUl}
             flexStart={flexStart}
@@ -468,7 +480,7 @@ useEffect(() => {
 {/* FOLDER TYPE */}
             {/* {controlDock  
             &&  */}
-            {/* {console.log(props?.folderType )} */}
+            {/* {console.log(props?.folderDetails?.creative )} */}
             <div className="drawer-cont">
             <div ref={drawerRef} className="drawer" >
             
@@ -486,7 +498,7 @@ useEffect(() => {
              </label>
              <p>{props.published ? "privatize?" : "publish?"}</p>
              </CatagorySwitch> 
-             : (!!props.collaborators.length && props?.folderType === null) 
+             : (!!props?.folderDetails?.collaborators?.length && props?.folderDetails?.creative === null) 
              ? 
              <>
 {/* CATAGORIZE FOLDERS CREATIVE OR LIFESTYLE */}
@@ -669,14 +681,14 @@ useEffect(() => {
            
       } */}
 
-            {!!props.collaborators.length &&
-            props.collaborators.length >= 2 && props.sub !== 'about'  &&
+            {!!props?.folderDetails?.collaborators?.length &&
+            props?.folderDetails?.collaborators?.length >= 2 && props.sub !== 'about'  &&
             <CollabotorList ref={listRef} className="collabUl" 
             // onMouseEnter={() => changeFlex(true)}
             // onMouseLeave={() => changeFlex(false)}
             >
                 
-              {!!props.collaborators.length && props.collaborators.map((collaborator) => (
+              {!!props?.folderDetails?.collaborators?.length && props?.folderDetails?.collaborators?.map((collaborator) => (
               <CollabLi 
               collaborator={collaborator}
               onClick={() => props.hiliteCollaborator(collaborator)}

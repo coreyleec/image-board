@@ -7,6 +7,8 @@ import PhotoGrid from "../mobileContainers/PhotoGrid";
 
 const DndRoutePrefix = React.memo(( props ) => {
     const match  = useRouteMatch();
+    const location = useLocation();
+  const root = location?.pathname.split('/')[1]
     // console.log("root", match.path, props.root)
 
     // useEffect(() => {
@@ -43,41 +45,24 @@ return (
       >
 
          {props?.mobile ? <PhotoGrid
-            // sub={sub}
-              folderName={props.folderName}
-              mobile={props.mobile}
-              loggedIn={props.loggedIn}
-              collabs={props?.collaborators?.filter((collaber) => collaber.name !== props?.userName)}
-              hightlighted={props.hightlighted}
-              setBaseName={props.setBaseName}
-              collaborators={props.collaborators}
+              collabs={props?.folderDetails?.collaborators?.filter((collaber) => collaber.name !== props?.userName)}
+              // hightlighted={props.hightlighted}
+              // colorArr={props.colorArr}
+              folderDetails={props?.folderDetails}
               photos={props.photos}
-              colorArr={props.colorArr}
-              setPhotos={props.setPhotos}
-              openModal={props.openModal}
-              setOpenModal={props.setOpenModal}
-              folderShown={props.folderShown}
-              folderDetails={props.folderDetails}
-              uuid={props.uuid}
               userId={props.userId}
               currentUserId={props.currentUserId}
-              demo={props.demo}
-              setReorderedPhotos={props.setReorderedPhotos}
-              deletePhoto={props.deletePhoto}
-              enableDelete={props.enableDelete}
-              edit={props.edit}
-              reorderSubmit={props.reorderSubmit}
-              updateUserFavorites={props.updateUserFavorites}
-              root={props.root}
+              // updateUserFavorites={props.updateUserFavorites}
               dbVersion={props.dbVersion}
               /> 
               : <DndContainer
-                collaborators={props.collaborators}
+                folderDetails={props?.folderDetails}
+
+
                 hightlighted={props.hightlighted}
                 photos={props.photos}
                 colorArr={props.colorArr}
                 setPhotos={props.setPhotos}
-                folderShown={props.folderShown}
                 userId={props.userId}
                 currentUserId={props.currentUserId}
                 demo={props.demo}

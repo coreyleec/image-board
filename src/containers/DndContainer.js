@@ -503,7 +503,7 @@ const favoriteToggle = (photo) => {
         .then((favoriteObj) => {
           
           console.log("favoriteObj", favoriteObj);
-          props.folderShown !== null ? 
+          props?.folderDetails?.id !== null ? 
           setFavoritedPhotos(favoriteObj.photo)
           : setFavoritedPhotos(favoriteObj.unfavorited_photo)
           props.updateUserFavorites(favoriteObj.unfavorited_photo)
@@ -523,7 +523,7 @@ const favoriteToggle = (photo) => {
         // .catch(e => console.error(e))
         .then((res) => res.json())
         .then((favoriteObj) => {
-          props.folderShown !== null ? 
+          props?.folderDetails?.id !== null ? 
           setFavoritedPhotos(favoriteObj.photo)
           : setFavoritedPhotos(favoriteObj.favorite_photo)
           console.log("favoriteObj", favoriteObj);
@@ -593,7 +593,7 @@ const transformPhotos = (photos) =>{
 
 const transformePhotos = useMemo(() => 
 { if (!!props?.photos?.length){
-  console.log("useMemo photo")
+  // console.log("useMemo photo")
   let newPhotos = [...props.photos]; // copy of array
   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
@@ -605,8 +605,6 @@ const transformePhotos = useMemo(() =>
 }
 },
 [props.photos]);
-
-console.log("photo trans", transformePhotos)
 
 const [drag, setDrag] = useState(false)
 const dragging = () => {
@@ -645,7 +643,9 @@ const dragging = () => {
               // style={{ opacity: imagesLoaded ? 1 : 0 }}
               // style={{ opacity }}
               >
-              {!transformePhotos !== !null && transformePhotos !== undefined && transformePhotos.sort(sortPhotos).map((photo, i) => (<Child obj={useCallbackObj} props={props} photo={photo} 
+              {!transformePhotos !== !null && transformePhotos !== undefined && transformePhotos.sort(sortPhotos).map((photo, i) => (<Child  
+              props={props} 
+              photo={photo} 
               onDrop={onDrop}
               setUnderIndexs={setUnderIndexs}
               underIndexs={underIndexs}
@@ -654,6 +654,7 @@ const dragging = () => {
               display={display}
               imgCounter={imgCounter}
               root={root}
+              collaborator={!!photo.u_id && props?.folderDetails?.collaborators?.filter(user => user.uuid === photo.u_id)}
               />
                 ))}
             </GridWrapper>
@@ -667,7 +668,7 @@ const dragging = () => {
 export default DndContainer;
 
 
-const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDrop, display, favoriteToggle, modalToggle, imgCounter, root }) => {
+const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDrop, display, favoriteToggle, modalToggle, imgCounter, root, collaborator }) => {
    
 
    return <DraggableGridItem
@@ -678,7 +679,7 @@ const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDr
    orientation={photo.orientation}
    url={photo.url}
    photo={photo}
-   collaborator={!!photo.u_id && props.collaborators.filter(user => user.uuid === photo.u_id)}
+   collaborator={collaborator}
    colorArr={props.colorArr}
    // onDrop={onDrop}
    onDrop={underIndexs?.includes(photo.index) ? false : onDrop}
@@ -710,7 +711,7 @@ const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDr
      orientation={photo.orientation}
      >  
      <div className="center-image">
-     {console.log("photo render")}
+     {/* {console.log("photo render")} */}
      <img
        className={"photo"}
        // alt="photo"
@@ -744,7 +745,7 @@ const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDr
      </div>}
 {/* FAVORITE BUTTON */}
 {/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
-{console.log("root", root)}
+
        {(!!props.currentUserId) && (root === ("user" || "favorites")) && 
       <Heart 
        favorited={photo.favorites !== undefined && !!photo.favorites.length}

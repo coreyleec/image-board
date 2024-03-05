@@ -84,10 +84,7 @@ const [userFavorites, setUserFavorites] = useState();
 // COLLABS
 const [collaborators, setCollaborators] = useState([])
 const [collabs, setCollabs] = useState([]);
-const [collabShown, setCollabShown] = useState(null);
-const [collabDetails, setCollabDetails] = useState()
-const [collabPrivacy, setCollabPrivacy] = useState()
-const [collabType, setCollabType] = useState(null)
+
 
 // LINKS //
 const [userLinks, setUserLinks] = useState([]);
@@ -168,17 +165,19 @@ for (const i of Object.keys(groups)) {
       setUserLinks(user.user.links);
       setTutorial(user.user.tutorial)
       
-      console.log("profile push", location.pathname, root)
+      // console.log("profile push", location.pathname, root)
 
       if (history.action === 'POP' && !(location.pathname.includes("undefined")) && root !== 'login'){
         const sub = location.pathname.split('/')[2]
         const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
           setPhotos(groups[0]?.folders[+index].photos)
+          setFolderDetails(newDetail(groups[0]?.folders[0], folders))
           // photos[0] = groups[0]?.folders[+index].photos
           collaborators[0] = groups[0]?.folders[+index].collaborators
           setCollaborators(groups[0]?.folders[+index].collaborators)
           setFolderShown(+index)
+          console.log("creative", groups[0]?.folders[+index].creative)
           setFolderType(groups[0]?.folders[+index].creative)
         }
         if(sub === 'favorites'){
@@ -191,16 +190,19 @@ for (const i of Object.keys(groups)) {
           setPhotos(groups[0]?.collabs[+index].photos)
           setCollaborators(groups[0]?.collabs[+index].collaborators)
           setFolderShown(+index)
+          console.log("creative", groups[0]?.collabs[+index].creative)
           setFolderType(groups[0]?.collabs[+index].creative)
         }
         navigate(`/home/${sub}/${index}`)
       }
       else {
         setPhotos(groups[0]?.folders[0].photos)
+        setFolderDetails(newDetail(groups[0]?.folders[0], folders))
         // setCollaborators(groups[0]?.folders[0].collaborators)
         collaborators[0] = groups[0]?.folders[0].collaborators
         setFolderShown(groups[0]?.folders[0].index)
         setFolderType(groups[0]?.folders[0].creative)
+        console.log("creative", groups[0]?.folders[0].creative)
         navigate('/home/folders/0')
       }
       setLoaded(true)
@@ -208,6 +210,9 @@ for (const i of Object.keys(groups)) {
         
   })
 }
+
+
+console.log("creative", folderType)
 const landingFetch = () => {
   fetch(`${dbVersion}/landing_page`, {
         method: "GET",
@@ -517,28 +522,41 @@ const publishAbout = () => {
 
 const sortPhotos = (a, b) => a.index - b.index;
 const setFolderPhotos = useCallback((index, type) => {
-  console.log('death', index, type)
+  console.log('details', index, type)
   setFolderArray(index, type);
 }, [folders, collabs, favorites]);
 
 const setFolderArray = (index, type) => {
-  console.log('death', index, type, eval(type))
-  const setFunc = type.charAt(0).toUpperCase() + type.slice(1, -1)
-  const folder = eval(type).find(folder => folder.index === index)
-  // // eval(`set${setFunc}Shown(${index})`)
-  // // setShown(index)
-  setFolderShown(folder.index)
-  if(type !== 'favorites'){
-  eval(`set${setFunc}Privacy(${folder.public})`)
-  eval(`set${setFunc}Type(${folder.type})`)
-  setPhotos(folder.photos)
-  setCollaborators(folder.collaborators)
-  }
-  else {
-    setCollaborators([])
-    setPhotos(folder.favorite_photos)}
-  eval(`setFolderName("${folder.name}")`)
-  navigate(`/${root}/${type}/${index}`)
+    // console.log('death', index, type, eval(type))
+    console.log('details', index, type, details)
+    const setFunc = type.charAt(0).toUpperCase() + type.slice(1, -1)
+    const folder = eval(type).find(folder => folder.index === index)
+    // // eval(`set${setFunc}Shown(${index})`)
+    // // setShown(index)
+    
+    setFolderShown(folder.index)
+
+    if(type !== 'favorites'){
+      // SHOWN, TYPE, PRIVACY, COLLABORATORS
+      if(type === 'folders'){
+        eval(`set${setFunc}Privacy(${folder.public})`)
+        eval(`set${setFunc}Type(${folder.creative})`)
+      }
+      console.log("folder.creative", folder, folder.creative, type, `set${setFunc}Type(${folder.type})`)
+      setPhotos(folder.photos)
+      setCollaborators(folder.collaborators)
+      const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
+      detail.collaborators = folder.collaborators
+      setFolderDetails(detail)
+    }
+    else {
+      // setCollaborators([])
+      const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`)
+      detail.collaborators = []
+      setFolderDetails(detail)
+      setPhotos(folder.favorite_photos)}
+      eval(`setFolderName("${folder.name}")`)
+      navigate(`/${root}/${type}/${index}`)
 }
 
 const [details, setDetails] = useState([])
@@ -546,20 +564,49 @@ const [details, setDetails] = useState([])
 const mapDetails = (groups) => {
   if (!!groups){
     const detailArr = []
+    console.log("details", detailArr)
+  
     for (const i of Object.keys(groups)) {
       const key = Object.keys(groups[i]);
   
-      const detail = eval(`groups[i].${key}`).map((folder, i) => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`))
-      // console.log(detail)
+      if(key[0] === 'favorites'){  
+        const detail = eval(`groups[i].${key}`).map((folder, i) => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`))
+        let jsonDetail = detail.map(d => JSON.parse(d))
+        let jsonKey = eval(key)[0]
+    
+        let obj = {}
+        obj[jsonKey] = [jsonDetail]
+    console.log("[jsonDetail]", jsonDetail[0])
+        // details.push([jsonDetail])
+        detailArr.push(obj)
+      
+      }
+      else if (key[0] !== 'favorites'){
+
+        const detail = eval(`groups[i].${key}`).map((folder, i) => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`))
+
+        const collaborators = eval(`groups[i].${key}`).map((folder, i) => (folder.collaborators))
+
+        let jsonDetail = detail.map(d => JSON.parse(d))
+
+        jsonDetail[0].collaborators = collaborators
+        let obj = {}
+        let jsonKey = eval(key)[0]
+        obj[jsonKey] = [jsonDetail]
+        detailArr.push(obj)
+
+        console.log("[jsonDetail]", jsonDetail)
+    
+    
+        // // details.push([jsonDetail])
+
+        // console.log("key", key[0], key[0] === 'favorites', detail)
+      }
+
+      
+      
   
-      let jsonDetail = detail.map(d => JSON.parse(d))
-      let jsonKey = eval(key)[0]
-  
-      let obj = {}
-      obj[jsonKey] = [jsonDetail]
-  
-      // details.push([jsonDetail])
-      detailArr.push(obj)
+      
     }
     // details[0] = detailArr; 
     setDetails(detailArr)  
@@ -567,10 +614,17 @@ const mapDetails = (groups) => {
 }
 // console.log("details", details)
 const newDetail = (obj, key) => {
+  if (key === 'favorites'){
+  const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}}`
+  const detailObj = JSON.parse(detail)
+  // const mapDetail = eval(`details[i].${key}`).map((folder, i) => ())
+return detailObj}
+else {
   const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}}`
   const detailObj = JSON.parse(detail)
   // const mapDetail = eval(`details[i].${key}`).map((folder, i) => ())
 return detailObj
+}
 }
 
 // !!details[0] && console.log("details[0].folders", details[0].folders[0])
@@ -1326,12 +1380,12 @@ if(location.pathname === "/" && root !== 'user'){
     if(sub !== 'folders'){
       setFolderShown(null)
     }
-    if(sub !== 'favorite_folders'){
-      setFavoriteShown(null)
-    }
-    if(sub !== 'collabs'){
-      setCollabShown(null)
-    }
+    // if(sub !== 'favorite_folders'){
+    //   setFavoriteShown(null)
+    // }
+    // if(sub !== 'collabs'){
+    //   setCollabShown(null)
+    // }
   }
   }, [location.pathname])
   
@@ -1339,6 +1393,7 @@ if(location.pathname === "/" && root !== 'user'){
     setLoaded(false)
   }, [root])
   
+console.log("creative folderDetails", "folderDetails", folderDetails, "folderShown", folderShown, "folderType", folderType, "folderPrivacy", folderPrivacy, collaborators)
 
 
     return (
@@ -1347,7 +1402,7 @@ if(location.pathname === "/" && root !== 'user'){
       <Cont root={root} >
          
         <SideBar
-        details={details}
+          details={details}
           addy={addy}
           setLocalDb={setLocalDb}
           localDb={localDb}
@@ -1375,8 +1430,6 @@ if(location.pathname === "/" && root !== 'user'){
           folderShown={folderShown}
           setFolderShown={setFolderShown}
           setFolderPhotos={setFolderPhotos}
-          setFolders={setFolders}
-          setCollabs={setCollabs}
 
 
 
@@ -1404,6 +1457,7 @@ if(location.pathname === "/" && root !== 'user'){
         />
         <Header
           collabs={collaborators?.filter((collaber) => collaber.name !== userName)}
+          userName={userName}
           setCollaborators={setCollaborators}
           mobile={mobile}
           skinny={skinny}
@@ -1419,7 +1473,7 @@ if(location.pathname === "/" && root !== 'user'){
           creativeFollow={creativeFollow}
           lifestyleFollow={lifestyleFollow}
           root={root}
-          userName={userName}
+          
           edit={!edit}
           nameSubmit={nameSubmit}
           dbVersion={dbVersion}
@@ -1438,17 +1492,16 @@ if(location.pathname === "/" && root !== 'user'){
           loggedIn={loggedIn}
           hover={hover} 
           setHover={setHover}
+
+          folderDetails={folderDetails}
           folderShown={folderShown}
-          folderType={folderType}
+
+
           setFolderType={setFolderType}
           catagorize={catagorize}
-          folderPrivacy={folderPrivacy}
           updateFolderPrivacy={updateFolderPrivacy}
-          folderDetails={folderDetails}
           newFolder={newFolder}
           hiliteCollaborator={hiliteCollaborator}
-          collabDetails={collabDetails}
-          collaborators={collaborators}
           addCollaborator={addCollaborator}
           edit={edit}
           editToggle={editToggle}
@@ -1469,7 +1522,6 @@ if(location.pathname === "/" && root !== 'user'){
       >
 
           <DndRoutePrefix
-            folderName={folderName}
               // makeNeat={makeNeat}
               // logNeatly={logNeatly}
               mobile={mobile}
@@ -1477,18 +1529,17 @@ if(location.pathname === "/" && root !== 'user'){
               sub={sub}
               about={about}
               setAbout={setAbout}
+
               folderDetails={folderDetails}
-              collabDetails={collabDetails}
-              collaborators={collaborators}
+
               photos={!!photos && photos}
               setPhotos={setPhotos}
               openModal={openModal}
               setOpenModal={setOpenModal}
-              folderShown={folderShown}
               colorArr={colorArr}
               userId={userId}
+
               userName={userName}
-              uuid={uuid}
               currentUserId={currentUserId}
               // tutorial={demo || tutorial}
               tutorial={tutorial}
