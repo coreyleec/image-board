@@ -519,16 +519,16 @@ const publishAbout = () => {
 
     })}
 }
-
+console.log("root", root)
 const sortPhotos = (a, b) => a.index - b.index;
 const setFolderPhotos = useCallback((index, type) => {
   console.log('details', index, type)
   setFolderArray(index, type);
-}, [folders, collabs, favorites]);
+}, [folders, collabs, favorites, root]);
 
 const setFolderArray = (index, type) => {
     // console.log('death', index, type, eval(type))
-    console.log('details', index, type, details)
+    console.log('details', index, type, details, root)
     const setFunc = type.charAt(0).toUpperCase() + type.slice(1, -1)
     const folder = eval(type).find(folder => folder.index === index)
     // // eval(`set${setFunc}Shown(${index})`)
@@ -1642,11 +1642,7 @@ console.log("creative folderDetails", "folderDetails", folderDetails, "folderSho
   const Cont = styled.div`
   display: grid;
   height: 100vh;
-  ${!!window.innerWidth ?
-    `max-width: 100%;
-    max-height: ${window.innerHeight}px;`
-  : `max-width: 100%;
-  max-height: ${window.outerHeight}px;`}
+  
   /* grid-template-columns: ${props => props.root === "community" ? '18% 1fr 0%' : '17% 1fr 17%'}; */
   grid-template-columns: 17% 1fr 17%;
   grid-template-rows: auto 1.5fr auto;
