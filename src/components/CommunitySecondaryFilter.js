@@ -50,7 +50,7 @@ const CommunitySecondaryFilter = (props) => {
                 // })
       }
 
-      
+      console.log("obj catagory", props.catagory)
 
         return (
           <div style={{height: "inherit", width: "100%"}}>
@@ -88,159 +88,161 @@ const CommunitySecondaryFilter = (props) => {
             <div className='coffin'  >
             {props.filters.catagory === 'users' ?
             <>
- {/* FILTER BY USERS */}
- 
-            {props?.catagory?.map((obj, n) => (
+            {/* FILTER BY USERS */}
+            
+          {props?.catagory?.map((user, n) => (
+            
+            <div className='user-cont' key={n} 
+            //  style={{'z-index': `${n}`}} 
+            >
+              {console.log("user", user)}
               
-              
-              <div className='user-cont' key={n} 
-              //  style={{'z-index': `${n}`}} 
-              >
-                {console.log("obj name", obj)}
-               <UserCard identifier={obj.uuid} onClick={() => props.fetchUser(obj.uuid, obj.name)}>
-                   <div className="catagory"> 
-                   <h4>{obj.name}</h4>
-                   {/* <h4>{obj.folders}</h4> */}
-                 {/* {obj.folders.map(folder => {
-                   return(
-                    <div className="space">
-                    <p>{folder.name}</p> */}
-                    {/* <p className="notification">{folder.count}</p> */}
-                     {/* </div>
-                )})}  */}
-                </div>
-                
-            </UserCard>
-          {obj.photos.map(photo => 
-               <PhotoCard >
-              <div className="text-cont">
-                {!!photo.name && <p className="photo-name" >{photo.name}</p>}
-                {!!photo.details && <p className="photo-details" >{photo.details}</p>}
-                {(obj.name !== photo.user_name) && <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name)} >by {photo.user_name}</p>}
-                <p className="folder-name">{photo.folder_name}</p>
-              </div>
-              <div className='photo-cont'>
-                <div className='photo-header'></div>
-                <PhotoCont
-                identifier={props.catagory
-                  ? obj.uuid
-                  : obj.id}
-                folderId={photo.folder_id}
-                onClick={() => console.log(photo.folder_id)}>
-                    
-                    <img src={photo.thumbnail_url} onClick={() => props.modalToggle(photo, photos)}/>
-                  </PhotoCont>
-                  <div>
-              </div>
-              <div className='photo-footer'></div>
-              </div>
-                  <div className='button-cont'>
-                    <Heart 
-                      favorited={photo.favorites !== undefined && !!photo.favorites.length}
-                      className="heart"
-                      onClick={() => favoriteToggle
-                      (photo)} >♥</Heart>
-                    <Add>✚</Add>
-                  </div>
-              </PhotoCard> 
-              )}
-                                     <hr
-                 style={{
-                   position: 'relative',
-                   background: 'gainsboro',
-                   borderStyle: 'none',
-                   borderTop: 'solid',
-                   borderTopWidth: '2px',
-                   top: '0px',
-                   zIndex: 6,
-                   height: '1px',
-                   paddingBottom: '18px',
-                 }}
-               />
+              <UserCard identifier={user.uuid} onClick={() => props.fetchUser(user.uuid, user.name)}>
+                  <div className="catagory"> 
+                  <h4>{user.name}</h4>
+                  {/* <h4>{user.folders}</h4> */}
+                {/* {user.folders.map(folder => {
+                  return(
+                  <div className="space">
+                  <p>{folder.name}</p> */}
+                  {/* <p className="notification">{folder.count}</p> */}
+                    {/* </div>
+              )})}  */}
               </div>
               
-              )
-              )}
-            </>
-            : <>
-            {props?.catagory?.map((obj, n) => (
-               <div className='user-cont' key={n} 
-              //  style={{'z-index': `${n}`}}
-               >
-{/* FILTER BY FOLDERS */}
-               <UserCard identifier={obj.uuid} onClick={() => props.fetchUser(obj.uuid)}>
-                   <div className="catagory"> 
-                   <h4>{obj.name}</h4>
-                   {/* <h4>{obj.folders}</h4> */}
-                 {/* {obj.folders.map(folder => {
-                   return(
-                    <div className="space">
-                     */}
-                    {/* <p className="notification">{folder.count}</p> */}
-                     {/* </div>
-                )})}  */}
-                <p>{obj.user_name}</p>
-                </div>
-                
-            </UserCard>
-          {obj.photos.map(photo => 
-               <PhotoCard >
-                {console.log("obj name", obj)}
-              <div className="text-cont">
+          </UserCard>
+        {user.photos.map(photo => 
+              <PhotoCard >
+            <div className="text-cont">
               {!!photo.name && <p className="photo-name" >{photo.name}</p>}
               {!!photo.details && <p className="photo-details" >{photo.details}</p>}
-              <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo)} >{photo.user_name}</p>
-
+              {(user.name !== photo.user_name) && <p className="user-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name)} >by {photo.user_name}</p>}
+              {console.log("user name", user.name, photo.user_name, photo.name)}
+              <p className="folder-name">{photo.folder_name}</p>
+            </div>
+            <div className='photo-cont'>
+              <div className='photo-header'></div>
+              <PhotoCont
+              identifier={props.catagory
+                ? user.uuid
+                : user.id}
+              folderId={photo.folder_id}
+              onClick={() => console.log(photo.folder_id)}>
+                  
+                  <img src={photo.thumbnail_url} onClick={() => props.modalToggle(photo, photos)}/>
+                </PhotoCont>
+                <div>
+            </div>
+            <div className='photo-footer'></div>
+            </div>
+                <div className='button-cont'>
+                  <Heart 
+                    favorited={photo.favorites !== undefined && !!photo.favorites.length}
+                    className="heart"
+                    onClick={() => favoriteToggle
+                    (photo)} >♥</Heart>
+                  <Add>✚</Add>
+                </div>
+            </PhotoCard> 
+            )}
+                                    <hr
+                style={{
+                  position: 'relative',
+                  background: 'gainsboro',
+                  borderStyle: 'none',
+                  borderTop: 'solid',
+                  borderTopWidth: '2px',
+                  top: '0px',
+                  zIndex: 6,
+                  height: '1px',
+                  paddingBottom: '18px',
+                }}
+              />
+            </div>
+            
+            )
+            )}
+            </>
+          : <>
+          {props?.catagory?.map((folder, n) => (
+            <div className='user-cont' key={n} 
+            //  style={{'z-index': `${n}`}}
+            >
+              {console.log("folder", folder)}
+{/* FILTER BY FOLDERS */}
+            <UserCard identifier={folder.uuid} onClick={() => props.fetchUser(folder.u_id, folder.user_name, folder.id)}>
+                <div className="catagory"> 
+                <h4>{folder.name}</h4>
+                {/* <h4>{folder.folders}</h4> */}
+              {/* {folder.folders.map(folder => {
+                return(
+                  <div className="space">
+                  */}
+                  {/* <p className="notification">{folder.count}</p> */}
+                  {/* </div>
+              )})}  */}
+              <p>{folder.user_name}</p>
+              </div>
               
+          </UserCard>
+        {folder.photos.map(photo => 
+            <PhotoCard >
+              {console.log("folder name", folder.name, photo.user_name, photo.name)}
+            <div className="text-cont">
+            {!!photo.name && <p className="photo-name" >{photo.name}</p>}
+            {!!photo.details && <p className="photo-details" >{photo.details}</p>}
+            {/* <p className="folder-name" onClick={() => props.fetchUser(photo.u_id)} >{photo.user_name}</p> */}
 
-                 {(obj.user_name !== photo.user_name) && <p className="obj-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name)} >by {photo.user_name}</p>} 
-              {/* <p className="folder-name">{photo.folder_name}</p> */}
-              </div>
-              <div className='photo-cont'>
-                <div className='photo-header'></div>
-                <PhotoCont
-                identifier={props.catagory
-                  ? obj.uuid
-                  : obj.id}
-                folderId={photo.folder_id}
-                onClick={() => console.log(photo.folder_id)}>
-                    
-                    <img src={photo.thumbnail_url} onClick={() => props.modalToggle(photo, photos)}/>
-                  </PhotoCont>
-                  <div>
-              </div>
-              <div className='photo-footer'></div>
-              </div>
-                  <div className='button-cont'>
-                    <Heart 
-                      favorited={photo.favorites !== undefined && !!photo.favorites.length}
-                      className="heart"
-                      onClick={() => favoriteToggle
-                      (photo)} >♥</Heart>
-                    <Add>✚</Add>
-                  </div>
-              </PhotoCard> 
-              )}
-                                     <hr
-                 style={{
-                   position: 'relative',
-                   background: 'gainsboro',
-                   borderStyle: 'none',
-                   borderTop: 'solid',
-                   borderTopWidth: '2px',
-                   top: '0px',
-                   zIndex: 4,
-                   height: '1px',
-                   paddingBottom: '18px',
-                 }}
-               />
-              </div>
-              
-              )
-              )}
+            
 
-              </>
-}
+              {(folder.user_name !== photo.user_name) && <p className="folder-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name)} >by {photo.user_name}</p>} 
+            {/* <p className="folder-name">{photo.folder_name}</p> */}
+            </div>
+            <div className='photo-cont'>
+              <div className='photo-header'></div>
+              <PhotoCont
+              identifier={props.catagory
+                ? folder.uuid
+                : folder.id}
+              folderId={photo.folder_id}
+              onClick={() => console.log(photo.folder_id)}>
+                  
+                  <img src={photo.thumbnail_url} onClick={() => props.modalToggle(photo, photos)}/>
+                </PhotoCont>
+                <div>
+            </div>
+            <div className='photo-footer'></div>
+            </div>
+                <div className='button-cont'>
+                  <Heart 
+                    favorited={photo.favorites !== undefined && !!photo.favorites.length}
+                    className="heart"
+                    onClick={() => favoriteToggle
+                    (photo)} >♥</Heart>
+                  <Add>✚</Add>
+                </div>
+            </PhotoCard> 
+            )}
+                                  <hr
+              style={{
+                position: 'relative',
+                background: 'gainsboro',
+                borderStyle: 'none',
+                borderTop: 'solid',
+                borderTopWidth: '2px',
+                top: '0px',
+                zIndex: 4,
+                height: '1px',
+                paddingBottom: '18px',
+              }}
+            />
+            </div>
+            
+            )
+            )}
+
+            </>
+            }
 
               </div>
             </div>

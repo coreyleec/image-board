@@ -56,7 +56,7 @@ const colorArr = [['red', 'green'], ['yellow', 'red'], ['blue', 'yellow'], ['gre
 // const [connected, setConnected] = useState(true)
 
 const [filters, setFilters] = useState({
-  catagory: true, 
+  catagory: 'users', 
   connected: true,
   creative: true,
   lifestyle: false,
@@ -156,7 +156,7 @@ const setCatagory = (catagory) => {
   const filter = {...filters}
   filter.catagory = catagory
   setFilters(filter)
-  console.log("color", catagory)
+  console.log("catagory obj", catagory)
 }
 const setCreative = (creative) => {
   const filter = {...filters}

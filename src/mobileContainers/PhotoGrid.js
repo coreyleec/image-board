@@ -41,7 +41,7 @@ const PhotoGrid = React.memo(( props ) => {
   useEffect(() => {
     if (!!gridRect){  
       const justifyCenter = gridRect.width/3
-      const alignCenter = window.innerHeight/6
+      const alignCenter = window.innerHeight/5
       gridWrapper.scrollLeft = justifyCenter
       gridWrapper.scrollTop = alignCenter
       // console.log("scroll", gridWrapper, center, gridRect)
@@ -689,7 +689,7 @@ export default PhotoGrid;
 
 
 const FolderName = styled.p`
-font-size: xx-large;
+font-size: x-large;
 color: white;
 position: sticky;
 left: 0%;
@@ -699,7 +699,7 @@ text-align: end;
 `
 const CollabName = styled.p`
 font-family: "HelveticaNeue-light";
-font-size: xx-large;
+font-size: x-large;
 color: white;
 position: sticky;
 left: 0%;

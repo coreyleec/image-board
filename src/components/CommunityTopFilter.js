@@ -24,9 +24,7 @@ const CommunityTopFilter = (props) => {
               setCatagory={props.setCatagory} 
               panel={props.panel}
               panelHeight={props.panelHeight}
-              catagory={props.filters.catagory
-                ? props.users
-                : props.folders}
+              catagory={eval(`props.${props.filters.catagory}`)}
               filters={props.filters}
 
               />

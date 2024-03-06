@@ -297,7 +297,7 @@ const landingFetch = () => {
   })
 }
 
-const fetchUser = (userId, name) => {
+const fetchUser = (userId, name, objId) => {
   window.store = null
   console.log('here it is', userId, name)
   userId === currentUserId 
@@ -340,11 +340,14 @@ const fetchUser = (userId, name) => {
       setTutorial(false)
       setFollow(user.user.follow)
       
+      if (!!objId){
 
+      }
+      const index = !!objId ? objId : 0
       const root = location.pathname.split('/')[1]
       if (history.action === 'POP' && root !== 'community'){
         const sub = location.pathname?.split('/')[2]
-        const index = location.pathname?.split('/')[3] || ''
+        const index = location.pathname?.split('/')[3] || '' 
         if(sub === 'folders'){
           setPhotos(groups[0]?.folders[+index].photos)
           setCollaborators(groups[0]?.folders[+index].collaborators)
@@ -1440,7 +1443,6 @@ console.log("creative folderDetails", "folderDetails", folderDetails, "folderSho
           deleteLink={deleteLink}
           deleteFolder={deleteFolder}
           createFolder={createFolder}
-          // setFolderShown={setFolderShown}
           updateFolder={updateFolder}
           createLink={createLink}
           userLinks={userLinks}
