@@ -202,7 +202,7 @@ for (const i of Object.keys(groups)) {
         collaborators[0] = groups[0]?.folders[0].collaborators
         setFolderShown(groups[0]?.folders[0].index)
         setFolderType(groups[0]?.folders[0].creative)
-        console.log("creative", groups[0]?.folders[0].creative)
+        
         navigate('/home/folders/0')
       }
       setLoaded(true)
@@ -623,8 +623,13 @@ const newDetail = (obj, key) => {
   // const mapDetail = eval(`details[i].${key}`).map((folder, i) => ())
 return detailObj}
 else {
-  const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}}`
+  const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}, "creative": ${obj.creative}}`
+  
   const detailObj = JSON.parse(detail)
+console.log("FUCK", detailObj, obj)
+  detailObj.collaborators = obj.collaborators
+  // const collaborators = eval(`groups[i].${key}`).map((folder, i) => (folder.collaborators))
+
   // const mapDetail = eval(`details[i].${key}`).map((folder, i) => ())
 return detailObj
 }

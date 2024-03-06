@@ -35,7 +35,7 @@ const DndRoutePrefix = React.memo(( props ) => {
   //     console.log('callback is called!');
   //  }, [props.photos, props.edit]);
 
-    
+    console.log("props.folderDetails", props.folderDetails)
 
 return (
     <Switch>
