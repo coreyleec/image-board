@@ -13,6 +13,7 @@ import "react-resizable/css/styles.css";
 import ImageModal from "../components/ImageModal";
 
 const DndContainer = React.memo(( props ) => {
+  const collaborators = props?.folderDetails?.collaborators
   const location = useLocation();
   const root = location?.pathname.split('/')[1]
   const sortPhotos = (a, b) => a.index - b.index;
@@ -653,7 +654,7 @@ const dragging = () => {
                     orientation={photo.orientation}
                     url={photo.url}
                     photo={photo}
-                    collaborator={!!photo.u_id && props?.folderDetails?.collaborators.filter(user => user.uuid === photo.u_id)}
+                    collaborator={!!photo.u_id && collaborators?.filter(user => user.uuid === photo.u_id)}
                     colorArr={props.colorArr}
                     
                     onDrop={underIndexs.includes(photo.index) ? false : onDrop}
@@ -662,7 +663,7 @@ const dragging = () => {
                     // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                     highlight={photo.color}
                   >
-                    {/* {console.log("props?.folderDetails?.collaborators", props?.folderDetails?.collaborators, photo)} */}
+                    {/* {console.log("collaborators", collaborators, photo)} */}
                     <PictureFrame
                     className="picture"
                     // onResize={() => console.log("hello")}
@@ -745,102 +746,102 @@ const dragging = () => {
 export default DndContainer;
 
 
-const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDrop, display, favoriteToggle, modalToggle, imgCounter, root }) => {
+// const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDrop, display, favoriteToggle, modalToggle, imgCounter, root }) => {
    
 
-   return <DraggableGridItem
-   className="grid-item"
-   edit={props.edit}
-   alt={photo.index}
-   key={photo.index}
-   orientation={photo.orientation}
-   url={photo.url}
-   photo={photo}
-   collaborator={!!photo.u_id && props?.folderDetails?.collaborators.filter(user => user.uuid === photo.u_id)}
-   colorArr={props.colorArr}
-   // onDrop={onDrop}
-   onDrop={underIndexs?.includes(photo.index) ? false : onDrop}
-  //  photos[0] = groups[0]?.folders[+index].photos
-   onMouseDown={() => setUnderIndexs(underIndexs?.filter((index) => index !== (photo.index + 6)))}
-     onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
-   // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
-   highlight={photo.color}
- >
-   {/* {() => imgCounter(photo.index)} */}
+//    return <DraggableGridItem
+//    className="grid-item"
+//    edit={props.edit}
+//    alt={photo.index}
+//    key={photo.index}
+//    orientation={photo.orientation}
+//    url={photo.url}
+//    photo={photo}
+//    collaborator={!!photo.u_id && collaborators?.filter(user => user.uuid === photo.u_id)}
+//    colorArr={props.colorArr}
+//    // onDrop={onDrop}
+//    onDrop={underIndexs?.includes(photo.index) ? false : onDrop}
+//   //  photos[0] = groups[0]?.folders[+index].photos
+//    onMouseDown={() => setUnderIndexs(underIndexs?.filter((index) => index !== (photo.index + 6)))}
+//      onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
+//    // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
+//    highlight={photo.color}
+//  >
+//    {/* {() => imgCounter(photo.index)} */}
    
-   <PictureFrame
-   className="picture"
-   key={photo.index}
-   // onResize={() => console.log("hello")}
-     // favorited={!!photo.favorites && photo.favorites.length} 
-     // onMouseDown={() => console.log("drag",underIndexs.filter((index) => index === (photo.index + 6)))}
-     // onMouseUp={() => console.log(underIndexs.filter((index) => index === (photo.index + 6)))}
+//    <PictureFrame
+//    className="picture"
+//    key={photo.index}
+//    // onResize={() => console.log("hello")}
+//      // favorited={!!photo.favorites && photo.favorites.length} 
+//      // onMouseDown={() => console.log("drag",underIndexs.filter((index) => index === (photo.index + 6)))}
+//      // onMouseUp={() => console.log(underIndexs.filter((index) => index === (photo.index + 6)))}
 
      
 
-     edit={props.edit}
-     url={photo.url}
-     highlight={photo.color}
-     contentSizing={!!photo.name || !!photo.details}
-     enableDelete={props.enableDelete}
+//      edit={props.edit}
+//      url={photo.url}
+//      highlight={photo.color}
+//      contentSizing={!!photo.name || !!photo.details}
+//      enableDelete={props.enableDelete}
      
-     details={!!photo.name || !!photo.details}
-     orientation={photo.orientation}
-     >  
-     <div className="center-image">
-     {console.log("photo render")}
-     <img
-       className={"photo"}
-       // alt="photo"
-       // ref={imgRef}
-       // key={photo.index}
-       // key={!!photo.url && photo.url}
-      //  onLoad={() => imgCounter(photo.index) }
-       // onLoad={() => props.edit ? onLoadFunc() : onLoadFunc() }
-       // onLoad keeps tall images from overlapping the photo on the next line
+//      details={!!photo.name || !!photo.details}
+//      orientation={photo.orientation}
+//      >  
+//      <div className="center-image">
+//      {console.log("photo render")}
+//      <img
+//        className={"photo"}
+//        // alt="photo"
+//        // ref={imgRef}
+//        // key={photo.index}
+//        // key={!!photo.url && photo.url}
+//       //  onLoad={() => imgCounter(photo.index) }
+//        // onLoad={() => props.edit ? onLoadFunc() : onLoadFunc() }
+//        // onLoad keeps tall images from overlapping the photo on the next line
        
-       onClick={() => modalToggle(photo)}
+//        onClick={() => modalToggle(photo)}
 
-       loading="lazy"
-       src={
-         !!photo.url
-         ? photo.thumbnail_url
-         : require('../assets/100x135.png')
-       }
-       />
-       </div>
+//        loading="lazy"
+//        src={
+//          !!photo.url
+//          ? photo.thumbnail_url
+//          : require('../assets/100x135.png')
+//        }
+//        />
+//        </div>
 
-     {(photo.details || photo.name) 
-     && <div className="content-drawer">
-       <div className="card-content" >
+//      {(photo.details || photo.name) 
+//      && <div className="content-drawer">
+//        <div className="card-content" >
       
-         {/* {photo.name.map(line =><h4>{line}</h4>)} */}
-         <h4>{photo.name}</h4>
-       <p className={"card-details"} >{photo.details}</p>
-       {!!photo.username && <p className={"card-details"} >{photo.username.name}</p>}
-     </div>
-     </div>}
-{/* FAVORITE BUTTON */}
-{/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
+//          {/* {photo.name.map(line =><h4>{line}</h4>)} */}
+//          <h4>{photo.name}</h4>
+//        <p className={"card-details"} >{photo.details}</p>
+//        {!!photo.username && <p className={"card-details"} >{photo.username.name}</p>}
+//      </div>
+//      </div>}
+// {/* FAVORITE BUTTON */}
+// {/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
 
-       {(!!props.currentUserId) && (root === ("user" || "favorites")) && 
-      <Heart 
-       favorited={photo.favorites !== undefined && !!photo.favorites.length}
-       className="heart"
-       onClick={() => favoriteToggle
-       (photo)} >♥</Heart>}
-{/* DELETE BUTTON */}
+//        {(!!props.currentUserId) && (root === ("user" || "favorites")) && 
+//       <Heart 
+//        favorited={photo.favorites !== undefined && !!photo.favorites.length}
+//        className="heart"
+//        onClick={() => favoriteToggle
+//        (photo)} >♥</Heart>}
+// {/* DELETE BUTTON */}
         
-       <div className="delete-cont">
-       <button
-       className="delete-photo-button" 
-       style={{display}}
-       onClick={() => props.deletePhoto(photo)} >+</button>
-       </div>
+//        <div className="delete-cont">
+//        <button
+//        className="delete-photo-button" 
+//        style={{display}}
+//        onClick={() => props.deletePhoto(photo)} >+</button>
+//        </div>
 
-   </PictureFrame>
- </DraggableGridItem>;
-});
+//    </PictureFrame>
+//  </DraggableGridItem>;
+// });
 
 
 

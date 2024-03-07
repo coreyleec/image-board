@@ -243,7 +243,9 @@ const ModelContent = styled.div`
         margin-inline: auto;
         margin-bottom: 10px;
       }
-      img {width: -webkit-fill-available;
+      img {
+        object-fit: contain; 
+          width: -webkit-fill-available;
           max-height: 90vh;
           padding: 10px;
           background-color: ${({ edit }) => !edit ? `rgba(0, 0, 0, 0.3)` : `transparent`};

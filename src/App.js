@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Route, useLocation, Switch, useHistory, Redirect, useNavigate } from 'react-router-dom';
 import styled from "styled-components";
 import Header from "./containers/Header";
-import SideBar from "./containers/SideBar";
+import SideBarTs from "./containers/SideBarTs";
 import AsideRight from "./containers/AsideRight";
 import UserLoginSignup from "./containers/UserLoginSignup";
 import CommunityPage from "./containers/CommunityPage"
@@ -197,7 +197,7 @@ for (const i of Object.keys(groups)) {
       }
       else {
         setPhotos(groups[0]?.folders[0].photos)
-        setFolderDetails(newDetail(groups[0]?.folders[0], folders))
+        setFolderDetails(newDetail(groups[0]?.folders[0], 'folders'))
         // setCollaborators(groups[0]?.folders[0].collaborators)
         collaborators[0] = groups[0]?.folders[0].collaborators
         setFolderShown(groups[0]?.folders[0].index)
@@ -210,6 +210,8 @@ for (const i of Object.keys(groups)) {
         
   })
 }
+
+
 
 
 console.log("creative", folderType)
@@ -524,16 +526,17 @@ const publishAbout = () => {
 }
 console.log("root", root)
 const sortPhotos = (a, b) => a.index - b.index;
-const setFolderPhotos = useCallback((index, type) => {
-  console.log('details', index, type)
-  setFolderArray(index, type);
+
+const setFolderPhotos = useCallback((folder, index, type) => {
+  console.log('details', folder.index, type)
+  setFolderArray(folder, index, type);
 }, [folders, collabs, favorites, root]);
 
-const setFolderArray = (index, type) => {
+const setFolderArray = (object, index, type) => {
     // console.log('death', index, type, eval(type))
-    console.log('details', index, type, details, root)
+    console.log('details', object, index, type, details, root)
     const setFunc = type.charAt(0).toUpperCase() + type.slice(1, -1)
-    const folder = eval(type).find(folder => folder.index === index)
+    const folder = eval(type).find(folder => folder.index === object.index)
     // // eval(`set${setFunc}Shown(${index})`)
     // // setShown(index)
     
@@ -545,21 +548,21 @@ const setFolderArray = (index, type) => {
         eval(`set${setFunc}Privacy(${folder.public})`)
         eval(`set${setFunc}Type(${folder.creative})`)
       }
-      console.log("folder.creative", folder, folder.creative, type, `set${setFunc}Type(${folder.type})`)
+      // console.log("folder.creative", folder, folder.creative, type, `set${setFunc}Type(${folder.type})`)
       setPhotos(folder.photos)
-      setCollaborators(folder.collaborators)
-      const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
-      detail.collaborators = folder.collaborators
-      setFolderDetails(detail)
+      // setCollaborators(folder.collaborators)
+      // const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
+      // detail.collaborators = folder.collaborators
+      setFolderDetails(object)
     }
     else {
       // setCollaborators([])
-      const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`)
-      detail.collaborators = []
-      setFolderDetails(detail)
+      // const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`)
+      // detail.collaborators = []
+      setFolderDetails(object)
       setPhotos(folder.favorite_photos)}
-      eval(`setFolderName("${folder.name}")`)
-      navigate(`/${root}/${type}/${index}`)
+      eval(`setFolderName("${object.name}")`)
+      navigate(`/${root}/${type}/${object.index}`)
 }
 
 const [details, setDetails] = useState([])
@@ -586,19 +589,24 @@ const mapDetails = (groups) => {
       }
       else if (key[0] !== 'favorites'){
 
-        const detail = eval(`groups[i].${key}`).map((folder, i) => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`))
+        const detail = eval(`groups[i].${key}`).map((folder, i) => {
+          let d = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
+          d.collaborators = folder.collaborators
+          return d
+          })
 
-        const collaborators = eval(`groups[i].${key}`).map((folder, i) => (folder.collaborators))
+        // const collaborators = eval(`groups[i].${key}`).map((folder, i) => (folder.collaborators))
 
-        let jsonDetail = detail.map(d => JSON.parse(d))
+        // let jsonDetail = detail.map(d => JSON.parse(d))
 
-        jsonDetail[0].collaborators = collaborators
+        // jsonDetail[0].collaborators = collaborators
         let obj = {}
         let jsonKey = eval(key)[0]
-        obj[jsonKey] = [jsonDetail]
+        obj[jsonKey] = [detail]
+        console.log("[jsonDetail]", detail, obj)
         detailArr.push(obj)
 
-        console.log("[jsonDetail]", jsonDetail)
+        
     
     
         // // details.push([jsonDetail])
@@ -634,6 +642,17 @@ console.log("FUCK", detailObj, obj)
 return detailObj
 }
 }
+
+const setCurrentDetails = (folder, type) => { 
+  const detail = newDetail(folder, type)
+
+  setFolderDetails(detail)
+  
+  const newDetails = [...details]
+  const newFolders = [...newDetails[0].folders[0], detail]
+  newDetails[0].folders[0] = newFolders
+}
+
 
 // !!details[0] && console.log("details[0].folders", details[0].folders[0])
 // useEffect(() => {
@@ -1409,8 +1428,9 @@ console.log("creative folderDetails", "folderDetails", folderDetails, "folderSho
       <Switch> 
       <Cont root={root} >
          
-        <SideBar
+        <SideBarTs
           details={details}
+          setCurrentDetails={setCurrentDetails}
           addy={addy}
           setLocalDb={setLocalDb}
           localDb={localDb}
@@ -1424,7 +1444,7 @@ console.log("creative folderDetails", "folderDetails", folderDetails, "folderSho
           // clickAboutLink={clickAboutLink}
           hover={hover} 
           setHover={setHover}
-          follow={!!follow}
+          follow={!!follow && follow}
           creative={creative}
           lifestyle={lifestyle}
           followFunc={followFunc}

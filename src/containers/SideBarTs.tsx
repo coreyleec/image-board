@@ -5,13 +5,132 @@ import SideBarLinks from "../components/SideBarLinks";
 import SideBarFolder from "../components/SideBarFolder";
 import styled from "styled-components";
 import { EditableDiv, SubtractButton, AddButton } from '../My.styled'
-import { useBootstrapPrefix } from "react-bootstrap/esm/ThemeProvider";
-import update from 'immutability-helper'
 
-const SideBar = (props) => {
+interface ICollaborator {
+    uuid: string;
+    name: string;
+  }
+interface ILinks {
+    name: string;
+    link: string;
+  }
+  
+  interface IDetails {
+    id: number;
+    name: string;
+    creative: boolean;
+    index: number;
+    collaborators: [ICollaborator];
+  }
+  interface IFollow {
+    id: number;
+    u_id: string;
+    creative_follow: boolean;
+    lifestyle_follow: boolean;
+  }
+  
+  interface IProps {
+    skinny: boolean;
+    mobile: boolean;
+    
+    setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
+    loggedIn: boolean;
+    root: string;
+    sub: string;
+    hover: boolean; 
+    addy: boolean; 
+    localDb: boolean; 
+    // creative: boolean
+    // lifestyle: boolean
+    setLocalDb: React.Dispatch<React.SetStateAction<boolean>>;
+    setHover: React.Dispatch<React.SetStateAction<boolean>>;
+    setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+
+    follow: IFollow | null ;
+    followToggle: (params: string) => null;
+    creativeFollow: (params: number) => boolean;
+    lifestyleFollow: (params: number) => boolean;
+
+    catagorize: (params: boolean) => boolean;
+    folderType: null | boolean;
+    setFolderType: React.Dispatch<React.SetStateAction<boolean>>;
+    setFolderShown: React.Dispatch<React.SetStateAction<null | boolean>>;
+    
+    createFolder: (e: React.KeyboardEvent, first: string, last: string) => void;
+    deleteFolder: (first: object, second: string, last: string) => void;
+
+    deleteLink: (e: React.KeyboardEvent, first: object) => void;
+    createLink: (e: React.KeyboardEvent, first: string, second: string) => object;
+    updateLink: (e: React.KeyboardEvent, first: string, second: string, third: object) => object;
+    // e, linkName, linkUrl, link
+    userLinks: null | [ILinks];
+
+    setFolderPhotos: (first: object, second: number, last: string) => void;
+    tutorial: boolean;
+    newFolder: boolean;
+    uuid: string;
+    setType: React.Dispatch<React.SetStateAction<boolean>>;
+    hiliteCollaborator: (params: object) => null;
+    updateFolderPrivacy: (params: null) => object;
+    useTemplate: (params: any) => null;
+    // folderPrivacy: undefined | boolean;
+    setCurrentDetails: (first: number, last: string) => void;
+    details: undefined | [IDetails];
+    folderDetails: undefined | IDetails;
+    collaborators: undefined | [ICollaborator];
+    setEnableDelete: React.Dispatch<React.SetStateAction<boolean>>;
+    enableDelete: boolean;
+    editToggle: (params: boolean) => object;
+    addCollaborator: (params: string, string) => null;
+    fetchHome: () => void;
+    publishAbout: () => void;
+    published: boolean;
+    folderShown: number;
+    
+    edit: boolean;
+    reorder: () => null;
+    userId: string;
+    setCurrentUserId: React.Dispatch<React.SetStateAction<number>>;
+    currentUserId: string;
+    dbVersion: string;
+  }
+
+
+
+        //   addy={addy}
+        //   setLocalDb={setLocalDb}
+        //   localDb={localDb}
+
+        //   overflow={overflow}
+
+
+        //   // about={about}
+        //   follow={!!follow}
+
+        //   followFunc={followFunc}
+        
+        //   landingFetch={landingFetch}
+        //   fetch={fetchHome}
+        //   setFolderShown={setFolderShown}
+
+        //   updateFavorites={updateFavorites} 
+        //   deleteLink={deleteLink}
+        //   deleteFolder={deleteFolder}
+        //   createFolder={createFolder}
+        //   updateFolder={updateFolder}
+        //   createLink={createLink}
+        //   userLinks={userLinks}
+        //   updateLink={updateLink}
+        //   fetchHome={fetchHome}
+        //   setUserId={setUserId}
+        //   userAboutMe={userAboutMe}
+        //   useTemplate={useTemplate}
+
+
+const SideBar: React.FC<IProps> = (props) => {
   const [newFolder, setNewFolder] = useState(false)
   const [folderName, setFolderName] = useState("")
-  const inputRef = useRef(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const submitNewFolder = (e, type) => {
     if (e.key === 'Enter' && e.shiftKey === false) {props.createFolder(e, folderName, type) 
     e.currentTarget.blur();
@@ -40,25 +159,12 @@ const updateFolder = (e, folderName, folder) => {
     .then((res) => res.json())
     .then((folderObj) => {
       console.log("folderObj", folderObj);
-      props.setFolderDetails(
-        props.folderDetails.map((folder) => {
-          if (folder.id === folderObj.id) return folderObj;
-          else return folder;
-        })
+      props.setCurrentDetails(folderObj, 'folders'
       );
     });
 };
 const [folders, setFolders] = useState()
-const moveFolder = useCallback((dragIndex, hoverIndex) => {
-  setFolders((prevFolders) =>
-    update(prevFolders, {
-      $splice: [
-        [dragIndex, 1],
-        [hoverIndex, 0, prevFolders[dragIndex]],
-      ],
-    }),
-  )
-}, [])
+
   
   
   // TOGGLE SIDEBAR
@@ -69,14 +175,14 @@ const moveFolder = useCallback((dragIndex, hoverIndex) => {
   const location = useLocation();
   let history = useHistory();
   let navigate = history.push;
-  const sideBarRef = useRef()
+  const sideBarRef = useRef<HTMLInputElement>(null);
   // LOGOUT
   const logout = () => {
     localStorage.uuid = null 
     localStorage.name = null
     props.setCurrentUserId(null);
     props.setLoggedIn(false)
-    window.store = null
+    window.Storage = null
     localStorage.clear();
     // window.location.reload(false);
     // props.landingFetch()
@@ -105,19 +211,19 @@ const moveFolder = useCallback((dragIndex, hoverIndex) => {
 let topVal = skinny ? -6 : 20
 let loginTopVal = skinny ? -14 : 11
 // console.log("top", topVal)
-const foldersRef = useRef()
+const foldersRef = useRef<HTMLInputElement>(null);
 const foldersDemo = [!!foldersRef.current && foldersRef.current.offsetTop + topVal, 'folders can be used to organize photos as you develope bodies of work']
-const collabsRef = useRef()
+const collabsRef = useRef<HTMLInputElement>(null);
 const collabsDemo = [!!collabsRef.current && collabsRef.current.offsetTop + topVal, 'these are folders that you contribute to']
-const favoritesRef = useRef()
+const favoritesRef = useRef<HTMLInputElement>(null);
 const favoritesDemo = [!!favoritesRef.current && favoritesRef.current.offsetTop + topVal, "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
-const linksRef = useRef()
+const linksRef = useRef<HTMLInputElement>(null);
 const linkDemo = [!!linksRef.current && linksRef.current.offsetTop + topVal, "here you can add external links to projects or any relevant content you would like to share. i've added my GitHub and LinkedIn for example"]
-const communityRef = useRef()
+const communityRef = useRef<HTMLInputElement>(null);
 const communityDemo = [!!communityRef.current && communityRef.current.offsetTop + topVal, "the community page allows you to explore the site and see what other people are taking photos of"]
-const aboutRef = useRef()
+const aboutRef = useRef<HTMLInputElement>(null);
 const aboutDemo = [!!aboutRef.current && aboutRef.current.offsetTop + topVal, "click here for more information on the project, myself, and projects to come!"]
-const loginRef = useRef()
+const loginRef = useRef<HTMLInputElement>(null);
 const loginDemo = [!!loginRef.current && loginRef.current.offsetTop + loginTopVal, "open beta will be available after some more tweaks!"]
 const [demoText, setDemoText] = useState(foldersDemo)
 
@@ -186,7 +292,7 @@ useEffect(() => {
             <Switch>
             <label className="toggle-switch">
             <input type="checkbox" 
-            checked={props.follow.creative_follow}
+            checked={props.follow?.creative_follow}
             onChange={() => props.creativeFollow(props.follow.id)}
             />
             <span className="switch" />
@@ -291,14 +397,15 @@ useEffect(() => {
 
             {Object.values(props.details[value])[0].map((folders, index)=> 
               folders.sort((a, b) => a.index - b.index).map(folder => 
-                <div className="title-cont" key={folder.id} folder={folder}>
+                <div className="title-cont" key={folder.id} 
+                // folder={folder}
+                >
                   <EditableDiv
                     suppressContentEditableWarning={true}
                     type="text" 
                     contentEditable={props.edit} edit={props.edit}
-                    folderDetails={props.folder}
+                    // folderDetails={props.folder}
                     index={folder.index}
-                    moveFolder={moveFolder}
                     defaultValue={folder.name}
                     draggable={true}
                     onKeyDown={(e) => submitFolderEdit(e, folder, Object?.keys(props?.details[value])[0])}
@@ -425,7 +532,7 @@ useEffect(() => {
         {(props.sub !== 'about') && (props.root === 'home' || props.root === 'by_Corey_Lee') && props.tutorial &&
         <CatagoryTip 
           sideBar={sideBar} 
-          sideBarWidth={!!sideBarRef.current && sideBarRef.current.clientWidth}
+          sideBarWidth={!!sideBarRef.current && sideBarRef?.current?.clientWidth}
           hover={props.hover}
           demoTop={demoText[0]}
           onMouseEnter={() => {props.setHover(true)}}
@@ -775,7 +882,7 @@ background-color: #ccc;
                     edit={props.edit}
                     folderShown={props.folderShown}
                     folderDetails={props.folderDetails}
-                    setFolderDetails={props.setFolderDetails}
+                    setCurrentDetails={props.setCurrentDetails}
                     enableDelete={props.enableDelete}
                     root={props.root}
                     sub={props.sub}
