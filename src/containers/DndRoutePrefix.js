@@ -1,7 +1,7 @@
 import React, {memo, useEffect, useState, useCallback, useMemo} from "react";
 import { BrowserRouter as Routes, Route, useLocation, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import DndContainer from "./DndContainer";
-import AboutMe from "./AboutMe";
+import AboutMeTs from "./AboutMeTs";
 import PhotoGrid from "../mobileContainers/PhotoGrid";
 
 
@@ -81,7 +81,7 @@ return (
 
 
               <Route path={`${match.path}/about`} >
-                  <AboutMe
+                  <AboutMeTs
                   demo={props.demo}
                   mobile={props.mobile}
                   loggedIn={props.loggedIn}

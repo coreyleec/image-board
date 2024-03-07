@@ -22,6 +22,7 @@ interface ILinks {
     index: number;
     collaborators: [ICollaborator];
   }
+  
   interface IFollow {
     id: number;
     u_id: string;
@@ -94,37 +95,6 @@ interface ILinks {
     currentUserId: string;
     dbVersion: string;
   }
-
-
-
-        //   addy={addy}
-        //   setLocalDb={setLocalDb}
-        //   localDb={localDb}
-
-        //   overflow={overflow}
-
-
-        //   // about={about}
-        //   follow={!!follow}
-
-        //   followFunc={followFunc}
-        
-        //   landingFetch={landingFetch}
-        //   fetch={fetchHome}
-        //   setFolderShown={setFolderShown}
-
-        //   updateFavorites={updateFavorites} 
-        //   deleteLink={deleteLink}
-        //   deleteFolder={deleteFolder}
-        //   createFolder={createFolder}
-        //   updateFolder={updateFolder}
-        //   createLink={createLink}
-        //   userLinks={userLinks}
-        //   updateLink={updateLink}
-        //   fetchHome={fetchHome}
-        //   setUserId={setUserId}
-        //   userAboutMe={userAboutMe}
-        //   useTemplate={useTemplate}
 
 
 const SideBar: React.FC<IProps> = (props) => {
