@@ -10,7 +10,7 @@ import { DndProvider } from "react-dnd";
 import DraggableGridItem from "../dnd/DraggableGridItem";
 import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
-import ImageModal from "../components/ImageModal";
+import ImageModalTs from "../TsComponents/ImageModalTs";
 
 const DndContainer = React.memo(( props ) => {
   const collaborators = props?.folderDetails?.collaborators
@@ -376,18 +376,19 @@ let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex) > 1
 // }, []);
 
   
-  const addPhoto = (e, formData, orientation, photoName, photoDetails, photo) => {
+  const addPhoto = (e, formData, orientation, photoName, photoDetails, photoObj) => {
     e.preventDefault();
-
-    console.log("props.currentUserId", props.currentUserId)
+    setOpenModal(!openModal)
+console.log("form data", e, formData, orientation, photoName, photoDetails, photoObj)
+    
     if (props.demo) {
       e.preventDefault();
-      const updatedPhoto = Object.create(photo)
+      const updatedPhoto = Object.create(photoObj)
       updatedPhoto.name = photoName
       updatedPhoto.details = photoDetails
       updatedPhoto.orientation = orientation
-      updatedPhoto.index = photo.index
-      updatedPhoto.id = photo.id
+      updatedPhoto.index = photoObj.index
+      updatedPhoto.id = photoObj.id
       updatedPhoto.u_id = props.currentUserId
       updatedPhoto.thumbnail_url = imgUrl
       updatedPhoto.url = imgUrl
@@ -404,6 +405,8 @@ let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex) > 1
       photoDetails !== undefined && photoDetails !== null && data.append('details', photoDetails)
       data.append('u_id', props.currentUserId)
   
+      console.log("data", data)
+
     for(let [key, value] of data){console.log("data", `${key}:${value}`)}
   
   fetch(`${props.dbVersion}/photos/${photo.id}`, {
@@ -607,7 +610,7 @@ useEffect(() => {
 // },
 // [props.photos]);
 
-console.log("PROPS.FOLDERDETAILS", props.folderDetails)
+// console.log("PROPS.FOLDERDETAILS", props.folderDetails)
 
 const [drag, setDrag] = useState(false)
 const dragging = () => {
@@ -619,7 +622,7 @@ const dragging = () => {
     <article>
       {/* <button onClick={adjustFunction}>adjust</button> */}
       {openModal && (
-        <ImageModal
+        <ImageModalTs
         setImgUrl={setImgUrl}
         setPhotos={props.setPhotos}
         addPhoto={addPhoto}
@@ -729,7 +732,7 @@ const dragging = () => {
                         <button
                         className="delete-photo-button" 
                         style={{display}}
-                        onClick={() => props.deletePhoto(photo)} >+</button>
+                        onClick={() => props.removePhoto(photo)} >+</button>
                         </div>
 
                     </PictureFrame>

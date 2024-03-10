@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Route, useLocation, Switch, useHistory, Redirect, useNavigate } from 'react-router-dom';
 import styled from "styled-components";
-import Header from "./containers/Header";
-import SideBarTs from "./containers/SideBarTs";
-import AsideRight from "./containers/AsideRight";
+import Header from "./TsContainers/Header";
+import SideBarTs from "./TsContainers/SideBarTs";
+import AsideRight from "./TsContainers/AsideRight";
 import UserLoginSignup from "./containers/UserLoginSignup";
-import CommunityPage from "./containers/CommunityPage"
+import TsCommunityPage from "./TsContainers/TsCommunityPage"
 import DndRoutePrefix from "./containers/DndRoutePrefix";
 
 
@@ -140,7 +140,7 @@ const profileFetch = () => {
       
 
 const groups = user.user.all_groups
-console.log("User Profile", user.user.all_groups, user.user, groups[0]?.folders[+index])
+console.log("User Profile", loggedIn, user.user)
 for (const i of Object.keys(groups)) {
   const key = Object.keys(groups[i]);
   const value = JSON.stringify(eval(`groups[i].${key}`))
@@ -214,7 +214,7 @@ for (const i of Object.keys(groups)) {
 
 
 
-console.log("creative", folderType)
+
 const landingFetch = () => {
   fetch(`${dbVersion}/landing_page`, {
         method: "GET",
@@ -402,23 +402,17 @@ const autoLoggin = () => {
   })
     .then((res) => res.json())
     .then((user) => {
+      setLoggedIn(true)
       console.log('auto login function', user, location.pathname, root, user.user.id)
       setCurrentUserId(user.user.id)
       setDemo(false)
-      setLoggedIn(true)
       if (root === 'home'){ profileFetch()}
     }
     );
   };
-
 // useEffect(() => {
-//   if (!!localStorage.token && !currentUserId && !userId ){
-//     autoLoggin()
-//   }
-// }, [])
-
- 
-
+//   console.log("loggedIn", loggedIn)
+// }, [loggedIn])
 
 
 const fetchHome = () => 
@@ -428,9 +422,6 @@ const fetchHome = () =>
     profileFetch() } 
     else {landingFetch()}
   }
-
-
-
 
 useEffect(() => {
   if (window.outerWidth < 1100 || window.innerWidth < 1100) {
@@ -524,18 +515,19 @@ const publishAbout = () => {
 
     })}
 }
-console.log("root", root)
+
 const sortPhotos = (a, b) => a.index - b.index;
 
-const setFolderPhotos = useCallback((folder, index, type) => {
-  console.log('details', folder.index, type)
-  setFolderArray(folder, index, type);
+const setFolderPhotos = useCallback((folder, type) => {
+  console.log('details', folder, type)
+  setFolderArray(folder, type);
 }, [folders, collabs, favorites, root]);
 
-const setFolderArray = (object, index, type) => {
-    // console.log('death', index, type, eval(type))
-    console.log('details', object, index, type, details, root)
-    const setFunc = type.charAt(0).toUpperCase() + type.slice(1, -1)
+const setFolderArray = (object, type) => {
+    console.log('setFolder params', object, type)
+    let index = object.index
+    // console.log('details', object, index, type, details, root)
+    const setFunc = type?.charAt(0)?.toUpperCase() + type.slice(1, -1)
     const folder = eval(type).find(folder => folder.index === object.index)
     // // eval(`set${setFunc}Shown(${index})`)
     // // setShown(index)
@@ -582,8 +574,7 @@ const mapDetails = (groups) => {
     
         let obj = {}
         obj[jsonKey] = [jsonDetail]
-    console.log("[jsonDetail]", jsonDetail[0])
-        // details.push([jsonDetail])
+
         detailArr.push(obj)
       
       }
@@ -595,21 +586,11 @@ const mapDetails = (groups) => {
           return d
           })
 
-        // const collaborators = eval(`groups[i].${key}`).map((folder, i) => (folder.collaborators))
-
-        // let jsonDetail = detail.map(d => JSON.parse(d))
-
-        // jsonDetail[0].collaborators = collaborators
         let obj = {}
         let jsonKey = eval(key)[0]
         obj[jsonKey] = [detail]
-        console.log("[jsonDetail]", detail, obj)
+        // console.log("[jsonDetail]", detail, obj)
         detailArr.push(obj)
-
-        
-    
-    
-        // // details.push([jsonDetail])
 
         // console.log("key", key[0], key[0] === 'favorites', detail)
       }
@@ -634,11 +615,8 @@ else {
   const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}, "creative": ${obj.creative}}`
   
   const detailObj = JSON.parse(detail)
-console.log("FUCK", detailObj, obj)
+// console.log("detailObj", detailObj, obj)
   detailObj.collaborators = obj.collaborators
-  // const collaborators = eval(`groups[i].${key}`).map((folder, i) => (folder.collaborators))
-
-  // const mapDetail = eval(`details[i].${key}`).map((folder, i) => ())
 return detailObj
 }
 }
@@ -1019,16 +997,17 @@ const catagorize = (boolean) => {
 
     const deleteFolder = (folderObj, type, id) => {
       // GETS INDEX OF DELETED FOLDER
-      const folderIndex = folders.sort((a, b) => a.index - b.index).findIndex(
-        (folder) => folder.index === folderObj.index);
+      const folderIndex = folders.sort((a, b) => a.index - b.index).findIndex((folder) => folder.index === folderObj.index);
 
+console.log("delete", folders.length > 1, folderIndex === 0)
         if (folders.length > 1){
 
           if(folderIndex === 0){
-            setFolderPhotos(folders.at(-1).index, type)
+            setFolderPhotos(folders.at(-1), type)
           }
           else{
-          setFolderPhotos(folders[folderIndex - 1].index, type)}
+            console.log("delete", loggedIn, folderObj, type, id)
+          setFolderPhotos(folders[folderIndex - 1], type)}
 
           const spreadDetails = [...details]
           const reducedFolders = spreadDetails[0].folders[0].filter((folder) => folder.id !== id);
@@ -1162,11 +1141,11 @@ const nameSubmit = (e, newName) => {
 // PHOTO FUNCTIONS
 const removePhoto = useCallback((photo) => {
   deletePhoto(photo);
-}, []);
+}, [loggedIn, photos]);
 
 const deletePhoto = (photo) => {
-  console.log(photo);
   
+  console.log(photo, loggedIn);
   if (demo){
     const updatedPhoto = {name: null, url: null, details: null, orientation: true, image_file: null, id: photo.id, index: photo.index, u_id: photo.u_id, folder_id: photo.folder_id}
     setPhotos(
@@ -1177,6 +1156,7 @@ const deletePhoto = (photo) => {
     );
   }
   else if (loggedIn){
+    console.log(photo);
     fetch(`${dbVersion}/photos/${photo.id}/`, {
     method: "DELETE",
     headers: {
@@ -1420,7 +1400,7 @@ if(location.pathname === "/" && root !== 'user'){
     setLoaded(false)
   }, [root])
   
-console.log("creative folderDetails", "folderDetails", folderDetails, "folderShown", folderShown, "folderType", folderType, "folderPrivacy", folderPrivacy, collaborators)
+// console.log("creative folderDetails", "folderDetails", folderDetails, "folderShown", folderShown, "folderType", folderType, "folderPrivacy", folderPrivacy, collaborators)
 
 
     return (
@@ -1630,23 +1610,18 @@ console.log("creative folderDetails", "folderDetails", folderDetails, "folderSho
                 </Route>
 
                 <Route path="/community" >
-                  <CommunityPage
-                  setLoaded={setLoaded}
+                  <TsCommunityPage
+                    setLoaded={setLoaded}
                     root={root}
                     mobile={mobile}
                     loggedIn={loggedIn}
+                    
                     userId={userId}
                     currentUserId={currentUserId}
+
                     setUserName={setUserName}
                     setUserAboutMe={setUserAboutMe}
-                    setFolders={setFolders}
-                    setCollabs={setCollabs}
-                    setPhotos={setPhotos}
-                    setUserLinks={setUserLinks}
-                    setFolderShown={setFolderShown}
-                    setUserId={setUserId}
-                    setCollaborators={setCollaborators}
-                    setUuid={setUuid}
+
                     dbVersion={dbVersion}
                     fetchUser={fetchUser}
                   />

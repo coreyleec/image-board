@@ -6,8 +6,63 @@ import ImageModal from '../discard/ImageModal';
 import styled from 'styled-components'
 // import recent from '../recent.json'
 
+interface IProps {
+    setLoaded: React.Dispatch<React.SetStateAction<boolean>>;
+    root: string;
+    mobile: boolean;
+    loggedIn: boolean;
 
-const CommunityPage = (props) => {
+    userId: string;
+    currentUserId: string;
+    
+    setUserName: React.Dispatch<React.SetStateAction<string>>;
+    setUserAboutMe: React.Dispatch<React.SetStateAction<object>>;
+    
+    dbVersion: string;
+    fetchUser: (first: string, last: string) => object;
+  } 
+
+  interface IState {
+  photos: [IPhoto];
+    // delay: string;
+    // search: [];
+    // expand: boolean;
+    // flexStart: boolean;
+    // controlDock: boolean;
+    // drawerHeight: number;
+    // editDrawerWidth: number;
+    // editDrawerHeight: number;
+    // height: number;
+    // inputWidth: string;
+    // setInputWidth: React.Dispatch<React.SetStateAction<string>>;
+    // searchUl: [] | number ;
+    // setSearchUl: React.Dispatch<React.SetStateAction< number | [] | undefined>>;
+    // drawer: number;
+    // follow: boolean;
+    // demoText: string;
+    // setDemoText: React.Dispatch<React.SetStateAction<string>>;
+    // demoArrow: string;
+  }
+
+  interface IPhoto {
+    id: number;
+    u_id: string;
+    user_name: string;
+    name: string;
+    details: string;
+    orientation: boolean;
+    creative: boolean;
+    index: number;
+    thumbnail_url: string;
+    url: string;
+    created_at: string;
+    updated_at: string;
+    folder_name: string;
+    folder_id: number;
+  }
+
+
+const TsCommunityPage: React.FC<IProps> =  (props) => {
     const location = useLocation();
     const history = useHistory()
     const navigate = history.push
@@ -17,7 +72,7 @@ const CommunityPage = (props) => {
     const [photo, setPhoto] = useState();
 
     const [openModal, setOpenModal] = useState(false);
-    const [photos, setPhotos] = useState()
+    const [photos, setPhotos] = useState([])
 
     const modalToggle = (photo, photos) => {
     // console.log("photo", photo)
@@ -423,7 +478,7 @@ const [search, setSearch] = useState([0])
             <div className='block-cont'>
             <p>user</p> 
             <InputSwitch
-            catagorized={props.folderType === null}
+
             search={search}
             expand={!expand} >
             <label className="toggle-switch">
@@ -434,10 +489,11 @@ const [search, setSearch] = useState([0])
             {/* {expand && ">"} */}
             </button>
             {!expand && 
-            <input autoFocus="autofocus" type="text" onChange={(e) => searchUser(e.target.value)} placeholder="search user"/>}
+            <input autoFocus type="text" 
+            // onChange={(e) => searchUser(e.target.value)} 
+            placeholder="search user"/>}
             <ul>
-              {/* {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}
-              >
+              {/* {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
                 {user.name}
               </li>))} */}
             </ul>
@@ -449,7 +505,7 @@ const [search, setSearch] = useState([0])
             <div className='block-cont'>
             <p>word</p> 
             <InputSwitch
-            catagorized={props.folderType === null}
+
             search={search}
             expand={!!expand} >
             <label className="toggle-switch">
@@ -460,11 +516,13 @@ const [search, setSearch] = useState([0])
             {/* {expand && ">"} */}
             </button>
             {expand && 
-            <input autoFocus="autofocus" type="text" onChange={(e) => searchUser(e.target.value)} placeholder="search word"/>}
+            <input autoFocus type="text" 
+            // onChange={(e) => searchUser(e.target.value)} 
+            placeholder="search word"/>}
             <ul>
-              {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
+              {/* {!!search && search.map((user) => (<li onClick={() => props.addCollaborator(user.uuid)}>
                 {user.name}
-              </li>))}
+              </li>))} */}
             </ul>
             </span>
             </label>
@@ -514,7 +572,7 @@ const [search, setSearch] = useState([0])
         </Body>
     )
 }
-export default CommunityPage;
+export default TsCommunityPage;
 
 const Body = styled.div` 
     /* flex: 1 0 auto; */

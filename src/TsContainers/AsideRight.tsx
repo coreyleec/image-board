@@ -121,7 +121,7 @@ const AsideRight: React.FC<IProps> = (props) => {
     props.reorder()
   };
 
-  console.log("props.folderDetails", props?.folderDetails)
+  // console.log("props.folderDetails", props?.folderDetails)
   
   const searchUser = (input) => {
     console.log(input)
@@ -203,7 +203,7 @@ useEffect(() => {
   let deleteSwitch = 0
   // editDrawerRef.current?.childNodes[0].clientHeight
   let editSwitch = !props.skinny ? 60 : controlDock ? 25 : 0
-  let editDrawer = !props.skinny ? (105 + deleteSwitch) : props.edit ? 95 : 0
+  let editDrawer = !props.skinny ? (105 + deleteSwitch) : (props.edit ? 95 : 0) + tutorial
   // ^130 WHEN PUBLIC TOGGLE IS INCLUDED IN EDIT DRAWER OR 4 TOGGLES ARE IN EDIT DRAWER. UNTIL PUBLIC TOGGLE IS READY THE VALUE IS 95
   let follow = 50
   let collabUl = (!!listRef.current) ? (listRef.current.clientHeight) + 10 : 0
@@ -236,7 +236,7 @@ useEffect(() => {
     }
     else {
       console.log("setDrawer(", 50, "+",  collabUl, ")")
-      setDrawer(25 + collabUl)
+      setDrawer(50 + collabUl + tutorial)
     }
   } 
   else if (props.sub === 'about'){

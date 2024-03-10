@@ -57,6 +57,13 @@ console.log("props.photo", props.photo)
     } 
   }
 
+const [photoObj, setPhotoObj] = useState({name: "", detials: "", src: ""})
+useEffect(() => {
+  setPhotoObj({
+    name: photoName, detials: photoDetails, src: photoSrc
+  })
+}, [photoName, photoDetails, photoSrc])
+
 
   return (
     <div>

@@ -1,7 +1,7 @@
 import React, {memo, useEffect, useState, useCallback, useMemo} from "react";
 import { BrowserRouter as Routes, Route, useLocation, Switch, useHistory, useRouteMatch } from 'react-router-dom';
 import DndContainer from "./DndContainer";
-import AboutMeTs from "./AboutMeTs";
+import AboutMeTs from "../TsContainers/AboutMeTs";
 import PhotoGrid from "../mobileContainers/PhotoGrid";
 
 
@@ -35,7 +35,7 @@ const DndRoutePrefix = React.memo(( props ) => {
   //     console.log('callback is called!');
   //  }, [props.photos, props.edit]);
 
-    console.log("props.folderDetails", props.folderDetails)
+    // console.log("props.folderDetails", props.folderDetails)
 
 return (
     <Switch>
@@ -67,7 +67,7 @@ return (
                 currentUserId={props.currentUserId}
                 demo={props.demo}
                 setReorderedPhotos={props.setReorderedPhotos}
-                deletePhoto={props.deletePhoto}
+                removePhoto={props.removePhoto}
                 enableDelete={props.enableDelete}
                 edit={props.edit}
                 reorderSubmit={props.reorderSubmit}

@@ -66,7 +66,7 @@ interface ILinks {
     // e, linkName, linkUrl, link
     userLinks: null | [ILinks];
 
-    setFolderPhotos: (first: object, second: number, last: string) => void;
+    setFolderPhotos: (first: object, last: string) => void;
     tutorial: boolean;
     newFolder: boolean;
     uuid: string;
@@ -170,7 +170,7 @@ const [folders, setFolders] = useState()
     else {setSkinny(false)}
   
     const updateMedia = () => {
-      console.log("resize")
+      // console.log("resize")
       if (window.innerWidth < 1100) {setSkinny(true)} 
       else {setSkinny(false)}
     };
@@ -379,7 +379,10 @@ useEffect(() => {
                     defaultValue={folder.name}
                     draggable={true}
                     onKeyDown={(e) => submitFolderEdit(e, folder, Object?.keys(props?.details[value])[0])}
-                    onClick={() => {props.setFolderPhotos(folder, folder.index, Object?.keys(props?.details[value])[0])
+                    // onClick={
+                    //   () => console.log('setFolder params', folder, Object?.keys(props?.details[value])[0])
+                    // }
+                    onClick={() => {props.setFolderPhotos(folder, Object?.keys(props?.details[value])[0])
                     }}
                     style={(Object?.keys(props?.details[value])[0] === props.sub && folder.index === props.folderShown) && (props.root === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
                     onInput={e => setFolderName(e.currentTarget.textContent)}

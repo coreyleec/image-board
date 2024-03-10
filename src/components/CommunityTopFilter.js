@@ -1,6 +1,6 @@
 import React from 'react'
 import { useSelector, useEffect, useState } from 'react'
-import CommunityPanel from "./CommunityPanel";
+import CommunityPanel from "../discard/CommunityPanel";
 import styled from 'styled-components'
 import CommunitySecondaryFilter from './CommunitySecondaryFilter';
 
