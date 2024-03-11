@@ -67,7 +67,7 @@ const ImageModalTs: React.FC<IProps> =  (props) => {
     }
   });
 
-  const formRef = useRef<HTMLFormElement | undefined>(null); 
+  const formRef = useRef<HTMLFormElement | null>(null); 
   // const useFormValue = (form: Ref<HTMLFormElement>) => {}
   const button = useRef<HTMLInputElement>(null);
   const buttonOnCLick = () => {

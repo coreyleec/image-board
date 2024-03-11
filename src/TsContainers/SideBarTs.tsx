@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from "react";
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
-import SideBarLinks from "../components/SideBarLinks";
+import TsSideBarLinks from "../TsComponents/TsSideBarLinks";
 import SideBarFolder from "../components/SideBarFolder";
 import styled from "styled-components";
 import { EditableDiv, SubtractButton, AddButton } from '../My.styled'
@@ -12,7 +12,9 @@ interface ICollaborator {
   }
 interface ILinks {
     name: string;
-    link: string;
+    url: string;
+    id: number;
+    index: number;
   }
   
   interface IDetails {
@@ -406,15 +408,15 @@ useEffect(() => {
           )}
                     </div>}
 
-                    {(!!props.userLinks || props.edit) && (props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') &&
-                    <div 
-                    onClick={() => setSideBar(!sideBar)} 
-                    style={{"width": "-webkit-fill-available"}}>
+        {(!!props.userLinks || props.edit) && (props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') &&
+        <div 
+        // onClick={() => setSideBar(!sideBar)} 
+        style={{"width": "-webkit-fill-available"}}>
 
           {props.tutorial && <div className="hover-div" onMouseOver={() => setDemoText(linkDemo)}
                     ref={linksRef}
                     ></div>}
-                    <SideBarLinks
+                    <TsSideBarLinks
                       mobile={props.mobile}
                       loggedIn={props.loggedIn}
                       updateLink={props.updateLink}
@@ -721,6 +723,7 @@ const Sticky = styled.div`
       transform: ${({ sideBar }) => (sideBar ? 'translateX(0px)' : 'translateX(-198px)')};
       transition: transform .5s ease;
       border-bottom-right-radius: 22px;
+      
       &::-webkit-scrollbar {
         display: none;
       }
@@ -728,7 +731,7 @@ const Sticky = styled.div`
  
     .scrollable {
       display: block;
-      @media only screen and (max-width: 700px) {
+      @media only screen and (max-width: 1100px) {
         margin-left: 5px;
         display: flex;
         flex-direction: column;

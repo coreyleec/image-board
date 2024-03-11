@@ -1,7 +1,7 @@
 import React from 'react'
 import { useEffect, useState, useRef } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
-import CommunityTopFilter from "../components/CommunityTopFilter";
+import TsCommunityFilter from "./TsCommunityFilter";
 import ImageModal from '../discard/ImageModal';
 import styled from 'styled-components'
 // import recent from '../recent.json'
@@ -19,9 +19,9 @@ interface IProps {
     setUserAboutMe: React.Dispatch<React.SetStateAction<object>>;
     
     dbVersion: string;
-    fetchUser: (first: string, last: string) => object;
+    fetchUser: (userId: string, name: string, objId: number | null) => object;
   } 
-
+  // userId, name, objId
   interface IState {
   photos: [IPhoto];
     // delay: string;
@@ -118,7 +118,7 @@ const [filters, setFilters] = useState({
   
 })
 
-const panelRef = useRef()
+const panelRef = useRef<HTMLDivElement | undefined>(null); 
 
 const [dimensions, setDimensions] = useState({
   width: window.innerWidth,
@@ -535,25 +535,18 @@ const [search, setSearch] = useState([0])
               </FilterDrawer >}
             
             {load && 
-            <CommunityTopFilter
-              mobile={props.mobile}
+            <TsCommunityFilter
               modalToggle={modalToggle}
-              community={community}
-              fetchUser={props.fetchUser}
-              following={following}
-              // users={users}
-              // folders={folders}
+              mobile={props.mobile}
               panel={panel}
-              panelHeight={panelRef}
+              panelHeight={panelRef?.current?.clientHeight}
+              fetchUser={props.fetchUser}
               users={filters.connected 
               ? following.users
               :  community.users}
               folders={filters.connected 
               ? following.folders
               : community.folders}
-              // usersFollowed={following.users}
-              // foldersFollowed={following.folders}
-              // photosFollowed={following.photos}
               setCreative={setCreative}
               setLifestyle={setLifestyle}
               filters={filters}
@@ -561,9 +554,10 @@ const [search, setSearch] = useState([0])
               setLoad={setLoad}
               error={error}
               setError={setError}
-              setConnected={setConnected}
+              dbVersion={props.dbVersion}
+              // setConnected={setConnected}
               setCatagory={setCatagory}
-              
+              // currentUserId={currentUserId}
             />
             }
            

@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect, useState, useRef } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import CommunityTopFilter from "../components/CommunityTopFilter";
-import ImageModal from '../discard/ImageModal';
+import ImageModal from './ImageModal';
 import styled from 'styled-components'
 // import recent from '../recent.json'
 
@@ -486,7 +486,7 @@ const [search, setSearch] = useState([0])
               // users={users}
               // folders={folders}
               panel={panel}
-              panelHeight={panelRef}
+              panelHeight={panelRef?.current?.clientHeight}
               users={filters.connected 
               ? following.users
               :  community.users}

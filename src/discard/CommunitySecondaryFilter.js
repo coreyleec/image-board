@@ -364,7 +364,7 @@ const Cont = styled.div`
     overflow: scroll;
     /* height: 100%; */
     transition: height .2s ease;
-    height: ${({panel, panelHeight}) => panel ? `calc(100% - ${panelHeight.current.clientHeight}px)` : `100%`};
+    height: ${({panel, panelHeight}) => panel ? `calc(100% - ${panelHeight}px)` : `100%`};
 
 
     & .user-cont:last-child{

@@ -5,7 +5,7 @@ import Header from "./TsContainers/Header";
 import SideBarTs from "./TsContainers/SideBarTs";
 import AsideRight from "./TsContainers/AsideRight";
 import UserLoginSignup from "./containers/UserLoginSignup";
-import TsCommunityPage from "./TsContainers/TsCommunityPage"
+import TsCommunityPage from "./CommunityComponents/TsCommunityPage"
 import DndRoutePrefix from "./containers/DndRoutePrefix";
 
 

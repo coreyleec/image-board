@@ -1,22 +1,87 @@
 import React from 'react'
-import { useSelector, useEffect, useState } from 'react'
 import CommunityPanel from "../discard/CommunityPanel";
 import styled from 'styled-components'
-import CommunitySecondaryFilter from './CommunitySecondaryFilter';
+import TsCommunityContent from './TsCommunityContent';
 
+interface ICollaborator {
+    uuid: string;
+    name: string;
+  }
+interface IPhoto {
+    id: number;
+    folder_id: number;
+    u_id: string;
+    url: string;
+    thumbnail_url: string;
+    name: string;
+    creative: boolean;
+    index: number;
+    details: string;
+    collaborators: [ICollaborator];
+  }
+interface IProps {
+    modalToggle: (photo: IPhoto, photos: [IPhoto]) => void;
+    mobile: boolean;
+    panel: boolean;
+    panelHeight: number;
+    fetchUser: (userId: string, name: string, objId: number | null) => object;
+    users: [IUser];
+    folders: [IFolder];
+    setCreative: React.Dispatch<React.SetStateAction<object>>;
+    setLifestyle: React.Dispatch<React.SetStateAction<object>>;
 
-const CommunityTopFilter = (props) => {
+    filters: IFilters;
+    load: boolean;
+    setLoad: React.Dispatch<React.SetStateAction<boolean>>;
 
-  const sortPhotos = (property) => {
-  props.photos.sort((a, b) => a.property > b.property)
+    error: boolean;
+    setError: React.Dispatch<React.SetStateAction<boolean>>;
 
+    // setConnected: React.Dispatch<React.SetStateAction<boolean>>;
+    setCatagory: (string) => void;
+    dbVersion: string;
+    // currentUserId: string;
 }
+
+interface IUser {
+created_at: string;
+folders: [IFolder]
+name: string;
+photos:  [IPhoto]
+updated_at: string;
+uuid: string;
+}
+interface IFolder {
+    collaborators: [ICollaborator]
+    created_at: string;
+    creative: boolean;
+    details: null;
+    id: number;
+    name: string;
+    photos: [IPhoto];
+    public: true;
+    u_id: string;
+    updated_at: string;
+    user_name: string;
+}
+interface IFilters {
+    catagory: string, 
+    connected: boolean,
+    creative: boolean,
+    lifestyle: boolean,
+}
+
+
+
+const TsCommunityFilter: React.FC<IProps> = (props) => {
+
+  
     return (
       
       <Body mobile={props.mobile} panel={props.panel} panelHeight={props.panelHeight}>
 
      
-            <CommunitySecondaryFilter
+            <TsCommunityContent
               mobile={props.mobile}
               modalToggle={props.modalToggle}
               fetchUser={props.fetchUser}
@@ -26,7 +91,10 @@ const CommunityTopFilter = (props) => {
               panelHeight={props.panelHeight}
               catagory={eval(`props.${props.filters.catagory}`)}
               filters={props.filters}
+              dbVersion={props.dbVersion}
 
+              error={props.error}
+              setError={props.setError}
               />
  
             
@@ -35,7 +103,7 @@ const CommunityTopFilter = (props) => {
     )
 }
 
-export default CommunityTopFilter;
+export default TsCommunityFilter;
 
 const Body = styled.div`
 
@@ -43,7 +111,7 @@ const Body = styled.div`
     margin-bottom: inherit;
     height: -webkit-fill-available;
     overflow-y: scroll;
-    top : ${({mobile, panel, panelHeight}) => mobile ? '0px' : panel ? `${panelHeight.current.clientHeight + 10}px` : `10px`};
+    top : ${({mobile, panel, panelHeight}) => mobile ? '0px' : panel ? `${panelHeight + 10}px` : `10px`};
   transition: top .2s ease-in;
   margin-inline : ${mobile => mobile ? '10px' : `0px`};
   // margin-inline: 15px;
