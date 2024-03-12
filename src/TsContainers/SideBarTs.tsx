@@ -1,8 +1,8 @@
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, forwardRef } from "react";
 import React from "react";
 import { Link, useHistory, useLocation } from "react-router-dom";
 import TsSideBarLinks from "../TsComponents/TsSideBarLinks";
-import SideBarFolder from "../components/SideBarFolder";
+import TsSideBarFolder, { ChildRef } from "../TsComponents/TsSideBarFolder";
 import styled from "styled-components";
 import { EditableDiv, SubtractButton, AddButton } from '../My.styled'
 
@@ -35,7 +35,7 @@ interface ILinks {
   interface IProps {
     skinny: boolean;
     mobile: boolean;
-    
+    updateFolder: (e: React.KeyboardEvent, folderName: string, folder: object) => void;
     setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
     loggedIn: boolean;
     root: string;
@@ -180,15 +180,28 @@ const [folders, setFolders] = useState()
     window.addEventListener('resize', updateMedia);
     return () => window.removeEventListener('resize', updateMedia);
   }, []);
+
+  const childRef = useRef<ChildRef>(null);
+  const handleClick = () => {
+    console.log(childRef.current?.foldersRef.offsetTop);
+    console.log(childRef.current?.collabsRef.offsetTop);
+    console.log(childRef.current?.favoritesRef.offsetTop);
+  
+  };
+
+const foldersVar = childRef.current?.foldersRef
+const collabsVar = childRef.current?.collabsRef
+const favoritesVar = childRef.current?.favoritesRef
+
 let topVal = skinny ? -6 : 20
 let loginTopVal = skinny ? -14 : 11
 // console.log("top", topVal)
-const foldersRef = useRef<HTMLInputElement>(null);
-const foldersDemo = [!!foldersRef.current && foldersRef.current.offsetTop + topVal, 'folders can be used to organize photos as you develope bodies of work']
-const collabsRef = useRef<HTMLInputElement>(null);
-const collabsDemo = [!!collabsRef.current && collabsRef.current.offsetTop + topVal, 'these are folders that you contribute to']
-const favoritesRef = useRef<HTMLInputElement>(null);
-const favoritesDemo = [!!favoritesRef.current && favoritesRef.current.offsetTop + topVal, "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
+
+const foldersDemo = [!!foldersVar?.offsetTop && foldersVar?.offsetTop + topVal, 'folders can be used to organize photos as you develope bodies of work']
+
+const collabsDemo = [!!collabsVar?.offsetTop && collabsVar?.offsetTop + topVal, 'these are folders that you contribute to']
+
+const favoritesDemo = [!!favoritesVar?.offsetTop && favoritesVar?.offsetTop + topVal, "favoites can be used similarly to folders, but are there to agregate photos from the community into you're own mood board, or collage"]
 const linksRef = useRef<HTMLInputElement>(null);
 const linkDemo = [!!linksRef.current && linksRef.current.offsetTop + topVal, "here you can add external links to projects or any relevant content you would like to share. i've added my GitHub and LinkedIn for example"]
 const communityRef = useRef<HTMLInputElement>(null);
@@ -198,7 +211,9 @@ const aboutDemo = [!!aboutRef.current && aboutRef.current.offsetTop + topVal, "c
 const loginRef = useRef<HTMLInputElement>(null);
 const loginDemo = [!!loginRef.current && loginRef.current.offsetTop + loginTopVal, "open beta will be available after some more tweaks!"]
 const [demoText, setDemoText] = useState(foldersDemo)
-
+const hoverRef = (demoName) =>{
+  setDemoText(eval(demoName))
+}
 
 useEffect(() => {
   if (props.mobile){
@@ -225,9 +240,9 @@ useEffect(() => {
   
 }, [sideBar])
 
+// const refs = useRef<{storyRef: type, ...restProps}>({ storyRef, parcoursRef, projectRef });
 
-
-
+console.log("props.details", props.details)
   return (
     <aside>
       <Sticky sideBar={sideBar}
@@ -235,6 +250,7 @@ useEffect(() => {
       mobile={props.mobile}
       >
         <>
+        
           <ButtonContainer sideBar={sideBar}>
             <button onClick={() => setSideBar(!sideBar)}>
               {sideBar ? "close" : "open"}
@@ -322,90 +338,33 @@ useEffect(() => {
                     <div 
                     
                     >
-    {props.details.map((name, value)=> {
-       return <>
-       <div className='catagory-cont'  >
-        {props.tutorial && <div className="hover-div" onMouseOver={() => setDemoText(eval(`${Object.keys(props?.details[value])[0]}Demo`))}></div>}
-        <div className="sidebar-catagory" >
-          <div className="nav-bar-header-wrapper" 
-          >
+                  <TsSideBarFolder 
+                    root={props.root}
+                    sub={props.sub}
+                  //  ref={((el: HTMLDivElement) => setNodeRef(el)) && ref}
+                  //  foldersRef={foldersRef}
+                  //  collabsRef={collabsRef}
+                  //  favoritesRef={favoritesRef}
+                  updateFolder={props.updateFolder}
+                    ref={childRef}
+                    hoverRef={hoverRef}
+                    details={props.details}
+                    mobile={props.mobile}
+                    loggedIn={props.loggedIn}
+                    setFolderPhotos={props.setFolderPhotos}
+                    createFolder={props.createFolder}
+                    deleteFolder={props.deleteFolder}
+                    edit={props.edit}
+                    folderShown={props.folderShown}
+                    folderDetails={props.folderDetails}
+                    // setFolderDetails={props.setFolderDetails}
+                    enableDelete={props.enableDelete}
+                    tutorial={props.tutorial}
 
-            <p className="nav-bar-header" ref={eval(`${Object.keys(props?.details[value])[0]}Ref`)} 
-            key={value}
-            
-            >
-              {Object.keys(props?.details[value])[0]}
-            </p>
-            </div>
-            {Object?.keys(props?.details[value])[0] === 'folders' &&
-            <AddButton edit={props.edit} 
-              onClick={() => {setNewFolder(!newFolder)}}
-                 >+</AddButton>}
-      
-        </div>
-   {/* NEW FOLDER */}
-
-   {newFolder && props.edit && 
-            <EditableDiv 
-            suppressContentEditableWarning={true}
-            id={"folderInput"}
-            type="text" edit={props.edit}
-            ref={inputRef}
-            contentEditable={newFolder} 
-            placeholder={"add folder name"}
-
-            style={{"cursor": props.edit ? "text" : "default"}}
-
-            onKeyDown={(e) => submitNewFolder(e, Object?.keys(props?.details[value])[0])}
-            onInput={(e) => setFolderName(e.currentTarget.textContent)}>
-            </EditableDiv> }
-
-          {/* {Object.values(props.details[value])[0].map((folders, index)=> 
-            folders.map(folder => 
-            console.log(Object?.keys(props?.details[value]), props.sub, Object?.keys(props?.details[value])[0] === props.sub)
-                )
-            )
-          } */}
-
-            {Object.values(props.details[value])[0].map((folders, index)=> 
-              folders.sort((a, b) => a.index - b.index).map(folder => 
-                <div className="title-cont" key={folder.id} 
-                // folder={folder}
-                >
-                  <EditableDiv
-                    suppressContentEditableWarning={true}
-                    type="text" 
-                    contentEditable={props.edit} edit={props.edit}
-                    // folderDetails={props.folder}
-                    index={folder.index}
-                    defaultValue={folder.name}
-                    draggable={true}
-                    onKeyDown={(e) => submitFolderEdit(e, folder, Object?.keys(props?.details[value])[0])}
-                    // onClick={
-                    //   () => console.log('setFolder params', folder, Object?.keys(props?.details[value])[0])
-                    // }
-                    onClick={() => {props.setFolderPhotos(folder, Object?.keys(props?.details[value])[0])
-                    }}
-                    style={(Object?.keys(props?.details[value])[0] === props.sub && folder.index === props.folderShown) && (props.root === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
-                    onInput={e => setFolderName(e.currentTarget.textContent)}
-                    id={folder.id}
-                  > 
-                {folder.name}
-                </EditableDiv>
-              {Object?.keys(props?.details[value])[0] === 'folders' &&<SubtractButton
-                enableDelete={props.enableDelete} 
-                onClick={() => props.deleteFolder(folder, Object?.keys(props?.details[value])[0], folder.id)} >-</SubtractButton>}
-                </div>
-                )
-              )}
-
-  
-
-        </div>
-
-       </>
-}
-          )}
+                    // key={props.userId} 
+                    dbVersion={props.dbVersion}
+                    />
+    
                     </div>}
 
         {(!!props.userLinks || props.edit) && (props.root === 'home' || props.root === 'by_Corey_Lee' || props.root === 'user') &&
@@ -655,6 +614,7 @@ const Sticky = styled.div`
   position: absolute;
   height: 32px;
   width: inherit;
+  z-index: -1;
 }
   position: sticky;
   // position: relative;
@@ -847,7 +807,7 @@ background-color: #ccc;
 
 
 
-{/* <SideBarFolder 
+{/* <TsSideBarFolder 
                     details={props.details}
                     folders={'folders'}
                     mobile={props.mobile}

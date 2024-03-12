@@ -102,8 +102,6 @@ const [enableDelete , setEnableDelete] = useState(false)
 const [photos, setPhotos] = useState([]);
 const [reorderedPhotos, setReorderedPhotos] = useState()
 
-
-
 // STYLES
 const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
@@ -124,7 +122,21 @@ const prevLocation = `${root}/${sub}/${index}`
 const [groups, setGroups] = useState()
 
 // console.log("render", prevLocation)
-
+const newDetail = (obj, key) => {
+  if (key === 'favorites'){
+  const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}}`
+  const detailObj = JSON.parse(detail)
+  // const mapDetail = eval(`details[i].${key}`).map((folder, i) => ())
+return detailObj}
+else {
+  const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}, "creative": ${obj.creative}}`
+  
+  const detailObj = JSON.parse(detail)
+// console.log("detailObj", detailObj, obj)
+  detailObj.collaborators = obj.collaborators
+return detailObj
+}
+}
 const profileFetch = () => {
   console.log('profile fetch', localStorage.token)
   fetch(`${dbVersion}/profile/`, {
@@ -154,7 +166,7 @@ for (const i of Object.keys(groups)) {
   
 }
 
-      mapDetails(groups)
+      // mapDetails(groups)
       setUserId(user.user.id)
       setUserName(user.user.name);
 
@@ -210,10 +222,6 @@ for (const i of Object.keys(groups)) {
         
   })
 }
-
-
-
-
 
 const landingFetch = () => {
   fetch(`${dbVersion}/landing_page`, {
@@ -532,13 +540,13 @@ const setFolderArray = (object, type) => {
     // // eval(`set${setFunc}Shown(${index})`)
     // // setShown(index)
     
-    setFolderShown(folder.index)
+    setFolderShown(object.index)
 
     if(type !== 'favorites'){
       // SHOWN, TYPE, PRIVACY, COLLABORATORS
       if(type === 'folders'){
-        eval(`set${setFunc}Privacy(${folder.public})`)
-        eval(`set${setFunc}Type(${folder.creative})`)
+        eval(`set${setFunc}Privacy(${object.public})`)
+        eval(`set${setFunc}Type(${object.creative})`)
       }
       // console.log("folder.creative", folder, folder.creative, type, `set${setFunc}Type(${folder.type})`)
       setPhotos(folder.photos)
@@ -604,153 +612,46 @@ const mapDetails = (groups) => {
     setDetails(detailArr)  
   }
 }
-// console.log("details", details)
-const newDetail = (obj, key) => {
-  if (key === 'favorites'){
-  const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}}`
-  const detailObj = JSON.parse(detail)
-  // const mapDetail = eval(`details[i].${key}`).map((folder, i) => ())
-return detailObj}
-else {
-  const detail = `{"name": "${obj.name}", "id": ${obj.id}, "index": ${obj.index}, "creative": ${obj.creative}}`
+const [detail, setDetailObj] = useState()
+useEffect(() => {
+
+// if (details.length !== 0){
+ if (!!folders?.length && !!collabs?.length && !!favorites?.length){
+  const folderDetails = [...folders?.map((folder) => {
+    let d = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
+    d.collaborators = folder.collaborators
+    return d
+  })]
+  const collabDetails = [...collabs?.map((folder) => {
+    let d = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
+    d.collaborators = folder.collaborators
+    return d
+  })]
+  const favoriteDetails = [...favorites?.map((folder) => {
+    let d = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`)
+    return d
+  })]
+  const detailObj = [
+   {"folders": [folderDetails]},
+   {"collabs": [collabDetails]},
+   {"favorites": [favoriteDetails]}
+  ]
+  setDetails(detailObj)  
+  // setDetailObj(detailObj)  
+  // console.log("detailObj", detailObj, details)
   
-  const detailObj = JSON.parse(detail)
-// console.log("detailObj", detailObj, obj)
-  detailObj.collaborators = obj.collaborators
-return detailObj
 }
-}
-
-const setCurrentDetails = (folder, type) => { 
-  const detail = newDetail(folder, type)
-
-  setFolderDetails(detail)
-  
-  const newDetails = [...details]
-  const newFolders = [...newDetails[0].folders[0], detail]
-  newDetails[0].folders[0] = newFolders
-}
-
-
-// !!details[0] && console.log("details[0].folders", details[0].folders[0])
-// useEffect(() => {
-// if (!!groups){
-//   const details = []
-//   for (const i of Object.keys(groups)) {
-//     const key = Object.keys(groups[i]);
-
-//     const detail = eval(`groups[i].${key}`).map((folder, i) => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`))
-//     // console.log(detail)
-
-//     let jsonDetail = detail.map(d => JSON.parse(d))
-//     let jsonKey = eval(key)[0]
-
-//     let obj = {}
-//     obj[jsonKey] = [jsonDetail]
-
-//     // details.push([jsonDetail])
-//     details.push(obj)
-//   }
-//   setDetails(details)  
 // }
-// }, [groups])
-// useEffect(() => {
-//   folders !== undefined && detailFunc('folders')
-// }, [folders])
-// useEffect(() => {
-//   folders !== undefined && detailFunc('folders')
-// }, [folders])
+}, [folders, collabs, favorites])
+console.log("details", details,  detail)
 
-const [colorArr, setColorArr] = useState([])
-colorArr[0] = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}];
 
-const colors = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}]
 
-const [count, setCount] = useState([])
 
-const hiliteCollaborator = (user) => {
-  const filtered = photos.filter(photo => photo.u_id === user.uuid)
-  if (count < 1) {
-    
-    let color = colorArr.splice(0, 1)[0]
 
-    setColorArr(colorArr)
-    
-    Object.assign(user, color)
 
-    filtered.map(photo => {
-      Object.assign(photo, color)
-    })
-    
 
-  } else if (user.color !== undefined && collaborators.filter(collaborator => collaborator.color === user.color).length === 1) {
-    
-    let color = {}
 
-    color.color = user.color
-
-    let index = colors.map(color => color.color).indexOf(color.color)
-    
-    let colorArray = [...colorArr]
-
-    colorArray.splice(index, 0, color)
-    
-    setColorArr(colorArray)
-
-    const userIndex = collaborators.indexOf(user)
-    
-    delete user.color
-    
-    const updatedArr = [...collaborators]
-    
-    updatedArr.splice(userIndex, 1, user)
-    
-    setCollaborators(updatedArr)
-
-    filtered.map(photo => {delete photo.color})
-
-  } else if ((colors.length !== count) && (user.color === undefined)) {
-    
-    let color = colorArr.splice(0, 1)[0]
-    setColorArr(colorArr)
-    
-    Object.assign(user, color)
-
-    filtered.map(photo => {
-      Object.assign(photo, color)
-    })
-  
-  }
-  setCount(collaborators.filter(user => user.color !== undefined).length)
-    
-}
-
-const updateFavorites = useCallback((photo) => {
-  updateUserFavorites(photo);
-}, []);
-
-const updateUserFavorites = (photo) => {
-  console.log("favoriteObj", photo)
-
-  const favoriteFolders = [...userFavorites]
-  const favoriteFolder = favoriteFolders.find((fFolder) => fFolder.id === photo.favorite_folder_id)
-
-  console.log("favoriteFolder", favoriteFolder)
-
-  
-  const updatedFavoritePhotos = favoriteFolder.favorite_photos.map((fPhoto) => {
-    if (fPhoto.id === photo.id) return photo
-    else return fPhoto;
-  })
-  favoriteFolder.favorite_photos = updatedFavoritePhotos
-  console.log("updatedFavoritePhotos", favoriteFolder)
-
-  setUserFavorites(userFavorites.map((fFolder) => {
-    console.log("favoriteFolder", fFolder)
-    if (fFolder.id === favoriteFolder.id) return favoriteFolder
-    else return fFolder;
-  }))
-}
 
 const createFolder = (e, folderName, type) => {
     e.preventDefault();
@@ -788,15 +689,7 @@ const createFolder = (e, folderName, type) => {
     console.log("folder", folder)
     setNewFolder(true)
     setFolders([...folders, folder])
-    setFolderType(folder.creative)
-    const newDetails = [...details]
-
-    const newFolders = [...newDetails[0].folders[0], newDetail(folder, type)]
-
-    newDetails[0].folders[0] = newFolders
-
-    console.log("folder", folder, "folder photos", folder.photos, newFolders);
-    setDetails(newDetails)
+    
     }
     else if (loggedIn){
       fetch(`${dbVersion}/folders/`, {
@@ -815,24 +708,12 @@ const createFolder = (e, folderName, type) => {
     })
       .then((res) => res.json())
       .then((folderObj) => {
-        const newDetails = [...details]
-
-        const newFolders = [...newDetails[0].folders[0], newDetail(folderObj, type)]
-
-        newDetails[0].folders[0] = newFolders
-
-        console.log("folder", folderObj, "folder photos", folderObj.photos, newFolders);
-        setDetails(newDetails)
-        // setGroups(groups[0]?.folders)
+     
         setFolders([...folders, folderObj]);
         setNewFolder(true)
-        setFolderType(folderObj.creative)
       });
   };}
-  useEffect(() => {
-    !!folders && setFolderPhotos(folders[folders.length - 1].index, 'folders')
-    setNewFolder(false)
-  }, [newFolder])
+
 
 
 // useEffect(() => {
@@ -883,16 +764,20 @@ const catagorize = (boolean) => {
     })
       .then((res) => res.json())
       .then((folderObj) => {
+        
         console.log("folderObj", folderObj);
+        // insertFolder(folderObj)
+        // setFolderPhotos(newDetail(folderObj, 'folders'), 'folders')
         setFolderType(folderObj.creative)
         setFolders(
           folders.map((folder) => {
-            if (folder.id === folderObj.id) 
+            if (folder.id === folderObj.id) {
               
               // console.log("folderObj", folderObj)
-            return folderObj;
+            return folderObj;}
             else return folder;
-          })
+          }
+          )
           
         );
       });
@@ -900,6 +785,7 @@ const catagorize = (boolean) => {
 
   const updateFolder = (e, folderName, folder) => {
     e.preventDefault();
+    console.log("updateFolder", e, folderName, folder)
     if (demo) {
     folders.map((folder) => {
       if (folder.id === folder.id) 
@@ -931,6 +817,40 @@ const catagorize = (boolean) => {
         );
       });
   };
+
+  const deleteFolder = (folderObj, type, id) => {
+    // GETS INDEX OF DELETED FOLDER
+    const folderIndex = folders.sort((a, b) => a.index - b.index).findIndex((folder) => folder.index === folderObj.index);
+
+console.log("delete", folders.length > 1, folderIndex === 0)
+      if (folders.length > 1){
+
+        if(folderIndex === 0){
+          setFolderPhotos(folders.at(-1), type)
+        }
+        else{
+          console.log("delete", loggedIn, folderObj, type, id)
+        setFolderPhotos(folders[folderIndex - 1], type)}
+
+        const spreadDetails = [...details]
+        const reducedFolders = spreadDetails[0].folders[0].filter((folder) => folder.id !== id);
+        spreadDetails[0].folders[0] = reducedFolders
+        setDetails(spreadDetails)
+
+        loggedIn && fetch(`${dbVersion}/folders/${folderObj.index}/`, {
+          method: "DELETE",
+          headers: {
+          Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
+          }
+          // HERE
+          )
+        .then((res) => res.json())
+        .then((folderObj) => {console.log("folderObj", folderObj)})
+      }
+
+
+};
+
 
   const addCollaborator = (uuid, name) => {
 
@@ -995,36 +915,100 @@ const catagorize = (boolean) => {
       });
   };
 
-    const deleteFolder = (folderObj, type, id) => {
-      // GETS INDEX OF DELETED FOLDER
-      const folderIndex = folders.sort((a, b) => a.index - b.index).findIndex((folder) => folder.index === folderObj.index);
+ 
 
-console.log("delete", folders.length > 1, folderIndex === 0)
-        if (folders.length > 1){
+  const [colorArr, setColorArr] = useState([])
+  colorArr[0] = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}];
+  
+  const colors = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}]
+  
+  const [count, setCount] = useState([])
+  
+  const hiliteCollaborator = (user) => {
+    const filtered = photos.filter(photo => photo.u_id === user.uuid)
+    if (count < 1) {
+      
+      let color = colorArr.splice(0, 1)[0]
+  
+      setColorArr(colorArr)
+      
+      Object.assign(user, color)
+  
+      filtered.map(photo => {
+        Object.assign(photo, color)
+      })
+      
+  
+    } else if (user.color !== undefined && collaborators.filter(collaborator => collaborator.color === user.color).length === 1) {
+      
+      let color = {}
+  
+      color.color = user.color
+  
+      let index = colors.map(color => color.color).indexOf(color.color)
+      
+      let colorArray = [...colorArr]
+  
+      colorArray.splice(index, 0, color)
+      
+      setColorArr(colorArray)
+  
+      const userIndex = collaborators.indexOf(user)
+      
+      delete user.color
+      
+      const updatedArr = [...collaborators]
+      
+      updatedArr.splice(userIndex, 1, user)
+      
+      setCollaborators(updatedArr)
+  
+      filtered.map(photo => {delete photo.color})
+  
+    } else if ((colors.length !== count) && (user.color === undefined)) {
+      
+      let color = colorArr.splice(0, 1)[0]
+      setColorArr(colorArr)
+      
+      Object.assign(user, color)
+  
+      filtered.map(photo => {
+        Object.assign(photo, color)
+      })
+    
+    }
+    setCount(collaborators.filter(user => user.color !== undefined).length)
+      
+  }
+  
+  const updateFavorites = useCallback((photo) => {
+    updateUserFavorites(photo);
+  }, []);
+  
+  const updateUserFavorites = (photo) => {
+    console.log("favoriteObj", photo)
+  
+    const favoriteFolders = [...userFavorites]
+    const favoriteFolder = favoriteFolders.find((fFolder) => fFolder.id === photo.favorite_folder_id)
+  
+    console.log("favoriteFolder", favoriteFolder)
+  
+    
+    const updatedFavoritePhotos = favoriteFolder.favorite_photos.map((fPhoto) => {
+      if (fPhoto.id === photo.id) return photo
+      else return fPhoto;
+    })
+    favoriteFolder.favorite_photos = updatedFavoritePhotos
+    console.log("updatedFavoritePhotos", favoriteFolder)
+  
+    setUserFavorites(userFavorites.map((fFolder) => {
+      console.log("favoriteFolder", fFolder)
+      if (fFolder.id === favoriteFolder.id) return favoriteFolder
+      else return fFolder;
+    }))
+  }
+  
 
-          if(folderIndex === 0){
-            setFolderPhotos(folders.at(-1), type)
-          }
-          else{
-            console.log("delete", loggedIn, folderObj, type, id)
-          setFolderPhotos(folders[folderIndex - 1], type)}
-
-          const spreadDetails = [...details]
-          const reducedFolders = spreadDetails[0].folders[0].filter((folder) => folder.id !== id);
-          spreadDetails[0].folders[0] = reducedFolders
-          setDetails(spreadDetails)
-
-          loggedIn && fetch(`${dbVersion}/folders/${folderObj.index}/`, {
-            method: "DELETE",
-            headers: {
-            Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json"},
-            })
-          .then((res) => res.json())
-          .then((folderObj) => {console.log("folderObj", folderObj)})
-        }
-
-
-  };
 
 // LINK FUNCTIONS
 
@@ -1410,7 +1394,7 @@ if(location.pathname === "/" && root !== 'user'){
          
         <SideBarTs
           details={details}
-          setCurrentDetails={setCurrentDetails}
+          // setCurrentDetails={setCurrentDetails}
           addy={addy}
           setLocalDb={setLocalDb}
           localDb={localDb}

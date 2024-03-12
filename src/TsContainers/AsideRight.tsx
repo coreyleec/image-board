@@ -26,7 +26,6 @@ interface IProps {
   setHover: React.Dispatch<React.SetStateAction<boolean>>;
   setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
   catagorize: (params: boolean) => boolean;
-  folderType: null | boolean;
   setFolderType: React.Dispatch<React.SetStateAction<boolean>>;
   tutorial: boolean;
   newFolder: boolean;
@@ -35,7 +34,13 @@ interface IProps {
   hiliteCollaborator: (params: object) => null;
   updateFolderPrivacy: (params: null) => object;
   folderPrivacy: undefined | boolean;
-  folderDetails: undefined | IDetails;
+  folderDetails: undefined | {
+    id: number;
+    name: string;
+    creative: boolean;
+    index: number;
+    collaborators: [ICollaborator];
+  };
   collaborators: undefined | [ICollaborator];
   setEnableDelete: React.Dispatch<React.SetStateAction<boolean>>;
   enableDelete: boolean;
@@ -74,9 +79,9 @@ interface IState {
   setDemoText: React.Dispatch<React.SetStateAction<string>>;
   demoArrow: string;
 }
-const AsideRight: React.FC<IProps> = (props) => {
-  const location = useLocation();
+const AsideRight: React.FC<IProps> = (props, folderDetails) => {
 
+  const location = useLocation();
   const panelRef = useRef(null)
   const drawerRef = useRef(null)
   const editDrawerRef = useRef(null)
@@ -220,7 +225,7 @@ useEffect(() => {
     
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
     if (props.skinny){
-      // console.log("props.skinny", props.skinny)
+      console.log("props.skinny", props.skinny)
       // WINDOW IS SKINNY
       
       if (!controlDock) {
@@ -262,7 +267,7 @@ useEffect(() => {
     }
   } 
   else if (props.skinny){
-    // console.log("props.skinny", props.skinny)
+    console.log("props.skinny", props.skinny, folderDetails)
     // WINDOW IS SKINNY
     if (!controlDock) {
       // CLOSED CONTROL DOCK
@@ -274,13 +279,13 @@ useEffect(() => {
       // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
       setDrawer(25)
     }
-    else if (controlDock && props.folderType === null){
+    else if (controlDock && props?.folderDetails?.creative === null){
       // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
       let drawerMath = catagoryPrompt
       console.log("catagoryPrompt", catagoryPrompt)
-      setDrawer(drawerMath)
+      setDrawer(drawerMath + tutorial)
     }
-    else if (!controlDock && props.folderType === null){
+    else if (!controlDock && props?.folderDetails?.creative === null){
       setDrawer(0)
       // CLOSED CONTROL DOCK AND UNCATAGORIZED FOLDER
     }
@@ -301,7 +306,7 @@ useEffect(() => {
       // console.log("editSwitch", editSwitch, "collabUl", collabUl, "editDrawer", editDrawer, "searchList", searchList)
     }
     else if (!controlDock) {setDrawer(0)}
-  //   let height = (props.folderType === null) ? 60 : (props.collaborators.length >= 2 && !!listRef.current) ? (35 + listRef.current.clientHeight) : 25
+  //   let height = (folderDetails.creative === null) ? 60 : (props.collaborators.length >= 2 && !!listRef.current) ? (35 + listRef.current.clientHeight) : 25
   // props.skinny ? 
   //   controlDock ? 
   //     setDrawer(height) 
@@ -313,7 +318,7 @@ useEffect(() => {
   }
   else {
     
-    if (props.folderType !== null){
+    if (props?.folderDetails?.creative !== null){
       
      
       if(!props.edit) {
@@ -337,13 +342,13 @@ useEffect(() => {
     }
   }
   // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
-  else if (props.folderType === null){
+  else if (folderDetails.creative === null){
     let drawerMath = catagoryPrompt
       setDrawer(drawerMath)
       console.log("here", drawerMath)
   }
   }
-}, [props.folderDetails, controlDock, props.edit, search, props.skinny, props.sub])
+}, [props?.folderDetails, controlDock, props.edit, search, props.skinny, props.sub])
 
 // console.log("drawer", drawer, !!editDrawerRef.current && editDrawerRef.current.clientHeight, !!editDrawerRef.current && editDrawerRef.current.childNodes[0].clientHeight)
 
@@ -366,7 +371,7 @@ const followToggle = () => {
 }
 const typeToggle = () => {
   // console.log("follow")
-  props.setType(!props.folderType)
+  props.setType(!folderDetails.creative)
 }
 
 useEffect(() => {
@@ -434,6 +439,9 @@ useEffect(() => {
  
 }, [props.skinny, controlDock])
 
+const creativeVar = folderDetails.creative === true
+const lifestyleVar = folderDetails.creative === false
+
   return (
     <aside ref={asideRef}  >
      
@@ -456,7 +464,7 @@ useEffect(() => {
             expand={expand}
             searchUl={searchUl}
             flexStart={flexStart}
-            catagorized={props.folderType}
+            catagorized={folderDetails.creative}
             
             >
           
@@ -498,28 +506,28 @@ useEffect(() => {
              </label>
              <p>{props.published ? "privatize?" : "publish?"}</p>
              </CatagorySwitch> 
-             : (!!props?.folderDetails?.collaborators?.length && props?.folderDetails?.creative === null) 
+             : (props?.folderDetails?.creative === null && !!props?.folderDetails?.collaborators?.length) 
              ? 
              <>
 {/* CATAGORIZE FOLDERS CREATIVE OR LIFESTYLE */}
            <CatagorySwitch 
-           catagorized={props.folderType} 
+           catagorized={folderDetails.creative} 
            className="catagory first">
            <label className="toggle-switch">
            <input type="checkbox" 
-           checked={props.folderType === true}
+           checked={folderDetails.creative}
            onChange={() => props.catagorize(true)}
            />
            <span className="switch" />
            </label>
            <p>creative</p> 
            </CatagorySwitch>
-           <CatagorySwitch catagorized={props.folderType}
+           <CatagorySwitch catagorized={folderDetails.creative}
            className="catagory second"
            >
            <label className="toggle-switch">
            <input type="checkbox" 
-           checked={!!props.folderType !== false}
+           checked={folderDetails.creative}
            onChange={() => props.catagorize(false)}
            />
            <span className="switch" />
@@ -578,16 +586,16 @@ useEffect(() => {
            <div className="cover"></div>
            <CatagorySwitch
            className="catagory"
-           catagorized={props.folderType === null}>
+           catagorized={folderDetails.creative === null}>
            <label className="toggle-switch">
            <input type="checkbox" 
-           checked={props.folderType}
-           onChange={() => props.catagorize(props.folderType)}
+           checked={folderDetails.creative}
+           onChange={() => props.catagorize(folderDetails.creative)}
           //  checked={props.edit}
            />
            <span className="switch" />
            </label>
-           <p>{props.folderType == false ? "lifestyle" : "creative"}</p> 
+           <p>{folderDetails.creative == false ? "lifestyle" : "creative"}</p> 
            </CatagorySwitch>
            {/* } */}
           </>
@@ -617,7 +625,7 @@ useEffect(() => {
             inputWidth={inputWidth}
             panelRef={panelRef}
             skinny={props.skinny}
-            // catagorized={props.folderType === null}
+            // catagorized={folderDetails.creative === null}
             search={search}
             expand={expand} >
               <div className="input-cont">
@@ -663,7 +671,7 @@ useEffect(() => {
             isCollaborator={isCollaborator}
             asideRef={asideRef}
             className="folder-follow"
-          //  catagorized={props.folderType}
+          //  catagorized={folderDetails.creative}
            >
            <label className="toggle-switch">
            <input type="checkbox" 
