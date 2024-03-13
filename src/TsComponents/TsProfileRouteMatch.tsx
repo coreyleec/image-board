@@ -1,42 +1,73 @@
 import React, {memo, useEffect, useState, useCallback, useMemo} from "react";
 import { BrowserRouter as Routes, Route, useLocation, Switch, useHistory, useRouteMatch } from 'react-router-dom';
-import DndContainer from "./DndContainer";
+import DndContainer from "../containers/DndContainer";
 import AboutMeTs from "../TsContainers/AboutMeTs";
 import PhotoGrid from "../mobileContainers/PhotoGrid";
 
+interface IAbout {
+  title: string;
+  about: string;
+  publish: boolean;
+}
+interface ICollaborator {
+  uuid: string;
+  name: string;
+}
+interface IColor {
+  color: string;
+}
+interface IDetails {
+  id: number;
+  name: string;
+  creative: boolean;
+  index: number;
+  collaborators: [ICollaborator];
+}
+interface IPhoto {
+  id: number;
+  folder_id: number;
+  u_id: string;
+  url: string;
+  thumbnail_url: string;
+  name: string;
+  creative: boolean;
+  index: number;
+  details: string;
+  collaborators: [ICollaborator];
+}
+interface IProps {
+  mobile: boolean;
+  loggedIn: boolean;
+  sub: string;
+  about: IAbout;
+  setAbout: React.Dispatch<React.SetStateAction<object>>;
+  folderDetails: undefined | IDetails;
+  photos: [IPhoto] 
+  setPhotos: React.Dispatch<React.SetStateAction<[IPhoto]>>;
+  openModal: boolean
+  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  colorArr: [IColor];
+  userId: string;
+  userName: string;
+  currentUserId: string;
+  tutorial: boolean;
+  demo: boolean;
+  setReorderedPhotos: React.Dispatch<React.SetStateAction<[IPhoto]>>;
+  updateFavorites: (photo: object) => object;
+  removePhoto: (photo: object) => object;
+  enableDelete: boolean;
+  edit: boolean; 
+  dbVersion: string;
+  root: string;
+}
 
-const DndRoutePrefix = React.memo(( props ) => {
+const TsProfileRouteMatch = React.memo<IProps>(( props ) => {
     const match  = useRouteMatch();
     const location = useLocation();
   const root = location?.pathname.split('/')[1]
     // console.log("root", match.path, props.root)
 
-    // useEffect(() => {
-        // console.log("hi", props.collaborators.map((colab) => ({
-        //     match: props.photos.some((photo) => photo.color === colab.color),
-        //   })))
-        //   let hi = props.collaborators.map((colab) => {
-        //     let colaber = props.photos.find(photo => photo.u_id === colab.uuid)  
-        //     if (colaber.color){
-        //         photo.color = colaber.color
-        //     }
-        //     return photo \
-    //     const photo = props.photos.map(photo => {
-    //     const collaber = props.collaborators.find(user => user.uuid === photo.u_id)  
-    //     if (!!collaber.color){
-    //         collaber.color = photo.color
-    //     }
-    //     return photo 
-    //     })
-    //     console.log('hi', photo)
-    // }, [props.colorArr])
-
-  //   const useCallbackObj = React.useCallback(() => {
-  //     console.log('callback is called!');
-  //  }, [props.photos, props.edit]);
-
-    // console.log("props.folderDetails", props.folderDetails)
-
+   
 return (
     <Switch>
  
@@ -52,14 +83,14 @@ return (
               photos={props.photos}
               userId={props.userId}
               currentUserId={props.currentUserId}
-              // updateUserFavorites={props.updateUserFavorites}
+              // updateFavorites={props.updateFavorites}
               dbVersion={props.dbVersion}
               /> 
               : <DndContainer
                 folderDetails={props?.folderDetails}
 
 
-                hightlighted={props.hightlighted}
+                // hightlighted={props.hightlighted}
                 photos={props.photos}
                 colorArr={props.colorArr}
                 setPhotos={props.setPhotos}
@@ -70,8 +101,8 @@ return (
                 removePhoto={props.removePhoto}
                 enableDelete={props.enableDelete}
                 edit={props.edit}
-                reorderSubmit={props.reorderSubmit}
-                updateUserFavorites={props.updateUserFavorites}
+
+                updateFavorites={props.updateFavorites}
                 dbVersion={props.dbVersion}
                 
                 
@@ -83,6 +114,7 @@ return (
               <Route path={`${match.path}/about`} >
                   <AboutMeTs
                   demo={props.demo}
+                  root={props.root}
                   mobile={props.mobile}
                   loggedIn={props.loggedIn}
                   setAbout={props.setAbout}
@@ -95,4 +127,4 @@ return (
 )
          })
 
-export default DndRoutePrefix;
+export default TsProfileRouteMatch;

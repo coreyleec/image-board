@@ -93,7 +93,7 @@ interface ILinks {
     edit: boolean;
     reorder: () => null;
     userId: string;
-    setCurrentUserId: React.Dispatch<React.SetStateAction<number>>;
+    setCurrentUserId: React.Dispatch<React.SetStateAction<string>>;
     currentUserId: string;
     dbVersion: string;
   }

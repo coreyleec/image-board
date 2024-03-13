@@ -31,7 +31,7 @@ interface IProps {
   newFolder: boolean;
   uuid: string;
   setType: React.Dispatch<React.SetStateAction<boolean>>;
-  hiliteCollaborator: (params: object) => null;
+  hiliteCollaborator: (collaborator: object) => object;
   updateFolderPrivacy: (params: null) => object;
   folderPrivacy: undefined | boolean;
   folderDetails: undefined | {
@@ -41,11 +41,11 @@ interface IProps {
     index: number;
     collaborators: [ICollaborator];
   };
-  collaborators: undefined | [ICollaborator];
+  // collaborators: undefined | [ICollaborator];
   setEnableDelete: React.Dispatch<React.SetStateAction<boolean>>;
   enableDelete: boolean;
   editToggle: (params: boolean) => object;
-  addCollaborator: (params: string, string) => null;
+  addCollaborator: (uuid: string, name: string) => null;
   publishAbout: () => void;
   published: boolean;
   folderShown: number;
@@ -80,6 +80,9 @@ interface IState {
   demoArrow: string;
 }
 const AsideRight: React.FC<IProps> = (props, folderDetails) => {
+
+  const collaborators = props?.folderDetails?.collaborators
+  const creative = props?.folderDetails?.creative
 
   const location = useLocation();
   const panelRef = useRef(null)
@@ -267,7 +270,7 @@ useEffect(() => {
     }
   } 
   else if (props.skinny){
-    console.log("props.skinny", props.skinny, folderDetails)
+    console.log("props.skinny", props.skinny, props.folderDetails)
     // WINDOW IS SKINNY
     if (!controlDock) {
       // CLOSED CONTROL DOCK
@@ -279,13 +282,13 @@ useEffect(() => {
       // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
       setDrawer(25)
     }
-    else if (controlDock && props?.folderDetails?.creative === null){
+    else if (controlDock && creative === null){
       // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
       let drawerMath = catagoryPrompt
       console.log("catagoryPrompt", catagoryPrompt)
       setDrawer(drawerMath + tutorial)
     }
-    else if (!controlDock && props?.folderDetails?.creative === null){
+    else if (!controlDock && creative === null){
       setDrawer(0)
       // CLOSED CONTROL DOCK AND UNCATAGORIZED FOLDER
     }
@@ -318,7 +321,7 @@ useEffect(() => {
   }
   else {
     
-    if (props?.folderDetails?.creative !== null){
+    if (creative !== null){
       
      
       if(!props.edit) {
@@ -427,7 +430,7 @@ let deleteDemoArrow =  (editDrawerRef.current?.childNodes[0].clientHeight !== 25
 
 // const [hover, setHover] = useState(false)
 // console.log("tru", props.collaborators.some(c => c.uuid === props.currentUserId))
-const isCollaborator = props?.folderDetails?.collaborators?.some(c => c.uuid === props.currentUserId)
+const isCollaborator = collaborators?.some(c => c.uuid === props.currentUserId)
 // console.log("isCollaborator", isCollaborator)
 
 const [timer, setTimer] = useState(true)
@@ -460,7 +463,7 @@ const lifestyleVar = folderDetails.creative === false
             ref={panelRef}
             contHeight={height}
             listRef={listRef}
-            collabLength={props?.folderDetails?.collaborators?.length} 
+            collabLength={collaborators?.length} 
             expand={expand}
             searchUl={searchUl}
             flexStart={flexStart}
@@ -488,7 +491,7 @@ const lifestyleVar = folderDetails.creative === false
 {/* FOLDER TYPE */}
             {/* {controlDock  
             &&  */}
-            {/* {console.log(props?.folderDetails?.creative )} */}
+            {/* {console.log(creative )} */}
             <div className="drawer-cont">
             <div ref={drawerRef} className="drawer" >
             
@@ -506,7 +509,7 @@ const lifestyleVar = folderDetails.creative === false
              </label>
              <p>{props.published ? "privatize?" : "publish?"}</p>
              </CatagorySwitch> 
-             : (props?.folderDetails?.creative === null && !!props?.folderDetails?.collaborators?.length) 
+             : (creative === null && !!collaborators?.length) 
              ? 
              <>
 {/* CATAGORIZE FOLDERS CREATIVE OR LIFESTYLE */}
@@ -689,14 +692,14 @@ const lifestyleVar = folderDetails.creative === false
            
       } */}
 
-            {!!props?.folderDetails?.collaborators?.length &&
-            props?.folderDetails?.collaborators?.length >= 2 && props.sub !== 'about'  &&
+            {!!collaborators?.length &&
+            collaborators?.length >= 2 && props.sub !== 'about'  &&
             <CollabotorList ref={listRef} className="collabUl" 
             // onMouseEnter={() => changeFlex(true)}
             // onMouseLeave={() => changeFlex(false)}
             >
                 
-              {!!props?.folderDetails?.collaborators?.length && props?.folderDetails?.collaborators?.map((collaborator) => (
+              {!!collaborators?.length && collaborators?.map((collaborator) => (
               <CollabLi 
               collaborator={collaborator}
               onClick={() => props.hiliteCollaborator(collaborator)}

@@ -14,8 +14,8 @@ interface IAbout {
 interface IProps {
     demo: boolean;
     root: string;
-    mobile: string;
-    loggedIn: string;
+    mobile: boolean;
+    loggedIn: boolean;
     setAbout: React.Dispatch<React.SetStateAction<object>>;
     about: IAbout;
     dbVersion: string;

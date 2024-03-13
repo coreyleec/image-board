@@ -4,9 +4,9 @@ import styled from "styled-components";
 import Header from "./TsContainers/Header";
 import SideBarTs from "./TsContainers/SideBarTs";
 import AsideRight from "./TsContainers/AsideRight";
-import UserLoginSignup from "./containers/UserLoginSignup";
+import TsUserLoginSIgnup from "./TsContainers/TsUserLoginSIgnup";
 import TsCommunityPage from "./CommunityComponents/TsCommunityPage"
-import DndRoutePrefix from "./containers/DndRoutePrefix";
+import TsProfileRouteMatch from "./TsComponents/TsProfileRouteMatch";
 
 
 export const App = () => {
@@ -550,13 +550,13 @@ const setFolderArray = (object, type) => {
       }
       // console.log("folder.creative", folder, folder.creative, type, `set${setFunc}Type(${folder.type})`)
       setPhotos(folder.photos)
-      // setCollaborators(folder.collaborators)
+      setCollaborators(folder.collaborators)
       // const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
       // detail.collaborators = folder.collaborators
       setFolderDetails(object)
     }
     else {
-      // setCollaborators([])
+      setCollaborators([])
       // const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`)
       // detail.collaborators = []
       setFolderDetails(object)
@@ -617,20 +617,20 @@ useEffect(() => {
 
 // if (details.length !== 0){
  if (!!folders?.length && !!collabs?.length && !!favorites?.length){
-  const folderDetails = [...folders?.map((folder) => {
+  const folderDetails = folders?.map((folder) => {
     let d = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
     d.collaborators = folder.collaborators
     return d
-  })]
-  const collabDetails = [...collabs?.map((folder) => {
+  })
+  const collabDetails = collabs?.map((folder) => {
     let d = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
     d.collaborators = folder.collaborators
     return d
-  })]
-  const favoriteDetails = [...favorites?.map((folder) => {
+  })
+  const favoriteDetails = favorites?.map((folder) => {
     let d = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`)
     return d
-  })]
+  })
   const detailObj = [
    {"folders": [folderDetails]},
    {"collabs": [collabDetails]},
@@ -917,51 +917,56 @@ console.log("delete", folders.length > 1, folderIndex === 0)
 
  
 
-  const [colorArr, setColorArr] = useState([])
-  colorArr[0] = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}];
-  
+  // const [colorArr, setColorArr] = useState([])
+  // colorArr[0] = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}];
+  const [colorArr, setColorArr] = useState([{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}])
   const colors = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}]
   
   const [count, setCount] = useState([])
   
   const hiliteCollaborator = (user) => {
+    // find photos contributed by user in current folder
     const filtered = photos.filter(photo => photo.u_id === user.uuid)
+    console.log("user", user, count, collaborators)
+    // count represents how many colors have been used in color array
     if (count < 1) {
-      
+      // select/remove first color in array
       let color = colorArr.splice(0, 1)[0]
-  
+      // update array to exclude color
       setColorArr(colorArr)
-      
+      // assign colloaborator a color 
       Object.assign(user, color)
-  
+      // assign photos by collaborator a color 
       filtered.map(photo => {
         Object.assign(photo, color)
       })
-      
-  
-    } else if (user.color !== undefined && collaborators.filter(collaborator => collaborator.color === user.color).length === 1) {
-      
+
+    } else if (user.color !== undefined && folderDetails?.collaborators.filter(collaborator => collaborator.color === user.color).length === 1) {
+      // if user has color already assigned
       let color = {}
-  
+      // create color object and assign value from user color
       color.color = user.color
-  
+      // get index of color by comparing to clone array
       let index = colors.map(color => color.color).indexOf(color.color)
-      
+      // copy state array
       let colorArray = [...colorArr]
-  
+      // insert color back into array
       colorArray.splice(index, 0, color)
-      
+      // setState
       setColorArr(colorArray)
   
-      const userIndex = collaborators.indexOf(user)
+      const userIndex = folderDetails?.collaborators.indexOf(user)
       
       delete user.color
       
-      const updatedArr = [...collaborators]
+      const updatedArr = [...folderDetails?.collaborators]
       
       updatedArr.splice(userIndex, 1, user)
       
-      setCollaborators(updatedArr)
+      const detailOBj = {...folderDetails} 
+      detailOBj.collaborators = updatedArr
+      setFolderDetails(detailOBj)
+      // setCollaborators(updatedArr)
   
       filtered.map(photo => {delete photo.color})
   
@@ -977,7 +982,7 @@ console.log("delete", folders.length > 1, folderIndex === 0)
       })
     
     }
-    setCount(collaborators.filter(user => user.color !== undefined).length)
+    setCount(folderDetails?.collaborators.filter(user => user.color !== undefined).length)
       
   }
   
@@ -1492,6 +1497,7 @@ if(location.pathname === "/" && root !== 'user'){
           catagorize={catagorize}
           updateFolderPrivacy={updateFolderPrivacy}
           newFolder={newFolder}
+          collaborators={collaborators}
           hiliteCollaborator={hiliteCollaborator}
           addCollaborator={addCollaborator}
           edit={edit}
@@ -1512,7 +1518,7 @@ if(location.pathname === "/" && root !== 'user'){
       <Route path={[ '/by_Corey_Lee','/home', '/user' ]} 
       >
 
-          <DndRoutePrefix
+          <TsProfileRouteMatch
               // makeNeat={makeNeat}
               // logNeatly={logNeatly}
               mobile={mobile}
@@ -1520,27 +1526,24 @@ if(location.pathname === "/" && root !== 'user'){
               sub={sub}
               about={about}
               setAbout={setAbout}
-
               folderDetails={folderDetails}
-
               photos={!!photos && photos}
               setPhotos={setPhotos}
               openModal={openModal}
               setOpenModal={setOpenModal}
               colorArr={colorArr}
               userId={userId}
-
               userName={userName}
               currentUserId={currentUserId}
-              // tutorial={demo || tutorial}
               tutorial={tutorial}
               demo={demo}
+
               setReorderedPhotos={setReorderedPhotos}
               updateFavorites={updateFavorites}
               removePhoto={removePhoto}
+              
               enableDelete={enableDelete}
               edit={edit}
-
               dbVersion={dbVersion}
               root={root}
               /> 
@@ -1566,30 +1569,28 @@ if(location.pathname === "/" && root !== 'user'){
 
          
               <Route path='/login' >
-                <UserLoginSignup 
+                <TsUserLoginSIgnup 
                 setAddy={setAddy}
+
                 mobile={mobile}
+                demo={demo}
+                dbVersion={dbVersion}
+                userProfile={userProfile}
                 loggedIn={loggedIn}
                 setLoggedIn={setLoggedIn}
-                profileFetch={profileFetch}
-                setTutorial={setTutorial}
-                setDemo={setDemo}
-                demo={demo}
-                setUuid={setUuid}
-                userProfile={userProfile}
-                setUserProfile={setUserProfile}
-                setUserAboutMe={setUserAboutMe}
-                setUserLinks={setUserLinks}
-                setFolders={setFolders}
-                setCollabs={setCollabs}
-                setFolderShown={setFolderShown}
-                setPhotos={setPhotos}
-                setUserName={setUserName}
-                navigate={navigate}
-                useTemplate={useTemplate} 
-                setUserId={setUserId}
                 setCurrentUserId={setCurrentUserId}
-                dbVersion={dbVersion}
+                setUserId={setUserId}
+                setDemo={setDemo}
+                setTutorial={setTutorial}
+
+                profileFetch={profileFetch}
+
+                
+                // setUserName={setUserName}
+
+
+                
+                
                 />
                 </Route>
 
