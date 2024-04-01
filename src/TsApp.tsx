@@ -9,7 +9,52 @@ import TsCommunityPage from "./CommunityComponents/TsCommunityPage"
 import TsProfileRouteMatch from "./TsComponents/TsProfileRouteMatch";
 
 
-export const App = () => {
+interface ICollaborator {
+    uuid: string;
+    name: string;
+    color: undefined | string;
+    prevState: undefined;
+  }
+interface IPhoto {
+    id: number;
+    folder_id: number;
+    u_id: string;
+    url: string;
+    thumbnail_url: string;
+    name: string;
+    creative: boolean;
+    index: number;
+    details: string;
+    collaborators: [ICollaborator];
+    color: undefined | string;
+  }
+
+  interface IDetails {
+    id: number;
+    name: string;
+    creative: boolean;
+    index: number;
+    collaborators: [ICollaborator];
+  }
+interface IFolder {
+    id: number;
+    u_id: string;
+    name: string;
+    details: string;
+    creative: boolean;
+    index: number;
+    photos: [IPhoto]
+    collaborators: [ICollaborator];
+    orientation: boolean;
+  }
+  interface ILink {
+    name: string;
+    url: string;
+    id: number;
+    index: number;
+  }
+
+export const TsApp = () => {
   // useEffect(() => { console.log("useEffect parent render") })
   require("events").EventEmitter.defaultMaxListeners = 20;
   // GET RID OF HOVER STATE/ OR USE REF TO REMOVE EVENT LISTENERS. USE USEREF TO TO CHECK IF IMAGES LOADED. FIGURE OUT WHAT'S UP WITH DND CONTAINER
@@ -47,9 +92,9 @@ const [demo, setDemo] = useState(false)
  const [userProfile, setUserProfile] = useState(true);
  
  // LOGIN
-const [currentUserId, setCurrentUserId] = useState(0);
+const [currentUserId, setCurrentUserId] = useState< number | string>(0);
 const [userId, setUserId] = useState(null);
-const [uuid, setUuid] = useState(0)
+// const [uuid, setUuid] = useState(0)
 const [loggedIn, setLoggedIn] = useState(false)
 
 // COMMENTS //
@@ -64,9 +109,9 @@ const [loggedIn, setLoggedIn] = useState(false)
    const [lifestyle, setLifestyle] = useState(false)
 // FOLDERS //
 // const [folderDescription, setFolderDetails] = useState();
-const [folders, setFolders] = useState();
-const [folderShown, setFolderShown] = useState(null);
-const [folderDetails, setFolderDetails] = useState()
+const [folders, setFolders] = useState([]);
+
+const [folderDetails, setFolderDetails] = useState<IDetails>()
 const [newFolder, setNewFolder] = useState(false)
 const [folderType, setFolderType] = useState(null)
 const [folderName, setFolderName] = useState(null)
@@ -79,15 +124,15 @@ const [favoriteShown, setFavoriteShown] = useState(null)
 const [favoriteDetails, setFavoriteDetails] = useState()
 const [folderPrivacy, setFolderPrivacy] = useState()
 // OTHER USER 
-const [userFavorites, setUserFavorites] = useState();
+const [userFavorites, setUserFavorites] = useState([]);
 
 // COLLABS
-const [collaborators, setCollaborators] = useState([])
+
 const [collabs, setCollabs] = useState([]);
 
 
 // LINKS //
-const [userLinks, setUserLinks] = useState([]);
+const [userLinks, setUserLinks] = useState< ILink[]>([]);
 
 // EDIT USER INFO
 // const [userEmail, setUserEmail] = useState("");
@@ -99,13 +144,13 @@ const [userAboutMe, setUserAboutMe] = useState("");
 const [edit, setEdit] = useState(false);
 const [enableDelete , setEnableDelete] = useState(false)
 // PHOTOS
-const [photos, setPhotos] = useState([]);
-const [reorderedPhotos, setReorderedPhotos] = useState()
+const [photos, setPhotos] = useState<any | IPhoto>([]);
+const [reorderedPhotos, setReorderedPhotos] = useState<any | IPhoto>([])
 
 // STYLES
 const [overflow, setOverflow] = useState('unset')
 const [skinny, setSkinny] = useState(false);
-const [mobile, setMobile] = useState();
+const [mobile, setMobile] = useState<boolean>();
 
 const [loaded, setLoaded] = useState(false)
 
@@ -186,22 +231,18 @@ for (const i of Object.keys(groups)) {
           setPhotos(groups[0]?.folders[+index].photos)
           setFolderDetails(newDetail(groups[0]?.folders[0], folders))
           // photos[0] = groups[0]?.folders[+index].photos
-          collaborators[0] = groups[0]?.folders[+index].collaborators
-          setCollaborators(groups[0]?.folders[+index].collaborators)
-          setFolderShown(+index)
+
           console.log("creative", groups[0]?.folders[+index].creative)
           setFolderType(groups[0]?.folders[+index].creative)
         }
         if(sub === 'favorites'){
           setPhotos(groups[0]?.favorites[+index]?.photos)
           // setCollaborators(user.user.folders[0].collaborators)
-          setFolderShown(+index)
+
           // setFolderType(groups[0]?.favorites[+index].creative)
         }
         if(sub === 'collabs'){
           setPhotos(groups[0]?.collabs[+index].photos)
-          setCollaborators(groups[0]?.collabs[+index].collaborators)
-          setFolderShown(+index)
           console.log("creative", groups[0]?.collabs[+index].creative)
           setFolderType(groups[0]?.collabs[+index].creative)
         }
@@ -211,10 +252,7 @@ for (const i of Object.keys(groups)) {
         setPhotos(groups[0]?.folders[0].photos)
         setFolderDetails(newDetail(groups[0]?.folders[0], 'folders'))
         // setCollaborators(groups[0]?.folders[0].collaborators)
-        collaborators[0] = groups[0]?.folders[0].collaborators
-        setFolderShown(groups[0]?.folders[0].index)
-        setFolderType(groups[0]?.folders[0].creative)
-        
+    
         navigate('/home/folders/0')
       }
       setLoaded(true)
@@ -260,7 +298,7 @@ const landingFetch = () => {
       // setUserFavorites(user.user.favorite_folders)
       setAbout(user.user.about)
       setDemo(user.user.demo)
-      setUuid(user.user.uuid)
+    //   setUuid(user.user.uuid)
       // setFolderType(user.user.folders[0].creative)
       // setCollaborators(user.user.folders[0].collaborators)
 
@@ -271,35 +309,20 @@ const landingFetch = () => {
       
       if (history.action === 'POP' && location.pathname.includes("undefined") && root === 'by_Corey_Lee'){
 
-        // console.log("pop", window.store, history.action, location.pathname, root)
-        // const sub = location.pathname.split('/')[2]
-        // const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
-          console.log()
-          setPhotos(groups[0]?.folders[+index].photos)
-          setCollaborators(groups[0]?.folders[+index].collaborators)
-          setFolderShown(+index)
-          setFolderType(groups[0]?.folders[+index].creative)
+          setFolderPhotos(groups[0]?.folders, 'folders')
         }
         if(sub === 'favorites'){
-          setPhotos(groups[0]?.favorites[+index].photos)
-          // setCollaborators(user.user.folders[0].collaborators)
-          setFolderShown(+index)
-          // setFolderType(groups[0]?.favorites[+index].creative)
+          setFolderPhotos(groups[0]?.favorites, 'favorites')
         }
         if(sub === 'collabs'){
-          setPhotos(groups[0]?.collabs[+index].photos)
-          setCollaborators(groups[0]?.collabs[+index].collaborators)
-          setFolderShown(+index)
-          setFolderType(groups[0]?.collabs[+index].creative)
+            setFolderPhotos(groups[0]?.collabs, 'collabs')
         }
         navigate(`/by_Corey_Lee/${sub}/${index}`)
       }
       else {
-        setPhotos(groups[0]?.folders[0].photos)
-        setCollaborators(groups[0]?.folders[0].collaborators)
-        setFolderShown(groups[0]?.folders[0].index)
-        setFolderType(groups[0]?.folders[0].creative)
+        setFolderPhotos(groups[0]?.folders[0], 'folders')
+
         navigate('/by_Corey_Lee/folders/0')
       }
       setLoaded(true)
@@ -308,7 +331,7 @@ const landingFetch = () => {
 }
 
 const fetchUser = (userId, name, objId) => {
-  window.store = null
+//   window.store = null
   console.log('here it is', userId, name)
   userId === currentUserId 
   ? profileFetch()
@@ -359,10 +382,8 @@ const fetchUser = (userId, name, objId) => {
         const sub = location.pathname?.split('/')[2]
         const index = location.pathname?.split('/')[3] || '' 
         if(sub === 'folders'){
-          setPhotos(groups[0]?.folders[+index].photos)
-          setCollaborators(groups[0]?.folders[+index].collaborators)
-          setFolderShown(+index)
-          setFolderType(groups[0]?.folders[+index].creative)
+          setFolderPhotos(groups[0]?.folders, 'folders')
+          
         }
         if(sub === 'favorites'){
           // setPhotos(user.user.favorite_folders[+index].favorite_photos)
@@ -372,18 +393,12 @@ const fetchUser = (userId, name, objId) => {
           // setFavoriteShown(+index)
         }
         if(sub === 'collabs'){
-          setPhotos(groups[0]?.collabs[+index].photos)
-          setCollaborators(groups[0]?.collabs[+index].collaborators)
-          setFolderShown(+index)
-          setFolderType(groups[0]?.collabs[+index].creative)
+          setFolderPhotos(groups[0]?.folders, 'collabs')
         }
         navigate(`/user/${sub}/${index}`)
       }
       else {
-        setPhotos(groups[0]?.folders[0].photos)
-        setCollaborators(groups[0]?.folders[0].collaborators)
-        setFolderShown(groups[0]?.folders[0].index)
-        setFolderType(groups[0]?.folders[0].creative)
+        setFolderPhotos(groups[0]?.folders[0], 'folders')
         navigate('/user/folders/0')
       }
       setLoaded(true)
@@ -400,7 +415,7 @@ const fetchUser = (userId, name, objId) => {
 
 const autoLoggin = () => {
   // console.log("name", name, "password", password)
-  console.log('auto login function', uuid)
+  console.log('auto login function', localStorage.token)
   fetch(`${dbVersion}/auto_login`, {
     method: "GET",
     headers: {
@@ -527,12 +542,12 @@ const publishAbout = () => {
 const sortPhotos = (a, b) => a.index - b.index;
 
 const setFolderPhotos = useCallback((folder, type) => {
-  console.log('details', folder, type)
+  console.log('callback details', folder, type)
   setFolderArray(folder, type);
-}, [folders, collabs, favorites, root]);
+}, [folders, collabs, favorites, location.pathname]);
 
 const setFolderArray = (object, type) => {
-    console.log('setFolder params', object, type)
+    console.log('setFolder details', object, type)
     let index = object.index
     // console.log('details', object, index, type, details, root)
     const setFunc = type?.charAt(0)?.toUpperCase() + type.slice(1, -1)
@@ -540,7 +555,7 @@ const setFolderArray = (object, type) => {
     // // eval(`set${setFunc}Shown(${index})`)
     // // setShown(index)
     
-    setFolderShown(object.index)
+    console.log("setFolder", folder, folder.creative, type, object)
 
     if(type !== 'favorites'){
       // SHOWN, TYPE, PRIVACY, COLLABORATORS
@@ -548,24 +563,17 @@ const setFolderArray = (object, type) => {
         eval(`set${setFunc}Privacy(${object.public})`)
         eval(`set${setFunc}Type(${object.creative})`)
       }
-      // console.log("folder.creative", folder, folder.creative, type, `set${setFunc}Type(${folder.type})`)
+      
       setPhotos(folder.photos)
-      setCollaborators(folder.collaborators)
-      // const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
-      // detail.collaborators = folder.collaborators
       setFolderDetails(object)
     }
     else {
-      setCollaborators([])
-      // const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`)
-      // detail.collaborators = []
       setFolderDetails(object)
       setPhotos(folder.favorite_photos)}
-      eval(`setFolderName("${object.name}")`)
       navigate(`/${root}/${type}/${object.index}`)
 }
 
-const [details, setDetails] = useState([])
+const [details, setDetails] = useState<any[] | [IDetails]>([])
 
 const mapDetails = (groups) => {
   if (!!groups){
@@ -578,7 +586,7 @@ const mapDetails = (groups) => {
       if(key[0] === 'favorites'){  
         const detail = eval(`groups[i].${key}`).map((folder, i) => (`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`))
         let jsonDetail = detail.map(d => JSON.parse(d))
-        let jsonKey = eval(key)[0]
+        let jsonKey = eval(key as any)[0]
     
         let obj = {}
         obj[jsonKey] = [jsonDetail]
@@ -595,7 +603,7 @@ const mapDetails = (groups) => {
           })
 
         let obj = {}
-        let jsonKey = eval(key)[0]
+        let jsonKey = eval(key as any)[0]
         obj[jsonKey] = [detail]
         // console.log("[jsonDetail]", detail, obj)
         detailArr.push(obj)
@@ -643,7 +651,7 @@ useEffect(() => {
 }
 // }
 }, [folders, collabs, favorites])
-console.log("details", details,  detail)
+// console.log("details", details,  detail)
 
 
 
@@ -660,31 +668,32 @@ const createFolder = (e, folderName, type) => {
     if (demo) {
       // THIS DOES NOT SEND ACTUAL REQUESTS
     let folder = {}
-    folder.id = folders[folders.length - 1].id + 1
-    folder.name = folderName
-    folder.u_id = userId
-    folder.index = nextIndex
-    folder.photos = []
-    folder.creative = null
-    folder.details = null
-    folder.followers = []
-    folder.link = null
-    folder.public = true
-    folder.creative = null
-    folder.collaborators = []
+    // let folder = {id:"", name:"", u_id: "", index: 0, photos: [], creative: true, details: "", followers: null, link: "", public: true, collaborators: []}
+    folder["id"] = folders[folders.length - 1].id + 1
+    folder["name"] = folderName
+    folder["u_id"] = userId
+    folder["index"] = nextIndex
+    folder["photos"] = []
+    folder["creative"] = null
+    folder["details"] = null
+    folder["followers"] = []
+    folder["link"] = null
+    folder["public"] = true
+    folder["creative"] = null
+    folder["collaborators"] = []
     
     for(let i = 0; i < 60; i++) {
       let photo = {}
-      photo.index = i + 1
-      photo.id = i + 1
-      photo.url = null
-      photo.name = null
-      photo.details = null
-      photo.url = null
-      photo.u_id = userId
-      photo.folder_id = folder.id
-      photo.orientation = true
-      folder.photos.push(photo)
+      photo["index"] = i + 1
+      photo["id"] = i + 1
+      photo["url"] = null
+      photo["name"] = null
+      photo["details"] = null
+      photo["url"] = null
+      photo["u_id"] = userId
+      photo["folder_id"] = folder["id"]
+      photo["orientation"] = true
+      folder["photos"].push(photo)
     }
     console.log("folder", folder)
     setNewFolder(true)
@@ -729,9 +738,9 @@ const createFolder = (e, folderName, type) => {
 
 const catagorize = (boolean) => {
   
-  let updatedFolder = folders.find((folder) => folder.index === folderShown)
+  let updatedFolder = folders.find((folder) => folder.index === folderDetails.id)
   
-  // console.log('catagorizeFolder', boolean, updatedFolder, folderShown, folders)
+  // console.log('catagorizeFolder', boolean, updatedFolder, folderDetails.id, folders)
 
   updatedFolder.creative = boolean
   
@@ -756,7 +765,7 @@ const catagorize = (boolean) => {
       }
       ,
       body: JSON.stringify({
-        index: folderShown,
+        index: folderDetails.id,
         catagory: boolean,
         
       })
@@ -854,13 +863,22 @@ console.log("delete", folders.length > 1, folderIndex === 0)
 
   const addCollaborator = (uuid, name) => {
 
-    console.log("id", userId, "folder", folderShown)
+    console.log("id", userId, "folder", folderDetails.id)
 
-    const folder = folders.find(folder => folder.index === folderShown)
+    const folder = folders.find(folder => folder.index === folderDetails.id)
 
     if (demo){
-      const collaborator = {name: name, uuid: uuid}
-      setCollaborators([...collaborators, collaborator])
+
+        setFolders(
+            folders.map((folder) => {
+              if (folder.id === folderDetails.id) {
+                folder.collaborators = {name: name, uuid: uuid}
+                return folder;
+}
+              else return folder;
+            }))
+    //   const collaborator = {name: name, uuid: uuid}
+    //   setCollaborators([...collaborators, collaborator])
     }
     else if (loggedIn) {
       fetch(`${dbVersion}/add_collaborator/${folder.id}`, {
@@ -879,21 +897,23 @@ console.log("delete", folders.length > 1, folderIndex === 0)
       .then((res) => res.json())
       .then((collaborator) => {
         console.log("collaborator", collaborator);
-        setCollaborators([...collaborators, collaborator])
-        // setFolders(
-        //   folders.map((folder) => {
-        //     if (folder.id === folderObj.id) 
-        //     // folder.collaborator = folderObj.collaborator
-        //     // return folderObj;
-        //     // else return folder;
-        //   })
-        // );
+        // setCollaborators([...collaborators, collaborator])
+        setFolders(
+          folders.map((folder) => {
+            if (folder.id === folderDetails.id) {
+            folder.collaborators = [...folderDetails.collaborators, collaborator]
+            // {name: name, uuid: uuid}
+            // folderDetails.collaborators = folder.collaborator
+            return folder;}
+            else return folder;
+          })
+        );
       });}
   };
 
   const updateFolderPrivacy = () => {
 
-    fetch(`${dbVersion}/folders/${folderShown}`, {
+    fetch(`${dbVersion}/folders/${folderDetails.id}`, {
       method: "PATCH",
       headers: {
         Authorization: `Bearer ${localStorage.token}`,
@@ -922,12 +942,12 @@ console.log("delete", folders.length > 1, folderIndex === 0)
   const [colorArr, setColorArr] = useState([{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}])
   const colors = [{color : 'red'}, {color : 'yellow'}, {color : 'blue'}, {color : 'green'}]
   
-  const [count, setCount] = useState([])
+  const [count, setCount] = useState(0)
   
   const hiliteCollaborator = (user) => {
     // find photos contributed by user in current folder
     const filtered = photos.filter(photo => photo.u_id === user.uuid)
-    console.log("user", user, count, collaborators)
+    console.log("user", user, count, folderDetails?.collaborators)
     // count represents how many colors have been used in color array
     if (count < 1) {
       // select/remove first color in array
@@ -941,13 +961,13 @@ console.log("delete", folders.length > 1, folderIndex === 0)
         Object.assign(photo, color)
       })
 
-    } else if (user.color !== undefined && folderDetails?.collaborators.filter(collaborator => collaborator.color === user.color).length === 1) {
+    } else if (user.color !== undefined && folderDetails?.collaborators?.filter(collaborator => collaborator.color === user.color).length === 1) {
       // if user has color already assigned
-      let color = {}
+      let color = {color:""}
       // create color object and assign value from user color
-      color.color = user.color
+      color["color"] = user.color
       // get index of color by comparing to clone array
-      let index = colors.map(color => color.color).indexOf(color.color)
+      let index = colors.map(color => color.color).indexOf(color['color'])
       // copy state array
       let colorArray = [...colorArr]
       // insert color back into array
@@ -964,7 +984,8 @@ console.log("delete", folders.length > 1, folderIndex === 0)
       updatedArr.splice(userIndex, 1, user)
       
       const detailOBj = {...folderDetails} 
-      detailOBj.collaborators = updatedArr
+      
+      detailOBj["collaborators"] = updatedArr as [ICollaborator]
       setFolderDetails(detailOBj)
       // setCollaborators(updatedArr)
   
@@ -1022,11 +1043,14 @@ const createLink = (e, linkName, linkUrl) => {
   
   const nextIndex = !!userLinks.length ? userLinks[userLinks.length - 1].index + 1 : 1
   if (demo) {
+    const nextId = userLinks[userLinks.length - 1].id + 1
     const newLink = {
     name: linkName,
     url: linkUrl, 
     index: nextIndex,
-    u_id: currentUserId}
+    u_id: currentUserId,
+    id: nextId
+}
     setUserLinks([...userLinks, newLink])
     console.log("link", e, linkName, linkUrl, newLink);
   }
@@ -1069,7 +1093,7 @@ const createLink = (e, linkName, linkUrl) => {
     };
 
 
-  const updateLink = (e, linkName, linkUrl, link) => {
+  const updateLink = (e: React.KeyboardEvent, linkName: string, linkUrl: string, link: ILink) => {
         e.preventDefault();
         console.log(e);
         console.log(linkUrl);
@@ -1129,7 +1153,7 @@ const nameSubmit = (e, newName) => {
 
 // PHOTO FUNCTIONS
 const removePhoto = useCallback((photo) => {
-  deletePhoto(photo);
+  if (enableDelete){deletePhoto(photo);}
 }, [loggedIn, photos]);
 
 const deletePhoto = (photo) => {
@@ -1144,7 +1168,7 @@ const deletePhoto = (photo) => {
       })
     );
   }
-  else if (loggedIn){
+  else if (loggedIn && enableDelete){
     console.log(photo);
     fetch(`${dbVersion}/photos/${photo.id}/`, {
     method: "DELETE",
@@ -1172,40 +1196,49 @@ const deletePhoto = (photo) => {
       );
     });}
 };
+console.log("reordered", reorderedPhotos)
+// const reorder = useCallback(() => {
+//   console.log("reorder", folderDetails, reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderDetails?.id))
+//   reorderSubmit();
+//   setPhotos(reorderedPhotos)
+// }, [reorderedPhotos, edit]);
 
-const reorder = useCallback(() => {
-  reorderSubmit();
-}, []);
-
-const reorderSubmit = () => {
-  console.log("reorderedPhotos", !!reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderShown))
-if (!!reorderedPhotos){
-  let photoArray = [...reorderedPhotos]
-  if (!isNaN(folderShown)) {
-    !demo && loggedIn && fetch(`${dbVersion}/reorder_photos/`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        reordered_photos: photoArray,
-      }),
-    })
-  }
-    else{!demo && loggedIn && fetch(`${dbVersion}/reorder_favorite/`, {
-      method: "PATCH",
-      headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
-      body: JSON.stringify({
-        reordered_photos: reorderedPhotos,
-      }),
-    })}
-  }
+const reorder = () => {
+  console.log("reorderedPhotos", folderDetails, reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderDetails?.id))
+  setPhotos(reorderedPhotos)
+// if (!!reorderedPhotos){
+//   let photoArray = [...reorderedPhotos]
+//   if (!isNaN(folderDetails.id)) {
+//     !demo && loggedIn && fetch(`${dbVersion}/reorder_photos/`, {
+//       method: "PATCH",
+//       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         reordered_photos: photoArray,
+//       }),
+//     })
+//   }
+//     else{!demo && loggedIn && fetch(`${dbVersion}/reorder_favorite/`, {
+//       method: "PATCH",
+//       headers: { Authorization: `Bearer ${localStorage.token}`, "Content-Type": "application/json" },
+//       body: JSON.stringify({
+//         reordered_photos: reorderedPhotos,
+//       }),
+//     })}
+//   }
 
   reorderedPhotos !== undefined && setReorderedPhotos(undefined)
   };
   const editToggle = () => {
-    edit === false
-    ? setEdit(!edit) && reorderSubmit()
-    : setEdit(!edit) 
-    enableDelete === true && setEnableDelete(!enableDelete)
+    console.log("edit", edit)
+    if (edit === false){
+        setEdit(!edit) 
+      }
+      else {
+        // reorderSubmit()
+        setEdit(!edit) 
+        enableDelete === true && setEnableDelete(!enableDelete)
+    }
+    
     console.log("reorderedPhotos", reorderedPhotos)
     
   };
@@ -1220,14 +1253,14 @@ useEffect(() => {
 }, [follow])
 
 
-  const followToggle = (uId) => {
+  const followFunc = (uId) => {
 
     console.log("follow", follow, uId)
     if (demo) {
       setFollow(!follow) 
       setTimeout(() => {
         setCreative(!creative)
-      }, "50")}
+      }, 50)}
     else if (loggedIn){
 
     if (follow === null) {
@@ -1247,7 +1280,7 @@ useEffect(() => {
         setFollow(followObj)
         setTimeout(() => {
           creativeFollow(followObj.id)
-          }, "50")
+          }, 50)
         
       });
     }
@@ -1269,8 +1302,8 @@ useEffect(() => {
   }
 }
 }
-const followFunc = useCallback((uId) => {
-  followToggle(uId);
+const followToggle = useCallback((uId: string) => {
+  followFunc(uId);
 }, []);
 
   const creativeFunc = (followId) => {
@@ -1314,10 +1347,10 @@ const followFunc = useCallback((uId) => {
           setFollow(followObj)
         });
   }
-  const creativeFollow = useCallback((followId) => {
+  const creativeFollow = useCallback((followId: number) => {
     creativeFunc(followId);
   }, []);
-  const lifestyleFollow = useCallback((followId) => {
+  const lifestyleFollow = useCallback((followId: number) => {
     lifestyleFunc(followId);
   }, []);
 
@@ -1364,7 +1397,7 @@ if(location.pathname === "/" && root !== 'user'){
     }
     if (root === "user" && localStorage.uuid !== undefined && history.action === 'POP')
     {
-      fetchUser(localStorage.uuid, localStorage.name)
+      fetchUser(localStorage.uuid, localStorage.name, index)
     }
     if(history.action === 'POP'){
     if (root === 'login' || 'community'){
@@ -1374,7 +1407,7 @@ if(location.pathname === "/" && root !== 'user'){
       enableDelete === true && setEnableDelete(false)
     }
     if(sub !== 'folders'){
-      setFolderShown(null)
+    //   setFolderShown(null)
     }
     // if(sub !== 'favorite_folders'){
     //   setFavoriteShown(null)
@@ -1389,74 +1422,71 @@ if(location.pathname === "/" && root !== 'user'){
     setLoaded(false)
   }, [root])
   
-// console.log("creative folderDetails", "folderDetails", folderDetails, "folderShown", folderShown, "folderType", folderType, "folderPrivacy", folderPrivacy, collaborators)
+// console.log("creative folderDetails", "folderDetails", folderDetails, "folderDetails.id", folderDetails.id, "folderType", folderType, "folderPrivacy", folderPrivacy, collaborators)
 
+const [drawerSync, setDrawerSync] = useState<any | boolean>(false)
 
+const syncDrawers = (bool) => {
+  setDrawerSync(bool)
+  // if(edit && !bool){}
+}
     return (
       
       <Switch> 
       <Cont root={root} >
          
         <TsSideBar
+          drawerSync={drawerSync}
+          skinny={skinny}
           details={details}
-          // setCurrentDetails={setCurrentDetails}
-          addy={addy}
-          setLocalDb={setLocalDb}
-          localDb={localDb}
           mobile={mobile}
-          overflow={overflow}
+          dbVersion={dbVersion}
+          addy={addy}
+          localDb={localDb}
           loggedIn={loggedIn}
-          setLoggedIn={setLoggedIn}
-          // about={about}
           published={about.publish}
+          root={root}
           sub={sub}
-          // clickAboutLink={clickAboutLink}
           hover={hover} 
+          tutorial={tutorial}
+          edit={edit}
+          enableDelete={enableDelete}
+          userId={userId}
+          currentUserId={currentUserId as any | string | number}
+          folderDetails={folderDetails}
+          userLinks={userLinks as [ILink]}
+
+          setLoggedIn={setLoggedIn}
+          setLocalDb={setLocalDb}
           setHover={setHover}
-          
+
           follow={!!follow && follow}
-          followFunc={followFunc}
+          followToggle={followToggle}
           creative={creative}
           lifestyle={lifestyle}
           creativeFollow={creativeFollow}
           lifestyleFollow={lifestyleFollow}
 
-          tutorial={tutorial}
-          landingFetch={landingFetch}
           setTutorial={setTutorial}
-          fetch={fetchHome}
-          root={root}
-          folderShown={folderShown}
-          setFolderShown={setFolderShown}
-          setFolderPhotos={setFolderPhotos}
-
-
-
-          updateFavorites={updateFavorites}
-          
-          edit={edit}
-          enableDelete={enableDelete}
+          fetchHome={fetchHome}
+        //   setFolderShown={setFolderShown}
+          setFolderDetails={setFolderDetails}
+          setFolderPhotos={setFolderPhotos} 
           deleteLink={deleteLink}
-          deleteFolder={deleteFolder}
+          deleteFolder={deleteFolder}  
           createFolder={createFolder}
           updateFolder={updateFolder}
           createLink={createLink}
-          userLinks={userLinks}
-          updateLink={updateLink}
-          fetchHome={fetchHome}
-          userId={userId}
-          setUserId={setUserId}
-          currentUserId={currentUserId}
+          updateLink={updateLink}  
           setCurrentUserId={setCurrentUserId}
-          userAboutMe={userAboutMe}
+
           useTemplate={useTemplate}
 
-          dbVersion={dbVersion}
+          
         />
         <Header
-          collabs={collaborators?.filter((collaber) => collaber.name !== userName)}
+          collabs={folderDetails?.collaborators?.filter((collaber) => collaber.name !== userName) as [ICollaborator]}
           userName={userName}
-          setCollaborators={setCollaborators}
           mobile={mobile}
           skinny={skinny}
           loggedIn={loggedIn}
@@ -1464,12 +1494,7 @@ if(location.pathname === "/" && root !== 'user'){
           tutorial={tutorial}
           setTutorial={setTutorial}
           userId={userId}
-          follow={follow}
-          creative={creative}
-          lifestyle={lifestyle}
-          followFunc={followFunc}
-          creativeFollow={creativeFollow}
-          lifestyleFollow={lifestyleFollow}
+        //   follow={follow}
           root={root}
           
           edit={!edit}
@@ -1477,37 +1502,35 @@ if(location.pathname === "/" && root !== 'user'){
           dbVersion={dbVersion}
         />
         {mobile !== undefined && !mobile && <AsideRight
+        syncDrawers={syncDrawers}
           userId={userId}
           currentUserId={currentUserId}
-          uuid={uuid}
+        //   uuid={uuid}
           dbVersion={dbVersion}
           root={root}
           sub={sub}
           tutorial={tutorial}
-          setTutorial={setTutorial}
           skinny={skinny || mobile}
           mobile={mobile}
           loggedIn={loggedIn}
           hover={hover} 
-          setHover={setHover}
-
           folderDetails={folderDetails}
-          folderShown={folderShown}
+          newFolder={newFolder}
+          edit={edit}
+          enableDelete={enableDelete}
+          published={about.publish}         
 
-
-          setFolderType={setFolderType}
+          setTutorial={setTutorial}
+          setHover={setHover}
+        //   setFolderType={setFolderType}
           catagorize={catagorize}
           updateFolderPrivacy={updateFolderPrivacy}
-          newFolder={newFolder}
-          collaborators={collaborators}
+        //   collaborators={collaborators}
           hiliteCollaborator={hiliteCollaborator}
           addCollaborator={addCollaborator}
-          edit={edit}
           editToggle={editToggle}
-          enableDelete={enableDelete}
           setEnableDelete={setEnableDelete}
           publishAbout={publishAbout}
-          published={about.publish}         
           reorder={reorder}
           // options={{unmountOnBlur: true}}
         />}
@@ -1529,17 +1552,17 @@ if(location.pathname === "/" && root !== 'user'){
               about={about}
               setAbout={setAbout}
               folderDetails={folderDetails}
-              photos={!!photos && photos}
+              photos={photos}
               setPhotos={setPhotos}
-              openModal={openModal}
-              setOpenModal={setOpenModal}
+              // openModal={openModal}
+              // setOpenModal={setOpenModal}
               colorArr={colorArr}
               userId={userId}
               userName={userName}
-              currentUserId={currentUserId}
+              currentUserId={currentUserId as string | number}
               tutorial={tutorial}
               demo={demo}
-
+              reorderedPhotos={reorderedPhotos}
               setReorderedPhotos={setReorderedPhotos}
               updateFavorites={updateFavorites}
               removePhoto={removePhoto}
@@ -1626,7 +1649,7 @@ if(location.pathname === "/" && root !== 'user'){
             </Cont>
    </Switch>
   )}
-  export default App
+  export default TsApp
 
   const Cont = styled.div`
   display: grid;

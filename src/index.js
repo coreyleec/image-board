@@ -3,7 +3,7 @@ import React, {useEffect} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import { HashRouter as Router } from 'react-router-dom';
-import App from './App';
+import TsApp from './TsApp';
 import { createHashHistory } from 'history'
 
 
@@ -15,7 +15,7 @@ const Root = () => {
   return (
     // <React.StrictMode>
     <Router history={history}>
-    <App/>
+    <TsApp/>
   </Router>
   // </React.StrictMode>
   );

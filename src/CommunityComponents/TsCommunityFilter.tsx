@@ -24,7 +24,7 @@ interface IProps {
     mobile: boolean;
     panel: boolean;
     panelHeight: number;
-    fetchUser: (userId: string, name: string, objId: number | null) => object;
+    fetchUser: (userId: string, name: string, objId: number | null) => void;
     users: [IUser];
     folders: [IFolder];
     setCreative: React.Dispatch<React.SetStateAction<object>>;
@@ -40,7 +40,7 @@ interface IProps {
     // setConnected: React.Dispatch<React.SetStateAction<boolean>>;
     setCatagory: (string) => void;
     dbVersion: string;
-    // currentUserId: string;
+    // currentUserId: any | string;
 }
 
 interface IUser {

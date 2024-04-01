@@ -225,8 +225,8 @@ aside:nth-child(3) {
       -moz-text-fill-color:gainsboro;
       -webkit-text-fill-color: gainsboro;
       -moz-text-stroke-color: black;
-      -webkit-text-stroke-color: black;
       -moz-text-stroke-width: 1.5px;  
+      -webkit-text-stroke-color: black;
       -webkit-text-stroke-width: 1.5px;
       font-size: 35px;
       line-height: 1.2;

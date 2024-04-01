@@ -22,7 +22,7 @@ interface IPhoto {
 interface IProps {
     setPhotos: React.Dispatch<React.SetStateAction<[IPhoto]>>;
     setImgUrl: React.Dispatch<React.SetStateAction<string>>;
-    addPhoto: (e: React.FormEvent<HTMLFormElement>, ref: Node, second: boolean, third: string, forth:string, fifth: object) => object;
+    addPhoto: (e: React.FormEvent<HTMLFormElement>, ref: Node, second: boolean, third: string, forth:string, fifth: object) => void;
     // e, formData, orientation, photoName, photoDetails, photo
       edit: boolean
       photos: [IPhoto]
@@ -32,9 +32,10 @@ interface IProps {
       setPhoto: React.Dispatch<React.SetStateAction<IPhoto>>;
       
 
-      modalToggle: () => boolean;
-      previousPhoto: (params: object) => object;
-      nextPhoto: (params: object) => object;
+      modalToggle: (photo?: IPhoto) => void;
+      previousPhoto: (initialPhoto: object) => void;
+      nextPhoto: (initialPhoto: object) => void;
+      
     //   previousPhoto={previousPhoto}
     //   nextPhoto={nextPhoto}
 

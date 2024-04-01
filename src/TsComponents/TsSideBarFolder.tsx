@@ -34,7 +34,6 @@ details: undefined | [IDetails];
 mobile: boolean;
 loggedIn: boolean;
 edit: boolean;
-folderShown: number;
 folderDetails: undefined | IDetails;
 // folders={'folders'}
 updateFolder: (e: React.KeyboardEvent, folderName: string, folder: object) => void;
@@ -47,7 +46,7 @@ hoverRef: (demoName: string) => void;
 
 const TsSideBarFolder = forwardRef<ChildRef,IProps>( (props, ref) => {
 
-
+const folderShown = props?.folderDetails?.index
 const foldersRef = useRef<HTMLElement | null>(null);
 const collabsRef = useRef<HTMLElement | null>(null);
 const favoritesRef = useRef<HTMLElement | null>(null);
@@ -101,44 +100,6 @@ const submitFolderEdit = (e, folder, type) => {
   e.currentTarget.blur();
 }}
 
-// const updateFolder = (e, folderName, folder) => {
-//   e.preventDefault();
-//   fetch(`${props.dbVersion}/folders/${folder.id}`, {
-//     method: "PATCH",
-//     headers: {
-//       Authorization: `Bearer ${localStorage.token}`,
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify({
-//       name: folderName,
-//       // details: folderDetais,
-//       // link: folderLink,
-//       // user_id: currentUser.id
-//     }),
-//   })
-//     .then((res) => res.json())
-//     .then((folderObj) => {
-//       console.log("folderObj", folderObj);
-//       props.setFolderDetails(
-//         props.folderDetails.map((folder) => {
-//           if (folder.id === folderObj.id) return folderObj;
-//           else return folder;
-//         })
-//       );
-//     });
-// };
-// const [folders, setFolders] = useState()
-// const moveFolder = useCallback((dragIndex, hoverIndex) => {
-//   setFolders((prevFolders) =>
-//     update(prevFolders, {
-//       $splice: [
-//         [dragIndex, 1],
-//         [hoverIndex, 0, prevFolders[dragIndex]],
-//       ],
-//     }),
-//   )
-// }, [])
-
 
 // const inputRef = useRef()
 // useEffect(() => {
@@ -150,7 +111,7 @@ const submitFolderEdit = (e, folder, type) => {
 // }
 // }
 
-console.log("props.details", props.details)
+// console.log("props.details", props.folderDetails, props.details, folderShown)
 // NAMES
 // arr.map((name, value)=> Object.keys(arr[value])[0] )
 // ARRAYS
@@ -220,7 +181,7 @@ console.log("props.details", props.details)
                      // }
                      onClick={() => {props.setFolderPhotos(folder, Object?.keys(props?.details[value])[0])
                      }}
-                     style={(Object?.keys(props?.details[value])[0] === props.sub && folder.index === props.folderShown) && (props.root === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
+                     style={(Object?.keys(props?.details[value])[0] === props.sub && folder.index === folderShown) && (props.root === "home" || "user" || "by_Corey_Lee") ? {textDecoration: "underline"} : null} 
                      onInput={e => setFolderName(e.currentTarget.textContent)}
                      id={folder.id}
                    > 

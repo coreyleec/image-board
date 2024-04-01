@@ -17,8 +17,9 @@ import styled from "styled-components";
 // }
 
 interface ICollab {
-  uuid: '';
-  name: '';
+  uuid: string;
+  name: string;
+  color: undefined | string;
   prevState: undefined;
 }
 
@@ -32,23 +33,23 @@ interface IProps {
   tutorial: boolean;
   setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
   userId: string;
-  follow: {
-    id: number;
-    u_id: string;
-    creative_follow: boolean;
-    lifestyle_follow: boolean;
-    folder_exceptions: boolean;
-    };
-  creative: boolean;
-  lifestyle: boolean;
+  // follow: {
+  //   id: number;
+  //   u_id: string;
+  //   creative_follow: boolean;
+  //   lifestyle_follow: boolean;
+  //   folder_exceptions: boolean;
+  //   };
+  // creative: boolean;
+  // lifestyle: boolean;
   root: string;
   userName: string;
   edit: boolean;
   dbVersion: string;
-  setCollaborators: (params: any) => any;
-  followToggle: (params: any) => any;
-  creativeFollow: (params: any) => any;
-  lifestyleFollow: (params: any) => any;
+  // setCollaborators: (params: any) => any;
+  // followToggle: (params: any) => any;
+  // creativeFollow: (params: any) => any;
+  // lifestyleFollow: (params: any) => any;
   nameSubmit: (event, params: any) => any;
 
 }
@@ -96,7 +97,8 @@ const index = +(location.pathname.split('/')[3])
         } 
         else {setSiteHeader(props?.userName)}
         if ((Number.isNaN(index)) && (typeof index !== "number")) {
-          props.setCollaborators([])
+          // props.setCollaborators([])
+          // clear folder details
         }
 
     }, [location.pathname, props?.sub, props?.root])
@@ -142,7 +144,7 @@ useEffect(() => {
 
       <Sticky>
       {/* FOLLOW */}
-      {(props.root === 'user') && 
+      {/* {(props.root === 'user') && 
               <div>
                   <Switch>
                   <label className="toggle-switch">
@@ -154,7 +156,7 @@ useEffect(() => {
                   </label>
                   <p>follow</p> 
                   </Switch>
-      {/* ART/LIFESTYLE TOGGLE */}
+      //{/* ART/LIFESTYLE TOGGLE 
                   {(!!props.follow) && (
                   <>
                   <Switch>
@@ -180,7 +182,7 @@ useEffect(() => {
                   </>)
                   }
                   </div>
-      }
+      } */}
           {/* {(props.root === 'home' || props.root === 'by_Corey_Lee') &&           
               <>
               <Switch>
@@ -207,7 +209,7 @@ useEffect(() => {
                   </ViewPortTip>}
                   {!props.mobile && (!Number.isNaN(index)) && (typeof index === "number") && <div>
                   {/* {!!props?.collabs?.length && props.collabs.map((collab) =>{ */}
-                  {!!props?.collabs.length && props?.collabs.map((collab)=> <MediumText>
+                  {!!props?.collabs?.length && props?.collabs?.map((collab)=> <MediumText>
                     {collab.name}
                     </MediumText>)
                     }

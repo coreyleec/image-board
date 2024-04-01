@@ -1,6 +1,6 @@
 import React, {memo, useEffect, useState, useCallback, useMemo} from "react";
 import { BrowserRouter as Routes, Route, useLocation, Switch, useHistory, useRouteMatch } from 'react-router-dom';
-import DndContainer from "../containers/DndContainer";
+import TsDndContainer from "../containers/TsDndContainer";
 import AboutMeTs from "../TsContainers/AboutMeTs";
 import PhotoGrid from "../mobileContainers/PhotoGrid";
 
@@ -34,6 +34,7 @@ interface IPhoto {
   index: number;
   details: string;
   collaborators: [ICollaborator];
+  orientation: boolean;
 }
 interface IProps {
   mobile: boolean;
@@ -44,17 +45,18 @@ interface IProps {
   folderDetails: undefined | IDetails;
   photos: [IPhoto] 
   setPhotos: React.Dispatch<React.SetStateAction<[IPhoto]>>;
-  openModal: boolean
-  setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-  colorArr: [IColor];
+  // openModal: boolean
+  // setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+  colorArr: IColor[];
   userId: string;
   userName: string;
-  currentUserId: string;
+  currentUserId: number | string;
   tutorial: boolean;
   demo: boolean;
+  reorderedPhotos: any[] | [IPhoto];
   setReorderedPhotos: React.Dispatch<React.SetStateAction<[IPhoto]>>;
-  updateFavorites: (photo: object) => object;
-  removePhoto: (photo: object) => object;
+  updateFavorites: (photo: object) => void;
+  removePhoto: (photo: object) => void;
   enableDelete: boolean;
   edit: boolean; 
   dbVersion: string;
@@ -65,7 +67,7 @@ const TsProfileRouteMatch = React.memo<IProps>(( props ) => {
     const match  = useRouteMatch();
     const location = useLocation();
   const root = location?.pathname.split('/')[1]
-    // console.log("root", match.path, props.root)
+    console.log("photos", props.photos)
 
    
 return (
@@ -86,17 +88,19 @@ return (
               // updateFavorites={props.updateFavorites}
               dbVersion={props.dbVersion}
               /> 
-              : <DndContainer
+              : <TsDndContainer
                 folderDetails={props?.folderDetails}
-
-
-                // hightlighted={props.hightlighted}
                 photos={props.photos}
-                colorArr={props.colorArr}
+                colorArr={props.colorArr as [IColor]}
                 setPhotos={props.setPhotos}
                 userId={props.userId}
                 currentUserId={props.currentUserId}
+                loggedIn={props.loggedIn}
+                userName={props.userName}
+
+                tutorial={props.tutorial}
                 demo={props.demo}
+                reorderedPhotos={props.reorderedPhotos}
                 setReorderedPhotos={props.setReorderedPhotos}
                 removePhoto={props.removePhoto}
                 enableDelete={props.enableDelete}

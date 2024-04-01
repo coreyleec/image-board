@@ -6,6 +6,8 @@ import styled, { keyframes } from "styled-components";
 interface ICollaborator {
   uuid: string;
   name: string;
+  color: undefined | string;
+  prevState: undefined;
 }
 
 interface IDetails {
@@ -17,23 +19,16 @@ interface IDetails {
 }
 
 interface IProps {
+  userId: null | string;
+  currentUserId: number | string;
+  dbVersion: string;
+  root: string;
+  sub: string;
+  tutorial: boolean;
   skinny: boolean;
   mobile: boolean;
   loggedIn: boolean;
-  root: string;
-  sub: string;
   hover: boolean; 
-  setHover: React.Dispatch<React.SetStateAction<boolean>>;
-  setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
-  catagorize: (params: boolean) => boolean;
-  setFolderType: React.Dispatch<React.SetStateAction<boolean>>;
-  tutorial: boolean;
-  newFolder: boolean;
-  uuid: string;
-  setType: React.Dispatch<React.SetStateAction<boolean>>;
-  hiliteCollaborator: (collaborator: object) => object;
-  updateFolderPrivacy: (params: null) => object;
-  folderPrivacy: undefined | boolean;
   folderDetails: undefined | {
     id: number;
     name: string;
@@ -41,20 +36,28 @@ interface IProps {
     index: number;
     collaborators: [ICollaborator];
   };
-  // collaborators: undefined | [ICollaborator];
-  setEnableDelete: React.Dispatch<React.SetStateAction<boolean>>;
-  enableDelete: boolean;
-  editToggle: (params: boolean) => object;
-  addCollaborator: (uuid: string, name: string) => null;
-  publishAbout: () => void;
-  published: boolean;
-  folderShown: number;
-  
+  newFolder: boolean;
   edit: boolean;
-  reorder: () => null;
-  userId: string;
-  currentUserId: string;
-  dbVersion: string;
+  enableDelete: boolean;
+  published: boolean;
+  // folderShown: number;
+  
+  
+  setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+  setHover: React.Dispatch<React.SetStateAction<boolean>>;
+  catagorize: (params: boolean) => void;
+  // setFolderType: React.Dispatch<React.SetStateAction<boolean>>;
+  // setType: React.Dispatch<React.SetStateAction<boolean>>;
+  updateFolderPrivacy: () => void;
+  hiliteCollaborator: (collaborator: ICollaborator) => void;
+  addCollaborator: (uuid: string, name: string) => void;
+  editToggle: (params: boolean) => void;
+  setEnableDelete: React.Dispatch<React.SetStateAction<boolean>>;
+  
+  // collaborators: undefined | [ICollaborator];
+  publishAbout: () => void;
+  reorder: () => void;
+  syncDrawers: (boolean) => void;
 }
  
 
@@ -112,8 +115,10 @@ const AsideRight: React.FC<IProps> = (props, folderDetails) => {
 
   const editToggle = () => {
     props.editToggle(!props.edit)
-    console.log("reorderedPhotos", props.edit)
+    console.log("reorderedPhotos", props.edit, props.folderDetails)
     if (props.edit) {
+      console.log("edit", props.edit)
+      props.reorder()
       setDelay('.3s linear')
       setTimeout(() => {
         setDelay('.3s linear .3s');
@@ -125,8 +130,7 @@ const AsideRight: React.FC<IProps> = (props, folderDetails) => {
         setDelay('.3s linear');
       }, 500)
     }
-    props.edit === true && 
-    props.reorder()
+    
   };
 
   // console.log("props.folderDetails", props?.folderDetails)
@@ -170,6 +174,8 @@ const changeFlex = (bool) => {
 
 const controlDockToggle = () => {
   setControlDock(!controlDock)
+  props.syncDrawers(!controlDock)
+  // if (!controlDock === false){props.syncDrawers(false)}
   // !!drawerRef.current && console.log("dimensions", drawerRef.current.clientHeight);
   // !!search && setSearch([0])
 }
@@ -270,7 +276,7 @@ useEffect(() => {
     }
   } 
   else if (props.skinny){
-    console.log("props.skinny", props.skinny, props.folderDetails)
+    // console.log("props.skinny", props.skinny, props.folderDetails)
     // WINDOW IS SKINNY
     if (!controlDock) {
       // CLOSED CONTROL DOCK
@@ -372,10 +378,7 @@ const followToggle = () => {
   // console.log("follow")
   setFollow(!follow)
 }
-const typeToggle = () => {
-  // console.log("follow")
-  props.setType(!folderDetails.creative)
-}
+
 
 useEffect(() => {
   if (props.root === 'login' || 'community'){
@@ -553,7 +556,7 @@ const lifestyleVar = folderDetails.creative === false
           >
            <label className="toggle-switch edit-switch" >
            <input type="checkbox" checked={props.edit}
-            onChange={editToggle}
+            onChange={() => editToggle()}
             // onFocus={() => changeFlex(true)}
             // onBlur={() => changeFlex(false)} 
             />

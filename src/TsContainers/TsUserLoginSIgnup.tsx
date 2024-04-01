@@ -15,7 +15,7 @@ interface IProps {
     setUserId: React.Dispatch<React.SetStateAction<string>>;
     setDemo: React.Dispatch<React.SetStateAction<boolean>>;
     setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
-    profileFetch: () => null;
+    profileFetch: () => void;
     
 }
 

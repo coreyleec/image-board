@@ -10,7 +10,7 @@ interface ICollaborator {
     uuid: string;
     name: string;
   }
-interface ILinks {
+interface ILink {
     name: string;
     url: string;
     id: number;
@@ -34,114 +34,70 @@ interface ILinks {
   
   interface IProps {
     skinny: boolean;
+    details: undefined | any[] | [IDetails];
     mobile: boolean;
-    updateFolder: (e: React.KeyboardEvent, folderName: string, folder: object) => void;
-    setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
-    loggedIn: boolean;
-    root: string;
-    sub: string;
-    hover: boolean; 
+    dbVersion: string;
     addy: boolean; 
     localDb: boolean; 
-    // creative: boolean
-    // lifestyle: boolean
+    loggedIn: boolean;
+    published: boolean;
+    sub: string;
+    root: string;
+    hover: boolean; 
+    
+    tutorial: boolean;
+    edit: boolean;
+    enableDelete: boolean;
+    userId: string;
+    currentUserId: any | string;
+    userLinks: null | [ILink];
+    folderDetails: undefined | IDetails;
+    
+    
+    setLoggedIn: React.Dispatch<React.SetStateAction<boolean>>;
     setLocalDb: React.Dispatch<React.SetStateAction<boolean>>;
     setHover: React.Dispatch<React.SetStateAction<boolean>>;
-    setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 
-    follow: IFollow | null ;
-    followToggle: (params: string) => null;
-    creativeFollow: (params: number) => boolean;
-    lifestyleFollow: (params: number) => boolean;
-
-    catagorize: (params: boolean) => boolean;
-    folderType: null | boolean;
-    setFolderType: React.Dispatch<React.SetStateAction<boolean>>;
-    setFolderShown: React.Dispatch<React.SetStateAction<null | boolean>>;
+    drawerSync: boolean;
     
-    createFolder: (e: React.KeyboardEvent, first: string, last: string) => void;
+    follow: IFollow | null;
+    lifestyle: boolean;
+    creative: boolean;
+    followToggle: (uId: string) => void
+    creativeFollow: (followId: number) => void;
+    lifestyleFollow: (followId: number) => void;
+
+
+    setTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+    fetchHome: () => void;
+    setFolderDetails: React.Dispatch<React.SetStateAction<null | IDetails>>;
+    setFolderPhotos: (first: object, last: string) => void;
+    deleteLink: (e: React.KeyboardEvent, first: object) => void;
     deleteFolder: (first: object, second: string, last: string) => void;
 
-    deleteLink: (e: React.KeyboardEvent, first: object) => void;
-    createLink: (e: React.KeyboardEvent, first: string, second: string) => object;
-    updateLink: (e: React.KeyboardEvent, first: string, second: string, third: object) => object;
-    // e, linkName, linkUrl, link
-    userLinks: null | [ILinks];
-
-    setFolderPhotos: (first: object, last: string) => void;
-    tutorial: boolean;
-    newFolder: boolean;
-    uuid: string;
-    setType: React.Dispatch<React.SetStateAction<boolean>>;
-    hiliteCollaborator: (params: object) => null;
-    updateFolderPrivacy: (params: null) => object;
-    useTemplate: (params: any) => null;
-    // folderPrivacy: undefined | boolean;
-    setCurrentDetails: (first: number, last: string) => void;
-    details: undefined | [IDetails];
-    folderDetails: undefined | IDetails;
-    collaborators: undefined | [ICollaborator];
-    setEnableDelete: React.Dispatch<React.SetStateAction<boolean>>;
-    enableDelete: boolean;
-    editToggle: (params: boolean) => object;
-    addCollaborator: (params: string, string) => null;
-    fetchHome: () => void;
-    publishAbout: () => void;
-    published: boolean;
-    folderShown: number;
-    
-    edit: boolean;
-    reorder: () => null;
-    userId: string;
+    createFolder: (e: React.KeyboardEvent, first: string, last: string) => void;
+    updateFolder: (e: React.KeyboardEvent, folderName: string, folder: object) => void;
+    createLink: (e: React.KeyboardEvent, first: string, second: string) => void;
+    updateLink: (e: React.KeyboardEvent, linkName: string, linkUrl: string, link: object) => void;
     setCurrentUserId: React.Dispatch<React.SetStateAction<string>>;
-    currentUserId: string;
-    dbVersion: string;
+    useTemplate: () => void;
+    // setFolderType: React.Dispatch<React.SetStateAction<boolean>>;
+    
   }
+
 
 
 const SideBar: React.FC<IProps> = (props) => {
   const [newFolder, setNewFolder] = useState(false)
   const [folderName, setFolderName] = useState("")
   const inputRef = useRef<HTMLInputElement>(null);
-  const submitNewFolder = (e, type) => {
-    if (e.key === 'Enter' && e.shiftKey === false) {props.createFolder(e, folderName, type) 
-    e.currentTarget.blur();
-    setNewFolder(!newFolder)
-  }}
-  const submitFolderEdit = (e, folder, type) => {
-    if (e.key === 'Enter' && e.shiftKey === false) {updateFolder(e, folderName, folder) 
-    e.currentTarget.blur();
-  }}
-
-const updateFolder = (e, folderName, folder) => {
-  e.preventDefault();
-  fetch(`${props.dbVersion}/folders/${folder.id}`, {
-    method: "PATCH",
-    headers: {
-      Authorization: `Bearer ${localStorage.token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      name: folderName,
-      // details: folderDetais,
-      // link: folderLink,
-      // user_id: currentUser.id
-    }),
-  })
-    .then((res) => res.json())
-    .then((folderObj) => {
-      console.log("folderObj", folderObj);
-      props.setCurrentDetails(folderObj, 'folders'
-      );
-    });
-};
+  
 const [folders, setFolders] = useState()
 
-  
+  const folderShown = props?.folderDetails?.id
   
   // TOGGLE SIDEBAR
   const [sideBar, setSideBar] = useState(false);
-  const [skinny, setSkinny] = useState(false);
   const [hover, setHover] = useState(true)
   
   const location = useLocation();
@@ -160,26 +116,18 @@ const [folders, setFolders] = useState()
     // props.landingFetch()
     navigate("/");
   };
+  const signIn = () => {
+    setSideBar(!sideBar)
+    props.useTemplate()
+  };
 
   const clickAboutLink = () => {
-    props.setFolderShown(null)
+    props.setFolderDetails(null)
     setSideBar(false) 
   }
 
   
-  useEffect(() => {
-    if (window.innerWidth < 1100) {setSkinny(true)} 
-    else {setSkinny(false)}
-  
-    const updateMedia = () => {
-      // console.log("resize")
-      if (window.innerWidth < 1100) {setSkinny(true)} 
-      else {setSkinny(false)}
-    };
-    updateMedia()
-    window.addEventListener('resize', updateMedia);
-    return () => window.removeEventListener('resize', updateMedia);
-  }, []);
+
 
   const childRef = useRef<ChildRef>(null);
   const handleClick = () => {
@@ -193,8 +141,8 @@ const foldersVar = childRef.current?.foldersRef
 const collabsVar = childRef.current?.collabsRef
 const favoritesVar = childRef.current?.favoritesRef
 
-let topVal = skinny ? -6 : 20
-let loginTopVal = skinny ? -14 : 11
+let topVal = props.skinny ? -6 : 20
+let loginTopVal = props.skinny ? -14 : 11
 // console.log("top", topVal)
 
 const foldersDemo = [!!foldersVar?.offsetTop && foldersVar?.offsetTop + topVal, 'folders can be used to organize photos as you develope bodies of work']
@@ -218,12 +166,13 @@ const hoverRef = (demoName) =>{
 useEffect(() => {
   if (props.mobile){
   setSideBar(false)}
-}, [props.folderShown])
+}, [folderShown])
 
 
 useEffect(() => {
-    setSideBar(props.edit)
-}, [props.edit])
+  if (props.edit && !props.drawerSync){setSideBar(false)}
+  else if (props.drawerSync){setSideBar(true)}
+}, [props.edit, props.drawerSync])
 
 useEffect(() => {
   if(props.tutorial){
@@ -242,7 +191,7 @@ useEffect(() => {
 
 // const refs = useRef<{storyRef: type, ...restProps}>({ storyRef, parcoursRef, projectRef });
 
-console.log("props.details", props.details)
+// console.log("props.details", props.folderDetails)
   return (
     <aside>
       <Sticky sideBar={sideBar}
@@ -348,14 +297,13 @@ console.log("props.details", props.details)
                   updateFolder={props.updateFolder}
                     ref={childRef}
                     hoverRef={hoverRef}
-                    details={props.details}
+                    details={props.details as [IDetails]}
                     mobile={props.mobile}
                     loggedIn={props.loggedIn}
                     setFolderPhotos={props.setFolderPhotos}
                     createFolder={props.createFolder}
                     deleteFolder={props.deleteFolder}
                     edit={props.edit}
-                    folderShown={props.folderShown}
                     folderDetails={props.folderDetails}
                     // setFolderDetails={props.setFolderDetails}
                     enableDelete={props.enableDelete}
@@ -459,7 +407,7 @@ console.log("props.details", props.details)
                 ref={loginRef}
                 sideBar={sideBar}
                 onMouseOver={() => setDemoText(loginDemo)}
-                 onClick={() => props.useTemplate(setSideBar(!sideBar))}>
+                 onClick={() => signIn()}>
                   use ImageBoard
                 </Button>
               )}
@@ -816,7 +764,7 @@ background-color: #ccc;
                     createFolder={props.createFolder}
                     deleteFolder={props.deleteFolder}
                     edit={props.edit}
-                    folderShown={props.folderShown}
+                    folderShown={folderShown}
                     folderDetails={props.folderDetails}
                     setCurrentDetails={props.setCurrentDetails}
                     enableDelete={props.enableDelete}

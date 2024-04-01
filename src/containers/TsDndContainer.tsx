@@ -3,8 +3,11 @@ import { useEffect, useState, useRef, useCallback, useMemo} from "react";
 import { useLocation, useRouteMatch } from 'react-router-dom';
 import styled from "styled-components";
 import { Heart } from '../My.styled'
-import { MultiBackend } from "react-dnd-multi-backend";
-import HTML5toTouch from "../dnd/HTML5toTouch";
+// import { MultiBackend } from "react-dnd-multi-backend";
+// import { HTML5Backend } from "react-dnd-html5-backend";
+// import { HTML5Backend } from "./.";
+import { HTML5Backend } from "react-dnd-html5-backend";
+// import HTML5toTouch from "../dnd/HTML5toTouch";
 // import { TouchBackend } from 'react-dnd-touch-backend'
 import { DndProvider } from "react-dnd";
 import DraggableGridItem from "../dnd/DraggableGridItem";
@@ -12,10 +15,92 @@ import "react-grid-layout/css/styles.css";
 import "react-resizable/css/styles.css";
 import ImageModalTs from "../TsComponents/ImageModalTs";
 
-const DndContainer = React.memo(( props ) => {
+interface IAbout {
+    title: string;
+    about: string;
+    publish: boolean;
+  }
+  interface ICollaborator {
+    uuid: string;
+    name: string;
+  }
+  interface IColor {
+    color: string;
+  }
+  interface IDetails {
+    id: number;
+    name: string;
+    creative: boolean;
+    index: number;
+    collaborators: [ICollaborator];
+  }
+  interface IPhoto {
+    id: number;
+    folder_id: number;
+    u_id: string;
+    url: string;
+    thumbnail_url: string;
+    name: string;
+    creative: boolean;
+    index: number;
+    details: string;
+    collaborators: [ICollaborator];
+    orientation: boolean;
+  }
+  interface IProps {
+    loggedIn: boolean;
+    folderDetails: undefined | IDetails;
+    photos:  [IPhoto] 
+    setPhotos: React.Dispatch<React.SetStateAction< any[] | [IPhoto]>>;
+    // openModal: boolean
+    // setOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
+    colorArr: [IColor];
+    userId: string;
+    userName: string;
+    currentUserId: string | number;
+    tutorial: boolean;
+    demo: boolean;
+    reorderedPhotos: any[] | [IPhoto];
+    setReorderedPhotos: React.Dispatch<React.SetStateAction<any[] | [IPhoto]>>;
+    updateFavorites: (photo: object) => void;
+    removePhoto: (photo: object) => void;
+    enableDelete: boolean;
+    edit: boolean; 
+    dbVersion: string;
+    // root: string;
+  }
+//   type DndProviderProps = {
+//     children: React.ReactNode;
+//     backend: MultiBackend; 
+//     options: HTML5toTouch;
+//   };
+  interface IState {
+    delay: string;
+    search: [];
+    expand: boolean;
+    flexStart: boolean;
+    controlDock: boolean;
+    drawerHeight: number;
+    editDrawerWidth: number;
+    editDrawerHeight: number;
+    height: number;
+    inputWidth: string;
+    setInputWidth: React.Dispatch<React.SetStateAction<string>>;
+    searchUl: [] | number ;
+    setSearchUl: React.Dispatch<React.SetStateAction< number | [] | undefined>>;
+    drawer: number;
+    follow: boolean;
+    demoText: string;
+    setDemoText: React.Dispatch<React.SetStateAction<string>>;
+    demoArrow: string;
+  }
+
+const TsDndContainer: React.FC<IProps> =( props ) => {
   const collaborators = props?.folderDetails?.collaborators
   const location = useLocation();
   const root = location?.pathname.split('/')[1]
+  const sub = location.pathname.split('/')[2]
+  const index = location.pathname.split('/')
   const sortPhotos = (a, b) => a.index - b.index;
   const [photos, setPhotos] = useState(null)
   const [updPhoto, setUpdPhoto] = useState(null)
@@ -31,7 +116,7 @@ const DndContainer = React.memo(( props ) => {
   
   const imgCounter = (i) => {
     // setImgCount(imgCount + 1)
-    console.log("photos loaded", i)
+    // console.log("photos loaded", i)
     // if ((i + 1) === 60){
     //   adjustFunction()
     //   setImagesLoaded(true)
@@ -40,330 +125,188 @@ const DndContainer = React.memo(( props ) => {
   
 
 
-  // FOLDERS = ARRAY OF TWO OBJECTS
-  // MAP FOLDER MAP PHOTOS
-  // MAP COLLABS MAP PHOTOS
-  // FOLDERS.SORT(ASC).MAP(FOLDER) => FOLDER.POHTOS.MAP
-  // useEffect(() => {
-  //   setPhotos(photos)
-  // }, [props.colorArr])
-
-
-  // ONDROP ERROR HANDLING
-  
-  
-  
-const [undo, setUndo] = useState()
+  // ONDROP ERROR HANDLING  
+const [undo, setUndo] = useState([])
 const [underIndexs, setUnderIndexs] = useState([])
-
-  const onDrop = (firstPhotoId, secondPhotoId) => {
-    // PORTRAIT === FALSE & LANDSCAPE === TRUE
-    let newPhotos = [...photos]; // copy of array
-    let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
-    let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
-
-    let overFirstPhoto = firstPhoto.index > 5 && newPhotos.find((photo) => photo.index === firstPhoto.index - 6)
-    let overSecondPhoto = firstPhoto.index > 5 && newPhotos.find((photo) => photo.index === secondPhoto.index - 6)
-    let underFirstPhoto = firstPhoto.index < 54 && newPhotos.find((photo) => photo.index === firstPhoto.index + 6)
-    let underSecondPhoto = secondPhoto.index < 54 && newPhotos.find((photo) => photo.index === secondPhoto.index + 6)
-
-    let overOverFirstPhoto = firstPhoto.index > 11 && newPhotos.find((photo) => photo.index === firstPhoto.index - 12)
-    let overOverSecondPhoto = firstPhoto.index > 11 && newPhotos.find((photo) => photo.index === secondPhoto.index - 12)
-
-    let underUnderFirstPhoto = secondPhoto.index <= 48 && newPhotos.find((photo) => photo.index === firstPhoto.index + 12)
-    let underUnderSecondPhoto = newPhotos.find((photo) => photo.index === secondPhoto.index + 12)
-
-    const firstIndex = firstPhoto.index; // declares variable value of 
-    const underFirstIndex = !!underFirstPhoto && underFirstPhoto.index
-    const underSecondIndex = !!underFirstPhoto && underFirstPhoto.index
-    const underUnderFirstIndex = !!underUnderFirstPhoto && underUnderFirstPhoto.index
-    const overFirstIndex = !!overFirstPhoto && overFirstPhoto.index
+const onDrop = (firstPhotoId, secondPhotoId) => {
+  // PORTRAIT === FALSE & LANDSCAPE === TRUE
+  let newPhotos = [...photos]; // copy of array
+  let firstPhoto = newPhotos.find((photo) => photo.id === firstPhotoId); // finds first photo in copied array
+  let secondPhoto = newPhotos.find((photo) => photo.id === secondPhotoId); // finds second photo in copied array
+  if (firstPhoto.index !== secondPhoto?.index){
+console.log("is Dragging")
+  const findAbovePhoto = (photo, type) => {
     
-    console.log("drag", firstPhoto.index, secondPhoto.index, firstPhoto.index !== secondPhoto.index)
-// IF PHOTOS HAVE UNEQUAL ORIENTATIONS
-// USER NOTE: RULE SET BY THIS CONDITION MEANS PHOTO ORIENTATIONS ARE OPPOSITE GOING FORWARD
+    if (photo?.index > 5){
+      const overVal = (photo?.index - 6)
+      const bool = !!newPhotos.find((p) => p.index == overVal)
 
+      console.log("bool", bool, photo?.index, overVal, !!newPhotos.find((p) => p.index == (photo?.index - 6)))
 
-if (firstPhoto.index !== secondPhoto.index){
-    if (firstPhoto.orientation !== secondPhoto.orientation){
-      console.log("drag inequal")
-      // console.log("drag inequal", firstPhoto.orientation, underSecondPhoto.orientation, (secondPhoto.index === firstPhoto.index + 1) || (secondPhoto.index === firstPhoto.index - 1))
-
-      if (secondPhoto.index === overFirstIndex || secondPhoto.index === underFirstIndex){
-      if (secondPhoto.index === underFirstIndex){
-// DRAG DOWN ONE 
-// IF TRUE THEN FIRST PHOTO IS LANSCAPE AND SECOND IS PORTRAIT
-if (!firstPhoto.orientation) {
-  console.log("if the first photo is portrait", !firstPhoto.orientation)
-  // under the second photo is landscape
-  if (underSecondPhoto.orientation){
-    console.log("under the second photo is landscape", underSecondPhoto.orientation, "move the photo under second to the first")
-// move the photo under second to the first
-      firstPhoto.index = secondPhoto.index
-      underFirstPhoto.index = underSecondPhoto.index
-      underSecondPhoto.index = firstIndex
-      setUndo([...props.photos])
-      console.log("first photo is portrait and second photo is landscape", !!underSecondPhoto.url)
-  }
-  else if (!underSecondPhoto.orientation) {
-    // move the first photo under the second and the second to the first
-    firstPhoto.index = underSecondPhoto.index
-    underSecondPhoto.index = firstIndex
-    setUndo([...props.photos])
-    console.log("first photo is portrait and second photo is landscape", !!underSecondPhoto.url)
-  }
-}
-// else if (firstPhoto.orientation) {
-//   firstPhoto.index = underSecondPhoto.index
-//   secondPhoto.index = firstIndex
-//   setUndo([...props.photos])
-//     console.log("first photo is portrait and second photo is landscape", !!underSecondPhoto.url)
-//   // move the first photo under the second photo and the second to the first
-// }
-
-
-        // if (underSecondPhoto.orientation){
-        //   if (!!underSecondPhoto.url){
-            // MOVE PORTRAIT DOWN ONE AND MOVE LANDSCAPE UNDER TO FIRST PHOTO POSITION
-            // firstPhoto.index = secondPhoto.index
-        //     underSecondPhoto.index = firstIndex
-        //     setUndo([...props.photos])
-        //     console.log("first photo is portrait and second photo is landscape", !!underSecondPhoto.url)
-        //   }
-        // }
-        // else {
-          // FIRST AND SECOND PHOTO ARE SAME ORIENTATION
-          // THIS MAY BE REDUNDANT BECAUSE IT CONTRADICTS PREVIOUS INEQUAL RULE
-        //   firstPhoto.index = secondPhoto.index
-        //   secondPhoto.index = firstIndex
-        //   setUndo([...props.photos])
-        //   console.log("first and second photo are same orientation")
-        // }
+      if (bool){
+        const overPhoto = newPhotos.find((p) => p.index == overVal)
+        return overPhoto
       }
-
-      // DRAG PHOTO UP
-      else if (secondPhoto.index === overFirstIndex){
-        console.log("drag up", underFirstPhoto)
-        // IF FIRST PHOTO IS PORTRAIT THEN SECOND PHOTO ABOVE IS LANDSCAPE
-        // THEN MOVE SECOND PHOTO TO FIRST POSITION AND FIRST PHOTO TO UNDER SECOND PHOTO POSITION
-        // if (!!underFirstPhoto.url)
-        if (!firstPhoto.oreintation){ 
-          firstPhoto.index = secondPhoto.index
-          secondPhoto.index = underFirstIndex
-          underFirstPhoto.index = firstIndex
-          setUndo([...props.photos])
-          console.log("drag land")
-        }
-        else if (!secondPhoto.oreintation){
-          firstPhoto.index = secondPhoto.index
-          secondPhoto.index = underFirstIndex
-          underFirstPhoto.index = firstIndex
-          setUndo([...props.photos])
-          console.log("drag land")
-        }
-        // POSSIBLY REDUNDANT
-        // else {
-        // firstPhoto.index = secondPhoto.index; 
-        // secondPhoto.index = firstIndex
-        // setUndo([...props.photos])
-        // console.log("drag land")
-        // }
-      }}
-// IF DROP TARGET IS RIGHT NEXT TO DRAG SOURCE
-      else if ((secondPhoto.index === firstPhoto.index + 1) || (secondPhoto.index === firstPhoto.index - 1)){
-          // console.log("DROP TARGET IS RIGHT NEXT TO DRAG SOURCE")
-          // console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index,!overFirstPhoto.index + '=' + overSecondPhoto.index, secondPhoto.index + '=' + firstIndex, overSecondPhoto.index + '=' + overFirstIndex)
-        if ((!firstPhoto.orientation)) {
-          // IF FIRST PHOTO IS PORTRAIT
-          if (!underSecondPhoto.orientation) {
-            // IF THE SECOND PHOTO IS LANDSCAPE AND THE FIRST PHOTO IS PORTRAIT DOES THE SECOND PHOTO HAVE SPACE UNDER IT FOR A LANDSCAPE PHOTO
-            console.log("first photo is portrait and under second photo is portrait", underUnderSecondPhoto)
-          }
-          if (underSecondPhoto.orientation){
-            console.log("FIRST PHOTO IS PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE", underSecondPhoto.orientation)
-            
-            firstPhoto.index = secondPhoto.index;
-            underFirstPhoto.index = underSecondPhoto.index
-            secondPhoto.index = firstIndex;
-            underSecondPhoto.index = underFirstIndex
-            setUndo([...props.photos])
-          }
-        }
-        else if ((firstPhoto.orientation && underFirstPhoto.orientation)) {
-            // console.log("FIRST PHOTO LANDSCAPE AND UNDER FIRST PHOTO IS LANDSCAPE")
-            
-            firstPhoto.index = secondPhoto.index;
-            underFirstPhoto.index = underSecondPhoto.index
-            secondPhoto.index = firstIndex
-            underSecondPhoto.index = underFirstIndex
-            setUndo([...props.photos])
-          }
-       else {
-         // IF FIRST PHOTO ORIENTATION IS LANDSCAPE AND THE SECOND PHOTO IS PORTRAIT AND UNDER FIRST PHOTO IS PORTRAIT AND UNDER UNDER SECOND IS LANDSCAPE
-         console.log("is below?") 
-        if(!secondPhoto.orientation && !underFirstPhoto.orientation && underUnderSecondPhoto.orientation){
-          console.log("IF FIRST PHOTO ORIENTATION IS LANDSCAPE AND THE SECOND PHOTO IS PORTRAIT AND UNDER FIRST PHOTO IS PORTRAIT AND UNDER UNDER SECOND IS LANDSCAPE", firstPhoto.index + "=" + secondPhoto.index,
-          underFirstPhoto.index + "=" + underSecondPhoto.index,
-          secondPhoto.index + "=" + firstIndex,
-          underSecondPhoto.index + "=" + underUnderFirstIndex)
-          firstPhoto.index = secondPhoto.index;
-          underFirstPhoto.index = underSecondPhoto.index
-          underUnderFirstPhoto.index = underUnderSecondPhoto.index
-          secondPhoto.index = firstIndex
-          underSecondPhoto.index = underFirstIndex
-          underUnderSecondPhoto.index = underUnderFirstIndex
-          setUndo([...props.photos])
-        }
-      }
-    }
-      // => DRAG AND DROP ITEMS ARE NOT ADJACENT
       else {
-        console.log("DRAG AND DROP ITEMS ARE NOT ADJACENT ")
-        // console.log("FIRST PHOTO LANDSCAPE UNDER LANDSCAPE PHOTO TO PORTRAIT PHOTO ", firstPhoto.index > 6, firstPhoto.index > 12, overFirstIndex, overFirstPhoto, !!overFirstPhoto, overOverFirstPhoto)
+        const overVal = (photo?.index - 12)
+        const overPhoto = newPhotos.find((p) => p.index == overVal)
+        return overPhoto}
+    }
 
-        if (firstPhoto.index > 6 && (overOverFirstPhoto.orientation === true)){
-          console.log("second row test")
-          // console.log("second row test", (!overOverFirstPhoto || (overOverFirstPhoto.orientation === true)), overFirstPhoto.orientation)
-          // if (overOverFirstPhoto.orientation === true){
-            // console.log("second row test", overFirstPhoto.orientation)
-            if (overFirstPhoto.orientation){
-          console.log("FIRST PHOTO, BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT")
-          // FIRST PHOTO
-          // , firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index,
-          // secondPhoto.index + '=' + firstIndex,
-          // overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto
-          // firstPhoto.index = secondPhoto.index;
-          // underFirstPhoto.index = underSecondPhoto.index
-          // underUnderFirstPhoto.index = underUnderSecondPhoto.index
-          // secondPhoto.index = firstIndex
-          // underSecondPhoto.index = underFirstIndex
-          // underUnderSecondPhoto.index = underUnderFirstIndex
+  } 
+  const orientation = (photo) => photo.orientation ? "LANDSCAPE" : "PORTRAIT"
+  const overFirstPhoto = findAbovePhoto(firstPhoto, "overFirstPhoto")
+  const overFirstIndex = overFirstPhoto?.index
+  const overSecondPhoto = findAbovePhoto(secondPhoto, "overSecondPhoto")
+  const overSecondIndex = overSecondPhoto?.index
+  const overOverFirstPhoto = findAbovePhoto(overFirstPhoto, "overOverFirstPhoto")
+  // const overOverSecondPhoto = findAbovePhoto(overSecondPhoto, "overSecondPhoto")
 
+  const firstIndex = firstPhoto.index;
+  const underFirstIndex = firstPhoto?.orientation ? (firstPhoto?.index + 6) :(firstPhoto?.index + 12)
+  const underFirstPhoto = firstPhoto.index < 54 && newPhotos.find((photo) => photo.index === underFirstIndex)
 
-          firstPhoto.index = underSecondPhoto.index;
-          overFirstPhoto.index = secondPhoto.index
-          secondPhoto.index = overFirstIndex;
-          underSecondPhoto.index = firstIndex
-          setUndo([...props.photos])
-        }
-      // }
-      else if (overFirstPhoto.orientation && firstPhoto.orientation && !overSecondPhoto.orientation){ 
-        console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT")
-        firstPhoto.index = underSecondPhoto.index;
-        overFirstPhoto.index = secondPhoto.index
-        secondPhoto.index = overFirstIndex;
-        underSecondPhoto.index = firstIndex
-        setUndo([...props.photos])}
-      }
-        if (firstPhoto.index > 11){
-          console.log("is below?")
-          if (overOverFirstPhoto.index === overSecondPhoto.index + 1 || overOverFirstPhoto.index === overSecondPhoto.index - 1) {
+  // const underSecondIndex = (secondPhoto?.index + 6)
+  const underSecondIndex = secondPhoto?.orientation ? (secondPhoto?.index + 6) :(secondPhoto?.index + 12)
+  const underSecondPhoto = secondPhoto?.index < 54 && newPhotos.find((photo) => photo.index === underSecondIndex)
   
-            if (!!overOverFirstPhoto && !overOverFirstPhoto.orientation ){
-              const overOverFirstIndex = overOverFirstPhoto.index
-              console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT", firstPhoto.index + '=' + secondPhoto.index, overFirstPhoto.index + '=' + overSecondPhoto.index, secondPhoto.index + '=' + firstIndex, overSecondPhoto.index + '=' + overFirstIndex, !overOverFirstPhoto.orientation, overSecondPhoto, secondPhoto)
-              
-              // FIRST PHOTO MUST SWITCH WITH UNDERSECOND PHOTO
-              // OVER FIRST PHOTO MUST SWITCH WITH SECOND PHOTO
-              // OVER OVER FIRST PHOTO MUST SWITCH WITH OVER SECOND PHOTO
-              
-              firstPhoto.index = underSecondPhoto.index;
-              overFirstPhoto.index = secondPhoto.index
-              overOverFirstPhoto.index = overSecondPhoto.index
-              underSecondPhoto.index = firstIndex
-              secondPhoto.index = overFirstIndex;
-              overSecondPhoto.index = overOverFirstIndex
-              setUndo([...props.photos])
-          }
-        }     
-      }
-      else if (!firstPhoto.orientation && underSecondPhoto.orientation && secondPhoto.orientation){
-        console.log("FIRST PHOTO PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE")
-        firstPhoto.index = secondPhoto.index;
-        underFirstPhoto.index = underSecondPhoto.index
-        secondPhoto.index = firstIndex;
-        underSecondPhoto.index = underFirstIndex
-        setUndo([...props.photos])
-      }
-// if under second is photo and first photo orientation false
-        else if (firstPhoto.orientation === secondPhoto.orientation){
-          console.log("drag port", firstPhoto, secondPhoto, underFirstPhoto, underSecondPhoto)
-          const underFirstIndex = underFirstPhoto.index
-          firstPhoto.index = secondPhoto.index;
-          underFirstPhoto.index = underSecondPhoto.index
-          secondPhoto.index = firstIndex;
-          underSecondPhoto.index = underFirstIndex
-          setUndo([...props.photos])
+  // console.log("overFirstIndex", overFirstIndex, "firstIndex", firstIndex, "underFirstIndex", underFirstIndex)
+  // console.log("overSecondIndex", overSecondIndex, "secondPhoto.index", secondPhoto.index, "underSecondIndex", underSecondIndex)
+  
+  // THIS IS A HACKY SOLUTION TO REACT-DND CALLING HOVER MONITOR FUNCTION TWICE
+  if (firstPhoto === secondPhoto){
+    console.log("do nothing if photos are the same")
+    // console.log("do nothing", firstPhoto, secondPhoto)
+  }
+  else if (firstPhoto?.orientation === secondPhoto?.orientation){
+    // DEFAULT FUNCITONALITY
+    // console.log("DRAG TWO OF THE SAME ORIENTATION", firstIndex, secondPhoto?.index)
+    firstPhoto.index = secondPhoto?.index; // then sets the first index to the value of the second
+    secondPhoto.index = firstIndex; // then sets the second photo 
+    setUndo([...photos])
+  }
+
+// IF PHOTOS HAVE UNEQUAL ORIENTATIONS
+// NOTE: RULE SET BY THIS CONDITION MEANS PHOTO ORIENTATIONS ARE OPPOSITE GOING FORWARD. KEEP THAT IN MIND WHEN LOOKING AT CONDITIONS
+// DEFAULT IS LANDSCAPE OR ONE SQUARE IN HEIGHT
+// THE "!" INVERSE IS PORTRAIT WHICH IS 2 SQUARES TALL
+
+else if (firstPhoto?.orientation !== secondPhoto?.orientation){
+  // DRAG TARGET IS ADGACENT VERTICAL OR HORIZONTAL
+  console.log("drag inequal")
+    
+    // DRAG PHOTO UP
+    if (firstPhoto.index === underSecondIndex){
+        const distance = firstPhoto?.orientation ? (secondPhoto?.index + 6) : (secondPhoto?.index + 12)
+        // console.log("DRAG UP", orientation(firstPhoto), firstIndex, "ONTO", orientation(secondPhoto), overFirstIndex)
+        // console.log("first goes up ONE, second goes down TWO", distance)
+
+        firstPhoto.index = secondPhoto?.index
+        secondPhoto.index = distance
+        setUndo([...photos])
+  
+    }
+    // DRAG PHOTO DOWN
+  else if (secondPhoto.index === underFirstIndex){
+      const distance = secondPhoto?.orientation ? (firstPhoto?.index + 6) : (firstPhoto?.index + 12)
+
+      // console.log("DRAG DOWN", orientation(firstPhoto), firstIndex, "ONTO", orientation(secondPhoto), underFirstIndex)
+      // console.log("first goes down ONE, second goes down TWO", distance)
+
+      firstPhoto.index = distance
+      secondPhoto.index = firstIndex
+      setUndo([...photos])
+    }
+
+
+
+// IF DROP TARGET IS RIGHT NEXT TO DRAG SOURCE
+    else if ((secondPhoto.index === firstPhoto.index + 1) || (secondPhoto.index === firstPhoto.index - 1)){
+        // console.log("DROP TARGET IS RIGHT NEXT TO DRAG SOURCE")
+        if (secondPhoto?.orientation !== underSecondPhoto?.orientation && firstPhoto?.orientation !== underFirstPhoto?.orientation) {
+          // IF THE SECOND PHOTO IS LANDSCAPE AND THE FIRST PHOTO IS PORTRAIT DOES THE SECOND PHOTO HAVE SPACE UNDER IT FOR A LANDSCAPE PHOTO
+          // |▔| ⧠
+          // |_||▔|
+          //  ⧠ |_|
+          // console.log("first photo is portrait and under second photo is portrait")
+          //  ⧠ |▔| <= FIRST AND SECOND PHOTO 
+          // |▔||_|
+          // |_| ⧠ 
+          // ARE INEQUAL ORIENTATIONS ON BOTTOM AND PHOTOS OVER THEM ARE ADJACENT
+          console.log(firstPhoto.index, "FIRST PHOTO", orientation(firstPhoto), "AND", secondPhoto.index, "SECOND PHOTO", orientation(secondPhoto), "ARE INEQUAL ORIENTATIONS ON BOTTOM AND PHOTOS OVER THEM ARE ADJACENT", underFirstIndex, underSecondPhoto?.index)
+
+          const underFirst = firstPhoto.orientation ? (underFirstPhoto.index + 6) : (firstPhoto.index + 6)
+
+          const underSecond = secondPhoto.orientation ? (underSecondPhoto.index + 6) : (secondPhoto.index + 6)
+
+          console.log(underSecondPhoto.index, "underFirst", underFirst, "underSecond", underSecond)
+
+          firstPhoto.index = secondPhoto?.index
+          underFirstPhoto.index = underSecond
+          secondPhoto.index = firstIndex; 
+          underSecondPhoto.index = underFirst
+          setUndo([...photos])
         }
-      }  
-
-      // else if (!firstPhoto.orientation){
-      //   if (underSecondPhoto.orientation){
-      //     console.log("FIRST PHOTO IS PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE", underSecondPhoto.orientation)
+      else if (!firstPhoto?.orientation) {
+        // IF FIRST PHOTO IS PORTRAIT
+        // |▔|⧠
+        // |_|
+        console.log("it works")
+        
+        if (underSecondPhoto?.orientation){
+          // console.log("FIRST PHOTO IS PORTRAIT AND UNDER SECOND PHOTO IS LANDSCAPE", underSecondPhoto?.orientation)
+          // |▔| ⧠ <- second photo
+          // |_| ⧠ <- under second photo
+          firstPhoto.index = secondPhoto?.index;
+          secondPhoto.index = firstIndex;
+          underSecondPhoto.index = (firstIndex + 6)
+          setUndo([...photos])
+        }
+      }
+      else if (firstPhoto?.orientation) {
+          // console.log("FIRST PHOTO",firstIndex,  "LANDSCAPE TO SECOND PHOTO", secondPhoto?.index, "AND UNDER FIRST PHOTO", underFirstIndex, "IS LANDSCAPE TO UNDER SECOND PHOTO", secondPhoto?.index + 6)
           
-      //     firstPhoto.index = secondPhoto.index;
-      //     underFirstPhoto.index = underSecondPhoto.index
-      //     secondPhoto.index = firstIndex;
-      //     underSecondPhoto.index = underFirstIndex
-      //     setUndo([...props.photos])
-      //   }
-      // }  
+          firstPhoto.index = secondPhoto?.index;
+          underFirstPhoto.index = (secondPhoto?.index + 6)
+          secondPhoto.index = firstIndex
+          setUndo([...photos])
+  }
+  
+  }
+
+  else if (firstIndex > 5 && (firstPhoto?.orientation && overFirstPhoto?.orientation)){
+    // console.log("second row test")
+    if ((secondPhoto?.index === overFirstPhoto?.index + 1) || (secondPhoto?.index === overFirstPhoto?.index - 1)){
+      // console.log("BOTTOM PHOTO IS LANDSCAPE UNDER TOP LANDSCAPE PHOTO AND SECOND PHOTO IS PORTRAIT")
+      firstPhoto.index = (secondPhoto?.index + 6);
+      overFirstPhoto.index = secondPhoto?.index
+      secondPhoto.index = overFirstIndex;
+      setUndo([...photos])
     }
+  }
+  else if ((overSecondPhoto?.index === overFirstPhoto?.index + 1) || (overSecondPhoto?.index === overFirstPhoto?.index - 1)){
+    // |▔| ⧠
+    // |_||▔|
+    //  ⧠ |_| <= FIRST AND SECOND PHOTO ARE INEQUAL ORIENTATIONS ON BOTTOM AND PHOTOS OVER THEM ARE ADJACENT
+    // console.log(firstPhoto.index, "FIRST PHOTO",firstPhoto.orientation, "AND", secondPhoto.index, "SECOND PHOTO", secondPhoto.orientation, "ARE INEQUAL ORIENTATIONS ON BOTTOM AND PHOTOS OVER THEM ARE ADJACENT", overFirstIndex, overSecondPhoto?.index)
+    const secondVal = firstPhoto.orientation ? (secondPhoto.index + 6) : (secondPhoto.index - 6)
+    const firstVal = secondPhoto.orientation ? (firstIndex + 6) : (firstIndex - 6)
+
+    // console.log("secondVal", secondVal, "firstVal", firstVal)
+
+    firstPhoto.index = secondVal
+    overFirstPhoto.index = overSecondPhoto?.index
+    secondPhoto.index = firstVal; 
+    overSecondPhoto.index = overFirstIndex
+    setUndo([...photos])
+  }
     
-// THIS IS A HACKY SOLUTION TO REACT-DND CALLING HOVER MONITOR FUNCTION TWICE
-    else if (firstPhoto === secondPhoto){
-      console.log("do nothing photo same")
-      // console.log("do nothing", firstPhoto, secondPhoto)
-      // setUndo([...props.photos])
-    }
-    else {
-      firstPhoto.index = secondPhoto.index; // then sets the first index to the value of the second
-      secondPhoto.index = firstIndex; // then sets the second photo 
-      setUndo([...props.photos])
-      console.log("drag land")
-    }
+  } 
+
     
+  }
+};
 
-      let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
-      let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
-      
-      let indexArr = photos.map((photo) => photo.index)
-      // let indexArr = photos.map((photo) => { return photo.index })
-      const errorBool = indexArr.some((photo, idx) => {return indexArr.indexOf(photo) != idx})
-
-      const missingItems = (arr, n) => {
-        let missingItems = [];
-        for (let i = 1; i <= n; i++) if (!arr.includes(i)) missingItems.push(i);
-        return missingItems;
-      }
-      const missingBool = !missingItems(indexArr, 59).length
-      console.log("error missing", !!missingItems(indexArr, 60).length, missingItems(indexArr, 60));
-
-      // reorderedPhotos.map((photo) => {photos.map((oldPhoto) =>{ if (oldPhoto.id === photo.id){ if (oldPhoto.index === photo.index){ return photo}}});
-
-let secondIndex = secondPhoto.index
-let quantityBool = newPhotos.filter((photo) => photo.index === secondIndex).length > 1 
-
-console.log("quantityBool", newPhotos.filter((photo) => photo.index === secondIndex), quantityBool, secondIndex)
-
-        console.log("error text reorderedPhotos", errorBool, (props.photos === photos), quantityBool, newPhotos)
-        console.log("error text", !errorBool, missingBool)
-      if (!errorBool && missingBool){
-        console.log("error text", !errorBool, missingBool)
-        underIndexs[0] = photosUnder
-        props.setPhotos(newPhotos);
-        props.setReorderedPhotos(newPhotos)}
-      else if (errorBool && !missingBool) {
-        console.log("error text", errorBool, !missingBool)
-        let portraitPhotos = props.photos.filter((photo) => photo.orientation !== true)
-        let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
-        underIndexs[0] = photosUnder
-        props.setReorderedPhotos(props.photos)
-        // props.setPhotos(props.photos)
-        setPhotos(props.photos)
-      }
-    }
-  };
 
 // const cntrlZ = useCallback(
 //   (e) => {
@@ -383,7 +326,7 @@ console.log("quantityBool", newPhotos.filter((photo) => photo.index === secondIn
   const addPhoto = (e, formData, orientation, photoName, photoDetails, photoObj) => {
     e.preventDefault();
     setOpenModal(!openModal)
-console.log("form data", e, formData, orientation, photoName, photoDetails, photoObj)
+// console.log("form data", e, formData, orientation, photoName, photoDetails, photoObj)
     
     if (props.demo) {
       e.preventDefault();
@@ -407,13 +350,13 @@ console.log("form data", e, formData, orientation, photoName, photoDetails, phot
       orientation !== undefined && orientation !== true && data.append('orientation', orientation)        
       photoName !== undefined && photoName !== null && data.append('name', photoName)
       photoDetails !== undefined && photoDetails !== null && data.append('details', photoDetails)
-      data.append('u_id', props.currentUserId)
+      data.append('u_id', props?.currentUserId as string )
   
       console.log("data", data)
 
     for(let [key, value] of data){console.log("data", `${key}:${value}`)}
   
-  fetch(`${props.dbVersion}/photos/${photo.id}`, {
+  fetch(`${props.dbVersion}/photos/${photo?.id}`, {
   method: "PUT",
   headers: {
     Authorization: `Bearer ${localStorage.token}`,
@@ -434,9 +377,8 @@ console.log("form data", e, formData, orientation, photoName, photoDetails, phot
 
 
 
-  const [photo, setPhoto] = useState();
+  const [photo, setPhoto] = useState<IPhoto | null>();
   const [openModal, setOpenModal] = useState(false);
-  
   const modalToggle = (photo) => {
     console.log("photo", photo)
     setPhoto(photo);
@@ -512,10 +454,10 @@ const favoriteToggle = (photo) => {
         .then((favoriteObj) => {
           
           console.log("favoriteObj", favoriteObj);
-          props.folderShown !== null ? 
+          props.folderDetails.id !== null ? 
           setFavoritedPhotos(favoriteObj.photo)
           : setFavoritedPhotos(favoriteObj.unfavorited_photo)
-          props.updateUserFavorites(favoriteObj.unfavorited_photo)
+          props.updateFavorites(favoriteObj.unfavorited_photo)
         })
       : fetch(`${props.dbVersion}/favorites/`, {
         method: "POST",
@@ -532,11 +474,11 @@ const favoriteToggle = (photo) => {
         // .catch(e => console.error(e))
         .then((res) => res.json())
         .then((favoriteObj) => {
-          props.folderShown !== null ? 
+          props.folderDetails.id !== null ? 
           setFavoritedPhotos(favoriteObj.photo)
           : setFavoritedPhotos(favoriteObj.favorite_photo)
           console.log("favoriteObj", favoriteObj);
-          props.updateUserFavorites(favoriteObj.favorite_photo)
+          props.updateFavorites(favoriteObj.favorite_photo)
           })
 }
 
@@ -584,44 +526,50 @@ const transformPhotos = (photos) =>{
  
     // adjustGridItemsHeight(grid, updPhoto);
 }
+const underPhotos = (photos) =>{
+  let underPhotos = [...photos]; // copy of array
+  let portraitIndexs = underPhotos.filter((photo) => photo?.orientation !== true).map((photo) => photo.index)
+  // let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
+
+  setUnderIndexs(portraitIndexs)
+  return underPhotos
+}
 
 // FIND ME
 // FIND ME
 useEffect(() => {    
-  if (!!props.photos.length){
+  if (!!props?.photos?.length){
   console.log("useEffect", photos)
-  let newPhotos = [...photos.map(photo=> {return {...photo}})]; // copy of array
-  let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
-  let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
-
-  underIndexs[0] = photosUnder
-  !!props.photos && setPhotos([...newPhotos])
+  const newArray = [...props.photos.map(photo=> {return {...photo}})].sort(sortPhotos)
+  // const newArray = props.photos.map(photo => Object.assign({}, photo));
+  // find all portrait photos in array
+  let portraitPhotos = [...newArray.filter((photo) => photo?.orientation !== true)]
+  // find the photo under each portrait photo. this is due to how the dnd grid is ordered on desktop
+  let photosUnder = [...portraitPhotos.map((photo) => { 
+  let photoUnder = newArray[photo.index + 6]
+  return photoUnder
+  })]
+  
+  const splicedArr = [...props.photos]
+  // remove the photos under to maintain order
+  photosUnder?.forEach(x => splicedArr?.splice(splicedArr?.findIndex(n => n?.id === x?.id), 1));
+  let tally = 0
+  
+  // const reindexedArr = splicedArr?.sort(sortPhotos).map((photo, i) => {
+  //   if(photo?.orientation !== true){
+  //     tally = tally + 1
+  //   }
+  //   photo.index = i
+  //   return photo
+  // }) 
+console.log("props.photos", props.photos, "newArray", newArray, "portraitPhotos", portraitPhotos, "photosUnder", photosUnder, "splicedArr", splicedArr)
+  !!props.photos && setPhotos(splicedArr)
   const grid = gridRef.current;}
   // adjustGridItemsHeight(grid, updPhoto);
 }, [props.photos])
 
-// const transformePhotos = useMemo(() => 
-// { if (!!props?.photos?.length){
-//   console.log("useMemo photo")
-//   let newPhotos = [...props.photos]; // copy of array
-//   let portraitPhotos = newPhotos.filter((photo) => photo.orientation !== true)
-//   let photosUnder = portraitPhotos.map((photo) => photo.index + 6)
 
-//   underIndexs[0] = photosUnder
-//   // !!props.photos && setPhotos([...newPhotos])
-//   // const grid = gridRef.current;
-//   return [...newPhotos]
-// }
-// },
-// [props.photos]);
 
-// console.log("PROPS.FOLDERDETAILS", props.folderDetails)
-
-const [drag, setDrag] = useState(false)
-const dragging = () => {
-  setDrag()
-}
-// folderShown, collaborators
 
   return (
     <article>
@@ -642,11 +590,12 @@ const dragging = () => {
           nextPhoto={nextPhoto}
         />
       )}
-
-      <DndProvider backend={MultiBackend} 
-      options={HTML5toTouch}
+{/* backend = {isMobile?DnDTouchBackend as any:DnDHtml5Backend} */}
+{/* backend = {HTML5Backend as any} */}
+      <DndProvider backend={HTML5Backend as any}
+    //   options={HTML5toTouch}
       >
-        <>
+        <div>
           <div className="grid">
             <GridWrapper
               ref={gridRef}
@@ -655,19 +604,22 @@ const dragging = () => {
               // style={{ opacity }}
               >
               {photos?.sort(sortPhotos).map((photo, i) => (<DraggableGridItem
-                    className="grid-item"
+                    // className="grid-item"
+                    className={photo?.orientation ? "grid-item landscape" : "grid-item portrait"}
                     edit={props.edit}
                     alt={photo.index}
-                    key={photo.index}
-                    orientation={photo.orientation}
+                    key={`photo${photo.id}`}
+                    orientation={photo?.orientation}
+                    underIndexs={underIndexs}
                     url={photo.url}
                     photo={photo}
                     collaborator={!!photo.u_id && collaborators?.filter(user => user.uuid === photo.u_id)}
                     colorArr={props.colorArr}
-                    
-                    onDrop={underIndexs.includes(photo.index) ? false : onDrop}
-                    onMouseDown={() => setUnderIndexs(underIndexs.filter((index) => index !== (photo.index + 6)))}
-                      onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
+                    // droppable={underIndexs?.includes(photo?.index)}
+                    // onDrop={underIndexs.includes(photo.index) ? false : onDrop}
+                    onDrop={onDrop}
+                    // onMouseDown={() => setUnderIndexs(underIndexs.filter((index) => index !== (photo.index + 6)))}
+                      // onMouseUp={() => setUnderIndexs([...underIndexs, photo.index])}
                     // onDrop={photo.url === null ? onDropVariable : disableOnDrop}
                     highlight={photo.color}
                   >
@@ -688,7 +640,7 @@ const dragging = () => {
                       enableDelete={props.enableDelete}
                       
                       details={!!photo.name || !!photo.details}
-                      orientation={photo.orientation}
+                      orientation={photo?.orientation}
                       >  
                       <div className="center-image">
                         
@@ -698,7 +650,7 @@ const dragging = () => {
                         // ref={imgRef}
                         // key={photo.index}
                         // key={!!photo.url && photo.url}
-                        onLoad={() => imgCounter() }
+                        onLoad={() => imgCounter(i) }
                         // onLoad={() => props.edit ? onLoadFunc() : onLoadFunc() }
                         // onLoad keeps tall images from overlapping the photo on the next line
                         
@@ -725,7 +677,7 @@ const dragging = () => {
                       </div>}
 {/* FAVORITE BUTTON */}
 {/* <Heart favorited={!!photo.favorites.length} onClick={() => console.log("favorites", (!!photo.favorites.length) && photo.favorites[0].favoritable_id, "user", photo.user_id)} className="heart">♥</Heart> */}
-                        {(!!props.currentUserId) && (props.location === "/user" || "/favorites") && 
+                        {(!!props.currentUserId) && (root === "user" ||  sub === "favorites") && 
                         <Heart 
                         favorited={photo.favorites !== undefined && !!photo.favorites.length}
                         className="heart"
@@ -734,6 +686,8 @@ const dragging = () => {
   {/* DELETE BUTTON */}
                          
                         <div className="delete-cont">
+                        
+                        <p style={{color: 'white'}}>{photo.index}</p>
                         <button
                         className="delete-photo-button" 
                         style={{display}}
@@ -745,13 +699,13 @@ const dragging = () => {
                 ))}
             </GridWrapper>
           </div>
-      </>
+      </div>
       </DndProvider>
       {/* <div className="bottom-curtain"></div> */}
       </article>
   );
-})
-export default DndContainer;
+}
+export default TsDndContainer;
 
 
 // const Child = React.memo(({ obj, photo, props, setUnderIndexs, underIndexs, onDrop, display, favoriteToggle, modalToggle, imgCounter, root }) => {
@@ -762,7 +716,7 @@ export default DndContainer;
 //    edit={props.edit}
 //    alt={photo.index}
 //    key={photo.index}
-//    orientation={photo.orientation}
+//    orientation={photo?.orientation}
 //    url={photo.url}
 //    photo={photo}
 //    collaborator={!!photo.u_id && collaborators?.filter(user => user.uuid === photo.u_id)}
@@ -794,7 +748,7 @@ export default DndContainer;
 //      enableDelete={props.enableDelete}
      
 //      details={!!photo.name || !!photo.details}
-//      orientation={photo.orientation}
+//      orientation={photo?.orientation}
 //      >  
 //      <div className="center-image">
 //      {console.log("photo render")}
@@ -901,19 +855,19 @@ const adjustGridItemsHeight = (grid, updPhoto) => {
 // }
 
 
-// if(!(Math.ceil(
-//   (height + rowGap) /
-//     (rowHeight + rowGap)))){
-//       photo.style.zIndex = 3
-//     }
+if(!(Math.ceil(
+  (height + rowGap) /
+    (rowHeight + rowGap)))){
+      photo.style.zIndex = 3
+    }
 
-// if(updPhoto !== null) {if(parseInt(photo.getAttribute("alt")) === updPhoto.id){
-//   console.log("issue", height, getComputedStyle(photo.firstChild).height, `{Math.ceil(
-//     (` + `${photo.firstChild.getBoundingClientRect().height}`+ '+' + `${rowGap}` + `) /
-//       (` + `${rowHeight}`+ `+` + `${rowGap})` +   `) <= 40 ? 40 : 80`)}
-// }
+if(updPhoto !== null) {if(parseInt(photo.getAttribute("alt")) === updPhoto.id){
+  console.log("issue", height, getComputedStyle(photo.firstChild).height, `{Math.ceil(
+    (` + `${photo.firstChild.getBoundingClientRect().height}`+ '+' + `${rowGap}` + `) /
+      (` + `${rowHeight}`+ `+` + `${rowGap})` +   `) <= 40 ? 40 : 80`)}
+}
 
-    // console.log("rowSpan", rowSpan, parseInt(photo.getAttribute("alt")), i, updPhoto.id)
+    console.log("rowSpan", rowSpan, parseInt(photo.getAttribute("alt")), i, updPhoto.id)
     photo.style.gridRowEnd = "span " + rowSpan;
   
     
@@ -926,10 +880,13 @@ const GridWrapper = styled.div`
   display: grid;
   justify-content: center;
   grid-gap: 2px;
-  grid-auto-rows: 40px;
+  grid-auto-rows: 1px;
   grid-template-columns: repeat(6,minmax(120px, 155px));
-  .grid-item{
-    grid-row-end: span 2;
+  .landscape{
+    grid-row-end: span 40;
+  }
+  .portrait{
+    grid-row-end: span 80;
   }
   
 `;
@@ -952,7 +909,7 @@ const PictureFrame = styled.div`
 
     position: relative;
     left: 50%;
-    top: ${({orientation}) => orientation ? '50%' : '100%' };
+    top: ${({orientation}) => orientation ? '50%' : '50%' };
     transform: translate(-50%, -50%);
     padding: 0px;
     overflow: hidden;
@@ -1054,15 +1011,36 @@ const PictureFrame = styled.div`
 }
 /* height: 100%; */
 .delete-cont{
+    display: flex;
+    justify-content: space-between;
+    width: 90%;
     top: 14px;
-    right: 21px;
+    // right: 21px;
     position: absolute;
-    ${({enableDelete, url}) => !!url && enableDelete 
-    ? 'opacity: 1; z-index: 8; transition: opacity .2s linear;' : 'opacity: 0; z-index: 0; transition: opacity .2s linear, z-index 0s linear .3s;'};
+    p{opacity: 0; transition: opacity .2s linear;}
+    p{
+      color: white;
+      font-size: 1.1rem;
+      line-height: 0px;
+      transition: opacity .2s linear;
+      ${({edit}) => edit ? 'opacity: 1' : 'opacity: 0' };
+      -webkit-text-stroke-color: black;
+      -webkit-text-stroke-width: 1px;
+      font-weight: bolder;
+      // text-shadow: 1px -1px 0px #000000b3, -1px -1px 0px #000000b3, 1px 1px 0px #000000b3, -1px 1px 0px #000000b3;
+    }
+    button{
+      z-index: 8; 
+      transition: opacity .2s linear;
+      ${({ enableDelete, url}) => !!url && enableDelete ? 'opacity: 1' : 'opacity: 0'};
+    }
+    ${({edit}) => edit
+    ? 'z-index: 8; ' : 'z-index: 0; transition: z-index 0s linear .3s;'};
       /* transition: opacity .2s linear; */
 }
 
 .delete-photo-button{
+      // z-index: 7;
       cursor: pointer;
       background-color: transparent;
       color: red;
@@ -1073,8 +1051,8 @@ const PictureFrame = styled.div`
       /* z-index: 0; */
       height: fit-content;
       padding: 0px;
-      position: relative;
-      width: 0px;
+      // position: relative;
+      // width: 0px;
       /* transition: transform .3s linear; */
   
 }

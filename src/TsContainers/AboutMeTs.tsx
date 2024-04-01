@@ -19,7 +19,7 @@ interface IProps {
     setAbout: React.Dispatch<React.SetStateAction<object>>;
     about: IAbout;
     dbVersion: string;
-    currentUserId: string;
+    currentUserId: any | string;
 }
 
 const AboutMe: React.FC<IProps> = (props) => {

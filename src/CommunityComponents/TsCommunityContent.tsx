@@ -25,7 +25,7 @@ interface IProps {
     mobile: boolean;
     modalToggle: (photo: IPhoto, photos: [IPhoto]) => void;
     // fetchUser: (first: string, last: string) => object;
-    fetchUser: (userId: string, name: string, objId: number | null) => object;
+    fetchUser: (userId: string, name: string, objId: number | null) => void;
     setCatagory: (catagory: string) => void;
     panel: boolean;
     panelHeight: number;
@@ -38,7 +38,7 @@ interface IProps {
     error: boolean;
     setError: React.Dispatch<React.SetStateAction<boolean>>;
 
-    // currentUserId: string;
+    // currentUserId: any | string;
 }
 
 interface IUser {

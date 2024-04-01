@@ -169,6 +169,7 @@ const PhotoGrid = React.memo(( props ) => {
   }
   
 useEffect(() => {
+  console.log("useEffect adjust photos")
   adjustFunction()
 }, [photos])
 
@@ -182,7 +183,7 @@ useEffect(() => {
     const elem = document?.elementsFromPoint(gridWrapperWidth * .5, height * .4)[1]
     const id = +elem.id
 
-    console.log("photo", photoState, elem)
+    // console.log("photo", photoState, elem)
       
       if (!!openModal) {
         setOpenModal(!openModal);

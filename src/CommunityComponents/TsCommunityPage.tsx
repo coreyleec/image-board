@@ -13,13 +13,13 @@ interface IProps {
     loggedIn: boolean;
 
     userId: string;
-    currentUserId: string;
+    currentUserId: any | string;
     
     setUserName: React.Dispatch<React.SetStateAction<string>>;
-    setUserAboutMe: React.Dispatch<React.SetStateAction<object>>;
+    setUserAboutMe: React.Dispatch<React.SetStateAction<string | object>>;
     
     dbVersion: string;
-    fetchUser: (userId: string, name: string, objId: number | null) => object;
+    fetchUser: (userId: string, name: string, objId: number | null) => void;
   } 
   // userId, name, objId
   interface IState {
@@ -62,7 +62,7 @@ interface IProps {
   }
 
 
-const TsCommunityPage: React.FC<IProps> =  (props) => {
+const TsCommunityPage: React.FC<IProps> = (props) => {
     const location = useLocation();
     const history = useHistory()
     const navigate = history.push

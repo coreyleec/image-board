@@ -14,8 +14,8 @@ interface ILinks {
 interface IProps {
     mobile: boolean;
     loggedIn: boolean;
-    updateLink: (e: React.KeyboardEvent, first: string, second: string, third: object) => object;
-    createLink: (e: React.KeyboardEvent, first: string, second: string) => object;
+    updateLink: (e: React.KeyboardEvent, first: string, second: string, third: object) => void;
+    createLink: (e: React.KeyboardEvent, first: string, second: string) => void;
     userLinks: null | [ILinks];
     edit: boolean;
     enableDelete: boolean;
