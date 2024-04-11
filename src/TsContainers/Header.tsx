@@ -123,7 +123,7 @@ useEffect(() => {
 
         return (
             <header onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)} >
-               
+               {/* {!props.mobile && <AppHeader>imageBoard</AppHeader>} */}
                  {!props.edit  
                 ?  <form 
                     // name={props.userName} 
@@ -336,6 +336,38 @@ const NameInput = styled.input`
 //     padding-right: 2%;
 //     padding-top: 2%;
 // `
+const AppHeader = styled.h1`
+
+    ${({mobile}) => mobile ? 
+    `font-size: 3.5rem;
+    font-family: HelveticaNeue-Light;
+    text-align: right;
+    float: right;
+    line-height: .75;
+    width: fit-content;
+    font-weight: normal;
+    cursor: default;
+    padding-right: 2%;
+    padding-top: 2%; 
+    color: white`
+    : 
+    `
+    -webkit-text-stroke-color: white;
+    -webkit-text-stroke-width: 1px;
+    color: gainsboro;
+    font-weight: 500;
+    font-size: 6.5rem;
+    // font-size: 3.5rem;
+    font-family: HelveticaNeue-Light;
+    text-align: right;
+    // float: right;
+    width: fit-content;
+    font-weight: normal;
+    padding-right: 20px;
+    cursor: default;
+    color: gainsboro;`
+  };
+`
 const TitleHeader = styled.h1`
 
     ${({mobile}) => mobile ? 

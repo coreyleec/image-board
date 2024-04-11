@@ -1,6 +1,6 @@
 import React, {memo, useEffect, useState, useCallback, useMemo} from "react";
 import { BrowserRouter as Routes, Route, useLocation, Switch, useHistory, useRouteMatch } from 'react-router-dom';
-import TsDndContainer from "../containers/TsDndContainer";
+import TsDndContainer from "../TsContainers/TsDndContainer";
 import AboutMeTs from "../TsContainers/AboutMeTs";
 import PhotoGrid from "../mobileContainers/PhotoGrid";
 

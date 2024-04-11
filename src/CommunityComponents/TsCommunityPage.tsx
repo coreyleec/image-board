@@ -2,7 +2,7 @@ import React from 'react'
 import { useEffect, useState, useRef } from 'react'
 import { useHistory, useLocation } from 'react-router-dom';
 import TsCommunityFilter from "./TsCommunityFilter";
-import ImageModal from '../discard/ImageModal';
+import ImageModal from '../containers/ImageModal';
 import styled from 'styled-components'
 // import recent from '../recent.json'
 

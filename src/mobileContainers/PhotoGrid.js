@@ -3,8 +3,8 @@ import { useEffect, useState, useRef, useCallback, cloneElement} from "react";
 import styled from "styled-components";
 import { useLocation } from 'react-router-dom';
 import { Heart } from '../My.styled'
-import "react-grid-layout/css/styles.css";
-import "react-resizable/css/styles.css";
+// import "react-grid-layout/css/styles.css";
+// import "react-resizable/css/styles.css";
 import { debounce} from "lodash";
 // import ImageModal from "../components/ImageModal";
 
@@ -52,7 +52,7 @@ const PhotoGrid = React.memo(( props ) => {
 
   useEffect(() => {    
     
-    if (!!props.photos.length){
+    if (!!props?.photos?.length){
       
       const newArray = [...props.photos.sort(sortPhotos)]
       // find all portrait photos in array
@@ -634,7 +634,7 @@ const index = +(location.pathname.split('/')[3])
             <Grid
               ref={gridRef}
               className="grid"
-              style={{ opacity: imagesLoaded ? 1 : 0 }}
+              // style={{ opacity: imagesLoaded ? 1 : 0 }}
               // style={{ opacity }}
               >
               {photos?.map((photo, i) => (

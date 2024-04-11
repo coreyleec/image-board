@@ -8,8 +8,8 @@ import HTML5toTouch from "../dnd/HTML5toTouch";
 // import { TouchBackend } from 'react-dnd-touch-backend'
 import { DndProvider } from "react-dnd";
 import DraggableGridItem from "../dnd/DraggableGridItem";
-import "react-grid-layout/css/styles.css";
-import "react-resizable/css/styles.css";
+// import "react-grid-layout/css/styles.css";
+// import "react-resizable/css/styles.css";
 import ImageModalTs from "../TsComponents/ImageModalTs";
 
 const DndContainer = React.memo(( props ) => {

@@ -68,7 +68,7 @@ window.addEventListener( 'touchend', function( e ){
     html.scrollTop = html.scrollTop;
 });
 
-  // SWITCH DATABASE VERSION
+  // SWITCH DATABASE LOCAL/DEPLOYED
   // const [dbVersion, setDbVersion] = useState(`http://127.0.0.1:3000/api/v1`)
 
 
@@ -271,7 +271,7 @@ const landingFetch = () => {
     .then((res) => res.json())
     .then((user) => 
     {
-      
+      console.log("user", user)
       const groups = user.user.all_groups
       
       for (const i of Object.keys(groups)) {
@@ -290,7 +290,6 @@ const landingFetch = () => {
       // setCurrentUserId(user.user.id)
       setUserId(user.user.id)
       setUserName(user.user.name);
-      setUserAboutMe(user.user.details);
       setUserLinks(user.user.links);
       // setFolders(user.user.folders);
       // setCollabs(user.user.collab_folders);
@@ -555,7 +554,7 @@ const setFolderArray = (object, type) => {
     // // eval(`set${setFunc}Shown(${index})`)
     // // setShown(index)
     
-    console.log("setFolder", folder, folder.creative, type, object)
+    console.log("setFolder", folder, folder?.creative, type, object)
 
     if(type !== 'favorites'){
       // SHOWN, TYPE, PRIVACY, COLLABORATORS
@@ -564,7 +563,7 @@ const setFolderArray = (object, type) => {
         eval(`set${setFunc}Type(${object.creative})`)
       }
       
-      setPhotos(folder.photos)
+      setPhotos(folder?.photos)
       setFolderDetails(object)
     }
     else {
@@ -652,6 +651,7 @@ useEffect(() => {
 // }
 }, [folders, collabs, favorites])
 // console.log("details", details,  detail)
+console.log("photos", photos)
 
 
 

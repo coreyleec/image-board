@@ -1390,7 +1390,12 @@ if(location.pathname === "/" && root !== 'user'){
   }, [root])
   
 // console.log("creative folderDetails", "folderDetails", folderDetails, "folderShown", folderShown, "folderType", folderType, "folderPrivacy", folderPrivacy, collaborators)
+const [drawerSync, setDrawerSync] = useState(false)
 
+const syncDrawers = (bool) => {
+  setDrawerSync(bool)
+  // if(edit && !bool){}
+}
 
     return (
       
@@ -1477,6 +1482,7 @@ if(location.pathname === "/" && root !== 'user'){
           dbVersion={dbVersion}
         />
         {mobile !== undefined && !mobile && <AsideRight
+          syncDrawers={syncDrawers}
           userId={userId}
           currentUserId={currentUserId}
           uuid={uuid}

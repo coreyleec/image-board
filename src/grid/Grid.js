@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useLayoutEffect, useState } from 'react';
-import imagesLoaded from 'imagesloaded';
+// import imagesLoaded from 'imagesloaded';
 import styled from 'styled-components';
 
 export default function Grid(props) {

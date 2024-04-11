@@ -212,7 +212,7 @@ useEffect(() => {
 // !!editDrawerRef.current && console.log("switch", editDrawerRef.current.clientHeight)
 useEffect(() => {
 
-  const tutorial = (props.root ==='home') ? 35 : 0
+  const tutorial = (props.root ==='home' || props.root ==='by_Corey_Lee') ? 35 : 0
   // console.log("tutorial", tutorial)
   let deleteSwitch = 0
   // editDrawerRef.current?.childNodes[0].clientHeight
