@@ -142,7 +142,7 @@ useEffect(() => {
                 : <TitleHeader defaultValue={props.userName} mobile={props.mobile} >{siteHeader}</TitleHeader> 
                     }
 
-      <Sticky>
+      {/* <Sticky> */}
       {/* FOLLOW */}
       {/* {(props.root === 'user') && 
               <div>
@@ -203,7 +203,7 @@ useEffect(() => {
                   </TutorialTip>}
                 </>
               } */}
-                  </Sticky>
+                  {/* </Sticky> */}
                   {props.tutorial && <ViewPortTip hover={hover} >resize your window to allow room to browse through your local files
                   {/* <div className="arrow"></div> */}
                   </ViewPortTip>}

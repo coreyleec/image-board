@@ -67,7 +67,7 @@ const TsProfileRouteMatch = React.memo<IProps>(( props ) => {
     const match  = useRouteMatch();
     const location = useLocation();
   const root = location?.pathname.split('/')[1]
-    console.log("photos", props.photos)
+    console.log("photos", props.photos, props.folderDetails)
 
    
 return (
