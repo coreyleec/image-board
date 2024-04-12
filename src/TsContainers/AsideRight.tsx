@@ -66,7 +66,7 @@ interface IState {
   delay: string;
   search: [];
   expand: boolean;
-  flexStart: boolean;
+  searchingUser: boolean;
   controlDock: boolean;
   drawerHeight: number;
   editDrawerWidth: number;
@@ -96,10 +96,33 @@ const AsideRight: React.FC<IProps> = (props, folderDetails) => {
   const asideRef = useRef(null);
   const onloadTutorialRef = useRef(null)
 
+  // transition: ${props => 
+  //   props.searchingUser ?
+
+  //     !props.controlDock ?
+       
+  //       props.edit ? 
+  //         'height .3s linear' : 
+  //         'height .3s linear' 
+  //       : props.edit ? 
+  //         'height .3s linear' : 
+  //         'height ' + props.delay :
+
+  //           'height .1s linear .3s'};
+
+
+            // transition: ${props => 
+            //   props.searchingUser ?
+            //     !props.controlDock && props.edit ?
+            //       'height .3s linear'
+            //       : 'height ' + props.delay :
+            //           'height .1s linear .3s'};
+
+
   const [delay, setDelay] = useState('.3s linear .3s')
   const [search, setSearch] = useState([])
   const [expand, setExpand] = useState(false)
-  const [flexStart, setFlexStart] = useState(false)
+  const [searchingUser, setSearchingUser] = useState(false)
   const [controlDock, setControlDock] = useState(false)
   const [drawerHeight, setDrawerHeight] = useState(0)
   const [editDrawerWidth, setEditDrawerWidth] = useState(0)
@@ -115,7 +138,7 @@ const AsideRight: React.FC<IProps> = (props, folderDetails) => {
 
   const editToggle = () => {
     props.editToggle(!props.edit)
-    console.log("reorderedPhotos", props.edit, props.folderDetails)
+    // console.log("reorderedPhotos", props.edit, props.folderDetails)
     if (props.edit) {
       console.log("edit", props.edit)
       props.reorder()
@@ -167,7 +190,7 @@ const searchToggle = () => {
 
 const changeFlex = (bool) => {
   
-  setFlexStart(!bool)
+  setSearchingUser(!bool)
 }
 
 
@@ -207,7 +230,7 @@ useEffect(() => {
   expand ? setInputWidth('83%') : setInputWidth('0%')
 }, [expand])
 
-
+const isCollaborator = collaborators?.some(c => c.uuid === props.currentUserId)
 
 // !!editDrawerRef.current && console.log("switch", editDrawerRef.current.clientHeight)
 useEffect(() => {
@@ -229,8 +252,9 @@ useEffect(() => {
   setSearchUl([])
   // console.log( "deleteSwitch", deleteSwitch, "editSwitch", editSwitch, "editDrawer", editDrawer, "collabUl", collabUl, "length", length, "searchList", searchList)
 
+// IF VIEWING ANOTHING USERS PROFILE AND NOT A COLLABORATOR
   if (props.root === 'user' && !isCollaborator){
-    // console.log("user == root & iscollaborator", props.root === 'user' && !isCollaborator)
+    console.log("user == root & iscollaborator", props.root, !isCollaborator)
     
     // OPEN CONTROL DOCK AND UNCATAGORIZED FOLDER
     if (props.skinny){
@@ -244,13 +268,13 @@ useEffect(() => {
         // console.log("editSwitch", editSwitch)
       }
       else {
-        // console.log("setDrawer(", 25, "+",  collabUl, ")")
-        setDrawer(50 + collabUl + tutorial)
+        console.log("setDrawer", 50, "+",  collabUl, "+", tutorial, "=", 50 + collabUl + tutorial)
+        setDrawer(25 + collabUl + tutorial)
       }
     }
     else {
       console.log("setDrawer(", 50, "+",  collabUl, ")")
-      setDrawer(50 + collabUl + tutorial)
+      setDrawer(25 + collabUl + tutorial)
     }
   } 
   else if (props.sub === 'about'){
@@ -433,7 +457,7 @@ let deleteDemoArrow =  (editDrawerRef.current?.childNodes[0].clientHeight !== 25
 
 // const [hover, setHover] = useState(false)
 // console.log("tru", props.collaborators.some(c => c.uuid === props.currentUserId))
-const isCollaborator = collaborators?.some(c => c.uuid === props.currentUserId)
+
 // console.log("isCollaborator", isCollaborator)
 
 const [timer, setTimer] = useState(true)
@@ -469,7 +493,7 @@ const lifestyleVar = folderDetails.creative === false
             collabLength={collaborators?.length} 
             expand={expand}
             searchUl={searchUl}
-            flexStart={flexStart}
+            searchingUser={searchingUser}
             catagorized={folderDetails.creative}
             
             >
@@ -547,18 +571,11 @@ const lifestyleVar = folderDetails.creative === false
            
 {/* EDIT */}
            <Switch className="edit lower" 
-          //  onMouseLeave={() => {
-          //   ReactTooltip.show(onloadTutorialRef.current);
-          // }}
-          // onMouseEnter={() => {
-          //   ReactTooltip.hide(onloadTutorialRef.current);
-          // }}
+           delay={delay}
           >
            <label className="toggle-switch edit-switch" >
            <input type="checkbox" checked={props.edit}
             onChange={() => editToggle()}
-            // onFocus={() => changeFlex(true)}
-            // onBlur={() => changeFlex(false)} 
             />
            <span className="switch" />
            </label>
@@ -596,7 +613,7 @@ const lifestyleVar = folderDetails.creative === false
            <label className="toggle-switch">
            <input type="checkbox" 
            checked={folderDetails.creative}
-           onChange={() => props.catagorize(folderDetails.creative)}
+           onChange={() => props.catagorize(props.folderDetails.creative)}
           //  checked={props.edit}
            />
            <span className="switch" />
@@ -649,6 +666,7 @@ const lifestyleVar = folderDetails.creative === false
              ref={inputRef}
              autoFocus
              type="text" onChange={(e) => searchUser(e.target.value)} 
+            //  FOCUS JUSTIFIES DRAWER CONTENT TO END
              onFocus={() => changeFlex(true)}
              onBlur={() => changeFlex(false)} placeholder="search user"/>
              {/* </form> */}
@@ -719,7 +737,8 @@ const lifestyleVar = folderDetails.creative === false
               
               </CollabotorList>}
                   {/* TUTORIAL */}
-          {(!props.skinny || controlDock) && !props.mobile && (props.root === 'home' || props.root === 'by_Corey_Lee') &&   
+                  {/* (!props.skinny || controlDock) && */}
+          { !props.mobile && (props.root === 'home' || props.root === 'by_Corey_Lee') &&   
 
             <Switch className="tutorial">
                 <label className="toggle-switch">
@@ -747,7 +766,7 @@ const lifestyleVar = folderDetails.creative === false
             {props.tutorial &&  (props.sub !== 'about') && (props.root === 'home' || props.root === 'by_Corey_Lee') &&
           <TutorialTip 
           asideRef={asideRef} demoArrow={demoArrow} drawer={drawer} controlDock={controlDock} skinny={props.skinny}
-          flexStart={flexStart} edit={props.edit} delay={delay}
+          searchingUser={searchingUser} edit={props.edit} delay={delay}
           arrowTopDistance={props.skinny ? 35 : deleteDemoArrow}
           hover={props.hover}
           onMouseEnter={() => {
@@ -883,7 +902,7 @@ ${({hover}) => hover &&
     border-width: 10px;
     border-style: solid;
     border-color: transparent transparent transparent #ff7f5080;
-    transition: ${({flexStart, controlDock, edit, delay}) => flexStart ?  !controlDock ? edit ? 'top .3s linear' :  'top .3s linear' : edit ? 'top .3s linear' : 'top ' + delay : 'top .1s linear'};
+    transition: ${({searchingUser, controlDock, edit, delay}) => searchingUser ?  !controlDock ? edit ? 'top .3s linear' :  'top .3s linear' : edit ? 'top .3s linear' : 'top ' + delay : 'top .1s linear'};
   }}
  .cat {
   &:after {
@@ -1027,13 +1046,19 @@ const Container = styled.div`
     top: 0;
     border-radius: 13px;
 overflow: hidden;
-    transition: ${props => props.flexStart ?  !props.controlDock ? props.edit ? 'height .3s linear' :  'height .3s linear' : props.edit ? 'height .3s linear' : 'height ' + props.delay : 'height .1s linear'};
+transition: ${props => 
+    !props.controlDock ?
+       
+        props.edit ? 
+          'height .3s linear' : 
+          'height .3s linear' 
+        : props.edit ? 
+        'height .3s linear .3s' : 
+          'height .3s linear .3s'};
+
     height: ${props => props.drawer + 'px'};
     max-height: fit-content;
   
-
-
-
     .catagory.first{
       margin-bottom: 10px;
     }
@@ -1041,7 +1066,7 @@ overflow: hidden;
     
     
     @media (max-width: 1100px){
-      justify-content: ${props => props.flexStart ? 'flex-end' : 'flex-start'};
+      justify-content: ${props => props.searchingUser ? 'flex-end' : 'flex-start'};
       height: ${props => props.drawer + 'px'};
       width: inherit;
     }
@@ -1060,15 +1085,22 @@ overflow: hidden;
     width: ${({asideRef}) => asideRef.current?.clientWidth - 20 + 'px'};
 overflow: hidden;
     transition: margin-block .3s linear, max-height .3s linear;
-    justify-content: ${props => !props.flexStart ? 'flex-start' : 'flex-end' };
+    justify-content: ${props => !props.searchingUser ? 'flex-start' : 'flex-end' };
     max-height: ${props => props.edit ? '100%' : '0%'};
 
     @media (max-width: 1100px){
-      justify-content: ${props => !props.flexStart ? 'flex-start' : 'flex-end' };
+      justify-content: ${props => !props.searchingUser ? 'flex-start' : 'flex-end' };
       max-height: unset;
       height: ${props => props.edit ? 140 + props.searchUl + 'px' : '0px' };
       width: inherit;
-      transition: ${props => props.flexStart ? 'height .3s linear' : 'height .1s linear'};
+      transition: ${props => !props.controlDock ?
+       
+        props.edit ? 
+          'height .3s linear' : 
+          'height .3s linear' 
+        : props.edit ? 
+        'height .3s linear .3s' : 
+          'height .3s linear .3s'};
     }
   }
 
@@ -1104,9 +1136,10 @@ overflow: hidden;
   
   .edit{
     z-index: 1;
-    margin-bottom: ${({edit}) => edit ? '10px' : '0px'  };
+    margin-bottom: ${({edit, delay}) => edit ? '10px' : '0px'  };
     // margin-bottom: 10px;
-    transition: margin-bottom .3s linear ;
+    // transition: margin-bottom .3s linear .3s;
+    transition: margin-bottom ${({delay}) => delay};
     // @media (max-width: 1100px) {
     // }
   }
@@ -1201,68 +1234,55 @@ const Switch = styled.label`
 const CatagorySwitch = styled.label`
   display:flex;
   z-index : ${({catagorized}) => catagorized === null ? '1' : '0'  };
-   /* margin-bottom: 10px; */
-   
   
- p {
-  padding-left: 10px;
-  font-size: 16px; 
-    line-height: 25px;
-}
+  p {
+    padding-left: 10px;
+    font-size: 16px; 
+      line-height: 25px;
+  }
 
-  // :first-child{
-  //   margin-bottom: 10px;
-  // }
+  .toggle-switch {
 
-.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  min-width: 50px;
+  height: 25px;
+  }
+  .toggle-switch input[type="checkbox"] {
+  display: none;
+  }
+  .toggle-switch .switch {
+  position: absolute;
+  cursor: pointer;
+  background-color: #ccc;
+  box-shadow: 0px 1px 0px 1px #9e9e9e inset;
+  border-radius: 25px;
+  padding-inline: 6px;
+  padding-block: 7px;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  transition: background-color 0.2s ease;
+  }
+  .toggle-switch .switch::before {
+  position: absolute;
+  content: "";
+  width: 13px;
+  height: 13px;
 
-position: relative;
-display: inline-block;
-width: 50px;
-min-width: 50px;
-height: 25px;
-/* margin-block: 10px; */
-/* margin-top: 10px; */
-}
-.toggle-switch input[type="checkbox"] {
-display: none;
-}
-.toggle-switch .switch {
-/* outline: solid;
-outline-width: thin; */
-position: absolute;
-cursor: pointer;
-background-color: #ccc;
-box-shadow: 0px 1px 0px 1px #9e9e9e inset;
-border-radius: 25px;
-padding-inline: 6px;
-padding-block: 7px;
-top: 0;
-right: 0;
-bottom: 0;
-left: 0;
-transition: background-color 0.2s ease;
-}
-.toggle-switch .switch::before {
-
-position: absolute;
-content: "";
-    /* margin: 2px; */
-width: 13px;
-height: 13px;
-
-background-color: #aaa;
+  background-color: #aaa;
   box-shadow: 0px 0px 1px 3px rgb(189 189 189 / 71%), 0px 0px 0px 1px rgb(120 121 122 / 76%), 0px -1px 0px 2px rgb(255 255 255), 0px 1px 0px 2px rgb(2 2 3);
   border-radius: 25px;
   transition: transform 0.3s ease;
-}
-.toggle-switch input[type="checkbox"]:checked + .switch::before {
-transform: translateX(25px);
-}
-.toggle-switch input[type="checkbox"]:checked + .switch {
-background-color:  #ccc;
-
-}
+  }
+  .toggle-switch input[type="checkbox"]:checked + .switch::before {
+  transform: translateX(25px);
+  }
+  .toggle-switch input[type="checkbox"]:checked + .switch {
+  background-color:  #ccc;
+  }
 `
 
 const CollabotorList = styled.ul` 
@@ -1541,13 +1561,9 @@ ul li {
 
     left: ${({expand, skinny, panelRef})  => 
   skinny ? 
-  expand ? '176px' : '0px'
+  expand ? '176px' : '1px'
   : expand ? `${panelRef.current.clientWidth - 45}px` : '1px'};
     
-    
-    
-    
-    /* ${props => !props.expand ? 'left: 0%; right: unset' : 'right: 0%; left: unset'}; */
     background-color: ${props => !props.expand ? '#ff0000' : 'green'};
     box-shadow: ${props => !props.expand ? '0px 0px 1px 3px rgb(204 82 41 / 50%), 0px 0px 1px 1px rgb(255 91 26), 0px -1px 0px 2px rgb(255 215 36), 0px 1px 0px 2px rgb(18 0 0)' : '0px 0px 1px 3px hwb(120deg 7% 42% / 62%), 0px 0px 0px 1px hwb(120deg 0% 55% / 85%), 0px -1px 0px 2px hwb(120deg 0% 0%), 0px 1px 0px 2px hwb(120deg 0% 93%)'};
   }
@@ -1572,7 +1588,7 @@ ul li {
   //     setDelay('height .3s linear');
   //   }, 500)
   // }
-  // console.log("flexStart", bool)
+  // console.log("searchingUser", bool)
 
     // if (props.edit) {
 
@@ -1587,7 +1603,7 @@ ul li {
   //     setDelay('height .3s linear');
   //   }, 500)
   // }
-  // console.log("flexStart", bool)
+  // console.log("searchingUser", bool)
 // const [isCollabor, setIsCollabor] = useEffect(false)
 // useEffect(() => {
   // console.log("props.collaborators", props.collaborators) 

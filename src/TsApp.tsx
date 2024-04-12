@@ -110,7 +110,7 @@ const [loggedIn, setLoggedIn] = useState(false)
 // FOLDERS //
 // const [folderDescription, setFolderDetails] = useState();
 const [folders, setFolders] = useState([]);
-
+// const [folderDetails, setFolderDetails] = useState<any[] | [IDetails]>([])
 const [folderDetails, setFolderDetails] = useState<IDetails>()
 const [newFolder, setNewFolder] = useState(false)
 const [folderType, setFolderType] = useState(null)
@@ -554,7 +554,7 @@ const setFolderArray = (object, type) => {
     // // eval(`set${setFunc}Shown(${index})`)
     // // setShown(index)
     
-    console.log("setFolder", folder, folder?.creative, type, object)
+    console.log("setFolder", folder, folder?.creative, type, object, folder?.photos)
 
     if(type !== 'favorites'){
       // SHOWN, TYPE, PRIVACY, COLLABORATORS
@@ -573,6 +573,7 @@ const setFolderArray = (object, type) => {
 }
 
 const [details, setDetails] = useState<any[] | [IDetails]>([])
+
 
 const mapDetails = (groups) => {
   if (!!groups){

@@ -265,7 +265,7 @@ const TsCommunityContent: React.FC<IProps> = (props) => {
 
             
 
-              {(folder.user_name !== photo.user_name) && <p className="folder-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name, folder.id)} >by {photo.user_name}</p>} 
+              {(folder.user_name !== photo.user_name) && <p className="folder-name" onClick={() => props.fetchUser(photo.u_id, photo.user_name, photo.folder_id)} >by {photo.user_name}</p>} 
             {/* <p className="folder-name">{photo.folder_name}</p> */}
             </div>
             <div className='photo-cont'>

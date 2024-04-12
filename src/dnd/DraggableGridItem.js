@@ -174,26 +174,30 @@ display: block;
     ? !!url
     ? `z-index: 2; 
       transition: transform .2s ease-out, z-index 0s 0s;
+      transform: translate(-2px, 2px);
       cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
-      :hover {transform: translate(2px, -2px);} 
+      :hover {transform: translate(-4px, 4px);} 
     `
     : `z-index: 2; 
       transition: transform .2s ease-out, z-index 0s 0s;
+      transform: translate(-2px, 2px);
       cursor: ${isDragging ? 'grabbing !important' : 'grab !important' };
-      :hover {transform: translate(2px, -2px);}
+      :hover {transform: translate(-4px, 4px);}
       `
     : !!url
     ? `z-index: 0; 
-      transition: transform .3s ease-in .4s, z-index 0s 1s;
+      transition: transform .2s ease-in .4s, z-index 0s 1s;
+      transform: translate(-2px, 2px);
       grid-row-end: ${orientation ? 'span 40' : 'span 80'}; 
     &:hover {
       transform: ${orientation ? 'scale(1.75)' : 'scale(1.5)'}; 
       z-index: 5; 
-      transition: z-index .3s cubic-bezier(0,1,1,0) , 
+      transition: z-index .2s cubic-bezier(0,1,1,0) , 
                   transform .3s ease-in;}
                   `
     : `z-index: -1; 
-      transition: transform .3s ease-in .3s, z-index .3s cubic-bezier(0,1,1,0);`
+      transition: transform .2s ease-in .3s, z-index .3s cubic-bezier(0,1,1,0);
+      transform: translate(0px, 0px);`
    }
   
   /* overflow: unset; */

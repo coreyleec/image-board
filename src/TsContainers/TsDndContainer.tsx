@@ -95,7 +95,7 @@ interface IAbout {
     demoArrow: string;
   }
 
-const TsDndContainer: React.FC<IProps> =( props ) => {
+const TsDndContainer: React.FC<IProps> = ( props ) => {
   const collaborators = props?.folderDetails?.collaborators
   const location = useLocation();
   const root = location?.pathname.split('/')[1]
@@ -955,13 +955,7 @@ const PictureFrame = styled.div`
     border-radius: 13px;
     transition: border-radius .2s ease-out;
 }
-&:hover .center-image{
-  // overflow-y: hidden;
-  border-radius: 0px;
-  transition: border-radius .3s ease-out .6s;
-  /* margin: 3px; */
-  
-}
+
   .content-drawer {
     position: absolute;
     width: 100px;
@@ -1063,25 +1057,13 @@ const PictureFrame = styled.div`
   // IMAGE HOVER 
   &:hover {
     z-index: 3;
-    ${details 
-    ? 'max-width: 250%; padding-right: 100px;' 
-    : 'max-width: 156%; padding-right: 3px; z-index: 7; ' }
-    // max-height: ${orientation ? '150px' : '227px' };
     border-radius: 0px;
     box-shadow: none;
     padding-block: 3px;
     padding-left: 3px;
-    
-    // transition: 
-    // padding-left .2s ease-in .6s, 
-    // padding-block .2s ease-in .6s, 
-    // padding-right .2s ease-in .6s, 
-    // border-radius .3s ease-out .6s, 
-    // max-width .3s ease-in .1s, 
-    // max-height .5s ease-in, 
-    // box-shadow 0s,
-    // outline .3s linear .2s;
-
+    ${details 
+    ? 'max-width: 250%; padding-right: 100px;' 
+    : 'max-width: 156%; padding-right: 3px; z-index: 7; ' }
     transition: 
     padding-left .2s linear .4s, 
     padding-block .2s linear .4s, 
@@ -1092,29 +1074,19 @@ const PictureFrame = styled.div`
     box-shadow 0s,
     outline .3s linear .2s;
 
-
-    // transition: 
-    // border-radius .5s ease-out .4s, 
-    // padding-block .4s ease-out .4s, 
-    // padding-right .4s ease-out .4s, 
-    // padding-left .4s ease-out .4s,
-    // max-width .4s ease-in, 
-    // box-shadow 0s, 
-    // outline .3s linear .2s;
-    
     .heart{opacity: 70%;}
-    .content-drawer {
-    // transform: translateX(0px);
-}
+
 
 } 
 
-// &:hover .photo{
-//   border-radius: 0px;
-//   transition: border-radius .5s ease-out .4s;
-//   /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
-//   // position: initial;
-// }
+&:hover .center-image{
+  // overflow-y: hidden;
+  border-radius: 0px;
+  transition: border-radius .3s ease-out .6s;
+  /* margin: 3px; */
+  
+}
+
 `
 : `
 // MISSING BOX
@@ -1133,7 +1105,7 @@ const PictureFrame = styled.div`
   
 // DAGGABLE PICTURE
     background-color: gainsboro;
-    transition: background-color 0s linear 1s, box-shadow .3s ease-in;
+    transition: background-color 0s linear 1s, box-shadow .2s ease-in;
     &:active {
       box-shadow: none !important;
       transition: box-shadow .1s linear;
@@ -1142,23 +1114,16 @@ const PictureFrame = styled.div`
 &:hover {
     z-index: 3;
     box-shadow: -7px 7px 10px 4px #aaaaaa;
-    transition: box-shadow .3s ease-in;
+    transition: box-shadow .2s ease-in;
     }
 .photo{
-  // height: inherit;
   border-radius: 13px;
-  // min-width: 150px;
-  // width: 150px;
-  // max-height: 220px;
-  /* KEEPS PHOTOS UNDERNEATH SIDEBAR WHEN SIDEBAR IS OPENED*/
-  // position: initial;
-}
 }
 }`:`
 
 // DRAGGABLE EMPTY BOX
 
-transition: background-color 0s linear 1s, box-shadow .3s ease-in;
+transition: background-color 0s linear 1s, box-shadow .2s ease-in;
 background-color: gainsboro;
   .photo {
   background-color: gainsboro;
@@ -1170,12 +1135,12 @@ background-color: gainsboro;
   &:active {
     box-shadow: 0px 0px 0px 0px #aaaaaa !important;
     outline: #aaaaaa solid;
-    transition: box-shadow .1s linear;
+    transition: box-shadow .1s ease-in;
     }
 &:hover {
     z-index: 3;
     box-shadow: -7px 7px 10px 4px #aaaaaa ;
-    transition: box-shadow .2s ease-out;
+    transition: box-shadow .3s ease-in;
     }
   }
 

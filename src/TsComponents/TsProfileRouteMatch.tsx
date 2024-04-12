@@ -63,11 +63,11 @@ interface IProps {
   root: string;
 }
 
-const TsProfileRouteMatch = React.memo<IProps>(( props ) => {
+const TsProfileRouteMatch: React.FC<IProps> = ( props ) =>{
     const match  = useRouteMatch();
     const location = useLocation();
-  const root = location?.pathname.split('/')[1]
-    console.log("photos", props.photos, props.folderDetails)
+    const root = location?.pathname.split('/')[1]
+    // console.log("photos", props.photos, props.folderDetails)
 
    
 return (
@@ -129,6 +129,6 @@ return (
                 </Route>
               </Switch>   
 )
-         })
+         }
 
 export default TsProfileRouteMatch;

@@ -151,71 +151,42 @@ const profileFetch = () => {
     {
       
 
-const groups = user.user.all_groups
 console.log("User Profile", loggedIn, user.user)
+const groups = user.user.all_groups
+
 for (const i of Object.keys(groups)) {
   const key = Object.keys(groups[i]);
   const value = JSON.stringify(eval(`groups[i].${key}`))
-
   const string = JSON.stringify(key[0]).replace(/^"(.+)"$/,'$1')
   const setFunc = string.charAt(0).toUpperCase() + string.slice(1)
-// console.log(`set${setFunc}(${value})`)
   eval(`set${setFunc}(${value})`)
-
-  // console.log(`index: ${i}, Keys: ${key}, Values: ${value}`, string.charAt(0).toUpperCase(), string.slice(1),setFunc);
-  
 }
 
-      // mapDetails(groups)
+      mapDetails(groups)
       setUserId(user.user.id)
       setUserName(user.user.name);
-
+      setUserLinks(user.user.links);
       about.title = user.user.about.title; 
       about.about = user.user.about.about; 
       about.publish = user.user.about.publish;
-      // userLinks[0] = user.user.links;
-      setUserLinks(user.user.links);
       setTutorial(user.user.tutorial)
       
-      // console.log("profile push", location.pathname, root)
+      if (history.action === 'POP' && location.pathname.includes("undefined") && root !== 'login'){
 
-      if (history.action === 'POP' && !(location.pathname.includes("undefined")) && root !== 'login'){
-        const sub = location.pathname.split('/')[2]
-        const index = location.pathname.split('/')[3] || ''
         if(sub === 'folders'){
-          setPhotos(groups[0]?.folders[+index].photos)
-          setFolderDetails(newDetail(groups[0]?.folders[0], folders))
-          // photos[0] = groups[0]?.folders[+index].photos
-          collaborators[0] = groups[0]?.folders[+index].collaborators
-          setCollaborators(groups[0]?.folders[+index].collaborators)
-          setFolderShown(+index)
-          console.log("creative", groups[0]?.folders[+index].creative)
-          setFolderType(groups[0]?.folders[+index].creative)
+          setFolderPhotos(groups[0]?.folders[+index], 'folders')
         }
         if(sub === 'favorites'){
-          setPhotos(groups[0]?.favorites[+index]?.photos)
-          // setCollaborators(user.user.folders[0].collaborators)
-          setFolderShown(+index)
-          // setFolderType(groups[0]?.favorites[+index].creative)
+          setFolderPhotos(groups[0]?.favorites, 'favorites')
         }
         if(sub === 'collabs'){
-          setPhotos(groups[0]?.collabs[+index].photos)
-          setCollaborators(groups[0]?.collabs[+index].collaborators)
-          setFolderShown(+index)
-          console.log("creative", groups[0]?.collabs[+index].creative)
-          setFolderType(groups[0]?.collabs[+index].creative)
+            setFolderPhotos(groups[0]?.collabs, 'collabs')
         }
-        navigate(`/home/${sub}/${index}`)
+        navigate(`/by_Corey_Lee/${sub}/${index}`)
       }
       else {
-        setPhotos(groups[0]?.folders[0].photos)
-        setFolderDetails(newDetail(groups[0]?.folders[0], 'folders'))
-        // setCollaborators(groups[0]?.folders[0].collaborators)
-        collaborators[0] = groups[0]?.folders[0].collaborators
-        setFolderShown(groups[0]?.folders[0].index)
-        setFolderType(groups[0]?.folders[0].creative)
-        
-        navigate('/home/folders/0')
+        setFolderPhotos(groups[0]?.folders[0], 'folders')
+        navigate('/by_Corey_Lee/folders/0')
       }
       setLoaded(true)
       
@@ -223,7 +194,7 @@ for (const i of Object.keys(groups)) {
   })
 }
 
-const landingFetch = () => {
+const slandingFetch = () => {
   fetch(`${dbVersion}/landing_page`, {
         method: "GET",
         headers: {
@@ -252,21 +223,14 @@ const landingFetch = () => {
       // setCurrentUserId(user.user.id)
       setUserId(user.user.id)
       setUserName(user.user.name);
-      setUserAboutMe(user.user.details);
+      // setAbout(user.user.about)
+      about.title = user.user.about.title; 
+      about.about = user.user.about.about; 
+      about.publish = user.user.about.publish;
       setUserLinks(user.user.links);
-      // setFolders(user.user.folders);
-      // setCollabs(user.user.collab_folders);
-      // setFavorites(user.user.favorite_folders);
-      // setUserFavorites(user.user.favorite_folders)
-      setAbout(user.user.about)
+
       setDemo(user.user.demo)
       setUuid(user.user.uuid)
-      // setFolderType(user.user.folders[0].creative)
-      // setCollaborators(user.user.folders[0].collaborators)
-
-
-
-
 
       
       if (history.action === 'POP' && location.pathname.includes("undefined") && root === 'by_Corey_Lee'){
@@ -306,10 +270,61 @@ const landingFetch = () => {
       
   })
 }
+const landingFetch = () => {
+  fetch(`${dbVersion}/landing_page`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+    })
+    .then((res) => res.json())
+    .then((user) => 
+    {
+      console.log("landing user", user)
+      const groups = user.user.all_groups
+      
+      for (const i of Object.keys(groups)) {
+        const key = Object.keys(groups[i]);
+        const value = JSON.stringify(eval(`groups[i].${key}`))
+        const string = JSON.stringify(key[0]).replace(/^"(.+)"$/,'$1')
+        const setFunc = string.charAt(0).toUpperCase() + string.slice(1)
+        eval(`set${setFunc}(${value})`)
+      }
+
+      mapDetails(groups)
+      setUserId(user.user.id)
+      setUserName(user.user.name);
+      setUserLinks(user.user.links);
+      about.title = user.user.about.title; 
+      about.about = user.user.about.about; 
+      about.publish = user.user.about.publish;
+      setDemo(user.user.demo)
+      
+      if (history.action === 'POP' && location.pathname.includes("undefined") && root === 'by_Corey_Lee'){
+
+        if(sub === 'folders'){
+          setFolderPhotos(groups[0]?.folders[+index], 'folders')
+        }
+        if(sub === 'favorites'){
+          setFolderPhotos(groups[0]?.favorites, 'favorites')
+        }
+        if(sub === 'collabs'){
+            setFolderPhotos(groups[0]?.collabs, 'collabs')
+        }
+        navigate(`/by_Corey_Lee/${sub}/${index}`)
+      }
+      else {
+        setFolderPhotos(groups[0]?.folders[0], 'folders')
+        navigate('/by_Corey_Lee/folders/0')
+      }
+      setLoaded(true)
+      
+  })
+}
 
 const fetchUser = (userId, name, objId) => {
   window.store = null
-  console.log('here it is', userId, name)
+  console.log('here it is', userId, name, objId)
   userId === currentUserId 
   ? profileFetch()
   : (name === 'Corey Lee') 
@@ -350,40 +365,22 @@ const fetchUser = (userId, name, objId) => {
       setTutorial(false)
       setFollow(user.user.follow)
       
-      if (!!objId){
-
-      }
       const index = !!objId ? objId : 0
-      const root = location.pathname.split('/')[1]
-      if (history.action === 'POP' && root !== 'community'){
-        const sub = location.pathname?.split('/')[2]
-        const index = location.pathname?.split('/')[3] || '' 
+      if (history.action === 'POP' && location.pathname.includes("undefined") && root !== 'community'){
+
         if(sub === 'folders'){
-          setPhotos(groups[0]?.folders[+index].photos)
-          setCollaborators(groups[0]?.folders[+index].collaborators)
-          setFolderShown(+index)
-          setFolderType(groups[0]?.folders[+index].creative)
+          setFolderPhotos(groups[0]?.folders[+index], 'folders')
         }
         if(sub === 'favorites'){
-          // setPhotos(user.user.favorite_folders[+index].favorite_photos)
-          // setCollaborators(user.user.folders[0].collaborators)
-          // setFolderShown(null)
-          // setCollabShown(null)
-          // setFavoriteShown(+index)
+          setFolderPhotos(groups[0]?.favorites, 'favorites')
         }
         if(sub === 'collabs'){
-          setPhotos(groups[0]?.collabs[+index].photos)
-          setCollaborators(groups[0]?.collabs[+index].collaborators)
-          setFolderShown(+index)
-          setFolderType(groups[0]?.collabs[+index].creative)
+            setFolderPhotos(groups[0]?.collabs, 'collabs')
         }
         navigate(`/user/${sub}/${index}`)
       }
       else {
-        setPhotos(groups[0]?.folders[0].photos)
-        setCollaborators(groups[0]?.folders[0].collaborators)
-        setFolderShown(groups[0]?.folders[0].index)
-        setFolderType(groups[0]?.folders[0].creative)
+        setFolderPhotos(groups[0]?.folders[0], 'folders')
         navigate('/user/folders/0')
       }
       setLoaded(true)
@@ -527,20 +524,19 @@ const publishAbout = () => {
 const sortPhotos = (a, b) => a.index - b.index;
 
 const setFolderPhotos = useCallback((folder, type) => {
-  console.log('details', folder, type)
+  console.log('callback details', folder, type)
   setFolderArray(folder, type);
 }, [folders, collabs, favorites, root]);
 
 const setFolderArray = (object, type) => {
-    console.log('setFolder params', object, type)
-    let index = object.index
-    // console.log('details', object, index, type, details, root)
-    const setFunc = type?.charAt(0)?.toUpperCase() + type.slice(1, -1)
-    const folder = eval(type).find(folder => folder.index === object.index)
-    // // eval(`set${setFunc}Shown(${index})`)
-    // // setShown(index)
     
-    setFolderShown(object.index)
+    const setFunc = type?.charAt(0)?.toUpperCase() + type.slice(1, -1)
+
+    // VARIABLES DIFFERENTIATE WHETHER STATE IS LOADED 
+    const folder = !!eval(type) ? eval(type).find(folder => folder.id === object.id) || object : object
+    const detail = !!eval(type) ? object : newDetail(object, type)
+
+    console.log('setFolder params', !!eval(type), object, type, folder)
 
     if(type !== 'favorites'){
       // SHOWN, TYPE, PRIVACY, COLLABORATORS
@@ -548,19 +544,16 @@ const setFolderArray = (object, type) => {
         eval(`set${setFunc}Privacy(${object.public})`)
         eval(`set${setFunc}Type(${object.creative})`)
       }
-      // console.log("folder.creative", folder, folder.creative, type, `set${setFunc}Type(${folder.type})`)
       setPhotos(folder.photos)
-      setCollaborators(folder.collaborators)
-      // const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}, "creative": ${folder.creative}}`)
-      // detail.collaborators = folder.collaborators
-      setFolderDetails(object)
+      setCollaborators(object?.collaborators)
     }
     else {
       setCollaborators([])
-      // const detail = JSON.parse(`{"name": "${folder.name}", "id": ${folder.id}, "index": ${folder.index}}`)
-      // detail.collaborators = []
-      setFolderDetails(object)
-      setPhotos(folder.favorite_photos)}
+      setPhotos(folder.favorite_photos)
+    }
+      
+      setFolderShown(object.index)
+      setFolderDetails(detail)
       eval(`setFolderName("${object.name}")`)
       navigate(`/${root}/${type}/${object.index}`)
 }
@@ -643,7 +636,7 @@ useEffect(() => {
 }
 // }
 }, [folders, collabs, favorites])
-console.log("details", details,  detail)
+// console.log("details", details,  detail)
 
 
 
@@ -729,9 +722,9 @@ const createFolder = (e, folderName, type) => {
 
 const catagorize = (boolean) => {
   
-  let updatedFolder = folders.find((folder) => folder.index === folderShown)
+  let updatedFolder = folders.find((folder) => folder.index === folderDetails.index)
   
-  // console.log('catagorizeFolder', boolean, updatedFolder, folderShown, folders)
+  console.log('catagorizeFolder', boolean, updatedFolder, folders)
 
   updatedFolder.creative = boolean
   
@@ -1178,7 +1171,7 @@ const reorder = useCallback(() => {
 }, []);
 
 const reorderSubmit = () => {
-  console.log("reorderedPhotos", !!reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderShown))
+  // console.log("reorderedPhotos", !!reorderedPhotos, "demo", demo, !demo, loggedIn, !isNaN(folderShown))
 if (!!reorderedPhotos){
   let photoArray = [...reorderedPhotos]
   if (!isNaN(folderShown)) {
@@ -1404,6 +1397,7 @@ const syncDrawers = (bool) => {
          
         <TsSideBar
           details={details}
+          folderDetails={folderDetails}
           // setCurrentDetails={setCurrentDetails}
           addy={addy}
           setLocalDb={setLocalDb}
@@ -1498,7 +1492,7 @@ const syncDrawers = (bool) => {
           setHover={setHover}
 
           folderDetails={folderDetails}
-          folderShown={folderShown}
+          // folderShown={folderShown}
 
 
           setFolderType={setFolderType}
