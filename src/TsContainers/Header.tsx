@@ -210,7 +210,7 @@ useEffect(() => {
                   {!props.mobile && (!Number.isNaN(index)) && (typeof index === "number") && <div>
                   {/* {!!props?.collabs?.length && props.collabs.map((collab) =>{ */}
                   {!!props?.collabs?.length && props?.collabs?.map((collab)=> <MediumText>
-                    {collab.name}
+                    w/ {collab.name}
                     </MediumText>)
                     }
                 {/* } */}
@@ -512,7 +512,7 @@ const MediumText = styled.h2`
 
     @media only screen and (max-width: 1100px) and (min-width: 700px){
       color: black;
-      font-size: 2.4rem;
+      // font-size: 2.4rem;
     }
 
     @media only screen and (max-width: 700px) {

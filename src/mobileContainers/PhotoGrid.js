@@ -625,7 +625,7 @@ const index = +(location.pathname.split('/')[3])
           ref={gridWrapperRef}
           >
            {!!props?.collabs?.length && props?.collabs?.length !== undefined && (!Number.isNaN(index)) && (typeof index === "number") && <span>
-            {props?.collabs?.map((collab) => <CollabName>& {collab?.name}</CollabName>)}
+            {props?.collabs?.map((collab) => <CollabName>w/ {collab?.name}</CollabName>)}
             </span>}
 
             <FolderName>{props?.folderDetails?.name}</FolderName>
